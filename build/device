@@ -1,0 +1,30 @@
+#!/bin/bash
+set -euo pipefail
+
+SCHEME="Gymplicity"
+DESTINATION="platform=iOS,id=auto"
+
+# --- Resolve DEVELOPMENT_TEAM from argument or environment ---
+TEAM_ID="${1:-${DEVELOPMENT_TEAM:-}}"
+
+if [ -z "$TEAM_ID" ]; then
+  echo "Usage: build/device <TEAM_ID>" >&2
+  echo "" >&2
+  echo "  build/device XXXXXXXXXX" >&2
+  echo "  DEVELOPMENT_TEAM=XXXXXXXXXX build/device" >&2
+  echo "" >&2
+  echo "Find your Team ID at https://developer.apple.com/account" >&2
+  exit 1
+fi
+
+echo "Building Gymplicity for connected device..."
+echo "Team ID: $TEAM_ID"
+echo ""
+
+xcodebuild build \
+  -scheme "$SCHEME" \
+  -destination "$DESTINATION" \
+  -configuration Debug \
+  -allowProvisioningUpdates \
+  DEVELOPMENT_TEAM="$TEAM_ID" \
+  2>&1

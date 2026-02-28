@@ -1,0 +1,19 @@
+#!/bin/bash
+set -euo pipefail
+
+SCHEME="Gymplicity"
+
+# --- Optional DEVELOPMENT_TEAM from argument or environment ---
+TEAM_ID="${1:-${DEVELOPMENT_TEAM:-}}"
+TEAM_ARGS=()
+if [ -n "$TEAM_ID" ]; then
+  TEAM_ARGS=(DEVELOPMENT_TEAM="$TEAM_ID" -allowProvisioningUpdates)
+fi
+
+xcodebuild archive \
+  -scheme "$SCHEME" \
+  -destination "generic/platform=iOS" \
+  -configuration Release \
+  -archivePath build/Gymplicity.xcarchive \
+  "${TEAM_ARGS[@]}" \
+  2>&1

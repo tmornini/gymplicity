@@ -31,7 +31,14 @@ natively).
 Trainer
 ├── id: UUID
 ├── name: String
-└── trainees: [Trainee]
+├── trainees: [Trainee]
+└── exercises: [Exercise]           (the trainer's exercise catalog)
+
+Exercise
+├── id: UUID
+├── name: String
+├── trainer: Trainer
+└── entries: [SessionEntry]         (all session entries using this exercise)
 
 Trainee
 ├── id: UUID
@@ -50,7 +57,7 @@ Session
 SessionEntry
 ├── id: UUID
 ├── session: Session
-├── exerciseName: String            (free-form, e.g. "Bench Press")
+├── exercise: Exercise              (reference to the exercise catalog entry)
 ├── order: Int                      (exercise ordering within session)
 └── sets: [ExerciseSet]
 
@@ -60,7 +67,8 @@ ExerciseSet
 ├── order: Int                      (set ordering within exercise)
 ├── weight: Double                  (in user's preferred unit)
 ├── reps: Int
-└── isCompleted: Bool
+├── isCompleted: Bool
+└── completedAt: Date?              (timestamp when set was completed)
 ```
 
 ### Derived Values (computed, not stored)

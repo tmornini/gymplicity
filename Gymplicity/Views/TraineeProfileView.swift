@@ -54,17 +54,17 @@ struct TraineeProfileView: View {
             }
 
             // Progress by exercise
-            let exerciseNames = trainee.allExerciseNames
-            if !exerciseNames.isEmpty {
+            let exercises = trainee.allExercises
+            if !exercises.isEmpty {
                 Section("Progress by Exercise") {
-                    ForEach(exerciseNames, id: \.self) { name in
+                    ForEach(exercises) { exercise in
                         NavigationLink {
-                            ProgressChartsView(trainee: trainee, exerciseName: name)
+                            ProgressChartsView(trainee: trainee, exercise: exercise)
                         } label: {
                             HStack {
-                                Text(name)
+                                Text(exercise.name)
                                 Spacer()
-                                if let lastEntry = trainee.lastEntry(for: name),
+                                if let lastEntry = trainee.lastEntry(for: exercise),
                                    let lastSet = lastEntry.sortedSets.first {
                                     Text("\(formatWeight(lastSet.weight)) x \(lastSet.reps)")
                                         .font(.caption)
@@ -126,7 +126,7 @@ private struct SessionRow: View {
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }
-            let exerciseNames = session.sortedEntries.map(\.exerciseName).joined(separator: ", ")
+            let exerciseNames = session.sortedEntries.map { $0.exercise?.name ?? "Unknown" }.joined(separator: ", ")
             if !exerciseNames.isEmpty {
                 Text(exerciseNames)
                     .font(.caption)

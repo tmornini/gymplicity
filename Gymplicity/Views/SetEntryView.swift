@@ -3,7 +3,7 @@ import SwiftUI
 struct SetEntryView: View {
     @Environment(\.dismiss) private var dismiss
     @Bindable var exerciseSet: ExerciseSet
-    let exerciseName: String
+    let exercise: Exercise?
     let setNumber: Int
     let previousEntry: SessionEntry?
 
@@ -16,7 +16,7 @@ struct SetEntryView: View {
     var body: some View {
         NavigationStack {
             VStack(spacing: 24) {
-                Text("\(exerciseName) — Set \(setNumber)")
+                Text("\(exercise?.name ?? "Exercise") — Set \(setNumber)")
                     .font(.headline)
 
                 HStack(spacing: 24) {
@@ -90,6 +90,7 @@ struct SetEntryView: View {
         exerciseSet.weight = Double(weightText) ?? 0
         exerciseSet.reps = Int(repsText) ?? 0
         exerciseSet.isCompleted = true
+        exerciseSet.completedAt = .now
         dismiss()
     }
 

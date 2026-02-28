@@ -7,6 +7,6 @@ struct GymplicityApp: App {
         WindowGroup {
             TrainerHomeView()
         }
-        .modelContainer(for: [Trainer.self, Trainee.self, Session.self, SessionEntry.self, ExerciseSet.self])
+        .modelContainer(for: [Trainer.self, Exercise.self, Trainee.self, Session.self, SessionEntry.self, ExerciseSet.self])
     }
 }

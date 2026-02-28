@@ -3,10 +3,10 @@ import Charts
 
 struct ProgressChartsView: View {
     let trainee: Trainee
-    let exerciseName: String
+    let exercise: Exercise
 
     private var history: [(date: Date, entry: SessionEntry)] {
-        trainee.history(for: exerciseName)
+        trainee.history(for: exercise)
     }
 
     var body: some View {
@@ -16,7 +16,7 @@ struct ProgressChartsView: View {
                     ContentUnavailableView(
                         "No History Yet",
                         systemImage: "chart.xyaxis.line",
-                        description: Text("Complete a session with \(exerciseName) to see progress.")
+                        description: Text("Complete a session with \(exercise.name) to see progress.")
                     )
                 } else {
                     weightPerRepChart
@@ -25,7 +25,7 @@ struct ProgressChartsView: View {
             }
             .padding()
         }
-        .navigationTitle(exerciseName)
+        .navigationTitle(exercise.name)
         .navigationBarTitleDisplayMode(.inline)
     }
 

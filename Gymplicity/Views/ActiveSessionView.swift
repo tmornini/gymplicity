@@ -83,14 +83,16 @@ struct ActiveSessionView: View {
 
     private func previousWeight(for entry: SessionEntry) -> Double {
         guard let trainee = session.trainee,
-              let lastEntry = trainee.lastEntry(for: entry.exerciseName),
+              let exercise = entry.exercise,
+              let lastEntry = trainee.lastEntry(for: exercise),
               let lastSet = lastEntry.sortedSets.first else { return 0 }
         return lastSet.weight
     }
 
     private func previousReps(for entry: SessionEntry) -> Int {
         guard let trainee = session.trainee,
-              let lastEntry = trainee.lastEntry(for: entry.exerciseName),
+              let exercise = entry.exercise,
+              let lastEntry = trainee.lastEntry(for: exercise),
               let lastSet = lastEntry.sortedSets.first else { return 0 }
         return lastSet.reps
     }
@@ -144,6 +146,7 @@ struct SetRow: View {
 
                 Button {
                     exerciseSet.isCompleted.toggle()
+                    exerciseSet.completedAt = exerciseSet.isCompleted ? .now : nil
                 } label: {
                     Image(systemName: exerciseSet.isCompleted ? "checkmark.circle.fill" : "circle")
                         .font(.title3)
@@ -157,9 +160,12 @@ struct SetRow: View {
         .sheet(isPresented: $showingEditor) {
             SetEntryView(
                 exerciseSet: exerciseSet,
-                exerciseName: entry.exerciseName,
+                exercise: entry.exercise,
                 setNumber: setNumber,
-                previousEntry: trainee?.lastEntry(for: entry.exerciseName)
+                previousEntry: {
+                    guard let exercise = entry.exercise else { return nil }
+                    return trainee?.lastEntry(for: exercise)
+                }()
             )
         }
     }

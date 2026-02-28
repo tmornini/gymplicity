@@ -9,20 +9,20 @@ struct TraineeProfileView: View {
 
     var body: some View {
         List {
-            // Active session quick-access
-            if !trainee.activeSessions.isEmpty {
-                Section("Active Session") {
-                    ForEach(trainee.activeSessions) { session in
+            // Active workout quick-access
+            if !trainee.activeWorkouts.isEmpty {
+                Section("Active Workout") {
+                    ForEach(trainee.activeWorkouts) { workout in
                         NavigationLink {
-                            ActiveSessionView(session: session)
+                            ActiveWorkoutView(workout: workout)
                         } label: {
                             HStack {
                                 Image(systemName: "circle.fill")
                                     .font(.system(size: 8))
                                     .foregroundStyle(.green)
-                                Text(session.date, style: .date)
+                                Text(workout.date, style: .date)
                                 Spacer()
-                                Text("\(session.exerciseCount) ex")
+                                Text("\(workout.exerciseCount) ex")
                                     .foregroundStyle(.secondary)
                             }
                         }
@@ -30,42 +30,42 @@ struct TraineeProfileView: View {
                 }
             }
 
-            // Start new session
+            // Start new workout
             Section {
                 Button {
-                    startSession()
+                    startWorkout()
                 } label: {
-                    Label("Start New Session", systemImage: "plus.circle.fill")
+                    Label("Start New Workout", systemImage: "plus.circle.fill")
                         .fontWeight(.medium)
                 }
             }
 
-            // Recent sessions
-            if !trainee.completedSessions.isEmpty {
-                Section("Recent Sessions") {
-                    ForEach(trainee.completedSessions.prefix(20)) { session in
+            // Recent workouts
+            if !trainee.completedWorkouts.isEmpty {
+                Section("Recent Workouts") {
+                    ForEach(trainee.completedWorkouts.prefix(20)) { workout in
                         NavigationLink {
-                            SessionHistoryView(session: session)
+                            WorkoutHistoryView(workout: workout)
                         } label: {
-                            SessionRow(session: session)
+                            WorkoutRow(workout: workout)
                         }
                     }
                 }
             }
 
             // Progress by exercise
-            let exercises = trainee.allExercises
-            if !exercises.isEmpty {
+            let definitions = trainee.allExerciseDefinitions
+            if !definitions.isEmpty {
                 Section("Progress by Exercise") {
-                    ForEach(exercises) { exercise in
+                    ForEach(definitions) { definition in
                         NavigationLink {
-                            ProgressChartsView(trainee: trainee, exercise: exercise)
+                            ProgressChartsView(trainee: trainee, exerciseDefinition: definition)
                         } label: {
                             HStack {
-                                Text(exercise.name)
+                                Text(definition.name)
                                 Spacer()
-                                if let lastEntry = trainee.lastEntry(for: exercise),
-                                   let lastSet = lastEntry.sortedSets.first {
+                                if let lastExercise = trainee.lastExercise(for: definition),
+                                   let lastSet = lastExercise.sortedSets.first {
                                     Text("\(formatWeight(lastSet.weight)) x \(lastSet.reps)")
                                         .font(.caption)
                                         .foregroundStyle(.secondary)
@@ -95,9 +95,9 @@ struct TraineeProfileView: View {
         }
     }
 
-    private func startSession() {
-        let session = Session(trainee: trainee)
-        modelContext.insert(session)
+    private func startWorkout() {
+        let workout = Workout(trainee: trainee)
+        modelContext.insert(workout)
     }
 
     private func formatWeight(_ weight: Double) -> String {
@@ -108,25 +108,25 @@ struct TraineeProfileView: View {
     }
 }
 
-private struct SessionRow: View {
-    let session: Session
+private struct WorkoutRow: View {
+    let workout: Workout
 
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
             HStack {
-                Text(session.date, style: .date)
+                Text(workout.date, style: .date)
                     .font(.body)
                 Spacer()
-                Text("\(session.exerciseCount) exercise\(session.exerciseCount == 1 ? "" : "s")")
+                Text("\(workout.exerciseCount) exercise\(workout.exerciseCount == 1 ? "" : "s")")
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }
-            if session.totalVolume > 0 {
-                Text("Total volume: \(formatVolume(session.totalVolume)) lb")
+            if workout.totalVolume > 0 {
+                Text("Total volume: \(formatVolume(workout.totalVolume)) lb")
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }
-            let exerciseNames = session.sortedEntries.map { $0.exercise?.name ?? "Unknown" }.joined(separator: ", ")
+            let exerciseNames = workout.sortedExercises.map(\.name).joined(separator: ", ")
             if !exerciseNames.isEmpty {
                 Text(exerciseNames)
                     .font(.caption)

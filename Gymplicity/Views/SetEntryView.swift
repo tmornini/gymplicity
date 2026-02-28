@@ -2,10 +2,10 @@ import SwiftUI
 
 struct SetEntryView: View {
     @Environment(\.dismiss) private var dismiss
-    @Bindable var exerciseSet: ExerciseSet
-    let exercise: Exercise?
+    @Bindable var workoutSet: WorkoutSet
+    let exerciseDefinition: ExerciseDefinition?
     let setNumber: Int
-    let previousEntry: SessionEntry?
+    let previousExercise: Exercise?
 
     @State private var weightText: String = ""
     @State private var repsText: String = ""
@@ -16,7 +16,7 @@ struct SetEntryView: View {
     var body: some View {
         NavigationStack {
             VStack(spacing: 24) {
-                Text("\(exercise?.name ?? "Exercise") — Set \(setNumber)")
+                Text("\(exerciseDefinition?.name ?? "Exercise") — Set \(setNumber)")
                     .font(.headline)
 
                 HStack(spacing: 24) {
@@ -54,7 +54,7 @@ struct SetEntryView: View {
                     }
                 }
 
-                if let previousEntry, let lastSet = previousEntry.sortedSets.first {
+                if let previousExercise, let lastSet = previousExercise.sortedSets.first {
                     HStack(spacing: 4) {
                         Image(systemName: "clock.arrow.circlepath")
                             .font(.caption)
@@ -78,8 +78,8 @@ struct SetEntryView: View {
                 }
             }
             .onAppear {
-                weightText = exerciseSet.weight > 0 ? formatWeightValue(exerciseSet.weight) : ""
-                repsText = exerciseSet.reps > 0 ? "\(exerciseSet.reps)" : ""
+                weightText = workoutSet.weight > 0 ? formatWeightValue(workoutSet.weight) : ""
+                repsText = workoutSet.reps > 0 ? "\(workoutSet.reps)" : ""
                 focusedField = .weight
             }
         }
@@ -87,10 +87,10 @@ struct SetEntryView: View {
     }
 
     private func save() {
-        exerciseSet.weight = Double(weightText) ?? 0
-        exerciseSet.reps = Int(repsText) ?? 0
-        exerciseSet.isCompleted = true
-        exerciseSet.completedAt = .now
+        workoutSet.weight = Double(weightText) ?? 0
+        workoutSet.reps = Int(repsText) ?? 0
+        workoutSet.isCompleted = true
+        workoutSet.completedAt = .now
         dismiss()
     }
 

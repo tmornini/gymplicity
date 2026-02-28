@@ -7,40 +7,40 @@ final class Trainer {
     var name: String
     @Relationship(deleteRule: .cascade, inverse: \Trainee.trainer)
     var trainees: [Trainee]
-    @Relationship(deleteRule: .cascade, inverse: \Exercise.trainer)
-    var exercises: [Exercise]
+    @Relationship(deleteRule: .cascade, inverse: \ExerciseDefinition.trainer)
+    var exerciseDefinitions: [ExerciseDefinition]
 
     init(name: String) {
         self.id = UUID()
         self.name = name
         self.trainees = []
-        self.exercises = []
+        self.exerciseDefinitions = []
     }
 
-    /// Find or create an exercise by name (case-insensitive match).
-    func findOrCreateExercise(named name: String, in context: ModelContext) -> Exercise {
-        if let existing = exercises.first(where: { $0.name.lowercased() == name.lowercased() }) {
+    /// Find or create an exercise definition by name (case-insensitive match).
+    func findOrCreateExerciseDefinition(named name: String, in context: ModelContext) -> ExerciseDefinition {
+        if let existing = exerciseDefinitions.first(where: { $0.name.lowercased() == name.lowercased() }) {
             return existing
         }
-        let exercise = Exercise(name: name, trainer: self)
-        context.insert(exercise)
-        return exercise
+        let definition = ExerciseDefinition(name: name, trainer: self)
+        context.insert(definition)
+        return definition
     }
 }
 
 @Model
-final class Exercise {
+final class ExerciseDefinition {
     var id: UUID
     var name: String
     var trainer: Trainer?
-    @Relationship(deleteRule: .nullify, inverse: \SessionEntry.exercise)
-    var entries: [SessionEntry]
+    @Relationship(deleteRule: .nullify, inverse: \Exercise.definition)
+    var exercises: [Exercise]
 
     init(name: String, trainer: Trainer? = nil) {
         self.id = UUID()
         self.name = name
         self.trainer = trainer
-        self.entries = []
+        self.exercises = []
     }
 }
 
@@ -49,65 +49,65 @@ final class Trainee {
     var id: UUID
     var name: String
     var trainer: Trainer?
-    @Relationship(deleteRule: .cascade, inverse: \Session.trainee)
-    var sessions: [Session]
+    @Relationship(deleteRule: .cascade, inverse: \Workout.trainee)
+    var workouts: [Workout]
 
     init(name: String, trainer: Trainer? = nil) {
         self.id = UUID()
         self.name = name
         self.trainer = trainer
-        self.sessions = []
+        self.workouts = []
     }
 
-    var activeSessions: [Session] {
-        sessions.filter { !$0.isComplete }
+    var activeWorkouts: [Workout] {
+        workouts.filter { !$0.isComplete }
     }
 
-    var completedSessions: [Session] {
-        sessions
+    var completedWorkouts: [Workout] {
+        workouts
             .filter { $0.isComplete }
             .sorted { $0.date > $1.date }
     }
 
-    /// All unique exercises this trainee has ever done, sorted alphabetically by name.
-    var allExercises: [Exercise] {
-        let exercisesByID = Dictionary(
-            sessions
-                .flatMap { $0.entries.compactMap { $0.exercise } }
+    /// All unique exercise definitions this trainee has ever done, sorted alphabetically by name.
+    var allExerciseDefinitions: [ExerciseDefinition] {
+        let definitionsByID = Dictionary(
+            workouts
+                .flatMap { $0.exercises.compactMap { $0.definition } }
                 .map { ($0.id, $0) },
             uniquingKeysWith: { first, _ in first }
         )
-        return exercisesByID.values.sorted { $0.name < $1.name }
+        return definitionsByID.values.sorted { $0.name < $1.name }
     }
 
-    /// Find the most recent completed session entry for a given exercise.
-    func lastEntry(for exercise: Exercise) -> SessionEntry? {
-        completedSessions
-            .flatMap { $0.sortedEntries }
-            .first { $0.exercise?.id == exercise.id }
+    /// Find the most recent completed exercise for a given exercise definition.
+    func lastExercise(for definition: ExerciseDefinition) -> Exercise? {
+        completedWorkouts
+            .flatMap { $0.sortedExercises }
+            .first { $0.definition?.id == definition.id }
     }
 
-    /// All session entries for a given exercise across all completed sessions, oldest first.
-    func history(for exercise: Exercise) -> [(date: Date, entry: SessionEntry)] {
-        completedSessions
+    /// All exercises for a given definition across all completed workouts, oldest first.
+    func history(for definition: ExerciseDefinition) -> [(date: Date, exercise: Exercise)] {
+        completedWorkouts
             .reversed() // oldest first
-            .flatMap { session in
-                session.entries
-                    .filter { $0.exercise?.id == exercise.id }
-                    .map { (date: session.date, entry: $0) }
+            .flatMap { workout in
+                workout.exercises
+                    .filter { $0.definition?.id == definition.id }
+                    .map { (date: workout.date, exercise: $0) }
             }
     }
 }
 
 @Model
-final class Session {
+final class Workout {
     var id: UUID
     var trainee: Trainee?
     var date: Date
     var notes: String?
     var isComplete: Bool
-    @Relationship(deleteRule: .cascade, inverse: \SessionEntry.session)
-    var entries: [SessionEntry]
+    @Relationship(deleteRule: .cascade, inverse: \Exercise.workout)
+    var exercises: [Exercise]
 
     init(trainee: Trainee? = nil, date: Date = .now) {
         self.id = UUID()
@@ -115,48 +115,48 @@ final class Session {
         self.date = date
         self.notes = nil
         self.isComplete = false
-        self.entries = []
+        self.exercises = []
     }
 
-    var sortedEntries: [SessionEntry] {
-        entries.sorted { $0.order < $1.order }
+    var sortedExercises: [Exercise] {
+        exercises.sorted { $0.order < $1.order }
     }
 
-    var nextEntryOrder: Int {
-        (entries.map(\.order).max() ?? -1) + 1
+    var nextExerciseOrder: Int {
+        (exercises.map(\.order).max() ?? -1) + 1
     }
 
     var totalVolume: Double {
-        entries.reduce(0) { $0 + $1.totalVolume }
+        exercises.reduce(0) { $0 + $1.totalVolume }
     }
 
     var exerciseCount: Int {
-        entries.count
+        exercises.count
     }
 }
 
 @Model
-final class SessionEntry {
+final class Exercise {
     var id: UUID
-    var session: Session?
-    var exercise: Exercise?
+    var workout: Workout?
+    var definition: ExerciseDefinition?
     var order: Int
-    @Relationship(deleteRule: .cascade, inverse: \ExerciseSet.entry)
-    var sets: [ExerciseSet]
+    @Relationship(deleteRule: .cascade, inverse: \WorkoutSet.exercise)
+    var sets: [WorkoutSet]
 
-    init(exercise: Exercise, order: Int, session: Session? = nil) {
+    init(definition: ExerciseDefinition, order: Int, workout: Workout? = nil) {
         self.id = UUID()
-        self.exercise = exercise
+        self.definition = definition
         self.order = order
-        self.session = session
+        self.workout = workout
         self.sets = []
     }
 
-    var exerciseName: String {
-        exercise?.name ?? "Unknown"
+    var name: String {
+        definition?.name ?? "Unknown"
     }
 
-    var sortedSets: [ExerciseSet] {
+    var sortedSets: [WorkoutSet] {
         sets.sorted { $0.order < $1.order }
     }
 
@@ -170,23 +170,23 @@ final class SessionEntry {
 }
 
 @Model
-final class ExerciseSet {
+final class WorkoutSet {
     var id: UUID
-    var entry: SessionEntry?
+    var exercise: Exercise?
     var order: Int
     var weight: Double
     var reps: Int
     var isCompleted: Bool
     var completedAt: Date?
 
-    init(order: Int, weight: Double = 0, reps: Int = 0, entry: SessionEntry? = nil) {
+    init(order: Int, weight: Double = 0, reps: Int = 0, exercise: Exercise? = nil) {
         self.id = UUID()
         self.order = order
         self.weight = weight
         self.reps = reps
         self.isCompleted = false
         self.completedAt = nil
-        self.entry = entry
+        self.exercise = exercise
     }
 
     var volume: Double {

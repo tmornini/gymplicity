@@ -1,27 +1,27 @@
 import SwiftUI
 
-struct SessionHistoryView: View {
-    let session: Session
+struct WorkoutHistoryView: View {
+    let workout: Workout
 
     var body: some View {
         List {
             Section {
                 LabeledContent("Date") {
-                    Text(session.date, style: .date)
+                    Text(workout.date, style: .date)
                 }
                 LabeledContent("Exercises") {
-                    Text("\(session.exerciseCount)")
+                    Text("\(workout.exerciseCount)")
                 }
-                let totalSets = session.entries.flatMap(\.sets).count
+                let totalSets = workout.exercises.flatMap(\.sets).count
                 LabeledContent("Sets") {
                     Text("\(totalSets)")
                 }
-                if session.totalVolume > 0 {
+                if workout.totalVolume > 0 {
                     LabeledContent("Total Volume") {
-                        Text("\(Int(session.totalVolume)) lb")
+                        Text("\(Int(workout.totalVolume)) lb")
                     }
                 }
-                if let notes = session.notes, !notes.isEmpty {
+                if let notes = workout.notes, !notes.isEmpty {
                     VStack(alignment: .leading, spacing: 4) {
                         Text("Notes")
                             .font(.caption)
@@ -31,23 +31,23 @@ struct SessionHistoryView: View {
                 }
             }
 
-            ForEach(session.sortedEntries) { entry in
-                Section(entry.exerciseName) {
-                    ForEach(entry.sortedSets) { exerciseSet in
+            ForEach(workout.sortedExercises) { exercise in
+                Section(exercise.name) {
+                    ForEach(exercise.sortedSets) { workoutSet in
                         HStack {
-                            Text("Set \(setNumber(exerciseSet, in: entry))")
+                            Text("Set \(setNumber(workoutSet, in: exercise))")
                                 .font(.subheadline)
                                 .foregroundStyle(.secondary)
                                 .frame(width: 50, alignment: .leading)
-                            Text(formatWeight(exerciseSet.weight))
+                            Text(formatWeight(workoutSet.weight))
                                 .font(.body.monospacedDigit())
                             Text("x")
                                 .font(.caption)
                                 .foregroundStyle(.secondary)
-                            Text("\(exerciseSet.reps)")
+                            Text("\(workoutSet.reps)")
                                 .font(.body.monospacedDigit())
                             Spacer()
-                            Text("\(Int(exerciseSet.volume)) lb vol")
+                            Text("\(Int(workoutSet.volume)) lb vol")
                                 .font(.caption)
                                 .foregroundStyle(.secondary)
                         }
@@ -55,19 +55,19 @@ struct SessionHistoryView: View {
 
                     HStack {
                         Spacer()
-                        Text("Volume: \(Int(entry.totalVolume)) lb")
+                        Text("Volume: \(Int(exercise.totalVolume)) lb")
                             .font(.caption)
                             .foregroundStyle(.secondary)
                     }
                 }
             }
         }
-        .navigationTitle("Session Details")
+        .navigationTitle("Workout Details")
         .navigationBarTitleDisplayMode(.inline)
     }
 
-    private func setNumber(_ exerciseSet: ExerciseSet, in entry: SessionEntry) -> Int {
-        (entry.sortedSets.firstIndex(where: { $0.id == exerciseSet.id }) ?? 0) + 1
+    private func setNumber(_ workoutSet: WorkoutSet, in exercise: Exercise) -> Int {
+        (exercise.sortedSets.firstIndex(where: { $0.id == workoutSet.id }) ?? 0) + 1
     }
 
     private func formatWeight(_ weight: Double) -> String {

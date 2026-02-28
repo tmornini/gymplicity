@@ -40,14 +40,14 @@ struct TrainerHomeView: View {
     private func traineeList(trainer: Trainer) -> some View {
         List {
             let active = trainer.trainees
-                .flatMap { $0.activeSessions.map { (trainee: $0.trainee!, session: $0) } }
+                .flatMap { $0.activeWorkouts.map { (trainee: $0.trainee!, workout: $0) } }
             if !active.isEmpty {
-                Section("Active Sessions") {
-                    ForEach(active, id: \.session.id) { pair in
+                Section("Active Workouts") {
+                    ForEach(active, id: \.workout.id) { pair in
                         NavigationLink {
-                            ActiveSessionView(session: pair.session)
+                            ActiveWorkoutView(workout: pair.workout)
                         } label: {
-                            ActiveSessionRow(trainee: pair.trainee, session: pair.session)
+                            ActiveWorkoutRow(trainee: pair.trainee, workout: pair.workout)
                         }
                     }
                 }
@@ -61,8 +61,8 @@ struct TrainerHomeView: View {
                         TraineeRow(trainee: trainee)
                     }
                     .swipeActions(edge: .trailing, allowsFullSwipe: false) {
-                        if trainee.activeSessions.isEmpty {
-                            Button("Start Session") { startSession(for: trainee) }
+                        if trainee.activeWorkouts.isEmpty {
+                            Button("Start Workout") { startWorkout(for: trainee) }
                                 .tint(.green)
                         }
                     }
@@ -86,9 +86,9 @@ struct TrainerHomeView: View {
         modelContext.insert(trainer)
     }
 
-    private func startSession(for trainee: Trainee) {
-        let session = Session(trainee: trainee)
-        modelContext.insert(session)
+    private func startWorkout(for trainee: Trainee) {
+        let workout = Workout(trainee: trainee)
+        modelContext.insert(workout)
     }
 
     private func deleteTrainees(trainer: Trainer, at offsets: IndexSet) {
@@ -101,9 +101,9 @@ struct TrainerHomeView: View {
 
 // MARK: - Row Views
 
-private struct ActiveSessionRow: View {
+private struct ActiveWorkoutRow: View {
     let trainee: Trainee
-    let session: Session
+    let workout: Workout
 
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
@@ -114,11 +114,11 @@ private struct ActiveSessionRow: View {
                 Text(trainee.name)
                     .font(.headline)
             }
-            Text(timeAgo(session.date))
+            Text(timeAgo(workout.date))
                 .font(.caption)
                 .foregroundStyle(.secondary)
-            if session.exerciseCount > 0 {
-                Text("\(session.exerciseCount) exercise\(session.exerciseCount == 1 ? "" : "s")")
+            if workout.exerciseCount > 0 {
+                Text("\(workout.exerciseCount) exercise\(workout.exerciseCount == 1 ? "" : "s")")
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }
@@ -143,20 +143,20 @@ private struct TraineeRow: View {
             VStack(alignment: .leading, spacing: 2) {
                 Text(trainee.name)
                     .font(.body)
-                if !trainee.completedSessions.isEmpty {
-                    Text("\(trainee.completedSessions.count) session\(trainee.completedSessions.count == 1 ? "" : "s")")
+                if !trainee.completedWorkouts.isEmpty {
+                    Text("\(trainee.completedWorkouts.count) workout\(trainee.completedWorkouts.count == 1 ? "" : "s")")
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }
             }
             Spacer()
-            if trainee.activeSessions.isEmpty {
+            if trainee.activeWorkouts.isEmpty {
                 Button("Start") { }
                     .buttonStyle(.bordered)
                     .font(.caption)
                     .allowsHitTesting(false) // handled by swipe action
             } else {
-                Text("In Session")
+                Text("In Workout")
                     .font(.caption)
                     .foregroundStyle(.green)
             }

@@ -1,30 +1,30 @@
 import SwiftUI
 import SwiftData
 
-struct ActiveSessionView: View {
+struct ActiveWorkoutView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
-    @Bindable var session: Session
+    @Bindable var workout: Workout
     @State private var showingAddExercise = false
     @State private var showingEndConfirmation = false
 
     var body: some View {
         List {
-            ForEach(session.sortedEntries) { entry in
+            ForEach(workout.sortedExercises) { exercise in
                 Section {
-                    ForEach(entry.sortedSets) { exerciseSet in
-                        SetRow(exerciseSet: exerciseSet, entry: entry, trainee: session.trainee)
+                    ForEach(exercise.sortedSets) { workoutSet in
+                        SetRow(workoutSet: workoutSet, exercise: exercise, trainee: workout.trainee)
                     }
-                    .onDelete { offsets in deleteSets(from: entry, at: offsets) }
+                    .onDelete { offsets in deleteSets(from: exercise, at: offsets) }
 
                     Button {
-                        addSet(to: entry)
+                        addSet(to: exercise)
                     } label: {
                         Label("Add Set", systemImage: "plus")
                             .font(.subheadline)
                     }
                 } header: {
-                    Text(entry.exerciseName)
+                    Text(exercise.name)
                         .font(.headline)
                         .textCase(nil)
                 }
@@ -39,14 +39,14 @@ struct ActiveSessionView: View {
                 }
             }
         }
-        .navigationTitle(session.trainee?.name ?? "Session")
+        .navigationTitle(workout.trainee?.name ?? "Workout")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .principal) {
                 VStack(spacing: 0) {
-                    Text(session.trainee?.name ?? "Session")
+                    Text(workout.trainee?.name ?? "Workout")
                         .font(.headline)
-                    Text(session.date, style: .date)
+                    Text(workout.date, style: .date)
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }
@@ -57,55 +57,55 @@ struct ActiveSessionView: View {
                     .tint(.red)
             }
         }
-        .confirmationDialog("End Session?", isPresented: $showingEndConfirmation) {
-            Button("End Session", role: .destructive) { endSession() }
+        .confirmationDialog("End Workout?", isPresented: $showingEndConfirmation) {
+            Button("End Workout", role: .destructive) { endWorkout() }
             Button("Cancel", role: .cancel) { }
         } message: {
-            let setCount = session.entries.flatMap(\.sets).count
-            Text("This session has \(session.exerciseCount) exercise\(session.exerciseCount == 1 ? "" : "s") and \(setCount) set\(setCount == 1 ? "" : "s").")
+            let setCount = workout.exercises.flatMap(\.sets).count
+            Text("This workout has \(workout.exerciseCount) exercise\(workout.exerciseCount == 1 ? "" : "s") and \(setCount) set\(setCount == 1 ? "" : "s").")
         }
         .sheet(isPresented: $showingAddExercise) {
-            AddExerciseView(session: session)
+            AddExerciseView(workout: workout)
         }
     }
 
-    private func addSet(to entry: SessionEntry) {
-        let previousSets = entry.sortedSets
+    private func addSet(to exercise: Exercise) {
+        let previousSets = exercise.sortedSets
         let lastSet = previousSets.last
 
-        // Pre-fill from previous set in this entry, or from last session
-        let weight = lastSet?.weight ?? previousWeight(for: entry)
-        let reps = lastSet?.reps ?? previousReps(for: entry)
+        // Pre-fill from previous set in this exercise, or from last workout
+        let weight = lastSet?.weight ?? previousWeight(for: exercise)
+        let reps = lastSet?.reps ?? previousReps(for: exercise)
 
-        let newSet = ExerciseSet(order: entry.nextSetOrder, weight: weight, reps: reps, entry: entry)
+        let newSet = WorkoutSet(order: exercise.nextSetOrder, weight: weight, reps: reps, exercise: exercise)
         modelContext.insert(newSet)
     }
 
-    private func previousWeight(for entry: SessionEntry) -> Double {
-        guard let trainee = session.trainee,
-              let exercise = entry.exercise,
-              let lastEntry = trainee.lastEntry(for: exercise),
-              let lastSet = lastEntry.sortedSets.first else { return 0 }
+    private func previousWeight(for exercise: Exercise) -> Double {
+        guard let trainee = workout.trainee,
+              let definition = exercise.definition,
+              let lastExercise = trainee.lastExercise(for: definition),
+              let lastSet = lastExercise.sortedSets.first else { return 0 }
         return lastSet.weight
     }
 
-    private func previousReps(for entry: SessionEntry) -> Int {
-        guard let trainee = session.trainee,
-              let exercise = entry.exercise,
-              let lastEntry = trainee.lastEntry(for: exercise),
-              let lastSet = lastEntry.sortedSets.first else { return 0 }
+    private func previousReps(for exercise: Exercise) -> Int {
+        guard let trainee = workout.trainee,
+              let definition = exercise.definition,
+              let lastExercise = trainee.lastExercise(for: definition),
+              let lastSet = lastExercise.sortedSets.first else { return 0 }
         return lastSet.reps
     }
 
-    private func deleteSets(from entry: SessionEntry, at offsets: IndexSet) {
-        let sorted = entry.sortedSets
+    private func deleteSets(from exercise: Exercise, at offsets: IndexSet) {
+        let sorted = exercise.sortedSets
         for index in offsets {
             modelContext.delete(sorted[index])
         }
     }
 
-    private func endSession() {
-        session.isComplete = true
+    private func endWorkout() {
+        workout.isComplete = true
         dismiss()
     }
 }
@@ -113,8 +113,8 @@ struct ActiveSessionView: View {
 // MARK: - Set Row
 
 struct SetRow: View {
-    @Bindable var exerciseSet: ExerciseSet
-    let entry: SessionEntry
+    @Bindable var workoutSet: WorkoutSet
+    let exercise: Exercise
     let trainee: Trainee?
     @State private var showingEditor = false
 
@@ -128,13 +128,13 @@ struct SetRow: View {
                     .foregroundStyle(.secondary)
                     .frame(width: 44, alignment: .leading)
 
-                if exerciseSet.weight > 0 || exerciseSet.reps > 0 {
-                    Text(formatWeight(exerciseSet.weight))
+                if workoutSet.weight > 0 || workoutSet.reps > 0 {
+                    Text(formatWeight(workoutSet.weight))
                         .font(.body.monospacedDigit().weight(.medium))
                     Text("x")
                         .font(.caption)
                         .foregroundStyle(.secondary)
-                    Text("\(exerciseSet.reps)")
+                    Text("\(workoutSet.reps)")
                         .font(.body.monospacedDigit().weight(.medium))
                 } else {
                     Text("Tap to enter")
@@ -145,12 +145,12 @@ struct SetRow: View {
                 Spacer()
 
                 Button {
-                    exerciseSet.isCompleted.toggle()
-                    exerciseSet.completedAt = exerciseSet.isCompleted ? .now : nil
+                    workoutSet.isCompleted.toggle()
+                    workoutSet.completedAt = workoutSet.isCompleted ? .now : nil
                 } label: {
-                    Image(systemName: exerciseSet.isCompleted ? "checkmark.circle.fill" : "circle")
+                    Image(systemName: workoutSet.isCompleted ? "checkmark.circle.fill" : "circle")
                         .font(.title3)
-                        .foregroundStyle(exerciseSet.isCompleted ? .green : .secondary)
+                        .foregroundStyle(workoutSet.isCompleted ? .green : .secondary)
                 }
                 .buttonStyle(.plain)
             }
@@ -159,20 +159,20 @@ struct SetRow: View {
         .buttonStyle(.plain)
         .sheet(isPresented: $showingEditor) {
             SetEntryView(
-                exerciseSet: exerciseSet,
-                exercise: entry.exercise,
+                workoutSet: workoutSet,
+                exerciseDefinition: exercise.definition,
                 setNumber: setNumber,
-                previousEntry: {
-                    guard let exercise = entry.exercise else { return nil }
-                    return trainee?.lastEntry(for: exercise)
+                previousExercise: {
+                    guard let definition = exercise.definition else { return nil }
+                    return trainee?.lastExercise(for: definition)
                 }()
             )
         }
     }
 
     private var setNumber: Int {
-        let sorted = entry.sortedSets
-        return (sorted.firstIndex(where: { $0.id == exerciseSet.id }) ?? 0) + 1
+        let sorted = exercise.sortedSets
+        return (sorted.firstIndex(where: { $0.id == workoutSet.id }) ?? 0) + 1
     }
 
     private func formatWeight(_ weight: Double) -> String {

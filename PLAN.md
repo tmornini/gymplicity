@@ -32,38 +32,38 @@ Trainer
 ├── id: UUID
 ├── name: String
 ├── trainees: [Trainee]
-└── exercises: [Exercise]           (the trainer's exercise catalog)
+└── exerciseDefinitions: [ExerciseDefinition]  (the trainer's exercise catalog)
 
-Exercise
+ExerciseDefinition
 ├── id: UUID
 ├── name: String
 ├── trainer: Trainer
-└── entries: [SessionEntry]         (all session entries using this exercise)
+└── exercises: [Exercise]           (all exercises using this definition)
 
 Trainee
 ├── id: UUID
 ├── name: String
 ├── trainer: Trainer
-└── sessions: [Session]
+└── workouts: [Workout]
 
-Session
+Workout
 ├── id: UUID
 ├── trainee: Trainee
 ├── date: Date
 ├── notes: String?
 ├── isComplete: Bool
-└── entries: [SessionEntry]
+└── exercises: [Exercise]
 
-SessionEntry
+Exercise
 ├── id: UUID
-├── session: Session
-├── exercise: Exercise              (reference to the exercise catalog entry)
-├── order: Int                      (exercise ordering within session)
-└── sets: [ExerciseSet]
+├── workout: Workout
+├── definition: ExerciseDefinition  (reference to the exercise catalog entry)
+├── order: Int                      (exercise ordering within workout)
+└── sets: [WorkoutSet]
 
-ExerciseSet
+WorkoutSet
 ├── id: UUID
-├── entry: SessionEntry
+├── exercise: Exercise
 ├── order: Int                      (set ordering within exercise)
 ├── weight: Double                  (in user's preferred unit)
 ├── reps: Int
@@ -74,10 +74,10 @@ ExerciseSet
 ### Derived Values (computed, not stored)
 
 - **Per-set volume**: `weight × reps`
-- **Per-entry volume**: sum of all set volumes
-- **Per-session volume**: sum of all entry volumes
-- **Per-rep weight for exercise**: `weight` at a given `reps` value over time (matched by exercise name)
-- **Total volume for exercise**: sum of all set volumes for that exercise over time (matched by exercise name)
+- **Per-exercise volume**: sum of all set volumes
+- **Per-workout volume**: sum of all exercise volumes
+- **Per-rep weight for exercise**: `weight` at a given `reps` value over time (matched by exercise definition name)
+- **Total volume for exercise**: sum of all set volumes for that exercise over time (matched by exercise definition name)
 
 ---
 
@@ -86,14 +86,14 @@ ExerciseSet
 ### 1. Trainer Home (root)
 
 The primary landing screen. Shows the trainer's active trainees and
-provides quick access to start or resume sessions.
+provides quick access to start or resume workouts.
 
 ```
 ┌─────────────────────────────┐
 │  Gymplicity          [gear] │
 │─────────────────────────────│
 │                             │
-│  Active Sessions            │
+│  Active Workouts            │
 │  ┌───────────────────────┐  │
 │  │ 🟢 Alex M. - Chest    │  │
 │  │    Started 25 min ago │  │
@@ -110,13 +110,13 @@ provides quick access to start or resume sessions.
 └─────────────────────────────┘
 ```
 
-### 2. Active Session View
+### 2. Active Workout View
 
 The core trainer-operation screen. Must be fast and minimal-tap.
 
 ```
 ┌─────────────────────────────┐
-│ ← Alex M.      [End Session]│
+│ ← Alex M.      [End Workout]│
 │  Feb 28, 2026                │
 │──────────────────────────────│
 │                              │
@@ -143,7 +143,7 @@ The core trainer-operation screen. Must be fast and minimal-tap.
 - Tap weight or reps to edit inline (number pad)
 - Tap checkmark to toggle set completion
 - Swipe set to delete
-- Previous session values shown as placeholders/suggestions
+- Previous workout values shown as placeholders/suggestions
 - Add exercise by typing name (autocomplete from previously used names)
 
 ### 3. Set Entry (inline / sheet)
@@ -168,7 +168,7 @@ Quick data entry optimized for speed:
 
 ### 4. Progress / Charts View
 
-Accessible per-trainee and per-exercise. Two chart types:
+Accessible per-trainee and per-exercise definition. Two chart types:
 
 **Chart A: Per-Rep Weight Over Time**
 - X-axis: date
@@ -212,7 +212,7 @@ Overview of a trainee's history and trends.
 │ ← Alex M.            [Edit] │
 │──────────────────────────────│
 │                              │
-│  Recent Sessions             │
+│  Recent Workouts             │
 │    Feb 28 - Chest (4 ex)     │
 │    Feb 26 - Back (5 ex)      │
 │    Feb 24 - Legs (4 ex)      │
@@ -233,27 +233,27 @@ Overview of a trainee's history and trends.
 - Data model implementation (all `@Model` classes)
 - Basic navigation shell (TabView or NavigationStack)
 
-### Phase 2: Trainer Session Flow (core value)
+### Phase 2: Trainer Workout Flow (core value)
 - Trainer home screen with trainee list
-- Start/resume session for a trainee
-- Active session view with exercise list
+- Start/resume workout for a trainee
+- Active workout view with exercise list
 - Add exercises by name (autocomplete from history)
 - Set entry: weight × reps with inline editing
 - Set completion toggling
-- Show previous session values as reference
-- End session
+- Show previous workout values as reference
+- End workout
 
 ### Phase 3: Visualization
 - Per-exercise progress view
 - Chart A: per-rep weight over time (Swift Charts)
 - Chart B: total volume over time (Swift Charts)
-- Trainee profile with session history
+- Trainee profile with workout history
 - Drill-down from trainee → exercise → charts
 
 ### Phase 4: Polish
-- Exercise reordering within session (drag & drop)
+- Exercise reordering within workout (drag & drop)
 - Set deletion (swipe)
-- Session notes
+- Workout notes
 - Unit preference (lb / kg)
 - Settings screen
 - Seed/demo data for first launch
@@ -266,13 +266,13 @@ Overview of a trainee's history and trends.
 1. **Speed over beauty** — A trainer mid-session needs 2-3 taps to log a
    set, not 5-6. Large tap targets, number pads, smart defaults.
 
-2. **Previous values as defaults** — When starting a new session, pre-fill
-   from the trainee's last session for that exercise. The trainer adjusts
+2. **Previous values as defaults** — When starting a new workout, pre-fill
+   from the trainee's last workout for that exercise. The trainer adjusts
    rather than entering from scratch.
 
 3. **Multi-trainee aware** — A trainer may have 2-3 trainees at once in a
-   group session. Quick trainee switching from the home screen, with each
-   session maintaining independent state.
+   group workout. Quick trainee switching from the home screen, with each
+   workout maintaining independent state.
 
-4. **Progressive disclosure** — The session screen is simple by default.
+4. **Progressive disclosure** — The workout screen is simple by default.
    Charts and history are one tap away but never in the way.

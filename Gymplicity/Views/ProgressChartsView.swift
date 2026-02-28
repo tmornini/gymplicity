@@ -3,10 +3,10 @@ import Charts
 
 struct ProgressChartsView: View {
     let trainee: Trainee
-    let exercise: Exercise
+    let exerciseDefinition: ExerciseDefinition
 
-    private var history: [(date: Date, entry: SessionEntry)] {
-        trainee.history(for: exercise)
+    private var history: [(date: Date, exercise: Exercise)] {
+        trainee.history(for: exerciseDefinition)
     }
 
     var body: some View {
@@ -16,7 +16,7 @@ struct ProgressChartsView: View {
                     ContentUnavailableView(
                         "No History Yet",
                         systemImage: "chart.xyaxis.line",
-                        description: Text("Complete a session with \(exercise.name) to see progress.")
+                        description: Text("Complete a workout with \(exerciseDefinition.name) to see progress.")
                     )
                 } else {
                     weightPerRepChart
@@ -25,7 +25,7 @@ struct ProgressChartsView: View {
             }
             .padding()
         }
-        .navigationTitle(exercise.name)
+        .navigationTitle(exerciseDefinition.name)
         .navigationBarTitleDisplayMode(.inline)
     }
 
@@ -36,12 +36,12 @@ struct ProgressChartsView: View {
         VStack(alignment: .leading, spacing: 8) {
             Text("Weight @ Reps Over Time")
                 .font(.headline)
-            Text("Best weight for each rep count per session")
+            Text("Best weight for each rep count per workout")
                 .font(.caption)
                 .foregroundStyle(.secondary)
 
             let dataPoints = weightPerRepData
-            let repCounts = Set(dataPoints.map(\.reps)).sorted()
+            let repCounts = Swift.Set(dataPoints.map(\.reps)).sorted()
 
             Chart(dataPoints) { point in
                 LineMark(
@@ -70,10 +70,10 @@ struct ProgressChartsView: View {
         }
     }
 
-    /// For each session, find the max weight used at each distinct rep count.
+    /// For each workout, find the max weight used at each distinct rep count.
     private var weightPerRepData: [WeightPerRepPoint] {
         history.flatMap { item in
-            let setsByRep = Dictionary(grouping: item.entry.sortedSets.filter { $0.reps > 0 && $0.weight > 0 }, by: \.reps)
+            let setsByRep = Dictionary(grouping: item.exercise.sortedSets.filter { $0.reps > 0 && $0.weight > 0 }, by: \.reps)
             return setsByRep.compactMap { (reps, sets) -> WeightPerRepPoint? in
                 guard let maxWeight = sets.map(\.weight).max() else { return nil }
                 return WeightPerRepPoint(date: item.date, reps: reps, weight: maxWeight)
@@ -88,7 +88,7 @@ struct ProgressChartsView: View {
         VStack(alignment: .leading, spacing: 8) {
             Text("Total Volume Over Time")
                 .font(.headline)
-            Text("Sum of weight x reps across all sets per session")
+            Text("Sum of weight x reps across all sets per workout")
                 .font(.caption)
                 .foregroundStyle(.secondary)
 
@@ -120,7 +120,7 @@ struct ProgressChartsView: View {
 
     private var volumeData: [VolumePoint] {
         history.map { item in
-            VolumePoint(date: item.date, volume: item.entry.totalVolume)
+            VolumePoint(date: item.date, volume: item.exercise.totalVolume)
         }
     }
 }

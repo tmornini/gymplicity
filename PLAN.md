@@ -39,12 +39,6 @@ Trainee
 ├── trainer: Trainer
 └── sessions: [Session]
 
-Exercise
-├── id: UUID
-├── name: String                    (e.g. "Bench Press")
-├── category: ExerciseCategory      (e.g. .chest, .back, .legs)
-└── isArchived: Bool
-
 Session
 ├── id: UUID
 ├── trainee: Trainee
@@ -56,7 +50,7 @@ Session
 SessionEntry
 ├── id: UUID
 ├── session: Session
-├── exercise: Exercise
+├── exerciseName: String            (free-form, e.g. "Bench Press")
 ├── order: Int                      (exercise ordering within session)
 └── sets: [ExerciseSet]
 
@@ -74,8 +68,8 @@ ExerciseSet
 - **Per-set volume**: `weight × reps`
 - **Per-entry volume**: sum of all set volumes
 - **Per-session volume**: sum of all entry volumes
-- **Per-rep weight for exercise**: `weight` at a given `reps` value over time
-- **Total volume for exercise**: sum of all set volumes for that exercise over time
+- **Per-rep weight for exercise**: `weight` at a given `reps` value over time (matched by exercise name)
+- **Total volume for exercise**: sum of all set volumes for that exercise over time (matched by exercise name)
 
 ---
 
@@ -142,7 +136,7 @@ The core trainer-operation screen. Must be fast and minimal-tap.
 - Tap checkmark to toggle set completion
 - Swipe set to delete
 - Previous session values shown as placeholders/suggestions
-- Add exercise via searchable exercise picker
+- Add exercise by typing name (autocomplete from previously used names)
 
 ### 3. Set Entry (inline / sheet)
 
@@ -201,29 +195,7 @@ Accessible per-trainee and per-exercise. Two chart types:
 └──────────────────────────────┘
 ```
 
-### 5. Exercise Library
-
-Manage the catalog of exercises.
-
-```
-┌──────────────────────────────┐
-│ ← Exercises          [+ Add]│
-│──────────────────────────────│
-│  🔍 Search                   │
-│                              │
-│  Chest                       │
-│    Bench Press               │
-│    Incline DB Press          │
-│    Cable Fly                 │
-│                              │
-│  Back                        │
-│    Barbell Row               │
-│    Lat Pulldown              │
-│    ...                       │
-└──────────────────────────────┘
-```
-
-### 6. Trainee Profile
+### 5. Trainee Profile
 
 Overview of a trainee's history and trends.
 
@@ -252,13 +224,12 @@ Overview of a trainee's history and trends.
 - Xcode project setup (SwiftUI, SwiftData, Swift Charts)
 - Data model implementation (all `@Model` classes)
 - Basic navigation shell (TabView or NavigationStack)
-- Exercise library with seed data and CRUD
 
 ### Phase 2: Trainer Session Flow (core value)
 - Trainer home screen with trainee list
 - Start/resume session for a trainee
 - Active session view with exercise list
-- Add exercises to session from library
+- Add exercises by name (autocomplete from history)
 - Set entry: weight × reps with inline editing
 - Set completion toggling
 - Show previous session values as reference

@@ -2,10 +2,9 @@ import SwiftUI
 
 struct SetEntryView: View {
     @Environment(\.dismiss) private var dismiss
-    @Bindable var workoutSet: WorkoutSet
-    let exerciseDefinition: ExerciseDefinition?
-    let setNumber: Int
-    let previousExercise: Exercise?
+    @Bindable var set: SetEntity
+    let exercise: ExerciseEntity?
+    let previousSet: SetEntity?
 
     @State private var weightText: String = ""
     @State private var repsText: String = ""
@@ -16,7 +15,7 @@ struct SetEntryView: View {
     var body: some View {
         NavigationStack {
             VStack(spacing: 24) {
-                Text("\(exerciseDefinition?.name ?? "Exercise") — Set \(setNumber)")
+                Text(exercise?.name ?? "Exercise")
                     .font(.headline)
 
                 HStack(spacing: 24) {
@@ -54,11 +53,11 @@ struct SetEntryView: View {
                     }
                 }
 
-                if let previousExercise, let lastSet = previousExercise.sortedSets.first {
+                if let previousSet {
                     HStack(spacing: 4) {
                         Image(systemName: "clock.arrow.circlepath")
                             .font(.caption)
-                        Text("Last time: \(formatWeight(lastSet.weight)) x \(lastSet.reps)")
+                        Text("Last time: \(formatWeight(previousSet.weight)) x \(previousSet.reps)")
                             .font(.caption)
                     }
                     .foregroundStyle(.secondary)
@@ -78,8 +77,8 @@ struct SetEntryView: View {
                 }
             }
             .onAppear {
-                weightText = workoutSet.weight > 0 ? formatWeightValue(workoutSet.weight) : ""
-                repsText = workoutSet.reps > 0 ? "\(workoutSet.reps)" : ""
+                weightText = set.weight > 0 ? formatWeightValue(set.weight) : ""
+                repsText = set.reps > 0 ? "\(set.reps)" : ""
                 focusedField = .weight
             }
         }
@@ -87,10 +86,10 @@ struct SetEntryView: View {
     }
 
     private func save() {
-        workoutSet.weight = Double(weightText) ?? 0
-        workoutSet.reps = Int(repsText) ?? 0
-        workoutSet.isCompleted = true
-        workoutSet.completedAt = .now
+        set.weight = Double(weightText) ?? 0
+        set.reps = Int(repsText) ?? 0
+        set.isCompleted = true
+        set.completedAt = .now
         dismiss()
     }
 

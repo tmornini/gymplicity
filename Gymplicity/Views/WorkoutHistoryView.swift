@@ -1,7 +1,9 @@
 import SwiftUI
+import SwiftData
 
 struct WorkoutHistoryView: View {
-    let workout: Workout
+    @Environment(\.modelContext) private var modelContext
+    let workout: WorkoutEntity
 
     var body: some View {
         List {
@@ -10,15 +12,16 @@ struct WorkoutHistoryView: View {
                     Text(workout.date, style: .date)
                 }
                 LabeledContent("Exercises") {
-                    Text("\(workout.exerciseCount)")
+                    Text("\(workout.exerciseCount(in: modelContext))")
                 }
-                let totalSets = workout.exercises.flatMap(\.sets).count
+                let totalSets = workout.supersets(in: modelContext).flatMap { $0.sets(in: modelContext) }.count
                 LabeledContent("Sets") {
                     Text("\(totalSets)")
                 }
-                if workout.totalVolume > 0 {
+                let volume = workout.totalVolume(in: modelContext)
+                if volume > 0 {
                     LabeledContent("Total Volume") {
-                        Text("\(Int(workout.totalVolume)) lb")
+                        Text("\(Int(volume)) lb")
                     }
                 }
                 if let notes = workout.notes, !notes.isEmpty {
@@ -31,23 +34,24 @@ struct WorkoutHistoryView: View {
                 }
             }
 
-            ForEach(workout.sortedExercises) { exercise in
-                Section(exercise.name) {
-                    ForEach(exercise.sortedSets) { workoutSet in
+            ForEach(workout.sortedSupersets(in: modelContext)) { superset in
+                Section("Superset \(superset.order + 1)") {
+                    ForEach(superset.sortedSets(in: modelContext)) { set in
+                        let exercise = set.exercise(in: modelContext)
                         HStack {
-                            Text("Set \(setNumber(workoutSet, in: exercise))")
+                            Text(exercise?.name ?? "Exercise")
                                 .font(.subheadline)
                                 .foregroundStyle(.secondary)
-                                .frame(width: 50, alignment: .leading)
-                            Text(formatWeight(workoutSet.weight))
+                                .frame(minWidth: 60, alignment: .leading)
+                            Text(formatWeight(set.weight))
                                 .font(.body.monospacedDigit())
                             Text("x")
                                 .font(.caption)
                                 .foregroundStyle(.secondary)
-                            Text("\(workoutSet.reps)")
+                            Text("\(set.reps)")
                                 .font(.body.monospacedDigit())
                             Spacer()
-                            Text("\(Int(workoutSet.volume)) lb vol")
+                            Text("\(Int(set.volume)) lb vol")
                                 .font(.caption)
                                 .foregroundStyle(.secondary)
                         }
@@ -55,7 +59,7 @@ struct WorkoutHistoryView: View {
 
                     HStack {
                         Spacer()
-                        Text("Volume: \(Int(exercise.totalVolume)) lb")
+                        Text("Volume: \(Int(superset.totalVolume(in: modelContext))) lb")
                             .font(.caption)
                             .foregroundStyle(.secondary)
                     }
@@ -64,10 +68,6 @@ struct WorkoutHistoryView: View {
         }
         .navigationTitle("Workout Details")
         .navigationBarTitleDisplayMode(.inline)
-    }
-
-    private func setNumber(_ workoutSet: WorkoutSet, in exercise: Exercise) -> Int {
-        (exercise.sortedSets.firstIndex(where: { $0.id == workoutSet.id }) ?? 0) + 1
     }
 
     private func formatWeight(_ weight: Double) -> String {

@@ -1,12 +1,14 @@
 import SwiftUI
+import SwiftData
 import Charts
 
 struct ProgressChartsView: View {
-    let trainee: Trainee
-    let exerciseDefinition: ExerciseDefinition
+    @Environment(\.modelContext) private var modelContext
+    let identity: IdentityEntity
+    let exercise: ExerciseEntity
 
-    private var history: [(date: Date, exercise: Exercise)] {
-        trainee.history(for: exerciseDefinition)
+    private var history: [(date: Date, set: SetEntity)] {
+        identity.history(for: exercise, in: modelContext)
     }
 
     var body: some View {
@@ -16,7 +18,7 @@ struct ProgressChartsView: View {
                     ContentUnavailableView(
                         "No History Yet",
                         systemImage: "chart.xyaxis.line",
-                        description: Text("Complete a workout with \(exerciseDefinition.name) to see progress.")
+                        description: Text("Complete a workout with \(exercise.name) to see progress.")
                     )
                 } else {
                     weightPerRepChart
@@ -25,7 +27,7 @@ struct ProgressChartsView: View {
             }
             .padding()
         }
-        .navigationTitle(exerciseDefinition.name)
+        .navigationTitle(exercise.name)
         .navigationBarTitleDisplayMode(.inline)
     }
 
@@ -70,13 +72,14 @@ struct ProgressChartsView: View {
         }
     }
 
-    /// For each workout, find the max weight used at each distinct rep count.
     private var weightPerRepData: [WeightPerRepPoint] {
-        history.flatMap { item in
-            let setsByRep = Dictionary(grouping: item.exercise.sortedSets.filter { $0.reps > 0 && $0.weight > 0 }, by: \.reps)
-            return setsByRep.compactMap { (reps, sets) -> WeightPerRepPoint? in
-                guard let maxWeight = sets.map(\.weight).max() else { return nil }
-                return WeightPerRepPoint(date: item.date, reps: reps, weight: maxWeight)
+        // Group sets by date, then by reps, take max weight
+        let byDate = Dictionary(grouping: history.filter { $0.set.reps > 0 && $0.set.weight > 0 }, by: { $0.date })
+        return byDate.flatMap { (date, items) in
+            let byReps = Dictionary(grouping: items, by: { $0.set.reps })
+            return byReps.compactMap { (reps, sets) -> WeightPerRepPoint? in
+                guard let maxWeight = sets.map(\.set.weight).max() else { return nil }
+                return WeightPerRepPoint(date: date, reps: reps, weight: maxWeight)
             }
         }
     }
@@ -119,9 +122,11 @@ struct ProgressChartsView: View {
     }
 
     private var volumeData: [VolumePoint] {
-        history.map { item in
-            VolumePoint(date: item.date, volume: item.exercise.totalVolume)
+        let byDate = Dictionary(grouping: history, by: { $0.date })
+        return byDate.map { (date, items) in
+            VolumePoint(date: date, volume: items.reduce(0) { $0 + $1.set.volume })
         }
+        .sorted { $0.date < $1.date }
     }
 }
 

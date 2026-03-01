@@ -27,66 +27,68 @@ natively).
 
 ## Data Model
 
+Entities hold only their own attributes — no foreign keys. All
+relationships live in dedicated join tables storing pairs of UUIDs.
+
+### Entities
+
 ```
-Trainer
+IdentityEntity
 ├── id: UUID
 ├── name: String
-├── trainees: [Trainee]
-└── exerciseDefinitions: [ExerciseDefinition]  (the trainer's exercise catalog)
+└── isTrainer: Bool
 
-ExerciseDefinition
+ExerciseEntity
 ├── id: UUID
-├── name: String
-├── trainer: Trainer
-└── exercises: [Exercise]           (all exercises using this definition)
+└── name: String
 
-Trainee
+WorkoutEntity
 ├── id: UUID
-├── name: String
-├── trainer: Trainer
-└── workouts: [Workout]
-
-Workout
-├── id: UUID
-├── trainee: Trainee
 ├── date: Date
 ├── notes: String?
-├── isComplete: Bool
-└── exercises: [Exercise]
+└── isComplete: Bool
 
-Exercise
+SupersetEntity
 ├── id: UUID
-├── workout: Workout
-├── definition: ExerciseDefinition  (reference to the exercise catalog entry)
-├── order: Int                      (exercise ordering within workout)
-└── sets: [WorkoutSet]
+└── order: Int
 
-WorkoutSet
+SetEntity
 ├── id: UUID
-├── exercise: Exercise
-├── order: Int                      (set ordering within exercise)
-├── weight: Double                  (in user's preferred unit)
+├── order: Int
+├── weight: Double
 ├── reps: Int
 ├── isCompleted: Bool
-└── completedAt: Date?              (timestamp when set was completed)
+└── completedAt: Date?
+```
+
+### Join Tables
+
+```
+TrainerTrainees       (trainerId, traineeId)
+TrainerExercises      (trainerId, exerciseId)
+IdentityWorkouts      (identityId, workoutId)
+WorkoutSupersets      (workoutId, supersetId)
+SupersetSets          (supersetId, setId)
+ExerciseSets          (exerciseId, setId)
 ```
 
 ### Derived Values (computed, not stored)
 
 - **Per-set volume**: `weight × reps`
-- **Per-exercise volume**: sum of all set volumes
-- **Per-workout volume**: sum of all exercise volumes
-- **Per-rep weight for exercise**: `weight` at a given `reps` value over time (matched by exercise definition name)
-- **Total volume for exercise**: sum of all set volumes for that exercise over time (matched by exercise definition name)
+- **Per-superset volume**: sum of all set volumes
+- **Per-workout volume**: sum of all superset volumes
+- **Per-rep weight for exercise**: `weight` at a given `reps` value over time (matched by exercise)
+- **Total volume for exercise**: sum of all set volumes for that exercise over time
 
 ---
 
 ## Screen Architecture
 
-### 1. Trainer Home (root)
+### 1. Home (root)
 
-The primary landing screen. Shows the trainer's active trainees and
-provides quick access to start or resume workouts.
+The primary landing screen. On first launch, prompts the user to set up
+their identity (name + trainer/trainee role). Trainers see their trainees
+and active workouts; trainees see their own profile directly.
 
 ```
 ┌─────────────────────────────┐
@@ -95,7 +97,7 @@ provides quick access to start or resume workouts.
 │                             │
 │  Active Workouts            │
 │  ┌───────────────────────┐  │
-│  │ 🟢 Alex M. - Chest    │  │
+│  │ 🟢 Alex M.            │  │
 │  │    Started 25 min ago │  │
 │  └───────────────────────┘  │
 │                             │
@@ -112,47 +114,48 @@ provides quick access to start or resume workouts.
 
 ### 2. Active Workout View
 
-The core trainer-operation screen. Must be fast and minimal-tap.
+The core trainer-operation screen. Organized by superset — each superset
+is a numbered section containing one or more sets (potentially of different
+exercises for circuit training).
 
 ```
-┌─────────────────────────────┐
+┌──────────────────────────────┐
 │ ← Alex M.      [End Workout]│
 │  Feb 28, 2026                │
 │──────────────────────────────│
 │                              │
-│  Bench Press            [+] │
+│  Superset 1                  │
 │  ┌──────────────────────┐   │
-│  │ Set 1: 135 lb × 10 ✓│   │
-│  │ Set 2: 155 lb × 8  ✓│   │
-│  │ Set 3: 155 lb × 7  ✓│   │
+│  │ Bench  135 lb × 10 ✓│   │
+│  │ Row     95 lb × 10 ✓│   │
 │  │ [+ Add Set]          │   │
 │  └──────────────────────┘   │
 │                              │
-│  Incline DB Press       [+] │
+│  Superset 2                  │
 │  ┌──────────────────────┐   │
-│  │ Set 1: 50 lb × 12  ✓│   │
-│  │ Set 2: __ lb × __   │   │
+│  │ Bench  155 lb × 8  ✓│   │
+│  │ Row    105 lb × 8    │   │
 │  │ [+ Add Set]          │   │
 │  └──────────────────────┘   │
 │                              │
-│  [+ Add Exercise]            │
+│  [+ Add Superset]            │
 └──────────────────────────────┘
 ```
 
 **Key interactions:**
-- Tap weight or reps to edit inline (number pad)
+- Tap weight or reps to edit via set entry sheet
 - Tap checkmark to toggle set completion
 - Swipe set to delete
-- Previous workout values shown as placeholders/suggestions
-- Add exercise by typing name (autocomplete from previously used names)
+- Previous workout values pre-filled as defaults
+- Add set picks exercise by name (autocomplete from catalog)
 
-### 3. Set Entry (inline / sheet)
+### 3. Set Entry (sheet)
 
 Quick data entry optimized for speed:
 
 ```
 ┌─────────────────────────────┐
-│  Bench Press - Set 3        │
+│  Bench Press                 │
 │──────────────────────────────│
 │                              │
 │  Weight        Reps          │
@@ -168,7 +171,7 @@ Quick data entry optimized for speed:
 
 ### 4. Progress / Charts View
 
-Accessible per-trainee and per-exercise definition. Two chart types:
+Accessible per-identity and per-exercise. Two chart types:
 
 **Chart A: Per-Rep Weight Over Time**
 - X-axis: date
@@ -203,9 +206,9 @@ Accessible per-trainee and per-exercise definition. Two chart types:
 └──────────────────────────────┘
 ```
 
-### 5. Trainee Profile
+### 5. Profile
 
-Overview of a trainee's history and trends.
+Overview of an identity's history and trends.
 
 ```
 ┌──────────────────────────────┐
@@ -213,9 +216,9 @@ Overview of a trainee's history and trends.
 │──────────────────────────────│
 │                              │
 │  Recent Workouts             │
-│    Feb 28 - Chest (4 ex)     │
-│    Feb 26 - Back (5 ex)      │
-│    Feb 24 - Legs (4 ex)      │
+│    Feb 28 - 4 exercises      │
+│    Feb 26 - 5 exercises      │
+│    Feb 24 - 4 exercises      │
 │                              │
 │  Progress by Exercise        │
 │    Bench Press →             │
@@ -230,14 +233,15 @@ Overview of a trainee's history and trends.
 
 ### Phase 1: Foundation
 - Xcode project setup (SwiftUI, SwiftData, Swift Charts)
-- Data model implementation (all `@Model` classes)
-- Basic navigation shell (TabView or NavigationStack)
+- Data model implementation (5 entities + 6 join tables)
+- Basic navigation shell (NavigationStack)
+- First-launch identity setup flow
 
-### Phase 2: Trainer Workout Flow (core value)
-- Trainer home screen with trainee list
-- Start/resume workout for a trainee
-- Active workout view with exercise list
-- Add exercises by name (autocomplete from history)
+### Phase 2: Workout Flow (core value)
+- Home screen with trainee list (trainer) or profile (trainee)
+- Start/resume workout
+- Active workout view with superset sections
+- Add sets by picking exercise (autocomplete from catalog)
 - Set entry: weight × reps with inline editing
 - Set completion toggling
 - Show previous workout values as reference
@@ -247,11 +251,10 @@ Overview of a trainee's history and trends.
 - Per-exercise progress view
 - Chart A: per-rep weight over time (Swift Charts)
 - Chart B: total volume over time (Swift Charts)
-- Trainee profile with workout history
-- Drill-down from trainee → exercise → charts
+- Profile with workout history
+- Drill-down from profile → exercise → charts
 
 ### Phase 4: Polish
-- Exercise reordering within workout (drag & drop)
 - Set deletion (swipe)
 - Workout notes
 - Unit preference (lb / kg)
@@ -267,7 +270,7 @@ Overview of a trainee's history and trends.
    set, not 5-6. Large tap targets, number pads, smart defaults.
 
 2. **Previous values as defaults** — When starting a new workout, pre-fill
-   from the trainee's last workout for that exercise. The trainer adjusts
+   from the last workout for that exercise. The trainer adjusts
    rather than entering from scratch.
 
 3. **Multi-trainee aware** — A trainer may have 2-3 trainees at once in a
@@ -276,3 +279,7 @@ Overview of a trainee's history and trends.
 
 4. **Progressive disclosure** — The workout screen is simple by default.
    Charts and history are one tap away but never in the way.
+
+5. **No foreign keys on entities** — All relationships live in dedicated
+   join tables. Entities are pure data; relationships are explicit and
+   portable to any backend.

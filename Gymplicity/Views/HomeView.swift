@@ -1,28 +1,34 @@
 import SwiftUI
 import SwiftData
 
-struct TrainerHomeView: View {
+struct HomeView: View {
     @Environment(\.modelContext) private var modelContext
-    @Query private var trainers: [Trainer]
+    @Query private var identities: [IdentityEntity]
     @State private var showingAddTrainee = false
+    @State private var showingSetup = false
+    @State private var setupName = ""
 
-    private var trainer: Trainer? { trainers.first }
+    private var currentIdentity: IdentityEntity? { identities.first }
 
     var body: some View {
         NavigationStack {
             Group {
-                if let trainer {
-                    traineeList(trainer: trainer)
+                if let identity = currentIdentity {
+                    if identity.isTrainer {
+                        trainerView(identity: identity)
+                    } else {
+                        ProfileView(identity: identity)
+                    }
                 } else {
                     ContentUnavailableView("Welcome to Gymplicity", systemImage: "figure.strengthtraining.traditional") {
-                        Button("Get Started") { createDefaultTrainer() }
+                        Button("Get Started") { showingSetup = true }
                             .buttonStyle(.borderedProminent)
                     }
                 }
             }
             .navigationTitle("Gymplicity")
             .toolbar {
-                if trainer != nil {
+                if let identity = currentIdentity, identity.isTrainer {
                     ToolbarItem(placement: .primaryAction) {
                         Button { showingAddTrainee = true } label: {
                             Image(systemName: "person.badge.plus")
@@ -31,48 +37,60 @@ struct TrainerHomeView: View {
                 }
             }
             .sheet(isPresented: $showingAddTrainee) {
-                AddTraineeView(trainer: trainer!)
+                if let identity = currentIdentity {
+                    AddTraineeView(trainer: identity)
+                }
+            }
+            .alert("Set Up Your Profile", isPresented: $showingSetup) {
+                TextField("Your Name", text: $setupName)
+                Button("I'm a Trainer") { createIdentity(isTrainer: true) }
+                Button("I'm a Trainee") { createIdentity(isTrainer: false) }
+                Button("Cancel", role: .cancel) { }
             }
         }
     }
 
+    // MARK: - Trainer Layout
+
     @ViewBuilder
-    private func traineeList(trainer: Trainer) -> some View {
+    private func trainerView(identity: IdentityEntity) -> some View {
+        let trainees = identity.trainees(in: modelContext)
+        let active = trainees.flatMap { trainee in
+            trainee.activeWorkouts(in: modelContext).map { (identity: trainee, workout: $0) }
+        }
         List {
-            let active = trainer.trainees
-                .flatMap { $0.activeWorkouts.map { (trainee: $0.trainee!, workout: $0) } }
             if !active.isEmpty {
                 Section("Active Workouts") {
                     ForEach(active, id: \.workout.id) { pair in
                         NavigationLink {
                             ActiveWorkoutView(workout: pair.workout)
                         } label: {
-                            ActiveWorkoutRow(trainee: pair.trainee, workout: pair.workout)
+                            ActiveWorkoutRow(identity: pair.identity, workout: pair.workout)
                         }
                     }
                 }
             }
 
             Section("Trainees") {
-                ForEach(trainer.trainees.sorted(by: { $0.name < $1.name })) { trainee in
+                ForEach(trainees.sorted(by: { $0.name < $1.name })) { trainee in
                     NavigationLink {
-                        TraineeProfileView(trainee: trainee)
+                        ProfileView(identity: trainee)
                     } label: {
-                        TraineeRow(trainee: trainee)
+                        TraineeRow(identity: trainee)
                     }
                     .swipeActions(edge: .trailing, allowsFullSwipe: false) {
-                        if trainee.activeWorkouts.isEmpty {
+                        if trainee.activeWorkouts(in: modelContext).isEmpty {
                             Button("Start Workout") { startWorkout(for: trainee) }
                                 .tint(.green)
                         }
                     }
                 }
                 .onDelete { offsets in
-                    deleteTrainees(trainer: trainer, at: offsets)
+                    deleteTrainees(from: trainees.sorted(by: { $0.name < $1.name }), at: offsets)
                 }
             }
 
-            if trainer.trainees.isEmpty {
+            if trainees.isEmpty {
                 ContentUnavailableView("No Trainees Yet", systemImage: "person.2") {
                     Button("Add Trainee") { showingAddTrainee = true }
                         .buttonStyle(.borderedProminent)
@@ -81,20 +99,25 @@ struct TrainerHomeView: View {
         }
     }
 
-    private func createDefaultTrainer() {
-        let trainer = Trainer(name: "Trainer")
-        modelContext.insert(trainer)
+    // MARK: - Actions
+
+    private func createIdentity(isTrainer: Bool) {
+        let trimmed = setupName.trimmingCharacters(in: .whitespaces)
+        let name = trimmed.isEmpty ? (isTrainer ? "Trainer" : "Trainee") : trimmed
+        let identity = IdentityEntity(name: name, isTrainer: isTrainer)
+        modelContext.insert(identity)
     }
 
-    private func startWorkout(for trainee: Trainee) {
-        let workout = Workout(trainee: trainee)
+    private func startWorkout(for identity: IdentityEntity) {
+        let workout = WorkoutEntity()
         modelContext.insert(workout)
+        let join = IdentityWorkouts(identityId: identity.id, workoutId: workout.id)
+        modelContext.insert(join)
     }
 
-    private func deleteTrainees(trainer: Trainer, at offsets: IndexSet) {
-        let sorted = trainer.trainees.sorted { $0.name < $1.name }
+    private func deleteTrainees(from sorted: [IdentityEntity], at offsets: IndexSet) {
         for index in offsets {
-            modelContext.delete(sorted[index])
+            modelContext.deleteIdentity(sorted[index])
         }
     }
 }
@@ -102,8 +125,9 @@ struct TrainerHomeView: View {
 // MARK: - Row Views
 
 private struct ActiveWorkoutRow: View {
-    let trainee: Trainee
-    let workout: Workout
+    @Environment(\.modelContext) private var modelContext
+    let identity: IdentityEntity
+    let workout: WorkoutEntity
 
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
@@ -111,14 +135,15 @@ private struct ActiveWorkoutRow: View {
                 Image(systemName: "circle.fill")
                     .font(.system(size: 8))
                     .foregroundStyle(.green)
-                Text(trainee.name)
+                Text(identity.name)
                     .font(.headline)
             }
             Text(timeAgo(workout.date))
                 .font(.caption)
                 .foregroundStyle(.secondary)
-            if workout.exerciseCount > 0 {
-                Text("\(workout.exerciseCount) exercise\(workout.exerciseCount == 1 ? "" : "s")")
+            let count = workout.exerciseCount(in: modelContext)
+            if count > 0 {
+                Text("\(count) exercise\(count == 1 ? "" : "s")")
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }
@@ -136,25 +161,28 @@ private struct ActiveWorkoutRow: View {
 }
 
 private struct TraineeRow: View {
-    let trainee: Trainee
+    @Environment(\.modelContext) private var modelContext
+    let identity: IdentityEntity
 
     var body: some View {
+        let completed = identity.completedWorkouts(in: modelContext)
+        let active = identity.activeWorkouts(in: modelContext)
         HStack {
             VStack(alignment: .leading, spacing: 2) {
-                Text(trainee.name)
+                Text(identity.name)
                     .font(.body)
-                if !trainee.completedWorkouts.isEmpty {
-                    Text("\(trainee.completedWorkouts.count) workout\(trainee.completedWorkouts.count == 1 ? "" : "s")")
+                if !completed.isEmpty {
+                    Text("\(completed.count) workout\(completed.count == 1 ? "" : "s")")
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }
             }
             Spacer()
-            if trainee.activeWorkouts.isEmpty {
+            if active.isEmpty {
                 Button("Start") { }
                     .buttonStyle(.bordered)
                     .font(.caption)
-                    .allowsHitTesting(false) // handled by swipe action
+                    .allowsHitTesting(false)
             } else {
                 Text("In Workout")
                     .font(.caption)

@@ -4,25 +4,21 @@ import SwiftData
 struct AddExerciseView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var modelContext
-    let workout: Workout
+    let superset: SupersetEntity
     @State private var searchText = ""
     @FocusState private var nameFieldFocused: Bool
 
-    private var trainer: Trainer? {
-        workout.trainee?.trainer
+    private var trainer: IdentityEntity? {
+        guard let workout = superset.workout(in: modelContext),
+              let owner = workout.owner(in: modelContext) else { return nil }
+        return owner.isTrainer ? owner : owner.trainer(in: modelContext)
     }
 
-    /// Exercise definitions from the trainer's catalog, filtered by search text.
-    private var suggestions: [ExerciseDefinition] {
+    private var suggestions: [ExerciseEntity] {
         guard let trainer else { return [] }
-        let all = trainer.exerciseDefinitions.sorted { $0.name < $1.name }
-        if searchText.isEmpty { return all }
-        return all.filter { $0.name.localizedCaseInsensitiveContains(searchText) }
-    }
-
-    /// Definition IDs already in this workout (to avoid duplicates).
-    private var definitionIDsInWorkout: Swift.Set<UUID> {
-        Swift.Set(workout.exercises.compactMap { $0.definition?.id })
+        let catalog = trainer.exercises(in: modelContext).sorted { $0.name < $1.name }
+        if searchText.isEmpty { return catalog }
+        return catalog.filter { $0.name.localizedCaseInsensitiveContains(searchText) }
     }
 
     var body: some View {
@@ -40,23 +36,13 @@ struct AddExerciseView: View {
 
                 if !suggestions.isEmpty {
                     List {
-                        ForEach(suggestions) { definition in
-                            let alreadyAdded = definitionIDsInWorkout.contains(definition.id)
+                        ForEach(suggestions) { exercise in
                             Button {
-                                addExisting(definition)
+                                addExisting(exercise)
                             } label: {
-                                HStack {
-                                    Text(definition.name)
-                                        .foregroundStyle(.primary)
-                                    Spacer()
-                                    if alreadyAdded {
-                                        Text("already added")
-                                            .font(.caption)
-                                            .foregroundStyle(.secondary)
-                                    }
-                                }
+                                Text(exercise.name)
+                                    .foregroundStyle(.primary)
                             }
-                            .disabled(alreadyAdded)
                         }
                     }
                     .listStyle(.plain)
@@ -98,35 +84,37 @@ struct AddExerciseView: View {
         .presentationDetents([.medium, .large])
     }
 
-    private func addExisting(_ definition: ExerciseDefinition) {
-        guard !definitionIDsInWorkout.contains(definition.id) else { return }
-        createExercise(for: definition)
+    private func addExisting(_ exercise: ExerciseEntity) {
+        createSet(for: exercise)
         dismiss()
     }
 
     private func addExercise() {
         let trimmed = searchText.trimmingCharacters(in: .whitespaces)
         guard !trimmed.isEmpty, let trainer else { return }
-
-        let definition = trainer.findOrCreateExerciseDefinition(named: trimmed, in: modelContext)
-        guard !definitionIDsInWorkout.contains(definition.id) else { return }
-        createExercise(for: definition)
+        let exercise = trainer.findOrCreateExercise(named: trimmed, in: modelContext)
+        createSet(for: exercise)
         dismiss()
     }
 
-    private func createExercise(for definition: ExerciseDefinition) {
-        let exercise = Exercise(definition: definition, order: workout.nextExerciseOrder, workout: workout)
-        modelContext.insert(exercise)
+    private func createSet(for exercise: ExerciseEntity) {
+        let owner: IdentityEntity? = {
+            guard let workout = superset.workout(in: modelContext) else { return nil }
+            return workout.owner(in: modelContext)
+        }()
 
-        // Pre-populate first set from last workout
-        if let trainee = workout.trainee,
-           let lastExercise = trainee.lastExercise(for: definition),
-           let lastSet = lastExercise.sortedSets.first {
-            let firstSet = WorkoutSet(order: 0, weight: lastSet.weight, reps: lastSet.reps, exercise: exercise)
-            modelContext.insert(firstSet)
-        } else {
-            let firstSet = WorkoutSet(order: 0, exercise: exercise)
-            modelContext.insert(firstSet)
+        var weight: Double = 0
+        var reps: Int = 0
+        if let owner, let lastSet = owner.lastSet(for: exercise, in: modelContext) {
+            weight = lastSet.weight
+            reps = lastSet.reps
         }
+
+        let set = SetEntity(order: superset.nextSetOrder(in: modelContext), weight: weight, reps: reps)
+        modelContext.insert(set)
+        let supersetJoin = SupersetSets(supersetId: superset.id, setId: set.id)
+        modelContext.insert(supersetJoin)
+        let exerciseJoin = ExerciseSets(exerciseId: exercise.id, setId: set.id)
+        modelContext.insert(exerciseJoin)
     }
 }

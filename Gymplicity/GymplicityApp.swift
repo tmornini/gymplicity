@@ -5,8 +5,20 @@ import SwiftData
 struct GymplicityApp: App {
     var body: some Scene {
         WindowGroup {
-            TrainerHomeView()
+            HomeView()
         }
-        .modelContainer(for: [Trainer.self, ExerciseDefinition.self, Trainee.self, Workout.self, Exercise.self, WorkoutSet.self])
+        .modelContainer(for: [
+            IdentityEntity.self,
+            ExerciseEntity.self,
+            WorkoutEntity.self,
+            SupersetEntity.self,
+            SetEntity.self,
+            TrainerTrainees.self,
+            TrainerExercises.self,
+            IdentityWorkouts.self,
+            WorkoutSupersets.self,
+            SupersetSets.self,
+            ExerciseSets.self,
+        ])
     }
 }

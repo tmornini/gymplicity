@@ -1,18 +1,18 @@
 import SwiftUI
 import SwiftData
 
-struct TraineeProfileView: View {
+struct ProfileView: View {
     @Environment(\.modelContext) private var modelContext
-    @Bindable var trainee: Trainee
+    @Bindable var identity: IdentityEntity
     @State private var showingEditName = false
     @State private var editedName = ""
 
     var body: some View {
         List {
-            // Active workout quick-access
-            if !trainee.activeWorkouts.isEmpty {
+            let active = identity.activeWorkouts(in: modelContext)
+            if !active.isEmpty {
                 Section("Active Workout") {
-                    ForEach(trainee.activeWorkouts) { workout in
+                    ForEach(active) { workout in
                         NavigationLink {
                             ActiveWorkoutView(workout: workout)
                         } label: {
@@ -22,7 +22,7 @@ struct TraineeProfileView: View {
                                     .foregroundStyle(.green)
                                 Text(workout.date, style: .date)
                                 Spacer()
-                                Text("\(workout.exerciseCount) ex")
+                                Text("\(workout.exerciseCount(in: modelContext)) ex")
                                     .foregroundStyle(.secondary)
                             }
                         }
@@ -30,7 +30,6 @@ struct TraineeProfileView: View {
                 }
             }
 
-            // Start new workout
             Section {
                 Button {
                     startWorkout()
@@ -40,10 +39,10 @@ struct TraineeProfileView: View {
                 }
             }
 
-            // Recent workouts
-            if !trainee.completedWorkouts.isEmpty {
+            let completed = identity.completedWorkouts(in: modelContext)
+            if !completed.isEmpty {
                 Section("Recent Workouts") {
-                    ForEach(trainee.completedWorkouts.prefix(20)) { workout in
+                    ForEach(completed.prefix(20)) { workout in
                         NavigationLink {
                             WorkoutHistoryView(workout: workout)
                         } label: {
@@ -53,19 +52,17 @@ struct TraineeProfileView: View {
                 }
             }
 
-            // Progress by exercise
-            let definitions = trainee.allExerciseDefinitions
-            if !definitions.isEmpty {
+            let exercises = identity.allExercises(in: modelContext)
+            if !exercises.isEmpty {
                 Section("Progress by Exercise") {
-                    ForEach(definitions) { definition in
+                    ForEach(exercises) { exercise in
                         NavigationLink {
-                            ProgressChartsView(trainee: trainee, exerciseDefinition: definition)
+                            ProgressChartsView(identity: identity, exercise: exercise)
                         } label: {
                             HStack {
-                                Text(definition.name)
+                                Text(exercise.name)
                                 Spacer()
-                                if let lastExercise = trainee.lastExercise(for: definition),
-                                   let lastSet = lastExercise.sortedSets.first {
+                                if let lastSet = identity.lastSet(for: exercise, in: modelContext) {
                                     Text("\(formatWeight(lastSet.weight)) x \(lastSet.reps)")
                                         .font(.caption)
                                         .foregroundStyle(.secondary)
@@ -76,11 +73,11 @@ struct TraineeProfileView: View {
                 }
             }
         }
-        .navigationTitle(trainee.name)
+        .navigationTitle(identity.name)
         .toolbar {
             ToolbarItem(placement: .primaryAction) {
                 Button("Edit") {
-                    editedName = trainee.name
+                    editedName = identity.name
                     showingEditName = true
                 }
             }
@@ -89,15 +86,17 @@ struct TraineeProfileView: View {
             TextField("Name", text: $editedName)
             Button("Save") {
                 let trimmed = editedName.trimmingCharacters(in: .whitespaces)
-                if !trimmed.isEmpty { trainee.name = trimmed }
+                if !trimmed.isEmpty { identity.name = trimmed }
             }
             Button("Cancel", role: .cancel) { }
         }
     }
 
     private func startWorkout() {
-        let workout = Workout(trainee: trainee)
+        let workout = WorkoutEntity()
         modelContext.insert(workout)
+        let join = IdentityWorkouts(identityId: identity.id, workoutId: workout.id)
+        modelContext.insert(join)
     }
 
     private func formatWeight(_ weight: Double) -> String {
@@ -109,24 +108,27 @@ struct TraineeProfileView: View {
 }
 
 private struct WorkoutRow: View {
-    let workout: Workout
+    @Environment(\.modelContext) private var modelContext
+    let workout: WorkoutEntity
 
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
+            let count = workout.exerciseCount(in: modelContext)
             HStack {
                 Text(workout.date, style: .date)
                     .font(.body)
                 Spacer()
-                Text("\(workout.exerciseCount) exercise\(workout.exerciseCount == 1 ? "" : "s")")
+                Text("\(count) exercise\(count == 1 ? "" : "s")")
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }
-            if workout.totalVolume > 0 {
-                Text("Total volume: \(formatVolume(workout.totalVolume)) lb")
+            let volume = workout.totalVolume(in: modelContext)
+            if volume > 0 {
+                Text("Total volume: \(formatVolume(volume)) lb")
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }
-            let exerciseNames = workout.sortedExercises.map(\.name).joined(separator: ", ")
+            let exerciseNames = exerciseNamesList()
             if !exerciseNames.isEmpty {
                 Text(exerciseNames)
                     .font(.caption)
@@ -137,10 +139,19 @@ private struct WorkoutRow: View {
         .padding(.vertical, 2)
     }
 
-    private func formatVolume(_ volume: Double) -> String {
-        if volume >= 1000 {
-            return String(format: "%.0f", volume)
+    private func exerciseNamesList() -> String {
+        let allSets = workout.sortedSupersets(in: modelContext).flatMap { $0.sortedSets(in: modelContext) }
+        var seen = Swift.Set<UUID>()
+        var names: [String] = []
+        for set in allSets {
+            if let exercise = set.exercise(in: modelContext), seen.insert(exercise.id).inserted {
+                names.append(exercise.name)
+            }
         }
-        return String(format: "%.0f", volume)
+        return names.joined(separator: ", ")
+    }
+
+    private func formatVolume(_ volume: Double) -> String {
+        String(format: "%.0f", volume)
     }
 }

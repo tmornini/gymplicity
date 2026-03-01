@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 620" font-family="'SF Mono','Menlo','Consolas',monospace" font-size="13">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 780" font-family="'SF Mono','Menlo','Consolas',monospace" font-size="13">
   <defs>
     <marker id="arrow" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
       <path d="M0,0 L8,3 L0,6" fill="none" stroke="#666" stroke-width="1.2"/>
@@ -15,10 +15,11 @@
     .entity-box { fill: #fff; stroke: #333; stroke-width: 1.5; rx: 6; }
     .entity-header { fill: #1a1a2e; rx: 6; }
     .entity-header-text { fill: #fff; font-weight: bold; font-size: 14px; }
+    .join-box { fill: #f0f4ff; stroke: #5b7db1; stroke-width: 1.2; rx: 6; stroke-dasharray: 5,3; }
+    .join-header { fill: #5b7db1; rx: 6; }
+    .join-header-text { fill: #fff; font-weight: bold; font-size: 12px; }
     .pk { fill: #e8b100; }
     .pk-text { font-weight: bold; font-size: 11px; fill: #fff; }
-    .fk { fill: #5b7db1; }
-    .fk-text { font-weight: bold; font-size: 11px; fill: #fff; }
     .col-name { fill: #1a1a2e; }
     .col-type { fill: #888; font-size: 12px; }
     .rel-line { stroke: #666; stroke-width: 1.5; fill: none; }
@@ -27,51 +28,11 @@
     .computed { fill: #999; font-style: italic; font-size: 12px; }
   </style>
 
-  <!-- ==================== TRAINER ==================== -->
+  <!-- ==================== IDENTITY ENTITY ==================== -->
   <g transform="translate(20,20)">
-    <rect class="entity-box" width="220" height="100"/>
-    <rect class="entity-header" width="220" height="32"/>
-    <text class="entity-header-text" x="110" y="22" text-anchor="middle">Trainer</text>
-    <g transform="translate(0,44)">
-      <rect class="pk" x="8" y="-2" width="22" height="16" rx="3"/>
-      <text class="pk-text" x="19" y="10" text-anchor="middle">PK</text>
-      <text class="col-name" x="38" y="11">id</text>
-      <text class="col-type" x="200" y="11" text-anchor="end">UUID</text>
-    </g>
-    <g transform="translate(0,66)">
-      <text class="col-name" x="38" y="11">name</text>
-      <text class="col-type" x="200" y="11" text-anchor="end">String</text>
-    </g>
-  </g>
-
-  <!-- ==================== EXERCISE DEFINITION ==================== -->
-  <g transform="translate(350,20)">
-    <rect class="entity-box" width="260" height="122"/>
-    <rect class="entity-header" width="260" height="32"/>
-    <text class="entity-header-text" x="130" y="22" text-anchor="middle">ExerciseDefinition</text>
-    <g transform="translate(0,44)">
-      <rect class="pk" x="8" y="-2" width="22" height="16" rx="3"/>
-      <text class="pk-text" x="19" y="10" text-anchor="middle">PK</text>
-      <text class="col-name" x="38" y="11">id</text>
-      <text class="col-type" x="240" y="11" text-anchor="end">UUID</text>
-    </g>
-    <g transform="translate(0,66)">
-      <text class="col-name" x="38" y="11">name</text>
-      <text class="col-type" x="240" y="11" text-anchor="end">String</text>
-    </g>
-    <g transform="translate(0,88)">
-      <rect class="fk" x="8" y="-2" width="22" height="16" rx="3"/>
-      <text class="fk-text" x="19" y="10" text-anchor="middle">FK</text>
-      <text class="col-name" x="38" y="11">trainer</text>
-      <text class="col-type" x="240" y="11" text-anchor="end">Trainer?</text>
-    </g>
-  </g>
-
-  <!-- ==================== TRAINEE ==================== -->
-  <g transform="translate(20,200)">
     <rect class="entity-box" width="220" height="122"/>
     <rect class="entity-header" width="220" height="32"/>
-    <text class="entity-header-text" x="110" y="22" text-anchor="middle">Trainee</text>
+    <text class="entity-header-text" x="110" y="22" text-anchor="middle">IdentityEntity</text>
     <g transform="translate(0,44)">
       <rect class="pk" x="8" y="-2" width="22" height="16" rx="3"/>
       <text class="pk-text" x="19" y="10" text-anchor="middle">PK</text>
@@ -83,18 +44,16 @@
       <text class="col-type" x="200" y="11" text-anchor="end">String</text>
     </g>
     <g transform="translate(0,88)">
-      <rect class="fk" x="8" y="-2" width="22" height="16" rx="3"/>
-      <text class="fk-text" x="19" y="10" text-anchor="middle">FK</text>
-      <text class="col-name" x="38" y="11">trainer</text>
-      <text class="col-type" x="200" y="11" text-anchor="end">Trainer?</text>
+      <text class="col-name" x="38" y="11">isTrainer</text>
+      <text class="col-type" x="200" y="11" text-anchor="end">Bool</text>
     </g>
   </g>
 
-  <!-- ==================== WORKOUT ==================== -->
-  <g transform="translate(20,400)">
-    <rect class="entity-box" width="220" height="166"/>
+  <!-- ==================== EXERCISE ENTITY ==================== -->
+  <g transform="translate(420,20)">
+    <rect class="entity-box" width="220" height="100"/>
     <rect class="entity-header" width="220" height="32"/>
-    <text class="entity-header-text" x="110" y="22" text-anchor="middle">Workout</text>
+    <text class="entity-header-text" x="110" y="22" text-anchor="middle">ExerciseEntity</text>
     <g transform="translate(0,44)">
       <rect class="pk" x="8" y="-2" width="22" height="16" rx="3"/>
       <text class="pk-text" x="19" y="10" text-anchor="middle">PK</text>
@@ -102,30 +61,41 @@
       <text class="col-type" x="200" y="11" text-anchor="end">UUID</text>
     </g>
     <g transform="translate(0,66)">
-      <rect class="fk" x="8" y="-2" width="22" height="16" rx="3"/>
-      <text class="fk-text" x="19" y="10" text-anchor="middle">FK</text>
-      <text class="col-name" x="38" y="11">trainee</text>
-      <text class="col-type" x="200" y="11" text-anchor="end">Trainee?</text>
+      <text class="col-name" x="38" y="11">name</text>
+      <text class="col-type" x="200" y="11" text-anchor="end">String</text>
     </g>
-    <g transform="translate(0,88)">
+  </g>
+
+  <!-- ==================== WORKOUT ENTITY ==================== -->
+  <g transform="translate(20,340)">
+    <rect class="entity-box" width="220" height="166"/>
+    <rect class="entity-header" width="220" height="32"/>
+    <text class="entity-header-text" x="110" y="22" text-anchor="middle">WorkoutEntity</text>
+    <g transform="translate(0,44)">
+      <rect class="pk" x="8" y="-2" width="22" height="16" rx="3"/>
+      <text class="pk-text" x="19" y="10" text-anchor="middle">PK</text>
+      <text class="col-name" x="38" y="11">id</text>
+      <text class="col-type" x="200" y="11" text-anchor="end">UUID</text>
+    </g>
+    <g transform="translate(0,66)">
       <text class="col-name" x="38" y="11">date</text>
       <text class="col-type" x="200" y="11" text-anchor="end">Date</text>
     </g>
-    <g transform="translate(0,110)">
+    <g transform="translate(0,88)">
       <text class="col-name" x="38" y="11">notes</text>
       <text class="col-type" x="200" y="11" text-anchor="end">String?</text>
     </g>
-    <g transform="translate(0,132)">
+    <g transform="translate(0,110)">
       <text class="col-name" x="38" y="11">isComplete</text>
       <text class="col-type" x="200" y="11" text-anchor="end">Bool</text>
     </g>
   </g>
 
-  <!-- ==================== EXERCISE ==================== -->
-  <g transform="translate(370,400)">
-    <rect class="entity-box" width="220" height="144"/>
+  <!-- ==================== SUPERSET ENTITY ==================== -->
+  <g transform="translate(420,340)">
+    <rect class="entity-box" width="220" height="100"/>
     <rect class="entity-header" width="220" height="32"/>
-    <text class="entity-header-text" x="110" y="22" text-anchor="middle">Exercise</text>
+    <text class="entity-header-text" x="110" y="22" text-anchor="middle">SupersetEntity</text>
     <g transform="translate(0,44)">
       <rect class="pk" x="8" y="-2" width="22" height="16" rx="3"/>
       <text class="pk-text" x="19" y="10" text-anchor="middle">PK</text>
@@ -133,28 +103,16 @@
       <text class="col-type" x="200" y="11" text-anchor="end">UUID</text>
     </g>
     <g transform="translate(0,66)">
-      <rect class="fk" x="8" y="-2" width="22" height="16" rx="3"/>
-      <text class="fk-text" x="19" y="10" text-anchor="middle">FK</text>
-      <text class="col-name" x="38" y="11">workout</text>
-      <text class="col-type" x="200" y="11" text-anchor="end">Workout?</text>
-    </g>
-    <g transform="translate(0,88)">
-      <rect class="fk" x="8" y="-2" width="22" height="16" rx="3"/>
-      <text class="fk-text" x="19" y="10" text-anchor="middle">FK</text>
-      <text class="col-name" x="38" y="11">definition</text>
-      <text class="col-type" x="200" y="11" text-anchor="end">ExerciseDefinition?</text>
-    </g>
-    <g transform="translate(0,110)">
       <text class="col-name" x="38" y="11">order</text>
       <text class="col-type" x="200" y="11" text-anchor="end">Int</text>
     </g>
   </g>
 
-  <!-- ==================== WORKOUT SET ==================== -->
-  <g transform="translate(720,400)">
+  <!-- ==================== SET ENTITY ==================== -->
+  <g transform="translate(420,560)">
     <rect class="entity-box" width="220" height="188"/>
     <rect class="entity-header" width="220" height="32"/>
-    <text class="entity-header-text" x="110" y="22" text-anchor="middle">WorkoutSet</text>
+    <text class="entity-header-text" x="110" y="22" text-anchor="middle">SetEntity</text>
     <g transform="translate(0,44)">
       <rect class="pk" x="8" y="-2" width="22" height="16" rx="3"/>
       <text class="pk-text" x="19" y="10" text-anchor="middle">PK</text>
@@ -162,75 +120,124 @@
       <text class="col-type" x="200" y="11" text-anchor="end">UUID</text>
     </g>
     <g transform="translate(0,66)">
-      <rect class="fk" x="8" y="-2" width="22" height="16" rx="3"/>
-      <text class="fk-text" x="19" y="10" text-anchor="middle">FK</text>
-      <text class="col-name" x="38" y="11">exercise</text>
-      <text class="col-type" x="200" y="11" text-anchor="end">Exercise?</text>
-    </g>
-    <g transform="translate(0,88)">
       <text class="col-name" x="38" y="11">order</text>
       <text class="col-type" x="200" y="11" text-anchor="end">Int</text>
     </g>
-    <g transform="translate(0,110)">
+    <g transform="translate(0,88)">
       <text class="col-name" x="38" y="11">weight</text>
       <text class="col-type" x="200" y="11" text-anchor="end">Double</text>
     </g>
-    <g transform="translate(0,132)">
+    <g transform="translate(0,110)">
       <text class="col-name" x="38" y="11">reps</text>
       <text class="col-type" x="200" y="11" text-anchor="end">Int</text>
     </g>
-    <g transform="translate(0,154)">
+    <g transform="translate(0,132)">
       <text class="col-name" x="38" y="11">isCompleted</text>
       <text class="col-type" x="200" y="11" text-anchor="end">Bool</text>
     </g>
-    <g transform="translate(0,176)">
+    <g transform="translate(0,154)">
       <text class="col-name" x="38" y="11">completedAt</text>
       <text class="col-type" x="200" y="11" text-anchor="end">Date?</text>
     </g>
   </g>
 
+  <!-- ==================== JOIN TABLES ==================== -->
+
+  <!-- TrainerTrainees -->
+  <g transform="translate(20,180)">
+    <rect class="join-box" width="180" height="62"/>
+    <rect class="join-header" width="180" height="24"/>
+    <text class="join-header-text" x="90" y="17" text-anchor="middle">TrainerTrainees</text>
+    <text class="col-name" x="10" y="44">trainerId</text>
+    <text class="col-name" x="98" y="44">traineeId</text>
+  </g>
+
+  <!-- TrainerExercises -->
+  <g transform="translate(260,140)">
+    <rect class="join-box" width="190" height="62"/>
+    <rect class="join-header" width="190" height="24"/>
+    <text class="join-header-text" x="95" y="17" text-anchor="middle">TrainerExercises</text>
+    <text class="col-name" x="10" y="44">trainerId</text>
+    <text class="col-name" x="100" y="44">exerciseId</text>
+  </g>
+
+  <!-- IdentityWorkouts -->
+  <g transform="translate(20,268)">
+    <rect class="join-box" width="190" height="62"/>
+    <rect class="join-header" width="190" height="24"/>
+    <text class="join-header-text" x="95" y="17" text-anchor="middle">IdentityWorkouts</text>
+    <text class="col-name" x="10" y="44">identityId</text>
+    <text class="col-name" x="100" y="44">workoutId</text>
+  </g>
+
+  <!-- WorkoutSupersets -->
+  <g transform="translate(260,400)">
+    <rect class="join-box" width="190" height="62"/>
+    <rect class="join-header" width="190" height="24"/>
+    <text class="join-header-text" x="95" y="17" text-anchor="middle">WorkoutSupersets</text>
+    <text class="col-name" x="10" y="44">workoutId</text>
+    <text class="col-name" x="100" y="44">supersetId</text>
+  </g>
+
+  <!-- SupersetSets -->
+  <g transform="translate(420,478)">
+    <rect class="join-box" width="180" height="62"/>
+    <rect class="join-header" width="180" height="24"/>
+    <text class="join-header-text" x="90" y="17" text-anchor="middle">SupersetSets</text>
+    <text class="col-name" x="10" y="44">supersetId</text>
+    <text class="col-name" x="98" y="44">setId</text>
+  </g>
+
+  <!-- ExerciseSets -->
+  <g transform="translate(700,340)">
+    <rect class="join-box" width="180" height="62"/>
+    <rect class="join-header" width="180" height="24"/>
+    <text class="join-header-text" x="90" y="17" text-anchor="middle">ExerciseSets</text>
+    <text class="col-name" x="10" y="44">exerciseId</text>
+    <text class="col-name" x="98" y="44">setId</text>
+  </g>
+
   <!-- ==================== RELATIONSHIPS ==================== -->
 
-  <!-- Trainer 1──* ExerciseDefinition -->
-  <line class="rel-line" x1="240" y1="70" x2="350" y2="70" marker-start="url(#one)" marker-end="url(#many)"/>
-  <text class="rel-label" x="295" y="63" text-anchor="middle">1 : *</text>
-  <text class="delete-rule" x="295" y="84" text-anchor="middle">cascade</text>
+  <!-- Identity ── TrainerTrainees (self-ref) -->
+  <line class="rel-line" x1="130" y1="142" x2="110" y2="180"/>
+  <text class="delete-rule" x="70" y="165">cascade</text>
 
-  <!-- Trainer 1──* Trainee -->
-  <line class="rel-line" x1="130" y1="120" x2="130" y2="200" marker-start="url(#one)" marker-end="url(#many)"/>
-  <text class="rel-label" x="145" y="163" text-anchor="start">1 : *</text>
-  <text class="delete-rule" x="145" y="176" text-anchor="start">cascade</text>
+  <!-- Identity ── TrainerExercises ── Exercise -->
+  <line class="rel-line" x1="240" y1="70" x2="260" y2="160"/>
+  <line class="rel-line" x1="450" y1="160" x2="430" y2="120"/>
+  <text class="delete-rule" x="355" y="130">cascade</text>
 
-  <!-- Trainee 1──* Workout -->
-  <line class="rel-line" x1="130" y1="322" x2="130" y2="400" marker-start="url(#one)" marker-end="url(#many)"/>
-  <text class="rel-label" x="145" y="363" text-anchor="start">1 : *</text>
-  <text class="delete-rule" x="145" y="376" text-anchor="start">cascade</text>
+  <!-- Identity ── IdentityWorkouts ── Workout -->
+  <line class="rel-line" x1="130" y1="142" x2="110" y2="268"/>
+  <line class="rel-line" x1="115" y1="330" x2="130" y2="340"/>
+  <text class="delete-rule" x="50" y="320">cascade</text>
 
-  <!-- Workout 1──* Exercise -->
-  <line class="rel-line" x1="240" y1="472" x2="370" y2="472" marker-start="url(#one)" marker-end="url(#many)"/>
-  <text class="rel-label" x="305" y="465" text-anchor="middle">1 : *</text>
-  <text class="delete-rule" x="305" y="486" text-anchor="middle">cascade</text>
+  <!-- Workout ── WorkoutSupersets ── Superset -->
+  <line class="rel-line" x1="240" y1="423" x2="260" y2="431"/>
+  <line class="rel-line" x1="450" y1="431" x2="435" y2="440"/>
+  <text class="delete-rule" x="350" y="448">cascade</text>
 
-  <!-- ExerciseDefinition 1──* Exercise -->
-  <line class="rel-line" x1="480" y1="142" x2="480" y2="400" marker-start="url(#one)" marker-end="url(#many)"/>
-  <text class="rel-label" x="495" y="270" text-anchor="start">1 : *</text>
-  <text class="delete-rule" x="495" y="283" text-anchor="start">nullify</text>
+  <!-- Superset ── SupersetSets ── Set -->
+  <line class="rel-line" x1="530" y1="440" x2="510" y2="478"/>
+  <line class="rel-line" x1="510" y1="540" x2="530" y2="560"/>
+  <text class="delete-rule" x="545" y="518">cascade</text>
 
-  <!-- Exercise 1──* WorkoutSet -->
-  <line class="rel-line" x1="590" y1="472" x2="720" y2="472" marker-start="url(#one)" marker-end="url(#many)"/>
-  <text class="rel-label" x="655" y="465" text-anchor="middle">1 : *</text>
-  <text class="delete-rule" x="655" y="486" text-anchor="middle">cascade</text>
+  <!-- Exercise ── ExerciseSets ── Set -->
+  <line class="rel-line" x1="640" y1="70" x2="790" y2="340"/>
+  <line class="rel-line" x1="790" y1="402" x2="640" y2="654"/>
+  <text class="delete-rule" x="800" y="375">nullify</text>
 
   <!-- ==================== COMPUTED VALUES LEGEND ==================== -->
-  <g transform="translate(700,20)">
+  <g transform="translate(820,20)">
     <rect x="0" y="0" width="240" height="170" rx="6" fill="#f8f8f8" stroke="#ccc" stroke-width="1"/>
     <text x="120" y="22" text-anchor="middle" font-weight="bold" font-size="12" fill="#333">Computed (not stored)</text>
     <line x1="10" y1="30" x2="230" y2="30" stroke="#ddd"/>
-    <text class="computed" x="12" y="50">WorkoutSet.volume</text>
+    <text class="computed" x="12" y="50">SetEntity.volume</text>
     <text class="computed" x="12" y="68">  = weight x reps</text>
-    <text class="computed" x="12" y="90">Exercise.totalVolume</text>
+    <text class="computed" x="12" y="90">SupersetEntity.totalVolume</text>
     <text class="computed" x="12" y="108">  = sum(sets.volume)</text>
-    <text class="computed" x="12" y="130">Workout.totalVolume</text>
-    <text class="computed" x="12" y="148">  = sum(exercises.totalVolume)</text>
+    <text class="computed" x="12" y="130">WorkoutEntity.totalVolume</text>
+    <text class="computed" x="12" y="148">  = sum(supersets.totalVolume)</text>
   </g>
 </svg>

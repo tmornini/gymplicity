@@ -1,0 +1,11 @@
+#!/bin/bash
+set -euo pipefail
+
+SCHEME="Gymplicity"
+
+xcodebuild archive \
+  -scheme "$SCHEME" \
+  -destination "generic/platform=iOS" \
+  -configuration Release \
+  -archivePath build/Gymplicity.xcarchive \
+  2>&1

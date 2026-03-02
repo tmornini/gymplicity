@@ -5,8 +5,9 @@ Trainer-first iOS gym tracking app. SwiftUI, SwiftData, Swift Charts. iOS 17+.
 ## Build & Test
 
 ```bash
-./build            # build for iOS Simulator
-./test             # run tests on iOS Simulator
+build/simulate     # build for iOS Simulator
+build/distribute   # archive for distribution (Release)
+build/test         # run tests on iOS Simulator
 ```
 
 ## Architecture

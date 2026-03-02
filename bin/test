@@ -1,0 +1,11 @@
+#!/bin/bash
+set -euo pipefail
+
+SCHEME="Gymplicity"
+DESTINATION="platform=iOS Simulator,name=iPhone 16"
+
+xcodebuild test \
+  -scheme "$SCHEME" \
+  -destination "$DESTINATION" \
+  -configuration Debug \
+  2>&1

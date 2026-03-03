@@ -39,7 +39,6 @@ class SyncSessionManager: NSObject, ObservableObject {
     @Published var connectionState: SyncConnectionState = .idle
     @Published var discoveredPeers: [DiscoveredPeer] = []
     @Published var lastSyncResult: MergeResult?
-    @Published var isConfigured = false
 
     private var localPeerID: MCPeerID
     private var session: MCSession?
@@ -65,50 +64,6 @@ class SyncSessionManager: NSObject, ObservableObject {
         self.localIdentity = identity
         self.modelContext = context
         self.localPeerID = MCPeerID(displayName: identity.name)
-        self.isConfigured = true
-    }
-
-    func configureIfNeeded(identity: IdentityEntity, context: ModelContext) {
-        guard !isConfigured else { return }
-        configure(identity: identity, context: context)
-    }
-
-    // MARK: - Auto Sync
-
-    func startAutoSync(container: ModelContainer) {
-        guard !isConfigured else {
-            startSearchingIfNeeded()
-            return
-        }
-
-        let context = ModelContext(container)
-        guard let identity = (try? context.fetch(FetchDescriptor<IdentityEntity>()))?.first else {
-            return
-        }
-
-        let localId = identity.id
-        let hasPairedDevices = ((try? context.fetch(FetchDescriptor<PairedDevices>(
-            predicate: #Predicate { $0.localIdentityId == localId }
-        )))?.first) != nil
-
-        guard hasPairedDevices else { return }
-
-        configure(identity: identity, context: context)
-        startSearching()
-    }
-
-    func startSearchingIfNeeded() {
-        guard isConfigured, session == nil else { return }
-        startSearching()
-    }
-
-    func isPairedWith(name: String) -> Bool {
-        guard let context = modelContext, let identity = localIdentity else { return false }
-        let localId = identity.id
-        let pairings = (try? context.fetch(FetchDescriptor<PairedDevices>(
-            predicate: #Predicate { $0.localIdentityId == localId }
-        ))) ?? []
-        return pairings.contains { $0.remoteName == name }
     }
 
     // MARK: - Discovery
@@ -405,10 +360,6 @@ extension SyncSessionManager: MCNearbyServiceBrowserDelegate {
         DispatchQueue.main.async {
             if !self.discoveredPeers.contains(where: { $0.peerID == peerID }) {
                 self.discoveredPeers.append(peer)
-            }
-            // Auto-connect to previously paired peers
-            if self.connectedPeer == nil && self.isPairedWith(name: name) {
-                self.connectToPeer(peer)
             }
         }
     }

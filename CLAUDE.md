@@ -67,7 +67,6 @@ SyncPayload, SyncEngine, SyncSessionManager, IdentityReconciliation
 
 ## Rules
 
-- Never modify .xcodeproj / .pbxproj files directly
-- New files must be added to the Xcode target manually
+- Gymplicity target uses PBXFileSystemSynchronizedRootGroup — new files in Gymplicity/ auto-compile, no project file edits needed
 - All relationship queries take a ModelContext parameter
 - Keep join tables as plain @Model classes with UUID pairs only

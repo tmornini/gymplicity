@@ -7,49 +7,15 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		00AF4AE1BA7F434FEA5DA3D6 /* IdentityReconciliation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 742F4438ACE1029D32DA9E0E /* IdentityReconciliation.swift */; };
-		22CF4B998DD1C09C7EFD9ADF /* SyncView.swift in None */ = {isa = PBXBuildFile; fileRef = C8F84B729022CA13AE8D131D /* SyncView.swift */; };
 		2CC44E89925E51E3DB4F9788 /* HistoryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F4B45339E66BCFF1E59C282 /* HistoryTests.swift */; };
-		4085488EB12B4089E406ADC6 /* SyncSessionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA8D4291A33CAAD96B931A85 /* SyncSessionManager.swift */; };
-		43144A0BB7A596E98E31558F /* SyncView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8F84B729022CA13AE8D131D /* SyncView.swift */; };
 		4D864787942C3141EF7741A4 /* TestHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F2C450AA755B9D54A5DD348 /* TestHelpers.swift */; };
-		759247FFA0DCF42246A868D8 /* SyncEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DE941E58F2FE7D55877835F /* SyncEngine.swift */; };
 		855E49DDAB1B9B8D1DCFCB30 /* ExerciseCatalogTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78F744779716F7A61DB98F14 /* ExerciseCatalogTests.swift */; };
 		88734D78B95CEB992532FCAA /* RelationshipTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1A04B13AF69EFCBCA42B58A /* RelationshipTests.swift */; };
 		99804B13AF0CD82EE3365946 /* TemplateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F39D4D6592A35E81F45E84AD /* TemplateTests.swift */; };
-		9CF842659B275DAB04FB0D95 /* SyncPayload.swift in None */ = {isa = PBXBuildFile; fileRef = AF794169BDA829E027659F84 /* SyncPayload.swift */; };
-		A10000010000000000000001 /* GymplicityApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000001 /* GymplicityApp.swift */; };
-		A10000010000000000000002 /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000002 /* Models.swift */; };
-		A10000010000000000000003 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000003 /* HomeView.swift */; };
-		A10000010000000000000004 /* ActiveWorkoutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000004 /* ActiveWorkoutView.swift */; };
-		A10000010000000000000005 /* SetEntryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000005 /* SetEntryView.swift */; };
-		A10000010000000000000006 /* ProgressChartsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000006 /* ProgressChartsView.swift */; };
-		A10000010000000000000007 /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000007 /* ProfileView.swift */; };
-		A10000010000000000000008 /* AddTraineeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000008 /* AddTraineeView.swift */; };
-		A10000010000000000000009 /* AddExerciseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000009 /* AddExerciseView.swift */; };
-		A1000001000000000000000A /* WorkoutHistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000001000000000000000A /* WorkoutHistoryView.swift */; };
-		A1000001000000000000000B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A2000001000000000000000B /* Assets.xcassets */; };
-		A1000001000000000000000C /* TemplateListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000001000000000000000C /* TemplateListView.swift */; };
-		A1000001000000000000000D /* TemplateEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000001000000000000000D /* TemplateEditorView.swift */; };
-		A1000001000000000000000E /* StartFromTemplateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000001000000000000000E /* StartFromTemplateView.swift */; };
-		A1000001000000000000000F /* GuidedWorkoutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000001000000000000000F /* GuidedWorkoutView.swift */; };
-		A10000010000000000000010 /* ActiveWorkoutsContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000010 /* ActiveWorkoutsContainerView.swift */; };
-		A10000010000000000000011 /* SyncStatusButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000011 /* SyncStatusButton.swift */; };
-		A4B841E2A97E0EE9834C6EBD /* SyncPayload.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF794169BDA829E027659F84 /* SyncPayload.swift */; };
-		A62E44DEAB0594CFA09A2E6A /* SyncEngine.swift in None */ = {isa = PBXBuildFile; fileRef = 7DE941E58F2FE7D55877835F /* SyncEngine.swift */; };
 		A6EA4377BCEB606FB493AD57 /* GuidedWorkoutTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B3E408492611B345421BE99 /* GuidedWorkoutTests.swift */; };
-		B0754CB6B91A9B23EB7EF6A3 /* SyncSessionManager.swift in None */ = {isa = PBXBuildFile; fileRef = AA8D4291A33CAAD96B931A85 /* SyncSessionManager.swift */; };
 		BA864507A809F54A23F51BCC /* GymplicityTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21F04A71BD1067B4DE44F296 /* GymplicityTests.swift */; };
-		C42E4343AFE252F3E1280CBC /* IdentityReconciliation.swift in None */ = {isa = PBXBuildFile; fileRef = 742F4438ACE1029D32DA9E0E /* IdentityReconciliation.swift */; };
 		F4BA48C88F08F2D49F52F53A /* CascadeDeleteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEBD4814A637620F06BC2B42 /* CascadeDeleteTests.swift */; };
 		FDD649518D20F7F123F9E45E /* WorkoutLifecycleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77374765931C45095999078E /* WorkoutLifecycleTests.swift */; };
-		A10000010000000000000012 /* GymColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000012 /* GymColors.swift */; };
-		A10000010000000000000013 /* GymTypography.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000013 /* GymTypography.swift */; };
-		A10000010000000000000014 /* GymMetrics.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000014 /* GymMetrics.swift */; };
-		A10000010000000000000015 /* GymModifiers.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000015 /* GymModifiers.swift */; };
-		A10000010000000000000016 /* MascotView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000016 /* MascotView.swift */; };
-		A10000010000000000000017 /* AnimatedMascotView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000017 /* AnimatedMascotView.swift */; };
-		A10000010000000000000018 /* GymProgressBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000018 /* GymProgressBar.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -66,46 +32,18 @@
 		21F04A71BD1067B4DE44F296 /* GymplicityTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = GymplicityTests.swift; path = GymplicityTests/GymplicityTests.swift; sourceTree = SOURCE_ROOT; };
 		2F4B45339E66BCFF1E59C282 /* HistoryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = HistoryTests.swift; path = GymplicityTests/HistoryTests.swift; sourceTree = SOURCE_ROOT; };
 		3B3E408492611B345421BE99 /* GuidedWorkoutTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = GuidedWorkoutTests.swift; path = GymplicityTests/GuidedWorkoutTests.swift; sourceTree = SOURCE_ROOT; };
-		742F4438ACE1029D32DA9E0E /* IdentityReconciliation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = IdentityReconciliation.swift; path = Gymplicity/Sync/IdentityReconciliation.swift; sourceTree = SOURCE_ROOT; };
 		77374765931C45095999078E /* WorkoutLifecycleTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = WorkoutLifecycleTests.swift; path = GymplicityTests/WorkoutLifecycleTests.swift; sourceTree = SOURCE_ROOT; };
 		78F744779716F7A61DB98F14 /* ExerciseCatalogTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ExerciseCatalogTests.swift; path = GymplicityTests/ExerciseCatalogTests.swift; sourceTree = SOURCE_ROOT; };
-		7DE941E58F2FE7D55877835F /* SyncEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = SyncEngine.swift; path = Gymplicity/Sync/SyncEngine.swift; sourceTree = SOURCE_ROOT; };
 		7F2C450AA755B9D54A5DD348 /* TestHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = TestHelpers.swift; path = GymplicityTests/TestHelpers.swift; sourceTree = SOURCE_ROOT; };
 		A1A04B13AF69EFCBCA42B58A /* RelationshipTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = RelationshipTests.swift; path = GymplicityTests/RelationshipTests.swift; sourceTree = SOURCE_ROOT; };
-		A20000010000000000000001 /* GymplicityApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GymplicityApp.swift; sourceTree = "<group>"; };
-		A20000010000000000000002 /* Models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
-		A20000010000000000000003 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
-		A20000010000000000000004 /* ActiveWorkoutView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActiveWorkoutView.swift; sourceTree = "<group>"; };
-		A20000010000000000000005 /* SetEntryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetEntryView.swift; sourceTree = "<group>"; };
-		A20000010000000000000006 /* ProgressChartsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressChartsView.swift; sourceTree = "<group>"; };
-		A20000010000000000000007 /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
-		A20000010000000000000008 /* AddTraineeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddTraineeView.swift; sourceTree = "<group>"; };
-		A20000010000000000000009 /* AddExerciseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddExerciseView.swift; sourceTree = "<group>"; };
-		A2000001000000000000000A /* WorkoutHistoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutHistoryView.swift; sourceTree = "<group>"; };
-		A2000001000000000000000B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		A2000001000000000000000C /* TemplateListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TemplateListView.swift; sourceTree = "<group>"; };
-		A2000001000000000000000D /* TemplateEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TemplateEditorView.swift; sourceTree = "<group>"; };
-		A2000001000000000000000E /* StartFromTemplateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartFromTemplateView.swift; sourceTree = "<group>"; };
-		A2000001000000000000000F /* GuidedWorkoutView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuidedWorkoutView.swift; sourceTree = "<group>"; };
-		A20000010000000000000010 /* ActiveWorkoutsContainerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActiveWorkoutsContainerView.swift; sourceTree = "<group>"; };
-		A20000010000000000000011 /* SyncStatusButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncStatusButton.swift; sourceTree = "<group>"; };
 		A30000010000000000000001 /* Gymplicity.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Gymplicity.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		AA8D4291A33CAAD96B931A85 /* SyncSessionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = SyncSessionManager.swift; path = Gymplicity/Sync/SyncSessionManager.swift; sourceTree = SOURCE_ROOT; };
-		AF794169BDA829E027659F84 /* SyncPayload.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = SyncPayload.swift; path = Gymplicity/Sync/SyncPayload.swift; sourceTree = SOURCE_ROOT; };
-		C8F84B729022CA13AE8D131D /* SyncView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = SyncView.swift; path = Gymplicity/Views/SyncView.swift; sourceTree = SOURCE_ROOT; };
 		CEBD4814A637620F06BC2B42 /* CascadeDeleteTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = CascadeDeleteTests.swift; path = GymplicityTests/CascadeDeleteTests.swift; sourceTree = SOURCE_ROOT; };
 		E1AB65B72F56106200B55896 /* GymplicityTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = GymplicityTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		F39D4D6592A35E81F45E84AD /* TemplateTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = TemplateTests.swift; path = GymplicityTests/TemplateTests.swift; sourceTree = SOURCE_ROOT; };
-		A20000010000000000000012 /* GymColors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GymColors.swift; sourceTree = "<group>"; };
-		A20000010000000000000013 /* GymTypography.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GymTypography.swift; sourceTree = "<group>"; };
-		A20000010000000000000014 /* GymMetrics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GymMetrics.swift; sourceTree = "<group>"; };
-		A20000010000000000000015 /* GymModifiers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GymModifiers.swift; sourceTree = "<group>"; };
-		A20000010000000000000016 /* MascotView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MascotView.swift; sourceTree = "<group>"; };
-		A20000010000000000000017 /* AnimatedMascotView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimatedMascotView.swift; sourceTree = "<group>"; };
-		A20000010000000000000018 /* GymProgressBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GymProgressBar.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
+		A50000010000000000000002 /* Gymplicity */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Gymplicity; sourceTree = "<group>"; };
 		E1AB65B82F56106200B55896 /* GymplicityTests */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = GymplicityTests; sourceTree = "<group>"; };
 /* End PBXFileSystemSynchronizedRootGroup section */
 
@@ -133,11 +71,6 @@
 				A50000010000000000000002 /* Gymplicity */,
 				E1AB65B82F56106200B55896 /* GymplicityTests */,
 				A50000010000000000000005 /* Products */,
-				AF794169BDA829E027659F84 /* SyncPayload.swift */,
-				7DE941E58F2FE7D55877835F /* SyncEngine.swift */,
-				742F4438ACE1029D32DA9E0E /* IdentityReconciliation.swift */,
-				AA8D4291A33CAAD96B931A85 /* SyncSessionManager.swift */,
-				C8F84B729022CA13AE8D131D /* SyncView.swift */,
 				CEBD4814A637620F06BC2B42 /* CascadeDeleteTests.swift */,
 				78F744779716F7A61DB98F14 /* ExerciseCatalogTests.swift */,
 				3B3E408492611B345421BE99 /* GuidedWorkoutTests.swift */,
@@ -148,61 +81,6 @@
 				7F2C450AA755B9D54A5DD348 /* TestHelpers.swift */,
 				77374765931C45095999078E /* WorkoutLifecycleTests.swift */,
 			);
-			sourceTree = "<group>";
-		};
-		A50000010000000000000002 /* Gymplicity */ = {
-			isa = PBXGroup;
-			children = (
-				A20000010000000000000001 /* GymplicityApp.swift */,
-				A50000010000000000000003 /* Models */,
-				A50000010000000000000004 /* Views */,
-				A50000010000000000000006 /* Theme */,
-				A2000001000000000000000B /* Assets.xcassets */,
-			);
-			path = Gymplicity;
-			sourceTree = "<group>";
-		};
-		A50000010000000000000006 /* Theme */ = {
-			isa = PBXGroup;
-			children = (
-				A20000010000000000000012 /* GymColors.swift */,
-				A20000010000000000000013 /* GymTypography.swift */,
-				A20000010000000000000014 /* GymMetrics.swift */,
-				A20000010000000000000015 /* GymModifiers.swift */,
-				A20000010000000000000016 /* MascotView.swift */,
-				A20000010000000000000017 /* AnimatedMascotView.swift */,
-				A20000010000000000000018 /* GymProgressBar.swift */,
-			);
-			path = Theme;
-			sourceTree = "<group>";
-		};
-		A50000010000000000000003 /* Models */ = {
-			isa = PBXGroup;
-			children = (
-				A20000010000000000000002 /* Models.swift */,
-			);
-			path = Models;
-			sourceTree = "<group>";
-		};
-		A50000010000000000000004 /* Views */ = {
-			isa = PBXGroup;
-			children = (
-				A20000010000000000000003 /* HomeView.swift */,
-				A20000010000000000000004 /* ActiveWorkoutView.swift */,
-				A20000010000000000000005 /* SetEntryView.swift */,
-				A20000010000000000000006 /* ProgressChartsView.swift */,
-				A20000010000000000000007 /* ProfileView.swift */,
-				A20000010000000000000008 /* AddTraineeView.swift */,
-				A20000010000000000000009 /* AddExerciseView.swift */,
-				A2000001000000000000000A /* WorkoutHistoryView.swift */,
-				A2000001000000000000000C /* TemplateListView.swift */,
-				A2000001000000000000000D /* TemplateEditorView.swift */,
-				A2000001000000000000000E /* StartFromTemplateView.swift */,
-				A2000001000000000000000F /* GuidedWorkoutView.swift */,
-				A20000010000000000000010 /* ActiveWorkoutsContainerView.swift */,
-				A20000010000000000000011 /* SyncStatusButton.swift */,
-			);
-			path = Views;
 			sourceTree = "<group>";
 		};
 		A50000010000000000000005 /* Products */ = {
@@ -228,6 +106,9 @@
 			buildRules = (
 			);
 			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				A50000010000000000000002 /* Gymplicity */,
 			);
 			name = Gymplicity;
 			productName = Gymplicity;
@@ -300,7 +181,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A1000001000000000000000B /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -318,34 +198,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A10000010000000000000001 /* GymplicityApp.swift in Sources */,
-				A10000010000000000000002 /* Models.swift in Sources */,
-				A10000010000000000000003 /* HomeView.swift in Sources */,
-				A10000010000000000000004 /* ActiveWorkoutView.swift in Sources */,
-				A10000010000000000000005 /* SetEntryView.swift in Sources */,
-				A10000010000000000000006 /* ProgressChartsView.swift in Sources */,
-				A10000010000000000000007 /* ProfileView.swift in Sources */,
-				A10000010000000000000008 /* AddTraineeView.swift in Sources */,
-				A10000010000000000000009 /* AddExerciseView.swift in Sources */,
-				A1000001000000000000000A /* WorkoutHistoryView.swift in Sources */,
-				A1000001000000000000000C /* TemplateListView.swift in Sources */,
-				A1000001000000000000000D /* TemplateEditorView.swift in Sources */,
-				A1000001000000000000000E /* StartFromTemplateView.swift in Sources */,
-				A1000001000000000000000F /* GuidedWorkoutView.swift in Sources */,
-				A10000010000000000000010 /* ActiveWorkoutsContainerView.swift in Sources */,
-				A10000010000000000000011 /* SyncStatusButton.swift in Sources */,
-				A4B841E2A97E0EE9834C6EBD /* SyncPayload.swift in Sources */,
-				759247FFA0DCF42246A868D8 /* SyncEngine.swift in Sources */,
-				00AF4AE1BA7F434FEA5DA3D6 /* IdentityReconciliation.swift in Sources */,
-				4085488EB12B4089E406ADC6 /* SyncSessionManager.swift in Sources */,
-				43144A0BB7A596E98E31558F /* SyncView.swift in Sources */,
-				A10000010000000000000012 /* GymColors.swift in Sources */,
-				A10000010000000000000013 /* GymTypography.swift in Sources */,
-				A10000010000000000000014 /* GymMetrics.swift in Sources */,
-				A10000010000000000000015 /* GymModifiers.swift in Sources */,
-				A10000010000000000000016 /* MascotView.swift in Sources */,
-				A10000010000000000000017 /* AnimatedMascotView.swift in Sources */,
-				A10000010000000000000018 /* GymProgressBar.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -487,12 +339,6 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				LIBRARY_SEARCH_PATHS = (
-					"$(SRCROOT)/Gymplicity/Sync",
-					"$(SRCROOT)/Gymplicity/Views",
-					"$(SRCROOT)/Gymplicity/Theme",
-					"$(SRCROOT)/GymplicityTests",
-				);
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.gymplicity.app;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -516,12 +362,6 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				LIBRARY_SEARCH_PATHS = (
-					"$(SRCROOT)/Gymplicity/Sync",
-					"$(SRCROOT)/Gymplicity/Views",
-					"$(SRCROOT)/Gymplicity/Theme",
-					"$(SRCROOT)/GymplicityTests",
-				);
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.gymplicity.app;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -574,12 +414,6 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 26.2;
-				LIBRARY_SEARCH_PATHS = (
-					"$(SRCROOT)/Gymplicity/Sync",
-					"$(SRCROOT)/Gymplicity/Views",
-					"$(SRCROOT)/Gymplicity/Theme",
-					"$(SRCROOT)/GymplicityTests",
-				);
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MARKETING_VERSION = 1.0;
 				MTL_FAST_MATH = YES;
@@ -634,12 +468,6 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 26.2;
-				LIBRARY_SEARCH_PATHS = (
-					"$(SRCROOT)/Gymplicity/Sync",
-					"$(SRCROOT)/Gymplicity/Views",
-					"$(SRCROOT)/Gymplicity/Theme",
-					"$(SRCROOT)/GymplicityTests",
-				);
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MARKETING_VERSION = 1.0;
 				MTL_FAST_MATH = YES;

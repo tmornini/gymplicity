@@ -6,6 +6,7 @@ struct ProfileView: View {
     @Bindable var identity: IdentityEntity
     @State private var showingEditName = false
     @State private var editedName = ""
+    @State private var showingTemplateStart = false
 
     var body: some View {
         List {
@@ -36,6 +37,16 @@ struct ProfileView: View {
                 } label: {
                     Label("Start New Workout", systemImage: "plus.circle.fill")
                         .fontWeight(.medium)
+                }
+                if let trainer = trainerWithTemplates() {
+                    Button {
+                        showingTemplateStart = true
+                    } label: {
+                        Label("Start from Template", systemImage: "doc.text")
+                    }
+                    .sheet(isPresented: $showingTemplateStart) {
+                        StartFromTemplateView(trainer: trainer, trainee: identity)
+                    }
                 }
             }
 
@@ -90,6 +101,12 @@ struct ProfileView: View {
             }
             Button("Cancel", role: .cancel) { }
         }
+    }
+
+    private func trainerWithTemplates() -> IdentityEntity? {
+        let trainer = identity.isTrainer ? identity : identity.trainer(in: modelContext)
+        guard let trainer, !trainer.templates(in: modelContext).isEmpty else { return nil }
+        return trainer
     }
 
     private func startWorkout() {

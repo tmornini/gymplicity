@@ -59,6 +59,14 @@ extension ModelContext {
     }
 
     @discardableResult
+    func makeTemplate(name: String, for trainer: IdentityEntity) -> WorkoutEntity {
+        let template = WorkoutEntity(isTemplate: true, templateName: name)
+        insert(template)
+        insert(IdentityWorkouts(identityId: trainer.id, workoutId: template.id))
+        return template
+    }
+
+    @discardableResult
     func makeSet(
         in group: WorkoutGroupEntity,
         exercise: ExerciseEntity,

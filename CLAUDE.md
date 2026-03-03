@@ -33,10 +33,11 @@ IdentityEntity, ExerciseEntity, WorkoutEntity, WorkoutGroupEntity, SetEntity
 TrainerTrainees, TrainerExercises, IdentityWorkouts, WorkoutGroups,
 GroupSets, ExerciseSets
 
-### Views (8)
+### Views (11)
 
 HomeView, ActiveWorkoutView, SetEntryView, AddExerciseView, ProfileView,
-ProgressChartsView, AddTraineeView, WorkoutHistoryView
+ProgressChartsView, AddTraineeView, WorkoutHistoryView, TemplateListView,
+TemplateEditorView, StartFromTemplateView
 
 ## Conventions
 

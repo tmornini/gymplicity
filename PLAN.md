@@ -46,7 +46,10 @@ WorkoutEntity
 ├── id: UUID
 ├── date: Date
 ├── notes: String?
-└── isComplete: Bool
+├── isComplete: Bool
+├── isTemplate: Bool
+├── templateName: String?
+└── templateId: UUID?
 
 WorkoutGroupEntity
 ├── id: UUID
@@ -230,6 +233,67 @@ Overview of an identity's history and trends.
 │    Bench Press →             │
 │    Squat →                   │
 │    Deadlift →                │
+└──────────────────────────────┘
+```
+
+### 6. Template List
+
+Trainer's reusable workout templates. Each row shows the template name,
+superset/set counts, and exercise names.
+
+```
+┌──────────────────────────────┐
+│ ← Templates              [+]│
+│──────────────────────────────│
+│                              │
+│  Push Day                    │
+│  2 supersets · 6 sets        │
+│  Bench Press, Overhead Press │
+│                              │
+│  Pull Day                    │
+│  2 supersets · 5 sets        │
+│  Barbell Row, Lat Pulldown   │
+│                              │
+└──────────────────────────────┘
+```
+
+### 7. Template Editor
+
+Build or edit a template — same structure as Active Workout but with
+no completion checkmarks (templates define targets, not execution).
+
+```
+┌──────────────────────────────┐
+│ ← Push Day          [Rename]│
+│──────────────────────────────│
+│                              │
+│  Superset 1                  │
+│  ┌──────────────────────┐   │
+│  │ Bench  135 lb × 10 ⊙ │   │
+│  │ Bench  155 lb × 8  ⊙ │   │
+│  │ [+ Add Set]           │   │
+│  └──────────────────────┘   │
+│                              │
+│  [+ Add Superset]            │
+└──────────────────────────────┘
+```
+
+### 8. Start from Template
+
+Sheet for selecting a template to start for a trainee. Tap to
+instantiate and navigate to active workout.
+
+```
+┌──────────────────────────────┐
+│ Start from Template  [Cancel]│
+│──────────────────────────────│
+│                              │
+│  Push Day                    │
+│  3 exercises · 6 sets        │
+│                              │
+│  Pull Day                    │
+│  2 exercises · 5 sets        │
+│                              │
 └──────────────────────────────┘
 ```
 

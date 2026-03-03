@@ -33,8 +33,10 @@ is UUID-based so renaming propagates everywhere.
 
 ### WorkoutEntity
 
-A single training session. Created on "Start", closed on "End Workout"
-(sets `isComplete = true`).
+A single training session or a reusable template. Created on "Start",
+closed on "End Workout" (sets `isComplete = true`). Templates have
+`isTemplate = true` and are never completed &mdash; they serve as
+blueprints that are cloned into active workouts.
 
 | Column | Type | Description |
 |--------|------|-------------|
@@ -42,6 +44,9 @@ A single training session. Created on "Start", closed on "End Workout"
 | date | Date | Timestamp when the workout was created |
 | notes | String? | Optional free-form notes |
 | isComplete | Bool | False while active, true once ended |
+| isTemplate | Bool | True for reusable workout templates |
+| templateName | String? | Human-readable name (templates only, e.g. "Push Day") |
+| templateId | UUID? | Source template ID (set on instantiated workouts) |
 
 ### WorkoutGroupEntity
 
@@ -149,8 +154,9 @@ Links an exercise catalog entry to the sets that reference it.
 **IdentityEntity** (via ModelContext traversal):
 
 - `exerciseCatalog` &mdash; own exercises if trainer, else trainer's exercises
-- `activeWorkouts` &mdash; incomplete workouts
-- `completedWorkouts` &mdash; completed workouts, newest first
+- `activeWorkouts` &mdash; incomplete workouts (excludes templates)
+- `completedWorkouts` &mdash; completed workouts, newest first (excludes templates)
+- `templates` &mdash; workout templates, sorted by name
 - `allExercises` &mdash; unique exercises across all workouts
 - `lastSet(for:)` &mdash; most recent completed set for a given exercise
 - `history(for:)` &mdash; all sets for a given exercise, oldest first

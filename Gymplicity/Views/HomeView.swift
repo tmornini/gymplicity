@@ -7,6 +7,8 @@ struct HomeView: View {
     @State private var showingAddTrainee = false
     @State private var showingSetup = false
     @State private var setupName = ""
+    @State private var showingTemplateStart = false
+    @State private var selectedTrainee: IdentityEntity?
 
     private var currentIdentity: IdentityEntity? { identities.first }
 
@@ -73,6 +75,15 @@ struct HomeView: View {
                 }
             }
 
+            Section("Templates") {
+                NavigationLink {
+                    TemplateListView(trainer: identity)
+                } label: {
+                    let count = identity.templates(in: modelContext).count
+                    Label("\(count) Template\(count == 1 ? "" : "s")", systemImage: "doc.text")
+                }
+            }
+
             Section("Trainees") {
                 ForEach(trainees.sorted(by: { $0.name < $1.name })) { trainee in
                     NavigationLink {
@@ -82,8 +93,15 @@ struct HomeView: View {
                     }
                     .swipeActions(edge: .trailing, allowsFullSwipe: false) {
                         if trainee.activeWorkouts(in: modelContext).isEmpty {
-                            Button("Start Workout") { startWorkout(for: trainee) }
+                            Button("Start") { startWorkout(for: trainee) }
                                 .tint(.green)
+                            if !identity.templates(in: modelContext).isEmpty {
+                                Button("Template") {
+                                    selectedTrainee = trainee
+                                    showingTemplateStart = true
+                                }
+                                .tint(.blue)
+                            }
                         }
                     }
                 }
@@ -99,6 +117,11 @@ struct HomeView: View {
                     Button("Add Trainee") { showingAddTrainee = true }
                         .buttonStyle(.borderedProminent)
                 }
+            }
+        }
+        .sheet(isPresented: $showingTemplateStart) {
+            if let trainee = selectedTrainee {
+                StartFromTemplateView(trainer: identity, trainee: trainee)
             }
         }
     }

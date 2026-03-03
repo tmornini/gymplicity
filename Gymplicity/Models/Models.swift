@@ -33,12 +33,18 @@ final class WorkoutEntity {
     var date: Date
     var notes: String?
     var isComplete: Bool
+    var isTemplate: Bool
+    var templateName: String?
+    var templateId: UUID?
 
-    init(date: Date = .now) {
+    init(date: Date = .now, isTemplate: Bool = false, templateName: String? = nil) {
         self.id = UUID()
         self.date = date
         self.notes = nil
         self.isComplete = false
+        self.isTemplate = isTemplate
+        self.templateName = templateName
+        self.templateId = nil
     }
 }
 
@@ -201,13 +207,19 @@ extension IdentityEntity {
     }
 
     func activeWorkouts(in context: ModelContext) -> [WorkoutEntity] {
-        workouts(in: context).filter { !$0.isComplete }
+        workouts(in: context).filter { !$0.isComplete && !$0.isTemplate }
     }
 
     func completedWorkouts(in context: ModelContext) -> [WorkoutEntity] {
         workouts(in: context)
-            .filter { $0.isComplete }
+            .filter { $0.isComplete && !$0.isTemplate }
             .sorted { $0.date > $1.date }
+    }
+
+    func templates(in context: ModelContext) -> [WorkoutEntity] {
+        workouts(in: context)
+            .filter { $0.isTemplate }
+            .sorted { ($0.templateName ?? "") < ($1.templateName ?? "") }
     }
 
     func allExercises(in context: ModelContext) -> [ExerciseEntity] {
@@ -354,6 +366,34 @@ extension SetEntity {
         return (try? context.fetch(FetchDescriptor<WorkoutGroupEntity>(
             predicate: #Predicate { $0.id == groupId }
         )))?.first
+    }
+}
+
+// MARK: - Template Instantiation
+
+extension ModelContext {
+    @discardableResult
+    func instantiateTemplate(_ template: WorkoutEntity, for identity: IdentityEntity) -> WorkoutEntity {
+        let workout = WorkoutEntity()
+        workout.templateId = template.id
+        insert(workout)
+        insert(IdentityWorkouts(identityId: identity.id, workoutId: workout.id))
+
+        for templateGroup in template.sortedGroups(in: self) {
+            let group = WorkoutGroupEntity(order: templateGroup.order, isSuperset: templateGroup.isSuperset)
+            insert(group)
+            insert(WorkoutGroups(workoutId: workout.id, groupId: group.id))
+
+            for templateSet in templateGroup.sortedSets(in: self) {
+                let set = SetEntity(order: templateSet.order, weight: templateSet.weight, reps: templateSet.reps)
+                insert(set)
+                insert(GroupSets(groupId: group.id, setId: set.id))
+                if let exercise = templateSet.exercise(in: self) {
+                    insert(ExerciseSets(exerciseId: exercise.id, setId: set.id))
+                }
+            }
+        }
+        return workout
     }
 }
 

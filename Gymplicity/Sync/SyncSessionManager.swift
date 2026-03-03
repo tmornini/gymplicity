@@ -269,6 +269,12 @@ class SyncSessionManager: NSObject, ObservableObject {
         guard !setDTOs.isEmpty || !workoutDTOs.isEmpty || !identityDTOs.isEmpty
                 || !exerciseDTOs.isEmpty || !groupDTOs.isEmpty else { return }
 
+        // Always include sender's own identity so merge() can determine senderIsTrainer
+        let senderDTO = identity.toDTO()
+        if !identityDTOs.contains(where: { $0.id == senderDTO.id }) {
+            identityDTOs.append(senderDTO)
+        }
+
         let payload = SyncPayload.delta(
             senderIdentityId: identity.id,
             identities: identityDTOs,

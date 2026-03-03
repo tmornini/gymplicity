@@ -101,7 +101,7 @@ struct SyncEngine {
             }
         }
 
-        // 3. Workouts — trainee has authority for non-template workouts,
+        // 3. Workouts — either side can update non-template workouts (trainer-first app),
         //               trainer has authority for template workouts
         for dto in payload.workouts {
             let id = dto.id
@@ -109,12 +109,7 @@ struct SyncEngine {
                 predicate: #Predicate { $0.id == id }
             )))?.first
             if let existing {
-                let senderHasAuthority: Bool
-                if dto.isTemplate {
-                    senderHasAuthority = senderIsTrainer
-                } else {
-                    senderHasAuthority = !senderIsTrainer
-                }
+                let senderHasAuthority = dto.isTemplate ? senderIsTrainer : true
                 if senderHasAuthority {
                     existing.notes = dto.notes
                     existing.isComplete = dto.isComplete
@@ -156,20 +151,18 @@ struct SyncEngine {
             }
         }
 
-        // 5. Sets — trainee has authority (they enter their own workout data)
+        // 5. Sets — either side can update (trainer records on behalf of trainee)
         for dto in payload.sets {
             let id = dto.id
             let existing = (try? context.fetch(FetchDescriptor<SetEntity>(
                 predicate: #Predicate { $0.id == id }
             )))?.first
             if let existing {
-                if !senderIsTrainer {
-                    existing.weight = dto.weight
-                    existing.reps = dto.reps
-                    existing.isCompleted = dto.isCompleted
-                    existing.completedAt = dto.completedAt
-                    result.setsUpdated += 1
-                }
+                existing.weight = dto.weight
+                existing.reps = dto.reps
+                existing.isCompleted = dto.isCompleted
+                existing.completedAt = dto.completedAt
+                result.setsUpdated += 1
             } else {
                 let entity = SetEntity(order: dto.order, weight: dto.weight, reps: dto.reps)
                 entity.id = dto.id

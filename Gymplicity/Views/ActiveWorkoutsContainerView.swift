@@ -90,13 +90,13 @@ struct ActiveWorkoutsContainerView: View {
                 if let pair = currentPair {
                     VStack(spacing: 2) {
                         Text(pair.identity.name)
-                            .font(.headline)
+                            .font(GymFont.heading3)
                         if pairs.count > 1 {
                             pageDots(count: pairs.count)
                         } else {
                             Text(pair.workout.date, style: .date)
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
+                                .font(GymFont.caption)
+                                .foregroundStyle(GymColors.secondaryText)
                         }
                     }
                 }
@@ -116,13 +116,11 @@ struct ActiveWorkoutsContainerView: View {
                 dismiss()
                 return
             }
-            // Clean up state for removed workouts
             let removedIds = Set(oldIds).subtracting(newIds)
             for id in removedIds {
                 viewModes.removeValue(forKey: id)
                 guidedSetIndices.removeValue(forKey: id)
             }
-            // Clamp index
             if currentIndex >= newIds.count {
                 currentIndex = max(0, newIds.count - 1)
             }
@@ -134,18 +132,24 @@ struct ActiveWorkoutsContainerView: View {
     private func pageDots(count: Int) -> some View {
         HStack(spacing: 6) {
             ForEach(0..<count, id: \.self) { index in
-                Circle()
-                    .fill(index == currentIndex ? Color.primary : Color.secondary.opacity(0.4))
-                    .frame(width: 6, height: 6)
+                if index == currentIndex {
+                    Capsule()
+                        .fill(GymColors.energy)
+                        .frame(width: 16, height: 8)
+                } else {
+                    Circle()
+                        .fill(GymColors.steel)
+                        .frame(width: 8, height: 8)
+                }
             }
         }
+        .animation(.spring(response: 0.3, dampingFraction: 0.7), value: currentIndex)
     }
 
     // MARK: - Edge Gestures
 
     private var edgeGestures: some View {
         HStack(spacing: 0) {
-            // Left edge — swipe right to go to previous
             Color.clear
                 .frame(width: 24)
                 .contentShape(Rectangle())
@@ -160,7 +164,6 @@ struct ActiveWorkoutsContainerView: View {
 
             Spacer()
 
-            // Right edge — swipe left to go to next
             Color.clear
                 .frame(width: 24)
                 .contentShape(Rectangle())

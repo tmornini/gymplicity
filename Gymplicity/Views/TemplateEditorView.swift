@@ -14,13 +14,14 @@ struct TemplateEditorView: View {
             Section {
                 HStack {
                     Text(template.templateName ?? "Untitled")
-                        .font(.headline)
+                        .font(GymFont.heading3)
                     Spacer()
                     Button("Rename") {
                         nameText = template.templateName ?? ""
                         editingName = true
                     }
-                    .font(.subheadline)
+                    .font(GymFont.label)
+                    .foregroundStyle(GymColors.energy)
                 }
             }
 
@@ -36,11 +37,12 @@ struct TemplateEditorView: View {
                         showingAddExercise = true
                     } label: {
                         Label("Add Set", systemImage: "plus")
-                            .font(.subheadline)
+                            .font(GymFont.label)
+                            .foregroundStyle(GymColors.energy)
                     }
                 } header: {
                     Text("Superset \(group.order + 1)")
-                        .font(.headline)
+                        .font(GymFont.heading3)
                         .textCase(nil)
                 }
             }
@@ -50,7 +52,8 @@ struct TemplateEditorView: View {
                     addGroup()
                 } label: {
                     Label("Add Superset", systemImage: "plus.circle.fill")
-                        .font(.body.weight(.medium))
+                        .font(GymFont.bodyStrong)
+                        .foregroundStyle(GymColors.energy)
                 }
             }
         }
@@ -58,7 +61,7 @@ struct TemplateEditorView: View {
         .toolbar {
             ToolbarItem(placement: .principal) {
                 Text(template.templateName ?? "Template")
-                    .font(.headline)
+                    .font(GymFont.heading3)
             }
         }
         .alert("Rename Template", isPresented: $editingName) {
@@ -108,29 +111,29 @@ private struct TemplateSetRow: View {
             HStack {
                 let exercise = set.exercise(in: modelContext)
                 Text(exercise?.name ?? "Exercise")
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
+                    .font(GymFont.label)
+                    .foregroundStyle(GymColors.secondaryText)
                     .frame(minWidth: 60, alignment: .leading)
 
                 if set.weight > 0 || set.reps > 0 {
                     Text(formatWeight(set.weight))
-                        .font(.body.monospacedDigit().weight(.medium))
+                        .font(GymFont.bodyMono)
                     Text("x")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
+                        .font(GymFont.caption)
+                        .foregroundStyle(GymColors.secondaryText)
                     Text("\(set.reps)")
-                        .font(.body.monospacedDigit().weight(.medium))
+                        .font(GymFont.bodyMono)
                 } else {
                     Text("Tap to set targets")
-                        .font(.body)
-                        .foregroundStyle(.tertiary)
+                        .font(GymFont.body)
+                        .foregroundStyle(GymColors.tertiaryText)
                 }
 
                 Spacer()
 
                 Image(systemName: "target")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
+                    .font(GymFont.caption)
+                    .foregroundStyle(GymColors.secondaryText)
             }
             .contentShape(Rectangle())
         }
@@ -165,44 +168,52 @@ private struct TemplateSetEntryView: View {
         NavigationStack {
             VStack(spacing: 24) {
                 Text(exercise?.name ?? "Exercise")
-                    .font(.headline)
+                    .font(GymFont.heading2)
 
                 Text("Target")
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
+                    .font(GymFont.label)
+                    .foregroundStyle(GymColors.secondaryText)
 
                 HStack(spacing: 24) {
                     VStack(spacing: 8) {
                         Text("Weight")
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
+                            .font(GymFont.caption)
+                            .foregroundStyle(GymColors.secondaryText)
                         TextField("0", text: $weightText)
                             .keyboardType(.decimalPad)
                             .multilineTextAlignment(.center)
-                            .font(.system(size: 36, weight: .bold, design: .rounded).monospacedDigit())
+                            .font(GymFont.numericEntrySmall)
+                            .textFieldStyle(.plain)
                             .frame(width: 120)
                             .focused($focusedField, equals: .weight)
+                        Rectangle()
+                            .fill(GymColors.focus)
+                            .frame(width: 120, height: 2)
                         Text("lb")
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
+                            .font(GymFont.caption)
+                            .foregroundStyle(GymColors.secondaryText)
                     }
 
                     Text("x")
-                        .font(.title2)
-                        .foregroundStyle(.secondary)
+                        .font(GymFont.heading2)
+                        .foregroundStyle(GymColors.secondaryText)
 
                     VStack(spacing: 8) {
                         Text("Reps")
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
+                            .font(GymFont.caption)
+                            .foregroundStyle(GymColors.secondaryText)
                         TextField("0", text: $repsText)
                             .keyboardType(.numberPad)
                             .multilineTextAlignment(.center)
-                            .font(.system(size: 36, weight: .bold, design: .rounded).monospacedDigit())
+                            .font(GymFont.numericEntrySmall)
+                            .textFieldStyle(.plain)
                             .frame(width: 120)
                             .focused($focusedField, equals: .reps)
+                        Rectangle()
+                            .fill(GymColors.focus)
+                            .frame(width: 120, height: 2)
                         Text(" ")
-                            .font(.caption)
+                            .font(GymFont.caption)
                     }
                 }
 
@@ -217,6 +228,7 @@ private struct TemplateSetEntryView: View {
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Done") { save() }
                         .fontWeight(.semibold)
+                        .foregroundStyle(GymColors.energy)
                 }
             }
             .onAppear {

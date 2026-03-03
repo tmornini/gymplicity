@@ -22,10 +22,16 @@ struct TemplateListView: View {
             }
 
             if templates.isEmpty {
-                ContentUnavailableView {
-                    Label("No Templates", systemImage: "doc.text")
-                } description: {
-                    Text("Create a reusable workout plan")
+                Section {
+                    VStack(spacing: GymMetrics.space16) {
+                        AnimatedMascotView(pose: .thinking, animation: .pulse, color: GymColors.secondaryText)
+                            .frame(height: GymMetrics.mascotMedium)
+                        Text("Create your first workout template")
+                            .font(GymFont.body)
+                            .foregroundStyle(GymColors.secondaryText)
+                    }
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, GymMetrics.space16)
                 }
             }
         }
@@ -53,26 +59,33 @@ private struct TemplateRow: View {
     let template: WorkoutEntity
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 4) {
-            Text(template.templateName ?? "Untitled")
-                .font(.headline)
+        HStack(spacing: 0) {
+            RoundedRectangle(cornerRadius: 1.5)
+                .fill(GymColors.focus)
+                .frame(width: GymMetrics.setBarWidth)
+                .padding(.trailing, GymMetrics.space8)
 
-            let groups = template.groups(in: modelContext)
-            let setCount = groups.flatMap { $0.sets(in: modelContext) }.count
-            let exerciseNames = exerciseNamesList()
+            VStack(alignment: .leading, spacing: 4) {
+                Text(template.templateName ?? "Untitled")
+                    .font(GymFont.heading3)
 
-            HStack(spacing: 8) {
-                Text("\(groups.count) group\(groups.count == 1 ? "" : "s")")
-                Text("\(setCount) set\(setCount == 1 ? "" : "s")")
-            }
-            .font(.caption)
-            .foregroundStyle(.secondary)
+                let groups = template.groups(in: modelContext)
+                let setCount = groups.flatMap { $0.sets(in: modelContext) }.count
+                let exerciseNames = exerciseNamesList()
 
-            if !exerciseNames.isEmpty {
-                Text(exerciseNames)
-                    .font(.caption)
-                    .foregroundStyle(.tertiary)
-                    .lineLimit(1)
+                HStack(spacing: 8) {
+                    Text("\(groups.count) group\(groups.count == 1 ? "" : "s")")
+                    Text("\(setCount) set\(setCount == 1 ? "" : "s")")
+                }
+                .font(GymFont.caption)
+                .foregroundStyle(GymColors.secondaryText)
+
+                if !exerciseNames.isEmpty {
+                    Text(exerciseNames)
+                        .font(GymFont.caption)
+                        .foregroundStyle(GymColors.tertiaryText)
+                        .lineLimit(1)
+                }
             }
         }
         .padding(.vertical, 2)

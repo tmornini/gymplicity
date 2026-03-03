@@ -49,18 +49,22 @@ struct SyncView: View {
     // MARK: - State Views
 
     private var idleView: some View {
-        VStack(spacing: 16) {
-            Image(systemName: "person.2.wave.2")
-                .font(.system(size: 48))
-                .foregroundStyle(.secondary)
+        VStack(spacing: GymMetrics.space16) {
+            Spacer()
+            AnimatedMascotView(pose: .waving, animation: .wave, color: GymColors.energy)
+                .frame(height: GymMetrics.mascotMedium)
+            Text("Hey, want to find a friend?")
+                .font(GymFont.heading2)
             Text("Tap to start searching for nearby devices")
-                .font(.subheadline)
-                .foregroundStyle(.secondary)
+                .font(GymFont.body)
+                .foregroundStyle(GymColors.secondaryText)
             Button("Start Searching") {
                 syncManager.configureIfNeeded(identity: identity, context: modelContext)
                 syncManager.startSearchingIfNeeded()
             }
-            .buttonStyle(.borderedProminent)
+            .buttonStyle(.gymPrimary)
+            .padding(.horizontal, 40)
+            Spacer()
         }
     }
 
@@ -68,19 +72,19 @@ struct SyncView: View {
         VStack(spacing: 20) {
             if syncManager.discoveredPeers.isEmpty {
                 Spacer()
-                ProgressView()
-                    .scaleEffect(1.2)
+                AnimatedMascotView(pose: .stretching, animation: .wobble, color: GymColors.secondaryText)
+                    .frame(height: GymMetrics.mascotMedium)
                 Text("Looking for nearby devices...")
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
+                    .font(GymFont.body)
+                    .foregroundStyle(GymColors.secondaryText)
                 Text("Make sure the other device has Gymplicity open")
-                    .font(.caption)
-                    .foregroundStyle(.tertiary)
+                    .font(GymFont.caption)
+                    .foregroundStyle(GymColors.tertiaryText)
                     .multilineTextAlignment(.center)
                 Spacer()
             } else {
                 List {
-                    Section("Nearby Devices") {
+                    Section {
                         ForEach(syncManager.discoveredPeers) { peer in
                             Button {
                                 handlePeerTap(peer)
@@ -88,27 +92,31 @@ struct SyncView: View {
                                 HStack {
                                     VStack(alignment: .leading, spacing: 2) {
                                         Text(peer.name)
-                                            .font(.body)
+                                            .font(GymFont.body)
                                         Text(peer.role.capitalized)
-                                            .font(.caption)
-                                            .foregroundStyle(.secondary)
+                                            .font(GymFont.caption)
+                                            .foregroundStyle(GymColors.secondaryText)
                                     }
                                     Spacer()
                                     if isPaired(with: peer) {
                                         Text("Paired")
-                                            .font(.caption)
-                                            .foregroundStyle(.green)
+                                            .gymPill(GymColors.power)
                                     } else {
                                         Text("New")
-                                            .font(.caption)
-                                            .foregroundStyle(.blue)
+                                            .gymPill(GymColors.focus)
                                     }
                                     Image(systemName: "chevron.right")
-                                        .font(.caption)
-                                        .foregroundStyle(.secondary)
+                                        .font(GymFont.caption)
+                                        .foregroundStyle(GymColors.secondaryText)
                                 }
                             }
                             .foregroundStyle(.primary)
+                        }
+                    } header: {
+                        HStack(spacing: GymMetrics.space4) {
+                            MascotView(pose: .spotting, color: GymColors.secondaryText)
+                                .frame(height: GymMetrics.mascotInline)
+                            Text("Nearby Devices")
                         }
                     }
                 }
@@ -132,39 +140,41 @@ struct SyncView: View {
     }
 
     private var connectingView: some View {
-        VStack(spacing: 16) {
-            ProgressView()
-                .scaleEffect(1.2)
+        VStack(spacing: GymMetrics.space16) {
+            Spacer()
+            AnimatedMascotView(pose: .walking, animation: .pulse, color: GymColors.energy)
+                .frame(height: 80)
             Text("Connecting...")
-                .font(.subheadline)
-                .foregroundStyle(.secondary)
+                .font(GymFont.body)
+                .foregroundStyle(GymColors.secondaryText)
+            Spacer()
         }
     }
 
     @ViewBuilder
     private func pairingView(peerName: String) -> some View {
         if identity.isTrainer {
-            // Trainer is waiting for trainee to accept
-            VStack(spacing: 16) {
-                ProgressView()
-                    .scaleEffect(1.2)
+            VStack(spacing: GymMetrics.space16) {
+                Spacer()
+                AnimatedMascotView(pose: .stretching, animation: .wobble, color: GymColors.energy)
+                    .frame(height: 80)
                 Text("Waiting for \(peerName) to accept pairing...")
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
+                    .font(GymFont.body)
+                    .foregroundStyle(GymColors.secondaryText)
+                Spacer()
             }
         } else {
-            // Trainee sees pairing request
-            VStack(spacing: 16) {
-                Image(systemName: "person.2.circle")
-                    .font(.system(size: 48))
-                    .foregroundStyle(.blue)
+            VStack(spacing: GymMetrics.space16) {
+                Spacer()
+                MascotView(pose: .spotting, color: GymColors.focus)
+                    .frame(height: GymMetrics.mascotMedium)
                 Text("\(peerName) wants to pair with you")
-                    .font(.headline)
+                    .font(GymFont.heading2)
                 Text("This will link your account to their trainer profile")
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
+                    .font(GymFont.body)
+                    .foregroundStyle(GymColors.secondaryText)
                     .multilineTextAlignment(.center)
-                HStack(spacing: 16) {
+                HStack(spacing: GymMetrics.space16) {
                     Button("Decline") {
                         syncManager.stopSearching()
                         syncManager.startSearching()
@@ -173,62 +183,69 @@ struct SyncView: View {
                     Button("Accept") {
                         syncManager.acceptPairing()
                     }
-                    .buttonStyle(.borderedProminent)
+                    .buttonStyle(.gymPrimary)
                 }
+                .padding(.horizontal, 40)
+                Spacer()
             }
         }
     }
 
     private func syncingView(peerName: String) -> some View {
-        VStack(spacing: 16) {
-            ProgressView()
-                .scaleEffect(1.2)
+        VStack(spacing: GymMetrics.space16) {
+            Spacer()
+            AnimatedMascotView(pose: .curling, animation: .rep, color: GymColors.energy)
+                .frame(height: 80)
             Text("Syncing with \(peerName)...")
-                .font(.subheadline)
-                .foregroundStyle(.secondary)
+                .font(GymFont.body)
+                .foregroundStyle(GymColors.secondaryText)
+            Spacer()
         }
     }
 
     private func connectedView(peerName: String) -> some View {
-        VStack(spacing: 16) {
-            Image(systemName: "checkmark.circle.fill")
-                .font(.system(size: 48))
-                .foregroundStyle(.green)
+        VStack(spacing: GymMetrics.space16) {
+            Spacer()
+            AnimatedMascotView(pose: .celebrating, animation: .bounce, color: GymColors.power)
+                .frame(height: GymMetrics.mascotMedium)
             Text("Connected to \(peerName)")
-                .font(.headline)
+                .font(GymFont.heading2)
 
             if let result = syncManager.lastSyncResult {
                 Text(result.summary)
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
+                    .font(GymFont.body)
+                    .foregroundStyle(GymColors.secondaryText)
             }
 
             Text("Background sync active")
-                .font(.caption)
-                .foregroundStyle(.tertiary)
+                .font(GymFont.caption)
+                .foregroundStyle(GymColors.tertiaryText)
 
             Button("Sync Now") {
                 syncManager.performSync()
             }
             .buttonStyle(.bordered)
+            Spacer()
         }
     }
 
     private func errorView(message: String) -> some View {
-        VStack(spacing: 16) {
-            Image(systemName: "exclamationmark.triangle.fill")
-                .font(.system(size: 48))
-                .foregroundStyle(.orange)
+        VStack(spacing: GymMetrics.space16) {
+            Spacer()
+            MascotView(pose: .resting, color: GymColors.warning)
+                .frame(height: 80)
             Text("Sync Error")
-                .font(.headline)
+                .font(GymFont.heading2)
             Text(message)
-                .font(.subheadline)
-                .foregroundStyle(.secondary)
+                .font(GymFont.body)
+                .foregroundStyle(GymColors.secondaryText)
                 .multilineTextAlignment(.center)
             Button("Try Again") {
                 syncManager.startSearching()
             }
-            .buttonStyle(.borderedProminent)
+            .buttonStyle(.gymPrimary)
+            .padding(.horizontal, 40)
+            Spacer()
         }
     }
 
@@ -236,7 +253,6 @@ struct SyncView: View {
 
     private func handlePeerTap(_ peer: DiscoveredPeer) {
         syncManager.connectToPeer(peer)
-        // If trainer and not paired, show trainee picker after connection
         if identity.isTrainer && !isPaired(with: peer) {
             showingTraineePicker = true
         }
@@ -247,7 +263,6 @@ struct SyncView: View {
         let pairings = (try? modelContext.fetch(FetchDescriptor<PairedDevices>(
             predicate: #Predicate { $0.localIdentityId == localId }
         ))) ?? []
-        // Check if any pairing matches this peer name
         return pairings.contains { $0.remoteName == peer.name }
     }
 }

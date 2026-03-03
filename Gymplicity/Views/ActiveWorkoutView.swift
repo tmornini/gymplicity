@@ -27,11 +27,12 @@ struct ActiveWorkoutView: View {
                             showingAddExercise = true
                         } label: {
                             Label("Add Set", systemImage: "plus")
-                                .font(.subheadline)
+                                .font(GymFont.label)
+                                .foregroundStyle(GymColors.energy)
                         }
                     } header: {
                         Text("Superset \(group.order + 1)")
-                            .font(.headline)
+                            .font(GymFont.heading3)
                             .textCase(nil)
                     }
                 } else {
@@ -45,11 +46,12 @@ struct ActiveWorkoutView: View {
                             addSetToGroup(group)
                         } label: {
                             Label("Add Set", systemImage: "plus")
-                                .font(.subheadline)
+                                .font(GymFont.label)
+                                .foregroundStyle(GymColors.energy)
                         }
                     } header: {
                         Text(exerciseName(for: group))
-                            .font(.headline)
+                            .font(GymFont.heading3)
                             .textCase(nil)
                     }
                 }
@@ -60,14 +62,16 @@ struct ActiveWorkoutView: View {
                     addGroup(isSuperset: false)
                 } label: {
                     Label("Add Exercise", systemImage: "plus.circle.fill")
-                        .font(.body.weight(.medium))
+                        .font(GymFont.bodyStrong)
+                        .foregroundStyle(GymColors.energy)
                 }
 
                 Button {
                     addGroup(isSuperset: true)
                 } label: {
                     Label("Add Superset", systemImage: "plus.circle.fill")
-                        .font(.body.weight(.medium))
+                        .font(GymFont.bodyStrong)
+                        .foregroundStyle(GymColors.energy)
                 }
             }
         }
@@ -77,28 +81,38 @@ struct ActiveWorkoutView: View {
                 ToolbarItem(placement: .principal) {
                     VStack(spacing: 0) {
                         Text(workout.owner(in: modelContext)?.name ?? "Workout")
-                            .font(.headline)
+                            .font(GymFont.heading3)
                         Text(workout.date, style: .date)
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
+                            .font(GymFont.caption)
+                            .foregroundStyle(GymColors.secondaryText)
                     }
                 }
             }
             ToolbarItem(placement: .primaryAction) {
                 Button("End") { showingEndConfirmation = true }
                     .fontWeight(.semibold)
-                    .tint(.red)
+                    .foregroundStyle(GymColors.danger)
             }
             ToolbarItem(placement: .bottomBar) {
                 if let switchToGuided = onSwitchToGuided {
                     Button { switchToGuided() } label: {
-                        Label("Guided Mode", systemImage: "scope")
+                        HStack(spacing: GymMetrics.space4) {
+                            MascotView(pose: .lifting, color: GymColors.energy)
+                                .frame(height: GymMetrics.mascotInlineSmall)
+                            Text("Guided Mode")
+                                .font(GymFont.label)
+                        }
                     }
                 } else {
                     NavigationLink {
                         GuidedWorkoutView(workout: workout)
                     } label: {
-                        Label("Guided Mode", systemImage: "scope")
+                        HStack(spacing: GymMetrics.space4) {
+                            MascotView(pose: .lifting, color: GymColors.energy)
+                                .frame(height: GymMetrics.mascotInlineSmall)
+                            Text("Guided Mode")
+                                .font(GymFont.label)
+                        }
                     }
                 }
             }
@@ -194,36 +208,40 @@ struct SetRow: View {
             HStack {
                 let exercise = set.exercise(in: modelContext)
                 Text(exercise?.name ?? "Exercise")
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
+                    .font(GymFont.label)
+                    .foregroundStyle(GymColors.secondaryText)
                     .frame(minWidth: 60, alignment: .leading)
 
                 if set.weight > 0 || set.reps > 0 {
                     Text(formatWeight(set.weight))
-                        .font(.body.monospacedDigit().weight(.medium))
+                        .font(GymFont.bodyMono)
                     Text("x")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
+                        .font(GymFont.caption)
+                        .foregroundStyle(GymColors.secondaryText)
                     Text("\(set.reps)")
-                        .font(.body.monospacedDigit().weight(.medium))
+                        .font(GymFont.bodyMono)
                 } else {
                     Text("Tap to enter")
-                        .font(.body)
-                        .foregroundStyle(.tertiary)
+                        .font(GymFont.body)
+                        .foregroundStyle(GymColors.tertiaryText)
                 }
 
                 Spacer()
 
                 Button {
-                    set.isCompleted.toggle()
-                    set.completedAt = set.isCompleted ? .now : nil
+                    withAnimation {
+                        set.isCompleted.toggle()
+                        set.completedAt = set.isCompleted ? .now : nil
+                    }
                 } label: {
                     Image(systemName: set.isCompleted ? "checkmark.circle.fill" : "circle")
                         .font(.title3)
-                        .foregroundStyle(set.isCompleted ? .green : .secondary)
+                        .foregroundStyle(set.isCompleted ? GymColors.completedSet : GymColors.secondaryText)
+                        .symbolEffect(.bounce, value: set.isCompleted)
                 }
                 .buttonStyle(.plain)
             }
+            .setCompletion(set.isCompleted)
             .contentShape(Rectangle())
         }
         .buttonStyle(.plain)

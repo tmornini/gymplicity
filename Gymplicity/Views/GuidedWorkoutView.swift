@@ -14,6 +14,7 @@ struct GuidedWorkoutView: View {
     @State private var repsText: String = ""
     @State private var showingEndConfirmation = false
     @State private var showingSyncPrompt = false
+    @State private var showWalkingTransition = false
     @FocusState private var focusedField: Field?
 
     enum Field { case weight, reps }
@@ -32,11 +33,7 @@ struct GuidedWorkoutView: View {
             if let pair = currentPair {
                 guidedContent(pair: pair)
             } else if flatSets.isEmpty {
-                ContentUnavailableView {
-                    Label("No Sets", systemImage: "figure.strengthtraining.traditional")
-                } description: {
-                    Text("Add exercises to this workout first")
-                }
+                emptyState
             } else {
                 completionView
             }
@@ -55,7 +52,7 @@ struct GuidedWorkoutView: View {
             ToolbarItem(placement: .primaryAction) {
                 Button("End") { showingEndConfirmation = true }
                     .fontWeight(.semibold)
-                    .tint(.red)
+                    .foregroundStyle(GymColors.danger)
             }
         }
         .confirmationDialog("End Workout?", isPresented: $showingEndConfirmation) {
@@ -85,6 +82,20 @@ struct GuidedWorkoutView: View {
         }
     }
 
+    // MARK: - Empty State
+
+    private var emptyState: some View {
+        VStack(spacing: GymMetrics.space16) {
+            AnimatedMascotView(pose: .stretching, animation: .wobble, color: GymColors.secondaryText)
+                .frame(height: GymMetrics.mascotMedium)
+            Text("No Sets")
+                .font(GymFont.heading2)
+            Text("Add exercises to this workout first")
+                .font(GymFont.body)
+                .foregroundStyle(GymColors.secondaryText)
+        }
+    }
+
     // MARK: - Guided Content
 
     @ViewBuilder
@@ -98,40 +109,52 @@ struct GuidedWorkoutView: View {
         VStack(spacing: 20) {
             Spacer()
 
-            Text(exercise?.name ?? "Exercise")
-                .font(.title2.weight(.bold))
+            HStack(spacing: GymMetrics.space8) {
+                MascotView(pose: .curling, color: GymColors.energy)
+                    .frame(height: GymMetrics.mascotTiny)
+                Text(exercise?.name ?? "Exercise")
+                    .font(GymFont.heading1)
+            }
 
             Text("Group \(groupIndex + 1) of \(groups.count) \u{00B7} Set \(setIndex + 1) of \(setsInGroup.count)")
-                .font(.subheadline)
-                .foregroundStyle(.secondary)
+                .font(GymFont.label)
+                .foregroundStyle(GymColors.secondaryText)
 
             HStack(spacing: 24) {
                 VStack(spacing: 8) {
                     TextField("0", text: $weightText)
                         .keyboardType(.decimalPad)
                         .multilineTextAlignment(.center)
-                        .font(.system(size: 44, weight: .bold, design: .rounded).monospacedDigit())
+                        .font(GymFont.numericEntry)
+                        .textFieldStyle(.plain)
                         .frame(width: 130)
                         .focused($focusedField, equals: .weight)
+                    Rectangle()
+                        .fill(GymColors.energy)
+                        .frame(width: 130, height: 2)
                     Text("lb")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
+                        .font(GymFont.caption)
+                        .foregroundStyle(GymColors.secondaryText)
                 }
 
                 Text("x")
-                    .font(.title2)
-                    .foregroundStyle(.secondary)
+                    .font(GymFont.heading2)
+                    .foregroundStyle(GymColors.secondaryText)
 
                 VStack(spacing: 8) {
                     TextField("0", text: $repsText)
                         .keyboardType(.numberPad)
                         .multilineTextAlignment(.center)
-                        .font(.system(size: 44, weight: .bold, design: .rounded).monospacedDigit())
+                        .font(GymFont.numericEntry)
+                        .textFieldStyle(.plain)
                         .frame(width: 130)
                         .focused($focusedField, equals: .reps)
+                    Rectangle()
+                        .fill(GymColors.energy)
+                        .frame(width: 130, height: 2)
                     Text("reps")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
+                        .font(GymFont.caption)
+                        .foregroundStyle(GymColors.secondaryText)
                 }
             }
 
@@ -143,16 +166,23 @@ struct GuidedWorkoutView: View {
                 completeCurrentSet()
             } label: {
                 Text("Done")
-                    .font(.title3.weight(.semibold))
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, 12)
             }
-            .buttonStyle(.borderedProminent)
+            .buttonStyle(.gymPrimary)
             .padding(.horizontal, 40)
 
             Spacer()
         }
         .padding()
+        .overlay {
+            if showWalkingTransition {
+                MascotView(pose: .walking, color: GymColors.energy.opacity(0.5))
+                    .frame(height: GymMetrics.mascotTiny)
+                    .transition(.asymmetric(
+                        insertion: .move(edge: .leading).combined(with: .opacity),
+                        removal: .move(edge: .trailing).combined(with: .opacity)
+                    ))
+            }
+        }
     }
 
     // MARK: - Progress Bar
@@ -160,12 +190,11 @@ struct GuidedWorkoutView: View {
     private var progressBar: some View {
         let progress = workout.completionProgress(in: modelContext)
         let completed = flatSets.filter { $0.set.isCompleted }.count
-        return VStack(spacing: 4) {
-            ProgressView(value: progress)
-                .tint(.green)
+        return VStack(spacing: GymMetrics.space4) {
+            GymProgressBar(progress: progress)
             Text("\(completed)/\(flatSets.count) sets \u{00B7} \(Int(progress * 100))%")
-                .font(.caption)
-                .foregroundStyle(.secondary)
+                .font(GymFont.caption)
+                .foregroundStyle(GymColors.secondaryText)
         }
         .padding(.horizontal)
     }
@@ -179,31 +208,31 @@ struct GuidedWorkoutView: View {
            let lastSet = owner.lastSet(for: exercise, in: modelContext) {
             HStack(spacing: 4) {
                 Image(systemName: "clock.arrow.circlepath")
-                    .font(.caption)
+                    .font(GymFont.caption)
                 Text("Last time: \(formatWeight(lastSet.weight)) x \(lastSet.reps)")
-                    .font(.caption)
+                    .font(GymFont.caption)
             }
-            .foregroundStyle(.secondary)
+            .gymPill(GymColors.steel)
         }
     }
 
     // MARK: - Completion View
 
     private var completionView: some View {
-        VStack(spacing: 16) {
-            Image(systemName: "checkmark.circle.fill")
-                .font(.system(size: 64))
-                .foregroundStyle(.green)
+        VStack(spacing: GymMetrics.space16) {
+            AnimatedMascotView(pose: .celebrating, animation: .bounce, color: GymColors.power)
+                .frame(height: GymMetrics.mascotLarge)
             Text("All Sets Complete!")
-                .font(.title2.weight(.bold))
+                .font(GymFont.heading1)
             Text("\(flatSets.count) sets finished")
-                .font(.subheadline)
-                .foregroundStyle(.secondary)
+                .font(GymFont.body)
+                .foregroundStyle(GymColors.secondaryText)
 
             Button("End Workout") {
                 endWorkout()
             }
-            .buttonStyle(.borderedProminent)
+            .buttonStyle(.gymPrimary)
+            .padding(.horizontal, 40)
             .padding(.top)
         }
     }
@@ -227,11 +256,19 @@ struct GuidedWorkoutView: View {
         pair.set.completedAt = .now
 
         if let next = workout.nextIncompleteSetIndex(after: currentIndex, in: modelContext) {
-            currentIndex = next
-            onSetIndexChange?(currentIndex)
-            loadCurrentSet()
+            // Brief walking transition
+            withAnimation(.easeInOut(duration: 0.3)) {
+                showWalkingTransition = true
+            }
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                currentIndex = next
+                onSetIndexChange?(currentIndex)
+                loadCurrentSet()
+                withAnimation(.easeInOut(duration: 0.3)) {
+                    showWalkingTransition = false
+                }
+            }
         } else {
-            // All complete — show completion view
             currentIndex = flatSets.count
             onSetIndexChange?(currentIndex)
         }

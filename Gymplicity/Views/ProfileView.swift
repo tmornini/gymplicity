@@ -19,13 +19,13 @@ struct ProfileView: View {
                             ActiveWorkoutView(workout: workout)
                         } label: {
                             HStack {
-                                Image(systemName: "circle.fill")
-                                    .font(.system(size: 8))
-                                    .foregroundStyle(.green)
+                                Circle()
+                                    .fill(GymColors.activeIndicator)
+                                    .frame(width: GymMetrics.completionDotSize, height: GymMetrics.completionDotSize)
                                 Text(workout.date, style: .date)
                                 Spacer()
                                 Text("\(workout.exerciseCount(in: modelContext)) ex")
-                                    .foregroundStyle(.secondary)
+                                    .foregroundStyle(GymColors.secondaryText)
                             }
                         }
                     }
@@ -38,7 +38,8 @@ struct ProfileView: View {
                         startWorkout()
                     } label: {
                         Label("Start New Workout", systemImage: "plus.circle.fill")
-                            .fontWeight(.medium)
+                            .font(GymFont.bodyStrong)
+                            .foregroundStyle(GymColors.energy)
                     }
                 }
                 if let trainer = trainerWithTemplates() {
@@ -64,6 +65,18 @@ struct ProfileView: View {
                         }
                     }
                 }
+            } else {
+                Section {
+                    VStack(spacing: GymMetrics.space16) {
+                        AnimatedMascotView(pose: .lifting, animation: .rep, color: GymColors.secondaryText)
+                            .frame(height: GymMetrics.mascotMedium)
+                        Text("Let's get your first workout in!")
+                            .font(GymFont.body)
+                            .foregroundStyle(GymColors.secondaryText)
+                    }
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, GymMetrics.space16)
+                }
             }
 
             let exercises = identity.allExercises(in: modelContext)
@@ -78,8 +91,8 @@ struct ProfileView: View {
                                 Spacer()
                                 if let lastSet = identity.lastSet(for: exercise, in: modelContext) {
                                     Text("\(formatWeight(lastSet.weight)) x \(lastSet.reps)")
-                                        .font(.caption)
-                                        .foregroundStyle(.secondary)
+                                        .font(GymFont.bodyMono)
+                                        .foregroundStyle(GymColors.secondaryText)
                                 }
                             }
                         }
@@ -140,23 +153,23 @@ private struct WorkoutRow: View {
             let count = workout.exerciseCount(in: modelContext)
             HStack {
                 Text(workout.date, style: .date)
-                    .font(.body)
+                    .font(GymFont.body)
                 Spacer()
                 Text("\(count) exercise\(count == 1 ? "" : "s")")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
+                    .font(GymFont.caption)
+                    .foregroundStyle(GymColors.secondaryText)
             }
             let volume = workout.totalVolume(in: modelContext)
             if volume > 0 {
                 Text("Total volume: \(formatVolume(volume)) lb")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
+                    .font(GymFont.caption)
+                    .foregroundStyle(GymColors.secondaryText)
             }
             let exerciseNames = exerciseNamesList()
             if !exerciseNames.isEmpty {
                 Text(exerciseNames)
-                    .font(.caption)
-                    .foregroundStyle(.tertiary)
+                    .font(GymFont.caption)
+                    .foregroundStyle(GymColors.tertiaryText)
                     .lineLimit(1)
             }
         }

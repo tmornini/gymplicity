@@ -15,11 +15,7 @@ struct ProgressChartsView: View {
         ScrollView {
             VStack(alignment: .leading, spacing: 32) {
                 if history.isEmpty {
-                    ContentUnavailableView(
-                        "No History Yet",
-                        systemImage: "chart.xyaxis.line",
-                        description: Text("Complete a workout with \(exercise.name) to see progress.")
-                    )
+                    emptyState
                 } else {
                     weightPerRepChart
                     totalVolumeChart
@@ -31,19 +27,41 @@ struct ProgressChartsView: View {
         .navigationBarTitleDisplayMode(.inline)
     }
 
+    // MARK: - Empty State
+
+    private var emptyState: some View {
+        VStack(spacing: GymMetrics.space16) {
+            Spacer()
+            AnimatedMascotView(pose: .deadlifting, animation: .rep, color: GymColors.secondaryText)
+                .frame(height: GymMetrics.mascotMedium)
+            Text("Complete workouts to track your progress")
+                .font(GymFont.body)
+                .foregroundStyle(GymColors.secondaryText)
+                .multilineTextAlignment(.center)
+            Spacer()
+        }
+        .frame(maxWidth: .infinity)
+        .padding(.vertical, GymMetrics.space48)
+    }
+
     // MARK: - Chart A: Weight @ Reps Over Time
 
     @ViewBuilder
     private var weightPerRepChart: some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text("Weight @ Reps Over Time")
-                .font(.headline)
+            HStack(spacing: GymMetrics.space8) {
+                MascotView(pose: .deadlifting, color: GymColors.energy)
+                    .frame(height: GymMetrics.mascotTiny)
+                Text("Weight @ Reps Over Time")
+                    .font(GymFont.heading3)
+            }
             Text("Best weight for each rep count per workout")
-                .font(.caption)
-                .foregroundStyle(.secondary)
+                .font(GymFont.caption)
+                .foregroundStyle(GymColors.secondaryText)
 
             let dataPoints = weightPerRepData
             let repCounts = Swift.Set(dataPoints.map(\.reps)).sorted()
+            let colors: [Color] = [GymColors.energy, GymColors.power, GymColors.focus, GymColors.warning]
 
             Chart(dataPoints) { point in
                 LineMark(
@@ -60,20 +78,20 @@ struct ProgressChartsView: View {
                 .foregroundStyle(by: .value("Reps", "\(point.reps)-rep"))
                 .symbol(by: .value("Reps", "\(point.reps)-rep"))
             }
+            .chartForegroundStyleScale(range: colors.prefix(max(repCounts.count, 1)).map { $0 })
             .chartYAxisLabel("lb")
             .chartLegend(position: .bottom, alignment: .leading)
             .frame(height: 240)
 
             if repCounts.isEmpty {
                 Text("No data")
-                    .font(.caption)
-                    .foregroundStyle(.tertiary)
+                    .font(GymFont.caption)
+                    .foregroundStyle(GymColors.tertiaryText)
             }
         }
     }
 
     private var weightPerRepData: [WeightPerRepPoint] {
-        // Group sets by date, then by reps, take max weight
         let byDate = Dictionary(grouping: history.filter { $0.set.reps > 0 && $0.set.weight > 0 }, by: { $0.date })
         return byDate.flatMap { (date, items) in
             let byReps = Dictionary(grouping: items, by: { $0.set.reps })
@@ -90,10 +108,10 @@ struct ProgressChartsView: View {
     private var totalVolumeChart: some View {
         VStack(alignment: .leading, spacing: 8) {
             Text("Total Volume Over Time")
-                .font(.headline)
+                .font(GymFont.heading3)
             Text("Sum of weight x reps across all sets per workout")
-                .font(.caption)
-                .foregroundStyle(.secondary)
+                .font(GymFont.caption)
+                .foregroundStyle(GymColors.secondaryText)
 
             let dataPoints = volumeData
 
@@ -102,19 +120,19 @@ struct ProgressChartsView: View {
                     x: .value("Date", point.date),
                     y: .value("Volume", point.volume)
                 )
-                .foregroundStyle(.blue.opacity(0.15))
+                .foregroundStyle(GymColors.focus.opacity(0.15))
 
                 LineMark(
                     x: .value("Date", point.date),
                     y: .value("Volume", point.volume)
                 )
-                .foregroundStyle(.blue)
+                .foregroundStyle(GymColors.focus)
 
                 PointMark(
                     x: .value("Date", point.date),
                     y: .value("Volume", point.volume)
                 )
-                .foregroundStyle(.blue)
+                .foregroundStyle(GymColors.focus)
             }
             .chartYAxisLabel("lb")
             .frame(height: 240)

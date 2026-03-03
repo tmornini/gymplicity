@@ -39,6 +39,15 @@ HomeView, ActiveWorkoutView, SetEntryView, AddExerciseView, ProfileView,
 ProgressChartsView, AddTraineeView, WorkoutHistoryView, TemplateListView,
 TemplateEditorView, StartFromTemplateView, GuidedWorkoutView, SyncView
 
+### Theme Module (7 files in Gymplicity/Theme/)
+
+GymColors, GymTypography, GymMetrics, GymModifiers, MascotView,
+AnimatedMascotView, GymProgressBar
+
+- **Mascot "Lifty":** Bathroom-sign stick figure (Path strokes, round caps). 10 poses, 6 animations. 27 appearances across the app.
+- **Palette:** iron/steel/chalk/rubber + energy orange, power green, focus blue
+- **Typography:** SF Pro Rounded throughout, monospaced digits for numbers
+
 ### Sync Module (4 files in Gymplicity/Sync/)
 
 SyncPayload, SyncEngine, SyncSessionManager, IdentityReconciliation

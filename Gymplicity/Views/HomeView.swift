@@ -23,12 +23,7 @@ struct HomeView: View {
                         ProfileView(identity: identity)
                     }
                 } else {
-                    ContentUnavailableView {
-                        Label("Welcome to Gymplicity", systemImage: "figure.strengthtraining.traditional")
-                    } actions: {
-                        Button("Get Started") { showingSetup = true }
-                            .buttonStyle(.borderedProminent)
-                    }
+                    welcomeView
                 }
             }
             .navigationTitle("Gymplicity")
@@ -65,6 +60,26 @@ struct HomeView: View {
         }
     }
 
+    // MARK: - Welcome View
+
+    private var welcomeView: some View {
+        VStack(spacing: GymMetrics.space24) {
+            Spacer()
+            AnimatedMascotView(pose: .waving, animation: .wave, color: GymColors.energy)
+                .frame(height: GymMetrics.mascotLarge)
+            Text("Welcome to Gymplicity")
+                .font(GymFont.heading1)
+            Text("Train smarter. Track everything.")
+                .font(GymFont.body)
+                .foregroundStyle(GymColors.secondaryText)
+            Button("Get Started") { showingSetup = true }
+                .buttonStyle(.gymPrimary)
+                .padding(.horizontal, 40)
+            Spacer()
+        }
+        .padding()
+    }
+
     // MARK: - Trainer Layout
 
     @ViewBuilder
@@ -75,7 +90,7 @@ struct HomeView: View {
         }.sorted { $0.workout.date < $1.workout.date }
         List {
             if !active.isEmpty {
-                Section("Active Workouts") {
+                Section {
                     ForEach(active, id: \.workout.id) { pair in
                         NavigationLink {
                             ActiveWorkoutsContainerView(trainer: identity, initialWorkoutId: pair.workout.id)
@@ -83,16 +98,28 @@ struct HomeView: View {
                             ActiveWorkoutRow(identity: pair.identity, workout: pair.workout)
                         }
                     }
+                } header: {
+                    HStack(spacing: GymMetrics.space4) {
+                        MascotView(pose: .curling, color: GymColors.energy)
+                            .frame(height: GymMetrics.mascotInline)
+                        Text("Active Workouts")
+                    }
                 }
             }
 
-            Section("Templates") {
+            Section {
                 NavigationLink {
                     TemplateListView(trainer: identity)
                 } label: {
                     let count = identity.templates(in: modelContext).count
-                    Label("\(count) Template\(count == 1 ? "" : "s")", systemImage: "doc.text")
+                    HStack(spacing: GymMetrics.space4) {
+                        MascotView(pose: .thinking, color: GymColors.secondaryText)
+                            .frame(height: GymMetrics.mascotInline)
+                        Text("\(count) Template\(count == 1 ? "" : "s")")
+                    }
                 }
+            } header: {
+                Text("Templates")
             }
 
             Section("Trainees") {
@@ -105,13 +132,13 @@ struct HomeView: View {
                     .swipeActions(edge: .trailing, allowsFullSwipe: false) {
                         if trainee.activeWorkouts(in: modelContext).isEmpty {
                             Button("Start") { startWorkout(for: trainee) }
-                                .tint(.green)
+                                .tint(GymColors.power)
                             if !identity.templates(in: modelContext).isEmpty {
                                 Button("Template") {
                                     selectedTrainee = trainee
                                     showingTemplateStart = true
                                 }
-                                .tint(.blue)
+                                .tint(GymColors.focus)
                             }
                         }
                     }
@@ -122,11 +149,19 @@ struct HomeView: View {
             }
 
             if trainees.isEmpty {
-                ContentUnavailableView {
-                    Label("No Trainees Yet", systemImage: "person.2")
-                } actions: {
-                    Button("Add Trainee") { showingAddTrainee = true }
-                        .buttonStyle(.borderedProminent)
+                Section {
+                    VStack(spacing: GymMetrics.space16) {
+                        AnimatedMascotView(pose: .spotting, animation: .pulse, color: GymColors.secondaryText)
+                            .frame(height: GymMetrics.mascotMedium)
+                        Text("Add your first trainee")
+                            .font(GymFont.body)
+                            .foregroundStyle(GymColors.secondaryText)
+                        Button("Add Trainee") { showingAddTrainee = true }
+                            .buttonStyle(.gymPrimary)
+                            .padding(.horizontal, 40)
+                    }
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, GymMetrics.space16)
                 }
             }
         }
@@ -171,20 +206,20 @@ private struct ActiveWorkoutRow: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
             HStack {
-                Image(systemName: "circle.fill")
-                    .font(.system(size: 8))
-                    .foregroundStyle(.green)
+                Circle()
+                    .fill(GymColors.activeIndicator)
+                    .frame(width: GymMetrics.completionDotSize, height: GymMetrics.completionDotSize)
                 Text(identity.name)
-                    .font(.headline)
+                    .font(GymFont.heading3)
             }
             Text(timeAgo(workout.date))
-                .font(.caption)
-                .foregroundStyle(.secondary)
+                .font(GymFont.caption)
+                .foregroundStyle(GymColors.secondaryText)
             let count = workout.exerciseCount(in: modelContext)
             if count > 0 {
                 Text("\(count) exercise\(count == 1 ? "" : "s")")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
+                    .font(GymFont.caption)
+                    .foregroundStyle(GymColors.secondaryText)
             }
         }
         .padding(.vertical, 2)
@@ -207,25 +242,32 @@ private struct TraineeRow: View {
         let completed = identity.completedWorkouts(in: modelContext)
         let active = identity.activeWorkouts(in: modelContext)
         HStack {
+            ZStack {
+                Circle()
+                    .fill(GymColors.steel)
+                    .frame(width: GymMetrics.avatarSize, height: GymMetrics.avatarSize)
+                Text(String(identity.name.prefix(1)).uppercased())
+                    .font(GymFont.bodyStrong)
+                    .foregroundStyle(GymColors.chalk)
+            }
             VStack(alignment: .leading, spacing: 2) {
                 Text(identity.name)
-                    .font(.body)
+                    .font(GymFont.body)
                 if !completed.isEmpty {
                     Text("\(completed.count) workout\(completed.count == 1 ? "" : "s")")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
+                        .font(GymFont.caption)
+                        .foregroundStyle(GymColors.secondaryText)
                 }
             }
             Spacer()
             if active.isEmpty {
                 Button("Start") { }
                     .buttonStyle(.bordered)
-                    .font(.caption)
+                    .font(GymFont.caption)
                     .allowsHitTesting(false)
             } else {
                 Text("In Workout")
-                    .font(.caption)
-                    .foregroundStyle(.green)
+                    .gymPill(GymColors.power)
             }
         }
     }

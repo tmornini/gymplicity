@@ -43,6 +43,13 @@
 		C42E4343AFE252F3E1280CBC /* IdentityReconciliation.swift in None */ = {isa = PBXBuildFile; fileRef = 742F4438ACE1029D32DA9E0E /* IdentityReconciliation.swift */; };
 		F4BA48C88F08F2D49F52F53A /* CascadeDeleteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEBD4814A637620F06BC2B42 /* CascadeDeleteTests.swift */; };
 		FDD649518D20F7F123F9E45E /* WorkoutLifecycleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77374765931C45095999078E /* WorkoutLifecycleTests.swift */; };
+		A10000010000000000000012 /* GymColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000012 /* GymColors.swift */; };
+		A10000010000000000000013 /* GymTypography.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000013 /* GymTypography.swift */; };
+		A10000010000000000000014 /* GymMetrics.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000014 /* GymMetrics.swift */; };
+		A10000010000000000000015 /* GymModifiers.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000015 /* GymModifiers.swift */; };
+		A10000010000000000000016 /* MascotView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000016 /* MascotView.swift */; };
+		A10000010000000000000017 /* AnimatedMascotView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000017 /* AnimatedMascotView.swift */; };
+		A10000010000000000000018 /* GymProgressBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000018 /* GymProgressBar.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -89,6 +96,13 @@
 		CEBD4814A637620F06BC2B42 /* CascadeDeleteTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = CascadeDeleteTests.swift; path = GymplicityTests/CascadeDeleteTests.swift; sourceTree = SOURCE_ROOT; };
 		E1AB65B72F56106200B55896 /* GymplicityTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = GymplicityTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		F39D4D6592A35E81F45E84AD /* TemplateTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = TemplateTests.swift; path = GymplicityTests/TemplateTests.swift; sourceTree = SOURCE_ROOT; };
+		A20000010000000000000012 /* GymColors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GymColors.swift; sourceTree = "<group>"; };
+		A20000010000000000000013 /* GymTypography.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GymTypography.swift; sourceTree = "<group>"; };
+		A20000010000000000000014 /* GymMetrics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GymMetrics.swift; sourceTree = "<group>"; };
+		A20000010000000000000015 /* GymModifiers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GymModifiers.swift; sourceTree = "<group>"; };
+		A20000010000000000000016 /* MascotView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MascotView.swift; sourceTree = "<group>"; };
+		A20000010000000000000017 /* AnimatedMascotView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimatedMascotView.swift; sourceTree = "<group>"; };
+		A20000010000000000000018 /* GymProgressBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GymProgressBar.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -142,9 +156,24 @@
 				A20000010000000000000001 /* GymplicityApp.swift */,
 				A50000010000000000000003 /* Models */,
 				A50000010000000000000004 /* Views */,
+				A50000010000000000000006 /* Theme */,
 				A2000001000000000000000B /* Assets.xcassets */,
 			);
 			path = Gymplicity;
+			sourceTree = "<group>";
+		};
+		A50000010000000000000006 /* Theme */ = {
+			isa = PBXGroup;
+			children = (
+				A20000010000000000000012 /* GymColors.swift */,
+				A20000010000000000000013 /* GymTypography.swift */,
+				A20000010000000000000014 /* GymMetrics.swift */,
+				A20000010000000000000015 /* GymModifiers.swift */,
+				A20000010000000000000016 /* MascotView.swift */,
+				A20000010000000000000017 /* AnimatedMascotView.swift */,
+				A20000010000000000000018 /* GymProgressBar.swift */,
+			);
+			path = Theme;
 			sourceTree = "<group>";
 		};
 		A50000010000000000000003 /* Models */ = {
@@ -310,6 +339,13 @@
 				00AF4AE1BA7F434FEA5DA3D6 /* IdentityReconciliation.swift in Sources */,
 				4085488EB12B4089E406ADC6 /* SyncSessionManager.swift in Sources */,
 				43144A0BB7A596E98E31558F /* SyncView.swift in Sources */,
+				A10000010000000000000012 /* GymColors.swift in Sources */,
+				A10000010000000000000013 /* GymTypography.swift in Sources */,
+				A10000010000000000000014 /* GymMetrics.swift in Sources */,
+				A10000010000000000000015 /* GymModifiers.swift in Sources */,
+				A10000010000000000000016 /* MascotView.swift in Sources */,
+				A10000010000000000000017 /* AnimatedMascotView.swift in Sources */,
+				A10000010000000000000018 /* GymProgressBar.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -454,6 +490,7 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(SRCROOT)/Gymplicity/Sync",
 					"$(SRCROOT)/Gymplicity/Views",
+					"$(SRCROOT)/Gymplicity/Theme",
 					"$(SRCROOT)/GymplicityTests",
 				);
 				MARKETING_VERSION = 1.0;
@@ -482,6 +519,7 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(SRCROOT)/Gymplicity/Sync",
 					"$(SRCROOT)/Gymplicity/Views",
+					"$(SRCROOT)/Gymplicity/Theme",
 					"$(SRCROOT)/GymplicityTests",
 				);
 				MARKETING_VERSION = 1.0;
@@ -539,6 +577,7 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(SRCROOT)/Gymplicity/Sync",
 					"$(SRCROOT)/Gymplicity/Views",
+					"$(SRCROOT)/Gymplicity/Theme",
 					"$(SRCROOT)/GymplicityTests",
 				);
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
@@ -598,6 +637,7 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(SRCROOT)/Gymplicity/Sync",
 					"$(SRCROOT)/Gymplicity/Views",
+					"$(SRCROOT)/Gymplicity/Theme",
 					"$(SRCROOT)/GymplicityTests",
 				);
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;

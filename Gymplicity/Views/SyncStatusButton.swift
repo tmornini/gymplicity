@@ -36,15 +36,15 @@ struct SyncStatusButton: View {
     private var iconColor: Color {
         switch syncManager.connectionState {
         case .idle, .searching:
-            .gray
+            GymColors.secondaryText
         case .connecting, .pairing:
-            .orange
+            GymColors.energy
         case .syncing:
-            .blue
+            GymColors.focus
         case .connected:
-            .green
+            GymColors.power
         case .error:
-            .red
+            GymColors.danger
         }
     }
 

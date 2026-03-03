@@ -10,12 +10,24 @@ struct AddTraineeView: View {
 
     var body: some View {
         NavigationStack {
-            Form {
+            VStack(spacing: GymMetrics.space24) {
+                AnimatedMascotView(pose: .spotting, animation: .bounce, color: GymColors.energy)
+                    .frame(height: 80)
+                Text("Who's training today?")
+                    .font(GymFont.heading2)
+                    .foregroundStyle(GymColors.secondaryText)
+
                 TextField("Name", text: $name)
                     .focused($nameFieldFocused)
+                    .font(GymFont.heading3)
+                    .textFieldStyle(.roundedBorder)
+                    .padding(.horizontal, GymMetrics.space24)
                     .submitLabel(.done)
                     .onSubmit { save() }
+
+                Spacer()
             }
+            .padding(.top, GymMetrics.space32)
             .navigationTitle("New Trainee")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -24,6 +36,8 @@ struct AddTraineeView: View {
                 }
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Add") { save() }
+                        .fontWeight(.semibold)
+                        .foregroundStyle(GymColors.energy)
                         .disabled(name.trimmingCharacters(in: .whitespaces).isEmpty)
                 }
             }

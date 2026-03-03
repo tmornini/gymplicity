@@ -26,7 +26,7 @@ struct AddExerciseView: View {
             VStack(spacing: 0) {
                 TextField("Exercise name", text: $searchText)
                     .focused($nameFieldFocused)
-                    .font(.title3)
+                    .font(GymFont.heading3)
                     .padding()
                     .submitLabel(.done)
                     .onSubmit { addExercise() }
@@ -47,22 +47,25 @@ struct AddExerciseView: View {
                     }
                     .listStyle(.plain)
                 } else if !searchText.isEmpty {
-                    VStack(spacing: 8) {
+                    VStack(spacing: GymMetrics.space8) {
                         Spacer()
-                        Text("New exercise")
-                            .font(.subheadline)
-                            .foregroundStyle(.secondary)
-                        Text("Tap Add to create \"\(searchText)\"")
-                            .font(.caption)
-                            .foregroundStyle(.tertiary)
+                        MascotView(pose: .thinking, color: GymColors.secondaryText)
+                            .frame(height: GymMetrics.mascotSmall)
+                        Text("No matches — tap Add to create")
+                            .font(GymFont.body)
+                            .foregroundStyle(GymColors.secondaryText)
+                        Text("\"\(searchText)\"")
+                            .font(GymFont.bodyStrong)
                         Spacer()
                     }
                 } else {
-                    VStack(spacing: 8) {
+                    VStack(spacing: GymMetrics.space8) {
                         Spacer()
+                        AnimatedMascotView(pose: .thinking, animation: .pulse, color: GymColors.secondaryText)
+                            .frame(height: GymMetrics.mascotSmall)
                         Text("Type an exercise name")
-                            .font(.subheadline)
-                            .foregroundStyle(.secondary)
+                            .font(GymFont.body)
+                            .foregroundStyle(GymColors.secondaryText)
                         Spacer()
                     }
                 }
@@ -76,6 +79,7 @@ struct AddExerciseView: View {
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Add") { addExercise() }
                         .fontWeight(.semibold)
+                        .foregroundStyle(GymColors.energy)
                         .disabled(searchText.trimmingCharacters(in: .whitespaces).isEmpty)
                 }
             }

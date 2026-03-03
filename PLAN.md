@@ -398,6 +398,23 @@ Handles peer discovery, pairing, and sync status via Multipeer Connectivity.
 
 ---
 
+## Mascot: Lifty
+
+Lifty is Gymplicity's mascot — a bathroom-sign-style stick figure with a
+circle head, line body, angled legs, line arms, and a barbell. Drawn as
+SwiftUI Path strokes with round line caps. His form is intentionally
+simplistic; what changes between poses is arm/leg angles and barbell
+position. Lifty appears throughout the app (27 placements) from tiny 20pt
+inline accents to 160pt hero moments — animating, reacting, celebrating,
+waiting, stretching, and spotting. He brings personality to every screen.
+
+**10 poses:** lifting, celebrating, resting, curling, stretching, spotting,
+thinking, deadlifting, walking, waving.
+
+**6 animations:** bounce, pulse, wobble, rep, wave, enterFromBottom.
+
+---
+
 ## Key Design Principles
 
 1. **Speed over beauty** — A trainer mid-session needs 2-3 taps to log a

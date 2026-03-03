@@ -48,9 +48,10 @@ WorkoutEntity
 ├── notes: String?
 └── isComplete: Bool
 
-SupersetEntity
+WorkoutGroupEntity
 ├── id: UUID
-└── order: Int
+├── order: Int
+└── isSuperset: Bool
 
 SetEntity
 ├── id: UUID
@@ -67,16 +68,16 @@ SetEntity
 TrainerTrainees       (trainerId, traineeId)
 TrainerExercises      (trainerId, exerciseId)
 IdentityWorkouts      (identityId, workoutId)
-WorkoutSupersets      (workoutId, supersetId)
-SupersetSets          (supersetId, setId)
+WorkoutGroups         (workoutId, groupId)
+GroupSets             (groupId, setId)
 ExerciseSets          (exerciseId, setId)
 ```
 
 ### Derived Values (computed, not stored)
 
 - **Per-set volume**: `weight × reps`
-- **Per-superset volume**: sum of all set volumes
-- **Per-workout volume**: sum of all superset volumes
+- **Per-group volume**: sum of all set volumes
+- **Per-workout volume**: sum of all group volumes
 - **Per-rep weight for exercise**: `weight` at a given `reps` value over time (matched by exercise)
 - **Total volume for exercise**: sum of all set volumes for that exercise over time
 
@@ -114,9 +115,10 @@ and active workouts; trainees see their own profile directly.
 
 ### 2. Active Workout View
 
-The core trainer-operation screen. Organized by superset — each superset
-is a numbered section containing one or more sets (potentially of different
-exercises for circuit training).
+The core trainer-operation screen. Organized by workout groups — each group
+is either a standalone exercise (sets of the same exercise) or a superset
+(sets of different exercises). The `isSuperset` flag on `WorkoutGroupEntity`
+determines presentation.
 
 ```
 ┌──────────────────────────────┐
@@ -124,20 +126,21 @@ exercises for circuit training).
 │  Feb 28, 2026                │
 │──────────────────────────────│
 │                              │
-│  Superset 1                  │
+│  Bench Press                 │
 │  ┌──────────────────────┐   │
 │  │ Bench  135 lb × 10 ✓│   │
-│  │ Row     95 lb × 10 ✓│   │
-│  │ [+ Add Set]          │   │
-│  └──────────────────────┘   │
-│                              │
-│  Superset 2                  │
-│  ┌──────────────────────┐   │
 │  │ Bench  155 lb × 8  ✓│   │
-│  │ Row    105 lb × 8    │   │
 │  │ [+ Add Set]          │   │
 │  └──────────────────────┘   │
 │                              │
+│  Superset 1                  │
+│  ┌──────────────────────┐   │
+│  │ Row     95 lb × 10 ✓│   │
+│  │ Curl    30 lb × 12   │   │
+│  │ [+ Add Set]          │   │
+│  └──────────────────────┘   │
+│                              │
+│  [+ Add Exercise]            │
 │  [+ Add Superset]            │
 └──────────────────────────────┘
 ```
@@ -147,7 +150,10 @@ exercises for circuit training).
 - Tap checkmark to toggle set completion
 - Swipe set to delete
 - Previous workout values pre-filled as defaults
-- Add set picks exercise by name (autocomplete from catalog)
+- "Add Exercise" creates a standalone group, picks exercise, then adds sets of same exercise
+- "Add Superset" creates a superset group, picks exercise for each new set
+- "Add Set" in a standalone group auto-adds with the same exercise (no picker)
+- "Add Set" in a superset group opens exercise picker
 
 ### 3. Set Entry (sheet)
 
@@ -240,7 +246,7 @@ Overview of an identity's history and trends.
 ### Phase 2: Workout Flow (core value)
 - Home screen with trainee list (trainer) or profile (trainee)
 - Start/resume workout
-- Active workout view with superset sections
+- Active workout view with exercise groups and superset sections
 - Add sets by picking exercise (autocomplete from catalog)
 - Set entry: weight × reps with inline editing
 - Set completion toggling

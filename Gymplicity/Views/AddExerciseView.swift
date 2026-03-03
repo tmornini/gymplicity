@@ -4,12 +4,12 @@ import SwiftData
 struct AddExerciseView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var modelContext
-    let superset: SupersetEntity
+    let group: WorkoutGroupEntity
     @State private var searchText = ""
     @FocusState private var nameFieldFocused: Bool
 
     private var trainer: IdentityEntity? {
-        guard let workout = superset.workout(in: modelContext),
+        guard let workout = group.workout(in: modelContext),
               let owner = workout.owner(in: modelContext) else { return nil }
         return owner.isTrainer ? owner : owner.trainer(in: modelContext)
     }
@@ -99,7 +99,7 @@ struct AddExerciseView: View {
 
     private func createSet(for exercise: ExerciseEntity) {
         let owner: IdentityEntity? = {
-            guard let workout = superset.workout(in: modelContext) else { return nil }
+            guard let workout = group.workout(in: modelContext) else { return nil }
             return workout.owner(in: modelContext)
         }()
 
@@ -110,10 +110,10 @@ struct AddExerciseView: View {
             reps = lastSet.reps
         }
 
-        let set = SetEntity(order: superset.nextSetOrder(in: modelContext), weight: weight, reps: reps)
+        let set = SetEntity(order: group.nextSetOrder(in: modelContext), weight: weight, reps: reps)
         modelContext.insert(set)
-        let supersetJoin = SupersetSets(supersetId: superset.id, setId: set.id)
-        modelContext.insert(supersetJoin)
+        let groupJoin = GroupSets(groupId: group.id, setId: set.id)
+        modelContext.insert(groupJoin)
         let exerciseJoin = ExerciseSets(exerciseId: exercise.id, setId: set.id)
         modelContext.insert(exerciseJoin)
     }

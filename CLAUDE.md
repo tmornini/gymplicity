@@ -26,12 +26,12 @@ build/device YOUR_TEAM_ID    # pass Apple Team ID as argument
 
 ### Entities (5)
 
-IdentityEntity, ExerciseEntity, WorkoutEntity, SupersetEntity, SetEntity
+IdentityEntity, ExerciseEntity, WorkoutEntity, WorkoutGroupEntity, SetEntity
 
 ### Join Tables (6)
 
-TrainerTrainees, TrainerExercises, IdentityWorkouts, WorkoutSupersets,
-SupersetSets, ExerciseSets
+TrainerTrainees, TrainerExercises, IdentityWorkouts, WorkoutGroups,
+GroupSets, ExerciseSets
 
 ### Views (8)
 

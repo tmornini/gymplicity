@@ -140,7 +140,7 @@ private struct WorkoutRow: View {
     }
 
     private func exerciseNamesList() -> String {
-        let allSets = workout.sortedSupersets(in: modelContext).flatMap { $0.sortedSets(in: modelContext) }
+        let allSets = workout.sortedGroups(in: modelContext).flatMap { $0.sortedSets(in: modelContext) }
         var seen = Swift.Set<UUID>()
         var names: [String] = []
         for set in allSets {

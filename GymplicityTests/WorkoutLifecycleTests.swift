@@ -15,36 +15,36 @@ final class WorkoutLifecycleTests: XCTestCase {
         XCTAssert(trainee.completedWorkouts(in: ctx).isEmpty)
     }
 
-    func testAddSupersetToWorkout() throws {
+    func testAddGroupToWorkout() throws {
         let ctx = try makeTestContext()
         let trainer = ctx.makeTrainer()
         let trainee = ctx.makeTrainee(trainer: trainer)
         let workout = ctx.makeWorkout(for: trainee)
 
-        XCTAssertEqual(workout.nextSupersetOrder(in: ctx), 0)
+        XCTAssertEqual(workout.nextGroupOrder(in: ctx), 0)
 
-        ctx.makeSuperset(in: workout, order: workout.nextSupersetOrder(in: ctx))
-        XCTAssertEqual(workout.supersets(in: ctx).count, 1)
-        XCTAssertEqual(workout.nextSupersetOrder(in: ctx), 1)
+        ctx.makeGroup(in: workout, order: workout.nextGroupOrder(in: ctx))
+        XCTAssertEqual(workout.groups(in: ctx).count, 1)
+        XCTAssertEqual(workout.nextGroupOrder(in: ctx), 1)
 
-        ctx.makeSuperset(in: workout, order: workout.nextSupersetOrder(in: ctx))
-        XCTAssertEqual(workout.supersets(in: ctx).count, 2)
-        XCTAssertEqual(workout.nextSupersetOrder(in: ctx), 2)
+        ctx.makeGroup(in: workout, order: workout.nextGroupOrder(in: ctx))
+        XCTAssertEqual(workout.groups(in: ctx).count, 2)
+        XCTAssertEqual(workout.nextGroupOrder(in: ctx), 2)
     }
 
-    func testAddSetToSuperset() throws {
+    func testAddSetToGroup() throws {
         let ctx = try makeTestContext()
         let trainer = ctx.makeTrainer()
         let bench = ctx.makeExercise(name: "Bench", trainer: trainer)
         let trainee = ctx.makeTrainee(trainer: trainer)
         let workout = ctx.makeWorkout(for: trainee)
-        let superset = ctx.makeSuperset(in: workout, order: 0)
+        let group = ctx.makeGroup(in: workout, order: 0)
 
-        XCTAssertEqual(superset.nextSetOrder(in: ctx), 0)
+        XCTAssertEqual(group.nextSetOrder(in: ctx), 0)
 
-        let set = ctx.makeSet(in: superset, exercise: bench, order: 0, weight: 135, reps: 10)
-        XCTAssertEqual(superset.sets(in: ctx).count, 1)
-        XCTAssertEqual(superset.nextSetOrder(in: ctx), 1)
+        let set = ctx.makeSet(in: group, exercise: bench, order: 0, weight: 135, reps: 10)
+        XCTAssertEqual(group.sets(in: ctx).count, 1)
+        XCTAssertEqual(group.nextSetOrder(in: ctx), 1)
         XCTAssertEqual(set.exercise(in: ctx)?.id, bench.id)
     }
 
@@ -54,8 +54,8 @@ final class WorkoutLifecycleTests: XCTestCase {
         let bench = ctx.makeExercise(name: "Bench", trainer: trainer)
         let trainee = ctx.makeTrainee(trainer: trainer)
         let workout = ctx.makeWorkout(for: trainee)
-        let superset = ctx.makeSuperset(in: workout, order: 0)
-        let set = ctx.makeSet(in: superset, exercise: bench, order: 0, weight: 135, reps: 10)
+        let group = ctx.makeGroup(in: workout, order: 0)
+        let set = ctx.makeSet(in: group, exercise: bench, order: 0, weight: 135, reps: 10)
 
         XCTAssertFalse(set.isCompleted)
         XCTAssertNil(set.completedAt)
@@ -95,13 +95,13 @@ final class WorkoutLifecycleTests: XCTestCase {
         let bench = ctx.makeExercise(name: "Bench", trainer: trainer)
         let trainee = ctx.makeTrainee(trainer: trainer)
         let workout = ctx.makeWorkout(for: trainee)
-        let superset = ctx.makeSuperset(in: workout, order: 0)
-        let set = ctx.makeSet(in: superset, exercise: bench, order: 0, weight: 135, reps: 10)
+        let group = ctx.makeGroup(in: workout, order: 0)
+        let set = ctx.makeSet(in: group, exercise: bench, order: 0, weight: 135, reps: 10)
 
         XCTAssertEqual(set.volume, 1350)
     }
 
-    func testSupersetAndWorkoutVolume() throws {
+    func testGroupAndWorkoutVolume() throws {
         let ctx = try makeTestContext()
         let trainer = ctx.makeTrainer()
         let bench = ctx.makeExercise(name: "Bench", trainer: trainer)
@@ -109,15 +109,15 @@ final class WorkoutLifecycleTests: XCTestCase {
         let trainee = ctx.makeTrainee(trainer: trainer)
         let workout = ctx.makeWorkout(for: trainee)
 
-        let ss1 = ctx.makeSuperset(in: workout, order: 0)
-        ctx.makeSet(in: ss1, exercise: bench, order: 0, weight: 135, reps: 10) // 1350
-        ctx.makeSet(in: ss1, exercise: bench, order: 1, weight: 155, reps: 8)  // 1240
+        let g1 = ctx.makeGroup(in: workout, order: 0)
+        ctx.makeSet(in: g1, exercise: bench, order: 0, weight: 135, reps: 10) // 1350
+        ctx.makeSet(in: g1, exercise: bench, order: 1, weight: 155, reps: 8)  // 1240
 
-        let ss2 = ctx.makeSuperset(in: workout, order: 1)
-        ctx.makeSet(in: ss2, exercise: squat, order: 0, weight: 225, reps: 5)  // 1125
+        let g2 = ctx.makeGroup(in: workout, order: 1)
+        ctx.makeSet(in: g2, exercise: squat, order: 0, weight: 225, reps: 5)  // 1125
 
-        XCTAssertEqual(ss1.totalVolume(in: ctx), 2590)
-        XCTAssertEqual(ss2.totalVolume(in: ctx), 1125)
+        XCTAssertEqual(g1.totalVolume(in: ctx), 2590)
+        XCTAssertEqual(g2.totalVolume(in: ctx), 1125)
         XCTAssertEqual(workout.totalVolume(in: ctx), 3715)
     }
 
@@ -129,13 +129,13 @@ final class WorkoutLifecycleTests: XCTestCase {
         let trainee = ctx.makeTrainee(trainer: trainer)
         let workout = ctx.makeWorkout(for: trainee)
 
-        let ss1 = ctx.makeSuperset(in: workout, order: 0)
-        ctx.makeSet(in: ss1, exercise: bench, order: 0, weight: 135, reps: 10)
-        ctx.makeSet(in: ss1, exercise: bench, order: 1, weight: 155, reps: 8)
+        let g1 = ctx.makeGroup(in: workout, order: 0)
+        ctx.makeSet(in: g1, exercise: bench, order: 0, weight: 135, reps: 10)
+        ctx.makeSet(in: g1, exercise: bench, order: 1, weight: 155, reps: 8)
 
-        let ss2 = ctx.makeSuperset(in: workout, order: 1)
-        ctx.makeSet(in: ss2, exercise: squat, order: 0, weight: 225, reps: 5)
-        ctx.makeSet(in: ss2, exercise: bench, order: 1, weight: 165, reps: 6)
+        let g2 = ctx.makeGroup(in: workout, order: 1)
+        ctx.makeSet(in: g2, exercise: squat, order: 0, weight: 225, reps: 5)
+        ctx.makeSet(in: g2, exercise: bench, order: 1, weight: 165, reps: 6)
 
         // 2 unique exercises (Bench + Squat), not 4 sets
         XCTAssertEqual(workout.exerciseCount(in: ctx), 2)

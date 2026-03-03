@@ -7,34 +7,61 @@ struct ActiveWorkoutView: View {
     @Bindable var workout: WorkoutEntity
     @State private var showingAddExercise = false
     @State private var showingEndConfirmation = false
-    @State private var targetSuperset: SupersetEntity?
+    @State private var targetGroup: WorkoutGroupEntity?
 
     var body: some View {
         List {
-            ForEach(workout.sortedSupersets(in: modelContext)) { superset in
-                Section {
-                    ForEach(superset.sortedSets(in: modelContext)) { set in
-                        SetRow(set: set, superset: superset, workout: workout)
-                    }
-                    .onDelete { offsets in deleteSets(from: superset, at: offsets) }
+            ForEach(workout.sortedGroups(in: modelContext)) { group in
+                if group.isSuperset {
+                    Section {
+                        ForEach(group.sortedSets(in: modelContext)) { set in
+                            SetRow(set: set, group: group, workout: workout)
+                        }
+                        .onDelete { offsets in deleteSets(from: group, at: offsets) }
 
-                    Button {
-                        targetSuperset = superset
-                        showingAddExercise = true
-                    } label: {
-                        Label("Add Set", systemImage: "plus")
-                            .font(.subheadline)
+                        Button {
+                            targetGroup = group
+                            showingAddExercise = true
+                        } label: {
+                            Label("Add Set", systemImage: "plus")
+                                .font(.subheadline)
+                        }
+                    } header: {
+                        Text("Superset \(group.order + 1)")
+                            .font(.headline)
+                            .textCase(nil)
                     }
-                } header: {
-                    Text("Superset \(superset.order + 1)")
-                        .font(.headline)
-                        .textCase(nil)
+                } else {
+                    Section {
+                        ForEach(group.sortedSets(in: modelContext)) { set in
+                            SetRow(set: set, group: group, workout: workout)
+                        }
+                        .onDelete { offsets in deleteSets(from: group, at: offsets) }
+
+                        Button {
+                            addSetToGroup(group)
+                        } label: {
+                            Label("Add Set", systemImage: "plus")
+                                .font(.subheadline)
+                        }
+                    } header: {
+                        Text(exerciseName(for: group))
+                            .font(.headline)
+                            .textCase(nil)
+                    }
                 }
             }
 
             Section {
                 Button {
-                    addSuperset()
+                    addGroup(isSuperset: false)
+                } label: {
+                    Label("Add Exercise", systemImage: "plus.circle.fill")
+                        .font(.body.weight(.medium))
+                }
+
+                Button {
+                    addGroup(isSuperset: true)
                 } label: {
                     Label("Add Superset", systemImage: "plus.circle.fill")
                         .font(.body.weight(.medium))
@@ -62,28 +89,51 @@ struct ActiveWorkoutView: View {
             Button("End Workout", role: .destructive) { endWorkout() }
             Button("Cancel", role: .cancel) { }
         } message: {
-            let supersets = workout.supersets(in: modelContext)
-            let setCount = supersets.flatMap { $0.sets(in: modelContext) }.count
-            Text("This workout has \(supersets.count) superset\(supersets.count == 1 ? "" : "s") and \(setCount) set\(setCount == 1 ? "" : "s").")
+            let groups = workout.groups(in: modelContext)
+            let setCount = groups.flatMap { $0.sets(in: modelContext) }.count
+            Text("This workout has \(groups.count) group\(groups.count == 1 ? "" : "s") and \(setCount) set\(setCount == 1 ? "" : "s").")
         }
         .sheet(isPresented: $showingAddExercise) {
-            if let superset = targetSuperset {
-                AddExerciseView(superset: superset)
+            if let group = targetGroup {
+                AddExerciseView(group: group)
             }
         }
     }
 
-    private func addSuperset() {
-        let superset = SupersetEntity(order: workout.nextSupersetOrder(in: modelContext))
-        modelContext.insert(superset)
-        let join = WorkoutSupersets(workoutId: workout.id, supersetId: superset.id)
+    private func exerciseName(for group: WorkoutGroupEntity) -> String {
+        group.sortedSets(in: modelContext).first?.exercise(in: modelContext)?.name ?? "Exercise"
+    }
+
+    private func addGroup(isSuperset: Bool) {
+        let group = WorkoutGroupEntity(order: workout.nextGroupOrder(in: modelContext), isSuperset: isSuperset)
+        modelContext.insert(group)
+        let join = WorkoutGroups(workoutId: workout.id, groupId: group.id)
         modelContext.insert(join)
-        targetSuperset = superset
+        targetGroup = group
         showingAddExercise = true
     }
 
-    private func deleteSets(from superset: SupersetEntity, at offsets: IndexSet) {
-        let sorted = superset.sortedSets(in: modelContext)
+    private func addSetToGroup(_ group: WorkoutGroupEntity) {
+        guard let exercise = group.sortedSets(in: modelContext).first?.exercise(in: modelContext) else { return }
+
+        var weight: Double = 0
+        var reps: Int = 0
+        if let owner = workout.owner(in: modelContext),
+           let lastSet = owner.lastSet(for: exercise, in: modelContext) {
+            weight = lastSet.weight
+            reps = lastSet.reps
+        }
+
+        let set = SetEntity(order: group.nextSetOrder(in: modelContext), weight: weight, reps: reps)
+        modelContext.insert(set)
+        let groupJoin = GroupSets(groupId: group.id, setId: set.id)
+        modelContext.insert(groupJoin)
+        let exerciseJoin = ExerciseSets(exerciseId: exercise.id, setId: set.id)
+        modelContext.insert(exerciseJoin)
+    }
+
+    private func deleteSets(from group: WorkoutGroupEntity, at offsets: IndexSet) {
+        let sorted = group.sortedSets(in: modelContext)
         for index in offsets {
             modelContext.deleteSet(sorted[index])
         }
@@ -100,7 +150,7 @@ struct ActiveWorkoutView: View {
 struct SetRow: View {
     @Environment(\.modelContext) private var modelContext
     @Bindable var set: SetEntity
-    let superset: SupersetEntity
+    let group: WorkoutGroupEntity
     let workout: WorkoutEntity
     @State private var showingEditor = false
 

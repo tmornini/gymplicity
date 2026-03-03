@@ -79,13 +79,13 @@ final class ExerciseCatalogTests: XCTestCase {
 
         // Two workouts both using Bench
         let w1 = ctx.makeWorkout(for: trainee, date: .now.addingTimeInterval(-86400), isComplete: true)
-        let ss1 = ctx.makeSuperset(in: w1, order: 0)
-        ctx.makeSet(in: ss1, exercise: bench, order: 0, weight: 135, reps: 10)
+        let g1 = ctx.makeGroup(in: w1, order: 0)
+        ctx.makeSet(in: g1, exercise: bench, order: 0, weight: 135, reps: 10)
 
         let w2 = ctx.makeWorkout(for: trainee, isComplete: true)
-        let ss2 = ctx.makeSuperset(in: w2, order: 0)
-        ctx.makeSet(in: ss2, exercise: bench, order: 0, weight: 145, reps: 8)
-        ctx.makeSet(in: ss2, exercise: squat, order: 1, weight: 225, reps: 5)
+        let g2 = ctx.makeGroup(in: w2, order: 0)
+        ctx.makeSet(in: g2, exercise: bench, order: 0, weight: 145, reps: 8)
+        ctx.makeSet(in: g2, exercise: squat, order: 1, weight: 225, reps: 5)
 
         let all = trainee.allExercises(in: ctx)
         XCTAssertEqual(all.count, 2)

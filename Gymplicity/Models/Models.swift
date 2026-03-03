@@ -43,13 +43,15 @@ final class WorkoutEntity {
 }
 
 @Model
-final class SupersetEntity {
+final class WorkoutGroupEntity {
     var id: UUID
     var order: Int
+    var isSuperset: Bool
 
-    init(order: Int) {
+    init(order: Int, isSuperset: Bool = false) {
         self.id = UUID()
         self.order = order
+        self.isSuperset = isSuperset
     }
 }
 
@@ -112,23 +114,23 @@ final class IdentityWorkouts {
 }
 
 @Model
-final class WorkoutSupersets {
+final class WorkoutGroups {
     var workoutId: UUID
-    var supersetId: UUID
+    var groupId: UUID
 
-    init(workoutId: UUID, supersetId: UUID) {
+    init(workoutId: UUID, groupId: UUID) {
         self.workoutId = workoutId
-        self.supersetId = supersetId
+        self.groupId = groupId
     }
 }
 
 @Model
-final class SupersetSets {
-    var supersetId: UUID
+final class GroupSets {
+    var groupId: UUID
     var setId: UUID
 
-    init(supersetId: UUID, setId: UUID) {
-        self.supersetId = supersetId
+    init(groupId: UUID, setId: UUID) {
+        self.groupId = groupId
         self.setId = setId
     }
 }
@@ -209,7 +211,7 @@ extension IdentityEntity {
     }
 
     func allExercises(in context: ModelContext) -> [ExerciseEntity] {
-        let sets = workouts(in: context).flatMap { $0.supersets(in: context).flatMap { $0.sets(in: context) } }
+        let sets = workouts(in: context).flatMap { $0.groups(in: context).flatMap { $0.sets(in: context) } }
         let exercisesByID = Dictionary(
             sets.compactMap { $0.exercise(in: context) }.map { ($0.id, $0) },
             uniquingKeysWith: { first, _ in first }
@@ -219,7 +221,7 @@ extension IdentityEntity {
 
     func lastSet(for exercise: ExerciseEntity, in context: ModelContext) -> SetEntity? {
         completedWorkouts(in: context)
-            .flatMap { $0.sortedSupersets(in: context).flatMap { $0.sortedSets(in: context) } }
+            .flatMap { $0.sortedGroups(in: context).flatMap { $0.sortedSets(in: context) } }
             .first { $0.exercise(in: context)?.id == exercise.id }
     }
 
@@ -227,7 +229,7 @@ extension IdentityEntity {
         completedWorkouts(in: context)
             .reversed()
             .flatMap { workout in
-                workout.supersets(in: context)
+                workout.groups(in: context)
                     .flatMap { $0.sets(in: context) }
                     .filter { $0.exercise(in: context)?.id == exercise.id }
                     .map { (date: workout.date, set: $0) }
@@ -261,43 +263,43 @@ extension WorkoutEntity {
         )))?.first
     }
 
-    func supersets(in context: ModelContext) -> [SupersetEntity] {
+    func groups(in context: ModelContext) -> [WorkoutGroupEntity] {
         let id = self.id
-        let joins = (try? context.fetch(FetchDescriptor<WorkoutSupersets>(
+        let joins = (try? context.fetch(FetchDescriptor<WorkoutGroups>(
             predicate: #Predicate { $0.workoutId == id }
         ))) ?? []
-        let ids = joins.map(\.supersetId)
-        return (try? context.fetch(FetchDescriptor<SupersetEntity>(
+        let ids = joins.map(\.groupId)
+        return (try? context.fetch(FetchDescriptor<WorkoutGroupEntity>(
             predicate: #Predicate { ids.contains($0.id) }
         ))) ?? []
     }
 
-    func sortedSupersets(in context: ModelContext) -> [SupersetEntity] {
-        supersets(in: context).sorted { $0.order < $1.order }
+    func sortedGroups(in context: ModelContext) -> [WorkoutGroupEntity] {
+        groups(in: context).sorted { $0.order < $1.order }
     }
 
-    func nextSupersetOrder(in context: ModelContext) -> Int {
-        (supersets(in: context).map(\.order).max() ?? -1) + 1
+    func nextGroupOrder(in context: ModelContext) -> Int {
+        (groups(in: context).map(\.order).max() ?? -1) + 1
     }
 
     func totalVolume(in context: ModelContext) -> Double {
-        supersets(in: context).reduce(0) { $0 + $1.totalVolume(in: context) }
+        groups(in: context).reduce(0) { $0 + $1.totalVolume(in: context) }
     }
 
     func exerciseCount(in context: ModelContext) -> Int {
-        let allSets = supersets(in: context).flatMap { $0.sets(in: context) }
+        let allSets = groups(in: context).flatMap { $0.sets(in: context) }
         let uniqueIDs = Swift.Set(allSets.compactMap { $0.exercise(in: context)?.id })
         return uniqueIDs.count
     }
 }
 
-// MARK: - SupersetEntity Traversal
+// MARK: - WorkoutGroupEntity Traversal
 
-extension SupersetEntity {
+extension WorkoutGroupEntity {
     func workout(in context: ModelContext) -> WorkoutEntity? {
         let id = self.id
-        guard let join = (try? context.fetch(FetchDescriptor<WorkoutSupersets>(
-            predicate: #Predicate { $0.supersetId == id }
+        guard let join = (try? context.fetch(FetchDescriptor<WorkoutGroups>(
+            predicate: #Predicate { $0.groupId == id }
         )))?.first else { return nil }
         let workoutId = join.workoutId
         return (try? context.fetch(FetchDescriptor<WorkoutEntity>(
@@ -307,8 +309,8 @@ extension SupersetEntity {
 
     func sets(in context: ModelContext) -> [SetEntity] {
         let id = self.id
-        let joins = (try? context.fetch(FetchDescriptor<SupersetSets>(
-            predicate: #Predicate { $0.supersetId == id }
+        let joins = (try? context.fetch(FetchDescriptor<GroupSets>(
+            predicate: #Predicate { $0.groupId == id }
         ))) ?? []
         let ids = joins.map(\.setId)
         return (try? context.fetch(FetchDescriptor<SetEntity>(
@@ -343,14 +345,14 @@ extension SetEntity {
         )))?.first
     }
 
-    func superset(in context: ModelContext) -> SupersetEntity? {
+    func group(in context: ModelContext) -> WorkoutGroupEntity? {
         let id = self.id
-        guard let join = (try? context.fetch(FetchDescriptor<SupersetSets>(
+        guard let join = (try? context.fetch(FetchDescriptor<GroupSets>(
             predicate: #Predicate { $0.setId == id }
         )))?.first else { return nil }
-        let supersetId = join.supersetId
-        return (try? context.fetch(FetchDescriptor<SupersetEntity>(
-            predicate: #Predicate { $0.id == supersetId }
+        let groupId = join.groupId
+        return (try? context.fetch(FetchDescriptor<WorkoutGroupEntity>(
+            predicate: #Predicate { $0.id == groupId }
         )))?.first
     }
 }
@@ -395,36 +397,36 @@ extension ModelContext {
     }
 
     func deleteWorkout(_ workout: WorkoutEntity) {
-        for superset in workout.supersets(in: self) {
-            deleteSuperset(superset)
+        for group in workout.groups(in: self) {
+            deleteGroup(group)
         }
         let id = workout.id
         if let joins = try? fetch(FetchDescriptor<IdentityWorkouts>(
             predicate: #Predicate { $0.workoutId == id }
         )) { joins.forEach { delete($0) } }
-        if let joins = try? fetch(FetchDescriptor<WorkoutSupersets>(
+        if let joins = try? fetch(FetchDescriptor<WorkoutGroups>(
             predicate: #Predicate { $0.workoutId == id }
         )) { joins.forEach { delete($0) } }
         delete(workout)
     }
 
-    func deleteSuperset(_ superset: SupersetEntity) {
-        for set in superset.sets(in: self) {
+    func deleteGroup(_ group: WorkoutGroupEntity) {
+        for set in group.sets(in: self) {
             deleteSet(set)
         }
-        let id = superset.id
-        if let joins = try? fetch(FetchDescriptor<WorkoutSupersets>(
-            predicate: #Predicate { $0.supersetId == id }
+        let id = group.id
+        if let joins = try? fetch(FetchDescriptor<WorkoutGroups>(
+            predicate: #Predicate { $0.groupId == id }
         )) { joins.forEach { delete($0) } }
-        if let joins = try? fetch(FetchDescriptor<SupersetSets>(
-            predicate: #Predicate { $0.supersetId == id }
+        if let joins = try? fetch(FetchDescriptor<GroupSets>(
+            predicate: #Predicate { $0.groupId == id }
         )) { joins.forEach { delete($0) } }
-        delete(superset)
+        delete(group)
     }
 
     func deleteSet(_ set: SetEntity) {
         let id = set.id
-        if let joins = try? fetch(FetchDescriptor<SupersetSets>(
+        if let joins = try? fetch(FetchDescriptor<GroupSets>(
             predicate: #Predicate { $0.setId == id }
         )) { joins.forEach { delete($0) } }
         if let joins = try? fetch(FetchDescriptor<ExerciseSets>(

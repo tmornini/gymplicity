@@ -14,7 +14,7 @@ struct WorkoutHistoryView: View {
                 LabeledContent("Exercises") {
                     Text("\(workout.exerciseCount(in: modelContext))")
                 }
-                let totalSets = workout.supersets(in: modelContext).flatMap { $0.sets(in: modelContext) }.count
+                let totalSets = workout.groups(in: modelContext).flatMap { $0.sets(in: modelContext) }.count
                 LabeledContent("Sets") {
                     Text("\(totalSets)")
                 }
@@ -34,9 +34,9 @@ struct WorkoutHistoryView: View {
                 }
             }
 
-            ForEach(workout.sortedSupersets(in: modelContext)) { superset in
-                Section("Superset \(superset.order + 1)") {
-                    ForEach(superset.sortedSets(in: modelContext)) { set in
+            ForEach(workout.sortedGroups(in: modelContext)) { group in
+                Section(groupHeader(group)) {
+                    ForEach(group.sortedSets(in: modelContext)) { set in
                         let exercise = set.exercise(in: modelContext)
                         HStack {
                             Text(exercise?.name ?? "Exercise")
@@ -59,7 +59,7 @@ struct WorkoutHistoryView: View {
 
                     HStack {
                         Spacer()
-                        Text("Volume: \(Int(superset.totalVolume(in: modelContext))) lb")
+                        Text("Volume: \(Int(group.totalVolume(in: modelContext))) lb")
                             .font(.caption)
                             .foregroundStyle(.secondary)
                     }
@@ -68,6 +68,13 @@ struct WorkoutHistoryView: View {
         }
         .navigationTitle("Workout Details")
         .navigationBarTitleDisplayMode(.inline)
+    }
+
+    private func groupHeader(_ group: WorkoutGroupEntity) -> String {
+        if group.isSuperset {
+            return "Superset \(group.order + 1)"
+        }
+        return group.sortedSets(in: modelContext).first?.exercise(in: modelContext)?.name ?? "Exercise"
     }
 
     private func formatWeight(_ weight: Double) -> String {

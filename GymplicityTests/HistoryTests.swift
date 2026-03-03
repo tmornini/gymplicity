@@ -21,13 +21,13 @@ final class HistoryTests: XCTestCase {
 
         // Older workout
         let w1 = ctx.makeWorkout(for: trainee, date: .now.addingTimeInterval(-86400 * 2), isComplete: true)
-        let ss1 = ctx.makeSuperset(in: w1, order: 0)
-        ctx.makeSet(in: ss1, exercise: bench, order: 0, weight: 135, reps: 10, isCompleted: true)
+        let g1 = ctx.makeGroup(in: w1, order: 0)
+        ctx.makeSet(in: g1, exercise: bench, order: 0, weight: 135, reps: 10, isCompleted: true)
 
         // Newer workout
         let w2 = ctx.makeWorkout(for: trainee, date: .now.addingTimeInterval(-86400), isComplete: true)
-        let ss2 = ctx.makeSuperset(in: w2, order: 0)
-        ctx.makeSet(in: ss2, exercise: bench, order: 0, weight: 155, reps: 8, isCompleted: true)
+        let g2 = ctx.makeGroup(in: w2, order: 0)
+        ctx.makeSet(in: g2, exercise: bench, order: 0, weight: 155, reps: 8, isCompleted: true)
 
         let last = trainee.lastSet(for: bench, in: ctx)
         XCTAssertNotNil(last)
@@ -46,16 +46,16 @@ final class HistoryTests: XCTestCase {
         let day3 = Date.now.addingTimeInterval(-86400)
 
         let w1 = ctx.makeWorkout(for: trainee, date: day1, isComplete: true)
-        let ss1 = ctx.makeSuperset(in: w1, order: 0)
-        ctx.makeSet(in: ss1, exercise: bench, order: 0, weight: 135, reps: 10)
+        let g1 = ctx.makeGroup(in: w1, order: 0)
+        ctx.makeSet(in: g1, exercise: bench, order: 0, weight: 135, reps: 10)
 
         let w2 = ctx.makeWorkout(for: trainee, date: day2, isComplete: true)
-        let ss2 = ctx.makeSuperset(in: w2, order: 0)
-        ctx.makeSet(in: ss2, exercise: bench, order: 0, weight: 145, reps: 8)
+        let g2 = ctx.makeGroup(in: w2, order: 0)
+        ctx.makeSet(in: g2, exercise: bench, order: 0, weight: 145, reps: 8)
 
         let w3 = ctx.makeWorkout(for: trainee, date: day3, isComplete: true)
-        let ss3 = ctx.makeSuperset(in: w3, order: 0)
-        ctx.makeSet(in: ss3, exercise: bench, order: 0, weight: 155, reps: 6)
+        let g3 = ctx.makeGroup(in: w3, order: 0)
+        ctx.makeSet(in: g3, exercise: bench, order: 0, weight: 155, reps: 6)
 
         let history = trainee.history(for: bench, in: ctx)
         XCTAssertEqual(history.count, 3)
@@ -73,13 +73,13 @@ final class HistoryTests: XCTestCase {
 
         // Completed workout
         let completed = ctx.makeWorkout(for: trainee, date: .now.addingTimeInterval(-86400), isComplete: true)
-        let ss1 = ctx.makeSuperset(in: completed, order: 0)
-        ctx.makeSet(in: ss1, exercise: bench, order: 0, weight: 135, reps: 10)
+        let g1 = ctx.makeGroup(in: completed, order: 0)
+        ctx.makeSet(in: g1, exercise: bench, order: 0, weight: 135, reps: 10)
 
         // Active workout (not complete)
         let active = ctx.makeWorkout(for: trainee)
-        let ss2 = ctx.makeSuperset(in: active, order: 0)
-        ctx.makeSet(in: ss2, exercise: bench, order: 0, weight: 155, reps: 8)
+        let g2 = ctx.makeGroup(in: active, order: 0)
+        ctx.makeSet(in: g2, exercise: bench, order: 0, weight: 155, reps: 8)
 
         let history = trainee.history(for: bench, in: ctx)
         XCTAssertEqual(history.count, 1)

@@ -11,13 +11,13 @@ struct GymplicityApp: App {
             IdentityEntity.self,
             ExerciseEntity.self,
             WorkoutEntity.self,
-            SupersetEntity.self,
+            WorkoutGroupEntity.self,
             SetEntity.self,
             TrainerTrainees.self,
             TrainerExercises.self,
             IdentityWorkouts.self,
-            WorkoutSupersets.self,
-            SupersetSets.self,
+            WorkoutGroups.self,
+            GroupSets.self,
             ExerciseSets.self,
         ])
     }

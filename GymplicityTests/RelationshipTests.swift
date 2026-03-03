@@ -98,18 +98,18 @@ final class RelationshipTests: XCTestCase {
         XCTAssertEqual(workout.owner(in: ctx)?.id, trainee.id)
     }
 
-    // MARK: - Workout / Supersets / Sets ordering
+    // MARK: - Workout / Groups / Sets ordering
 
-    func testSortedSupersets() throws {
+    func testSortedGroups() throws {
         let ctx = try makeTestContext()
         let trainer = ctx.makeTrainer()
         let trainee = ctx.makeTrainee(trainer: trainer)
         let workout = ctx.makeWorkout(for: trainee)
-        ctx.makeSuperset(in: workout, order: 2)
-        ctx.makeSuperset(in: workout, order: 0)
-        ctx.makeSuperset(in: workout, order: 1)
+        ctx.makeGroup(in: workout, order: 2)
+        ctx.makeGroup(in: workout, order: 0)
+        ctx.makeGroup(in: workout, order: 1)
 
-        let sorted = workout.sortedSupersets(in: ctx)
+        let sorted = workout.sortedGroups(in: ctx)
         XCTAssertEqual(sorted.count, 3)
         XCTAssertEqual(sorted.map(\.order), [0, 1, 2])
     }
@@ -120,28 +120,28 @@ final class RelationshipTests: XCTestCase {
         let bench = ctx.makeExercise(name: "Bench", trainer: trainer)
         let trainee = ctx.makeTrainee(trainer: trainer)
         let workout = ctx.makeWorkout(for: trainee)
-        let superset = ctx.makeSuperset(in: workout, order: 0)
-        ctx.makeSet(in: superset, exercise: bench, order: 2, weight: 155, reps: 6)
-        ctx.makeSet(in: superset, exercise: bench, order: 0, weight: 135, reps: 10)
-        ctx.makeSet(in: superset, exercise: bench, order: 1, weight: 145, reps: 8)
+        let group = ctx.makeGroup(in: workout, order: 0)
+        ctx.makeSet(in: group, exercise: bench, order: 2, weight: 155, reps: 6)
+        ctx.makeSet(in: group, exercise: bench, order: 0, weight: 135, reps: 10)
+        ctx.makeSet(in: group, exercise: bench, order: 1, weight: 145, reps: 8)
 
-        let sorted = superset.sortedSets(in: ctx)
+        let sorted = group.sortedSets(in: ctx)
         XCTAssertEqual(sorted.count, 3)
         XCTAssertEqual(sorted.map(\.order), [0, 1, 2])
     }
 
     // MARK: - Set reverse lookups
 
-    func testSetExerciseAndSuperset() throws {
+    func testSetExerciseAndGroup() throws {
         let ctx = try makeTestContext()
         let trainer = ctx.makeTrainer()
         let bench = ctx.makeExercise(name: "Bench", trainer: trainer)
         let trainee = ctx.makeTrainee(trainer: trainer)
         let workout = ctx.makeWorkout(for: trainee)
-        let superset = ctx.makeSuperset(in: workout, order: 0)
-        let set = ctx.makeSet(in: superset, exercise: bench, order: 0, weight: 135, reps: 10)
+        let group = ctx.makeGroup(in: workout, order: 0)
+        let set = ctx.makeSet(in: group, exercise: bench, order: 0, weight: 135, reps: 10)
 
         XCTAssertEqual(set.exercise(in: ctx)?.id, bench.id)
-        XCTAssertEqual(set.superset(in: ctx)?.id, superset.id)
+        XCTAssertEqual(set.group(in: ctx)?.id, group.id)
     }
 }

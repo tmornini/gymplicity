@@ -7,9 +7,9 @@ func makeTestContext() throws -> ModelContext {
     let config = ModelConfiguration(isStoredInMemoryOnly: true)
     let container = try ModelContainer(
         for: IdentityEntity.self, ExerciseEntity.self, WorkoutEntity.self,
-        SupersetEntity.self, SetEntity.self, TrainerTrainees.self,
-        TrainerExercises.self, IdentityWorkouts.self, WorkoutSupersets.self,
-        SupersetSets.self, ExerciseSets.self,
+        WorkoutGroupEntity.self, SetEntity.self, TrainerTrainees.self,
+        TrainerExercises.self, IdentityWorkouts.self, WorkoutGroups.self,
+        GroupSets.self, ExerciseSets.self,
         configurations: config
     )
     return ModelContext(container)
@@ -51,16 +51,16 @@ extension ModelContext {
     }
 
     @discardableResult
-    func makeSuperset(in workout: WorkoutEntity, order: Int) -> SupersetEntity {
-        let superset = SupersetEntity(order: order)
-        insert(superset)
-        insert(WorkoutSupersets(workoutId: workout.id, supersetId: superset.id))
-        return superset
+    func makeGroup(in workout: WorkoutEntity, order: Int, isSuperset: Bool = false) -> WorkoutGroupEntity {
+        let group = WorkoutGroupEntity(order: order, isSuperset: isSuperset)
+        insert(group)
+        insert(WorkoutGroups(workoutId: workout.id, groupId: group.id))
+        return group
     }
 
     @discardableResult
     func makeSet(
-        in superset: SupersetEntity,
+        in group: WorkoutGroupEntity,
         exercise: ExerciseEntity,
         order: Int,
         weight: Double,
@@ -72,7 +72,7 @@ extension ModelContext {
         set.isCompleted = isCompleted
         set.completedAt = completedAt
         insert(set)
-        insert(SupersetSets(supersetId: superset.id, setId: set.id))
+        insert(GroupSets(groupId: group.id, setId: set.id))
         insert(ExerciseSets(exerciseId: exercise.id, setId: set.id))
         return set
     }

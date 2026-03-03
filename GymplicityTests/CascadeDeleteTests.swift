@@ -10,8 +10,8 @@ final class CascadeDeleteTests: XCTestCase {
         let bench = ctx.makeExercise(name: "Bench", trainer: trainer)
         let trainee = ctx.makeTrainee(trainer: trainer)
         let workout = ctx.makeWorkout(for: trainee)
-        let superset = ctx.makeSuperset(in: workout, order: 0)
-        let set = ctx.makeSet(in: superset, exercise: bench, order: 0, weight: 135, reps: 10)
+        let group = ctx.makeGroup(in: workout, order: 0)
+        let set = ctx.makeSet(in: group, exercise: bench, order: 0, weight: 135, reps: 10)
         let setId = set.id
 
         ctx.deleteSet(set)
@@ -23,60 +23,60 @@ final class CascadeDeleteTests: XCTestCase {
         XCTAssert(sets.isEmpty)
 
         // Join rows cleaned up
-        let supersetSets = try ctx.fetch(FetchDescriptor<SupersetSets>(
+        let groupSets = try ctx.fetch(FetchDescriptor<GroupSets>(
             predicate: #Predicate { $0.setId == setId }
         ))
-        XCTAssert(supersetSets.isEmpty)
+        XCTAssert(groupSets.isEmpty)
 
         let exerciseSets = try ctx.fetch(FetchDescriptor<ExerciseSets>(
             predicate: #Predicate { $0.setId == setId }
         ))
         XCTAssert(exerciseSets.isEmpty)
 
-        // Superset and exercise still exist
-        XCTAssertEqual(superset.sets(in: ctx).count, 0)
+        // Group and exercise still exist
+        XCTAssertEqual(group.sets(in: ctx).count, 0)
         XCTAssertNotNil(try ctx.fetch(FetchDescriptor<ExerciseEntity>(
             predicate: #Predicate { $0.name == "Bench" }
         )).first)
     }
 
-    func testDeleteSupersetCascadesToSets() throws {
+    func testDeleteGroupCascadesToSets() throws {
         let ctx = try makeTestContext()
         let trainer = ctx.makeTrainer()
         let bench = ctx.makeExercise(name: "Bench", trainer: trainer)
         let trainee = ctx.makeTrainee(trainer: trainer)
         let workout = ctx.makeWorkout(for: trainee)
-        let superset = ctx.makeSuperset(in: workout, order: 0)
-        ctx.makeSet(in: superset, exercise: bench, order: 0, weight: 135, reps: 10)
-        ctx.makeSet(in: superset, exercise: bench, order: 1, weight: 155, reps: 8)
-        let supersetId = superset.id
+        let group = ctx.makeGroup(in: workout, order: 0)
+        ctx.makeSet(in: group, exercise: bench, order: 0, weight: 135, reps: 10)
+        ctx.makeSet(in: group, exercise: bench, order: 1, weight: 155, reps: 8)
+        let groupId = group.id
 
-        ctx.deleteSuperset(superset)
+        ctx.deleteGroup(group)
 
-        // Superset is gone
-        let supers = try ctx.fetch(FetchDescriptor<SupersetEntity>(
-            predicate: #Predicate { $0.id == supersetId }
+        // Group is gone
+        let groups = try ctx.fetch(FetchDescriptor<WorkoutGroupEntity>(
+            predicate: #Predicate { $0.id == groupId }
         ))
-        XCTAssert(supers.isEmpty)
+        XCTAssert(groups.isEmpty)
 
         // Both sets are gone
         let allSets = try ctx.fetch(FetchDescriptor<SetEntity>())
         XCTAssert(allSets.isEmpty)
 
         // Workout still exists
-        XCTAssertEqual(workout.supersets(in: ctx).count, 0)
+        XCTAssertEqual(workout.groups(in: ctx).count, 0)
     }
 
-    func testDeleteWorkoutCascadesToSupersetsAndSets() throws {
+    func testDeleteWorkoutCascadesToGroupsAndSets() throws {
         let ctx = try makeTestContext()
         let trainer = ctx.makeTrainer()
         let bench = ctx.makeExercise(name: "Bench", trainer: trainer)
         let trainee = ctx.makeTrainee(trainer: trainer)
         let workout = ctx.makeWorkout(for: trainee)
-        let ss1 = ctx.makeSuperset(in: workout, order: 0)
-        ctx.makeSet(in: ss1, exercise: bench, order: 0, weight: 135, reps: 10)
-        let ss2 = ctx.makeSuperset(in: workout, order: 1)
-        ctx.makeSet(in: ss2, exercise: bench, order: 0, weight: 155, reps: 8)
+        let g1 = ctx.makeGroup(in: workout, order: 0)
+        ctx.makeSet(in: g1, exercise: bench, order: 0, weight: 135, reps: 10)
+        let g2 = ctx.makeGroup(in: workout, order: 1)
+        ctx.makeSet(in: g2, exercise: bench, order: 0, weight: 155, reps: 8)
         let workoutId = workout.id
 
         ctx.deleteWorkout(workout)
@@ -85,7 +85,7 @@ final class CascadeDeleteTests: XCTestCase {
             predicate: #Predicate { $0.id == workoutId }
         ))
         XCTAssert(workouts.isEmpty)
-        XCTAssert(try ctx.fetch(FetchDescriptor<SupersetEntity>()).isEmpty)
+        XCTAssert(try ctx.fetch(FetchDescriptor<WorkoutGroupEntity>()).isEmpty)
         XCTAssert(try ctx.fetch(FetchDescriptor<SetEntity>()).isEmpty)
 
         // Identity and exercise survive
@@ -99,9 +99,9 @@ final class CascadeDeleteTests: XCTestCase {
         let bench = ctx.makeExercise(name: "Bench", trainer: trainer)
         let trainee = ctx.makeTrainee(trainer: trainer)
         let workout = ctx.makeWorkout(for: trainee)
-        let superset = ctx.makeSuperset(in: workout, order: 0)
-        let set1 = ctx.makeSet(in: superset, exercise: bench, order: 0, weight: 135, reps: 10)
-        let set2 = ctx.makeSet(in: superset, exercise: bench, order: 1, weight: 155, reps: 8)
+        let group = ctx.makeGroup(in: workout, order: 0)
+        let set1 = ctx.makeSet(in: group, exercise: bench, order: 0, weight: 135, reps: 10)
+        let set2 = ctx.makeSet(in: group, exercise: bench, order: 1, weight: 155, reps: 8)
 
         ctx.deleteExercise(bench)
 
@@ -114,7 +114,7 @@ final class CascadeDeleteTests: XCTestCase {
         XCTAssert(try ctx.fetch(FetchDescriptor<ExerciseSets>()).isEmpty)
 
         // But the sets survive (nullify, not cascade)
-        XCTAssertEqual(superset.sets(in: ctx).count, 2)
+        XCTAssertEqual(group.sets(in: ctx).count, 2)
         XCTAssertNil(set1.exercise(in: ctx))
         XCTAssertNil(set2.exercise(in: ctx))
     }
@@ -125,8 +125,8 @@ final class CascadeDeleteTests: XCTestCase {
         let bench = ctx.makeExercise(name: "Bench", trainer: trainer)
         let trainee = ctx.makeTrainee(trainer: trainer)
         let workout = ctx.makeWorkout(for: trainee)
-        let superset = ctx.makeSuperset(in: workout, order: 0)
-        ctx.makeSet(in: superset, exercise: bench, order: 0, weight: 135, reps: 10)
+        let group = ctx.makeGroup(in: workout, order: 0)
+        ctx.makeSet(in: group, exercise: bench, order: 0, weight: 135, reps: 10)
 
         ctx.deleteIdentity(trainer)
 
@@ -134,13 +134,13 @@ final class CascadeDeleteTests: XCTestCase {
         XCTAssert(try ctx.fetch(FetchDescriptor<IdentityEntity>()).isEmpty)
         XCTAssert(try ctx.fetch(FetchDescriptor<ExerciseEntity>()).isEmpty)
         XCTAssert(try ctx.fetch(FetchDescriptor<WorkoutEntity>()).isEmpty)
-        XCTAssert(try ctx.fetch(FetchDescriptor<SupersetEntity>()).isEmpty)
+        XCTAssert(try ctx.fetch(FetchDescriptor<WorkoutGroupEntity>()).isEmpty)
         XCTAssert(try ctx.fetch(FetchDescriptor<SetEntity>()).isEmpty)
         XCTAssert(try ctx.fetch(FetchDescriptor<TrainerTrainees>()).isEmpty)
         XCTAssert(try ctx.fetch(FetchDescriptor<TrainerExercises>()).isEmpty)
         XCTAssert(try ctx.fetch(FetchDescriptor<IdentityWorkouts>()).isEmpty)
-        XCTAssert(try ctx.fetch(FetchDescriptor<WorkoutSupersets>()).isEmpty)
-        XCTAssert(try ctx.fetch(FetchDescriptor<SupersetSets>()).isEmpty)
+        XCTAssert(try ctx.fetch(FetchDescriptor<WorkoutGroups>()).isEmpty)
+        XCTAssert(try ctx.fetch(FetchDescriptor<GroupSets>()).isEmpty)
         XCTAssert(try ctx.fetch(FetchDescriptor<ExerciseSets>()).isEmpty)
     }
 }

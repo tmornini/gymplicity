@@ -1,0 +1,18 @@
+import SwiftUI
+
+struct LastSetReference: View {
+    let set: SetEntity?
+    var color: Color = GymColors.steel
+
+    var body: some View {
+        if let set {
+            HStack(spacing: 4) {
+                Image(systemName: "clock.arrow.circlepath")
+                    .font(GymFont.caption)
+                Text("Last time: \(Weight.formatted(set.weight)) x \(set.reps)")
+                    .font(GymFont.caption)
+            }
+            .gymPill(color)
+        }
+    }
+}

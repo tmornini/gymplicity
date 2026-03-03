@@ -121,7 +121,7 @@ private struct TemplateSetRow: View {
                     .frame(minWidth: 60, alignment: .leading)
 
                 if set.weight > 0 || set.reps > 0 {
-                    Text(formatWeight(set.weight))
+                    Text(Weight.formatted(set.weight))
                         .font(GymFont.bodyMono)
                     Text("x")
                         .font(GymFont.caption)
@@ -147,13 +147,6 @@ private struct TemplateSetRow: View {
             TemplateSetEntryView(set: set, exercise: set.exercise(in: modelContext))
         }
     }
-
-    private func formatWeight(_ weight: Double) -> String {
-        if weight == weight.rounded() {
-            return "\(Int(weight)) lb"
-        }
-        return String(format: "%.1f lb", weight)
-    }
 }
 
 // MARK: - Template Set Entry (saves weight/reps without marking complete)
@@ -165,9 +158,7 @@ private struct TemplateSetEntryView: View {
 
     @State private var weightText = ""
     @State private var repsText = ""
-    @FocusState private var focusedField: Field?
-
-    enum Field { case weight, reps }
+    @FocusState private var focusedField: WeightRepsField.Field?
 
     var body: some View {
         NavigationStack {
@@ -179,48 +170,12 @@ private struct TemplateSetEntryView: View {
                     .font(GymFont.label)
                     .foregroundStyle(GymColors.secondaryText)
 
-                HStack(spacing: 24) {
-                    VStack(spacing: 8) {
-                        Text("Weight")
-                            .font(GymFont.caption)
-                            .foregroundStyle(GymColors.secondaryText)
-                        TextField("0", text: $weightText)
-                            .keyboardType(.decimalPad)
-                            .multilineTextAlignment(.center)
-                            .font(GymFont.numericEntrySmall)
-                            .textFieldStyle(.plain)
-                            .frame(width: 120)
-                            .focused($focusedField, equals: .weight)
-                        Rectangle()
-                            .fill(GymColors.focus)
-                            .frame(width: 120, height: 2)
-                        Text("lb")
-                            .font(GymFont.caption)
-                            .foregroundStyle(GymColors.secondaryText)
-                    }
-
-                    Text("x")
-                        .font(GymFont.heading2)
-                        .foregroundStyle(GymColors.secondaryText)
-
-                    VStack(spacing: 8) {
-                        Text("Reps")
-                            .font(GymFont.caption)
-                            .foregroundStyle(GymColors.secondaryText)
-                        TextField("0", text: $repsText)
-                            .keyboardType(.numberPad)
-                            .multilineTextAlignment(.center)
-                            .font(GymFont.numericEntrySmall)
-                            .textFieldStyle(.plain)
-                            .frame(width: 120)
-                            .focused($focusedField, equals: .reps)
-                        Rectangle()
-                            .fill(GymColors.focus)
-                            .frame(width: 120, height: 2)
-                        Text(" ")
-                            .font(GymFont.caption)
-                    }
-                }
+                WeightRepsField(
+                    weightText: $weightText,
+                    repsText: $repsText,
+                    accentColor: GymColors.focus,
+                    focusedField: $focusedField
+                )
 
                 Spacer()
             }
@@ -237,7 +192,7 @@ private struct TemplateSetEntryView: View {
                 }
             }
             .onAppear {
-                weightText = set.weight > 0 ? formatWeightValue(set.weight) : ""
+                weightText = set.weight > 0 ? Weight.rawValue(set.weight) : ""
                 repsText = set.reps > 0 ? "\(set.reps)" : ""
                 focusedField = .weight
             }
@@ -250,12 +205,5 @@ private struct TemplateSetEntryView: View {
         set.reps = Int(repsText) ?? 0
         SyncTrigger.entityUpdated("SetEntity", id: set.id)
         dismiss()
-    }
-
-    private func formatWeightValue(_ weight: Double) -> String {
-        if weight == weight.rounded() {
-            return "\(Int(weight))"
-        }
-        return String(format: "%.1f", weight)
     }
 }

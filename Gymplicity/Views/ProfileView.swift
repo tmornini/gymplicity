@@ -91,7 +91,7 @@ struct ProfileView: View {
                                 Text(exercise.name)
                                 Spacer()
                                 if let lastSet = identity.lastSet(for: exercise, in: modelContext) {
-                                    Text("\(formatWeight(lastSet.weight)) x \(lastSet.reps)")
+                                    Text("\(Weight.formatted(lastSet.weight)) x \(lastSet.reps)")
                                         .font(GymFont.bodyMono)
                                         .foregroundStyle(GymColors.secondaryText)
                                 }
@@ -146,12 +146,6 @@ struct ProfileView: View {
         SyncTrigger.structureChanged()
     }
 
-    private func formatWeight(_ weight: Double) -> String {
-        if weight == weight.rounded() {
-            return "\(Int(weight)) lb"
-        }
-        return String(format: "%.1f lb", weight)
-    }
 }
 
 private struct WorkoutRow: View {

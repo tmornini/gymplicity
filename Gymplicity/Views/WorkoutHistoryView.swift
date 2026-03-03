@@ -53,7 +53,7 @@ struct WorkoutHistoryView: View {
                                 .font(GymFont.label)
                                 .foregroundStyle(GymColors.secondaryText)
                                 .frame(minWidth: 60, alignment: .leading)
-                            Text(formatWeight(set.weight))
+                            Text(Weight.formatted(set.weight))
                                 .font(GymFont.bodyMono)
                             Text("x")
                                 .font(GymFont.caption)
@@ -88,10 +88,4 @@ struct WorkoutHistoryView: View {
         return group.sortedSets(in: modelContext).first?.exercise(in: modelContext)?.name ?? "Exercise"
     }
 
-    private func formatWeight(_ weight: Double) -> String {
-        if weight == weight.rounded() {
-            return "\(Int(weight)) lb"
-        }
-        return String(format: "%.1f lb", weight)
-    }
 }

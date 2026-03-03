@@ -13,9 +13,7 @@ struct GuidedWorkoutView: View {
     @State private var repsText: String = ""
     @State private var showingEndConfirmation = false
     @State private var showWalkingTransition = false
-    @FocusState private var focusedField: Field?
-
-    enum Field { case weight, reps }
+    @FocusState private var focusedField: WeightRepsField.Field?
 
     private var flatSets: [(group: WorkoutGroupEntity, set: SetEntity)] {
         workout.allSetsFlattened(in: modelContext)
@@ -107,47 +105,19 @@ struct GuidedWorkoutView: View {
                 .font(GymFont.label)
                 .foregroundStyle(GymColors.secondaryText)
 
-            HStack(spacing: 24) {
-                VStack(spacing: 8) {
-                    TextField("0", text: $weightText)
-                        .keyboardType(.decimalPad)
-                        .multilineTextAlignment(.center)
-                        .font(GymFont.numericEntry)
-                        .textFieldStyle(.plain)
-                        .frame(width: 130)
-                        .focused($focusedField, equals: .weight)
-                    Rectangle()
-                        .fill(GymColors.energy)
-                        .frame(width: 130, height: 2)
-                    Text("lb")
-                        .font(GymFont.caption)
-                        .foregroundStyle(GymColors.secondaryText)
-                }
-
-                Text("x")
-                    .font(GymFont.heading2)
-                    .foregroundStyle(GymColors.secondaryText)
-
-                VStack(spacing: 8) {
-                    TextField("0", text: $repsText)
-                        .keyboardType(.numberPad)
-                        .multilineTextAlignment(.center)
-                        .font(GymFont.numericEntry)
-                        .textFieldStyle(.plain)
-                        .frame(width: 130)
-                        .focused($focusedField, equals: .reps)
-                    Rectangle()
-                        .fill(GymColors.energy)
-                        .frame(width: 130, height: 2)
-                    Text("reps")
-                        .font(GymFont.caption)
-                        .foregroundStyle(GymColors.secondaryText)
-                }
-            }
+            WeightRepsField(
+                weightText: $weightText,
+                repsText: $repsText,
+                font: GymFont.numericEntry,
+                fieldWidth: 130,
+                showLabels: false,
+                repsUnit: "reps",
+                focusedField: $focusedField
+            )
 
             progressBar
 
-            lastTimeReference(exercise: exercise)
+            LastSetReference(set: previousSet(for: exercise))
 
             Button {
                 completeCurrentSet()
@@ -184,23 +154,6 @@ struct GuidedWorkoutView: View {
                 .foregroundStyle(GymColors.secondaryText)
         }
         .padding(.horizontal)
-    }
-
-    // MARK: - Last Time Reference
-
-    @ViewBuilder
-    private func lastTimeReference(exercise: ExerciseEntity?) -> some View {
-        if let exercise,
-           let owner = workout.owner(in: modelContext),
-           let lastSet = owner.lastSet(for: exercise, in: modelContext) {
-            HStack(spacing: 4) {
-                Image(systemName: "clock.arrow.circlepath")
-                    .font(GymFont.caption)
-                Text("Last time: \(formatWeight(lastSet.weight)) x \(lastSet.reps)")
-                    .font(GymFont.caption)
-            }
-            .gymPill(GymColors.steel)
-        }
     }
 
     // MARK: - Completion View
@@ -261,23 +214,14 @@ struct GuidedWorkoutView: View {
 
     private func loadCurrentSet() {
         guard let pair = currentPair else { return }
-        weightText = pair.set.weight > 0 ? formatWeightValue(pair.set.weight) : ""
+        weightText = pair.set.weight > 0 ? Weight.rawValue(pair.set.weight) : ""
         repsText = pair.set.reps > 0 ? "\(pair.set.reps)" : ""
         focusedField = .weight
         onSetIndexChange?(currentIndex)
     }
 
-    private func formatWeight(_ weight: Double) -> String {
-        if weight == weight.rounded() {
-            return "\(Int(weight)) lb"
-        }
-        return String(format: "%.1f lb", weight)
-    }
-
-    private func formatWeightValue(_ weight: Double) -> String {
-        if weight == weight.rounded() {
-            return "\(Int(weight))"
-        }
-        return String(format: "%.1f", weight)
+    private func previousSet(for exercise: ExerciseEntity?) -> SetEntity? {
+        guard let exercise, let owner = workout.owner(in: modelContext) else { return nil }
+        return owner.lastSet(for: exercise, in: modelContext)
     }
 }

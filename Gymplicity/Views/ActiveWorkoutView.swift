@@ -200,7 +200,7 @@ struct SetRow: View {
                     .frame(minWidth: 60, alignment: .leading)
 
                 if set.weight > 0 || set.reps > 0 {
-                    Text(formatWeight(set.weight))
+                    Text(Weight.formatted(set.weight))
                         .font(GymFont.bodyMono)
                     Text("x")
                         .font(GymFont.caption)
@@ -248,10 +248,4 @@ struct SetRow: View {
         return owner.lastSet(for: exercise, in: modelContext)
     }
 
-    private func formatWeight(_ weight: Double) -> String {
-        if weight == weight.rounded() {
-            return "\(Int(weight)) lb"
-        }
-        return String(format: "%.1f lb", weight)
-    }
 }

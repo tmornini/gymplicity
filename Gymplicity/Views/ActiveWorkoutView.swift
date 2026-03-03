@@ -5,6 +5,7 @@ struct ActiveWorkoutView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
     @Bindable var workout: WorkoutEntity
+    var onSwitchToGuided: (() -> Void)? = nil
     @State private var showingAddExercise = false
     @State private var showingEndConfirmation = false
     @State private var targetGroup: WorkoutGroupEntity?
@@ -70,13 +71,15 @@ struct ActiveWorkoutView: View {
         }
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
-            ToolbarItem(placement: .principal) {
-                VStack(spacing: 0) {
-                    Text(workout.owner(in: modelContext)?.name ?? "Workout")
-                        .font(.headline)
-                    Text(workout.date, style: .date)
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
+            if onSwitchToGuided == nil {
+                ToolbarItem(placement: .principal) {
+                    VStack(spacing: 0) {
+                        Text(workout.owner(in: modelContext)?.name ?? "Workout")
+                            .font(.headline)
+                        Text(workout.date, style: .date)
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
                 }
             }
             ToolbarItem(placement: .primaryAction) {
@@ -85,10 +88,16 @@ struct ActiveWorkoutView: View {
                     .tint(.red)
             }
             ToolbarItem(placement: .bottomBar) {
-                NavigationLink {
-                    GuidedWorkoutView(workout: workout)
-                } label: {
-                    Label("Guided Mode", systemImage: "scope")
+                if let switchToGuided = onSwitchToGuided {
+                    Button { switchToGuided() } label: {
+                        Label("Guided Mode", systemImage: "scope")
+                    }
+                } else {
+                    NavigationLink {
+                        GuidedWorkoutView(workout: workout)
+                    } label: {
+                        Label("Guided Mode", systemImage: "scope")
+                    }
                 }
             }
         }
@@ -148,7 +157,9 @@ struct ActiveWorkoutView: View {
 
     private func endWorkout() {
         workout.isComplete = true
-        dismiss()
+        if onSwitchToGuided == nil {
+            dismiss()
+        }
     }
 }
 

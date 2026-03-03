@@ -5,6 +5,9 @@ struct GuidedWorkoutView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
     @Bindable var workout: WorkoutEntity
+    var onSwitchToList: (() -> Void)? = nil
+    var initialSetIndex: Int? = nil
+    var onSetIndexChange: ((Int) -> Void)? = nil
     @State private var currentIndex: Int = 0
     @State private var weightText: String = ""
     @State private var repsText: String = ""
@@ -39,7 +42,13 @@ struct GuidedWorkoutView: View {
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .cancellationAction) {
-                Button("List View") { dismiss() }
+                Button("List View") {
+                    if let onSwitchToList {
+                        onSwitchToList()
+                    } else {
+                        dismiss()
+                    }
+                }
             }
             ToolbarItem(placement: .primaryAction) {
                 Button("End") { showingEndConfirmation = true }
@@ -50,12 +59,16 @@ struct GuidedWorkoutView: View {
         .confirmationDialog("End Workout?", isPresented: $showingEndConfirmation) {
             Button("End Workout", role: .destructive) {
                 workout.isComplete = true
-                dismiss()
+                if onSwitchToList == nil {
+                    dismiss()
+                }
             }
             Button("Cancel", role: .cancel) { }
         }
         .onAppear {
-            if let first = workout.firstIncompleteSetIndex(in: modelContext) {
+            if let saved = initialSetIndex {
+                currentIndex = saved
+            } else if let first = workout.firstIncompleteSetIndex(in: modelContext) {
                 currentIndex = first
             }
             loadCurrentSet()
@@ -179,7 +192,9 @@ struct GuidedWorkoutView: View {
 
             Button("End Workout") {
                 workout.isComplete = true
-                dismiss()
+                if onSwitchToList == nil {
+                    dismiss()
+                }
             }
             .buttonStyle(.borderedProminent)
             .padding(.top)
@@ -197,10 +212,12 @@ struct GuidedWorkoutView: View {
 
         if let next = workout.nextIncompleteSetIndex(after: currentIndex, in: modelContext) {
             currentIndex = next
+            onSetIndexChange?(currentIndex)
             loadCurrentSet()
         } else {
             // All complete — show completion view
             currentIndex = flatSets.count
+            onSetIndexChange?(currentIndex)
         }
     }
 
@@ -209,6 +226,7 @@ struct GuidedWorkoutView: View {
         weightText = pair.set.weight > 0 ? formatWeightValue(pair.set.weight) : ""
         repsText = pair.set.reps > 0 ? "\(pair.set.reps)" : ""
         focusedField = .weight
+        onSetIndexChange?(currentIndex)
     }
 
     private func formatWeight(_ weight: Double) -> String {

@@ -61,13 +61,13 @@ struct HomeView: View {
         let trainees = identity.trainees(in: modelContext)
         let active = trainees.flatMap { trainee in
             trainee.activeWorkouts(in: modelContext).map { (identity: trainee, workout: $0) }
-        }
+        }.sorted { $0.workout.date < $1.workout.date }
         List {
             if !active.isEmpty {
                 Section("Active Workouts") {
                     ForEach(active, id: \.workout.id) { pair in
                         NavigationLink {
-                            ActiveWorkoutView(workout: pair.workout)
+                            ActiveWorkoutsContainerView(trainer: identity, initialWorkoutId: pair.workout.id)
                         } label: {
                             ActiveWorkoutRow(identity: pair.identity, workout: pair.workout)
                         }
@@ -136,6 +136,7 @@ struct HomeView: View {
     }
 
     private func startWorkout(for identity: IdentityEntity) {
+        guard identity.activeWorkouts(in: modelContext).isEmpty else { return }
         let workout = WorkoutEntity()
         modelContext.insert(workout)
         let join = IdentityWorkouts(identityId: identity.id, workoutId: workout.id)

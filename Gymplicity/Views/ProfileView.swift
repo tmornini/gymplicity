@@ -32,11 +32,13 @@ struct ProfileView: View {
             }
 
             Section {
-                Button {
-                    startWorkout()
-                } label: {
-                    Label("Start New Workout", systemImage: "plus.circle.fill")
-                        .fontWeight(.medium)
+                if active.isEmpty {
+                    Button {
+                        startWorkout()
+                    } label: {
+                        Label("Start New Workout", systemImage: "plus.circle.fill")
+                            .fontWeight(.medium)
+                    }
                 }
                 if let trainer = trainerWithTemplates() {
                     Button {
@@ -110,6 +112,7 @@ struct ProfileView: View {
     }
 
     private func startWorkout() {
+        guard identity.activeWorkouts(in: modelContext).isEmpty else { return }
         let workout = WorkoutEntity()
         modelContext.insert(workout)
         let join = IdentityWorkouts(identityId: identity.id, workoutId: workout.id)

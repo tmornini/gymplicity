@@ -19,6 +19,7 @@ struct TemplateListView: View {
                 for index in offsets {
                     modelContext.deleteWorkout(templates[index])
                 }
+                SyncTrigger.structureChanged()
             }
 
             if templates.isEmpty {
@@ -51,6 +52,7 @@ struct TemplateListView: View {
         let template = WorkoutEntity(isTemplate: true, templateName: "New Template")
         modelContext.insert(template)
         modelContext.insert(IdentityWorkouts(identityId: trainer.id, workoutId: template.id))
+        SyncTrigger.structureChanged()
     }
 }
 

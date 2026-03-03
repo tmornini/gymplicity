@@ -122,7 +122,10 @@ struct ProfileView: View {
             TextField("Name", text: $editedName)
             Button("Save") {
                 let trimmed = editedName.trimmingCharacters(in: .whitespaces)
-                if !trimmed.isEmpty { identity.name = trimmed }
+                if !trimmed.isEmpty {
+                    identity.name = trimmed
+                    SyncTrigger.entityUpdated("IdentityEntity", id: identity.id)
+                }
             }
             Button("Cancel", role: .cancel) { }
         }
@@ -140,6 +143,7 @@ struct ProfileView: View {
         modelContext.insert(workout)
         let join = IdentityWorkouts(identityId: identity.id, workoutId: workout.id)
         modelContext.insert(join)
+        SyncTrigger.structureChanged()
     }
 
     private func formatWeight(_ weight: Double) -> String {

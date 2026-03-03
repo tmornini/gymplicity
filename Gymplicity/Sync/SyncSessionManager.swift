@@ -3,13 +3,6 @@ import MultipeerConnectivity
 import SwiftData
 import Combine
 
-// MARK: - Sync Message (lightweight handshake messages via send())
-
-enum SyncMessage: Codable {
-    case pairingRequest(traineeUUID: UUID, trainerName: String)
-    case pairingAccepted
-}
-
 // MARK: - Connection State
 
 enum SyncConnectionState: Equatable {
@@ -47,11 +40,13 @@ class SyncSessionManager: NSObject, ObservableObject {
 
     private var localIdentity: IdentityEntity?
     private var modelContext: ModelContext?
-    private var syncTimer: Timer?
 
     // Pairing state
     private var pendingPairingTraineeUUID: UUID?
     private var connectedPeer: MCPeerID?
+
+    // Change-driven sync subscriptions
+    private var cancellables = Set<AnyCancellable>()
 
     init(name: String, role: String) {
         self.localPeerID = MCPeerID(displayName: name)
@@ -100,8 +95,7 @@ class SyncSessionManager: NSObject, ObservableObject {
     }
 
     func stopSearching() {
-        syncTimer?.invalidate()
-        syncTimer = nil
+        tearDownSyncSubscriptions()
         advertiser?.stopAdvertisingPeer()
         browser?.stopBrowsingForPeers()
         session?.disconnect()
@@ -151,7 +145,7 @@ class SyncSessionManager: NSObject, ObservableObject {
         performSync()
     }
 
-    // MARK: - Sync
+    // MARK: - Full Sync
 
     func performSync() {
         guard let session, let connectedPeer,
@@ -198,13 +192,121 @@ class SyncSessionManager: NSObject, ObservableObject {
         }
     }
 
-    private func startBackgroundSync() {
-        syncTimer?.invalidate()
-        syncTimer = Timer.scheduledTimer(withTimeInterval: 30, repeats: true) { [weak self] _ in
-            DispatchQueue.main.async {
-                self?.performSync()
+    // MARK: - Delta Sync
+
+    private func sendEntityDelta(notifications: [Notification]) {
+        guard let session, let connectedPeer,
+              let identity = localIdentity,
+              let context = modelContext else { return }
+
+        // Collect changed entity type+id pairs from batched notifications
+        var changedSets: [UUID] = []
+        var changedWorkouts: [UUID] = []
+        var changedIdentities: [UUID] = []
+        var changedExercises: [UUID] = []
+        var changedGroups: [UUID] = []
+
+        for notification in notifications {
+            guard let type = notification.userInfo?["type"] as? String,
+                  let id = notification.userInfo?["id"] as? UUID else { continue }
+            switch type {
+            case "SetEntity": changedSets.append(id)
+            case "WorkoutEntity": changedWorkouts.append(id)
+            case "IdentityEntity": changedIdentities.append(id)
+            case "ExerciseEntity": changedExercises.append(id)
+            case "WorkoutGroupEntity": changedGroups.append(id)
+            default: break
             }
         }
+
+        // Fetch current state of each changed entity and build delta payload
+        var setDTOs: [SetDTO] = []
+        for id in Set(changedSets) {
+            if let entity = (try? context.fetch(FetchDescriptor<SetEntity>(
+                predicate: #Predicate { $0.id == id }
+            )))?.first {
+                setDTOs.append(entity.toDTO())
+            }
+        }
+
+        var workoutDTOs: [WorkoutDTO] = []
+        for id in Set(changedWorkouts) {
+            if let entity = (try? context.fetch(FetchDescriptor<WorkoutEntity>(
+                predicate: #Predicate { $0.id == id }
+            )))?.first {
+                workoutDTOs.append(entity.toDTO())
+            }
+        }
+
+        var identityDTOs: [IdentityDTO] = []
+        for id in Set(changedIdentities) {
+            if let entity = (try? context.fetch(FetchDescriptor<IdentityEntity>(
+                predicate: #Predicate { $0.id == id }
+            )))?.first {
+                identityDTOs.append(entity.toDTO())
+            }
+        }
+
+        var exerciseDTOs: [ExerciseDTO] = []
+        for id in Set(changedExercises) {
+            if let entity = (try? context.fetch(FetchDescriptor<ExerciseEntity>(
+                predicate: #Predicate { $0.id == id }
+            )))?.first {
+                exerciseDTOs.append(entity.toDTO())
+            }
+        }
+
+        var groupDTOs: [WorkoutGroupDTO] = []
+        for id in Set(changedGroups) {
+            if let entity = (try? context.fetch(FetchDescriptor<WorkoutGroupEntity>(
+                predicate: #Predicate { $0.id == id }
+            )))?.first {
+                groupDTOs.append(entity.toDTO())
+            }
+        }
+
+        // Skip if nothing to send
+        guard !setDTOs.isEmpty || !workoutDTOs.isEmpty || !identityDTOs.isEmpty
+                || !exerciseDTOs.isEmpty || !groupDTOs.isEmpty else { return }
+
+        let payload = SyncPayload.delta(
+            senderIdentityId: identity.id,
+            identities: identityDTOs,
+            exercises: exerciseDTOs,
+            workouts: workoutDTOs,
+            workoutGroups: groupDTOs,
+            sets: setDTOs
+        )
+
+        let message = SyncMessage.entityUpdates(payload)
+        guard let data = try? JSONEncoder().encode(message) else { return }
+        try? session.send(data, toPeers: [connectedPeer], with: .reliable)
+    }
+
+    // MARK: - Change-driven sync subscriptions
+
+    private func setupSyncSubscriptions() {
+        tearDownSyncSubscriptions()
+
+        // Entity updates: batch by 500ms, then send delta
+        NotificationCenter.default.publisher(for: SyncTrigger.entityUpdatedNotification)
+            .collect(.byTime(DispatchQueue.main, .milliseconds(500)))
+            .sink { [weak self] notifications in
+                self?.sendEntityDelta(notifications: notifications)
+            }
+            .store(in: &cancellables)
+
+        // Structural changes: debounce by 1s, then full sync
+        NotificationCenter.default.publisher(for: SyncTrigger.structureChangedNotification)
+            .debounce(for: .seconds(1), scheduler: DispatchQueue.main)
+            .sink { [weak self] _ in
+                self?.performSync()
+            }
+            .store(in: &cancellables)
+    }
+
+    private func tearDownSyncSubscriptions() {
+        cancellables.removeAll()
     }
 
     private func findPairedIdentity(in context: ModelContext) -> IdentityEntity? {
@@ -232,17 +334,16 @@ class SyncSessionManager: NSObject, ObservableObject {
     // MARK: - Receive payload
 
     private func handleReceivedPayload(at url: URL) {
-        guard let context = modelContext else { return }
         do {
             let data = try Data(contentsOf: url)
             let payload = try JSONDecoder().decode(SyncPayload.self, from: data)
-            let result = SyncEngine.put(payload, into: context)
+            // Merge on main thread for SwiftData thread safety
             DispatchQueue.main.async {
+                guard let context = self.modelContext else { return }
+                let result = SyncEngine.merge(payload, into: context)
                 self.lastSyncResult = result
                 if let peer = self.connectedPeer {
                     self.connectionState = .connected(peerName: peer.displayName)
-
-                    // Update PairedDevices
                     self.updatePairedDevices(senderIdentityId: payload.senderIdentityId)
                 }
             }
@@ -252,6 +353,14 @@ class SyncSessionManager: NSObject, ObservableObject {
             }
         }
         try? FileManager.default.removeItem(at: url)
+    }
+
+    private func handleReceivedDelta(_ payload: SyncPayload) {
+        DispatchQueue.main.async {
+            guard let context = self.modelContext else { return }
+            let result = SyncEngine.merge(payload, into: context)
+            self.lastSyncResult = result
+        }
     }
 
     private func updatePairedDevices(senderIdentityId: UUID) {
@@ -274,7 +383,7 @@ class SyncSessionManager: NSObject, ObservableObject {
         }
     }
 
-    // MARK: - Handshake message handling
+    // MARK: - Message handling
 
     private func handleMessage(_ data: Data, from peer: MCPeerID) {
         guard let message = try? JSONDecoder().decode(SyncMessage.self, from: data) else { return }
@@ -288,6 +397,10 @@ class SyncSessionManager: NSObject, ObservableObject {
             case .pairingAccepted:
                 // Trainer receives this — proceed to sync
                 self.performSync()
+
+            case .entityUpdates(let payload):
+                // Received a delta update from the connected peer
+                self.handleReceivedDelta(payload)
             }
         }
     }
@@ -313,15 +426,14 @@ extension SyncSessionManager: MCSessionDelegate {
                 if self.isPairedWithConnectedPeer {
                     self.connectionState = .connected(peerName: peerID.displayName)
                     self.performSync()
-                    self.startBackgroundSync()
+                    self.setupSyncSubscriptions()
                 } else {
                     self.connectionState = .connected(peerName: peerID.displayName)
                 }
             case .notConnected:
                 if self.connectedPeer == peerID {
                     self.connectedPeer = nil
-                    self.syncTimer?.invalidate()
-                    self.syncTimer = nil
+                    self.tearDownSyncSubscriptions()
                     self.connectionState = .searching
                 }
             case .connecting:

@@ -21,6 +21,7 @@ struct StartFromTemplateView: View {
                         Button {
                             guard trainee.activeWorkouts(in: modelContext).isEmpty else { return }
                             let workout = modelContext.instantiateTemplate(template, for: trainee)
+                            SyncTrigger.structureChanged()
                             onStart(workout)
                             dismiss()
                         } label: {

@@ -52,6 +52,7 @@ struct AddTraineeView: View {
         modelContext.insert(trainee)
         let join = TrainerTrainees(trainerId: trainer.id, traineeId: trainee.id)
         modelContext.insert(join)
+        SyncTrigger.structureChanged()
         dismiss()
     }
 }

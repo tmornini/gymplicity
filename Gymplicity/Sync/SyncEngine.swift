@@ -5,10 +5,15 @@ import SwiftData
 
 struct MergeResult {
     var identitiesInserted = 0
+    var identitiesUpdated = 0
     var exercisesInserted = 0
+    var exercisesUpdated = 0
     var workoutsInserted = 0
+    var workoutsUpdated = 0
     var workoutGroupsInserted = 0
+    var workoutGroupsUpdated = 0
     var setsInserted = 0
+    var setsUpdated = 0
     var trainerTraineesInserted = 0
     var trainerExercisesInserted = 0
     var identityWorkoutsInserted = 0
@@ -23,14 +28,24 @@ struct MergeResult {
         workoutGroupJoinsInserted + groupSetJoinsInserted + exerciseSetJoinsInserted
     }
 
+    var totalUpdated: Int {
+        identitiesUpdated + exercisesUpdated + workoutsUpdated +
+        workoutGroupsUpdated + setsUpdated
+    }
+
     var summary: String {
-        if totalInserted == 0 { return "Already up to date" }
+        if totalInserted == 0 && totalUpdated == 0 { return "Already up to date" }
         var parts: [String] = []
-        if identitiesInserted > 0 { parts.append("\(identitiesInserted) identit\(identitiesInserted == 1 ? "y" : "ies")") }
-        if exercisesInserted > 0 { parts.append("\(exercisesInserted) exercise\(exercisesInserted == 1 ? "" : "s")") }
-        if workoutsInserted > 0 { parts.append("\(workoutsInserted) workout\(workoutsInserted == 1 ? "" : "s")") }
-        if workoutGroupsInserted > 0 { parts.append("\(workoutGroupsInserted) group\(workoutGroupsInserted == 1 ? "" : "s")") }
-        if setsInserted > 0 { parts.append("\(setsInserted) set\(setsInserted == 1 ? "" : "s")") }
+        let iCount = identitiesInserted + identitiesUpdated
+        if iCount > 0 { parts.append("\(iCount) identit\(iCount == 1 ? "y" : "ies")") }
+        let eCount = exercisesInserted + exercisesUpdated
+        if eCount > 0 { parts.append("\(eCount) exercise\(eCount == 1 ? "" : "s")") }
+        let wCount = workoutsInserted + workoutsUpdated
+        if wCount > 0 { parts.append("\(wCount) workout\(wCount == 1 ? "" : "s")") }
+        let gCount = workoutGroupsInserted + workoutGroupsUpdated
+        if gCount > 0 { parts.append("\(gCount) group\(gCount == 1 ? "" : "s")") }
+        let sCount = setsInserted + setsUpdated
+        if sCount > 0 { parts.append("\(sCount) set\(sCount == 1 ? "" : "s")") }
         return "Synced \(parts.joined(separator: ", "))"
     }
 }
@@ -38,18 +53,28 @@ struct MergeResult {
 // MARK: - Sync Engine
 
 struct SyncEngine {
-    /// Idempotent PUT merge — inserts records that don't already exist.
+    /// Role-based UPSERT merge — inserts new records and updates existing ones
+    /// when the sender has authority over the entity type.
     /// Merge order: entities before joins, parents before children.
-    static func put(_ payload: SyncPayload, into context: ModelContext) -> MergeResult {
+    static func merge(_ payload: SyncPayload, into context: ModelContext) -> MergeResult {
         var result = MergeResult()
 
-        // 1. Identities
+        // Determine sender role from payload identities
+        let senderIsTrainer = payload.identities.first(where: { $0.id == payload.senderIdentityId })?.isTrainer ?? false
+
+        // 1. Identities — sender can only update their own identity
         for dto in payload.identities {
             let id = dto.id
             let existing = (try? context.fetch(FetchDescriptor<IdentityEntity>(
                 predicate: #Predicate { $0.id == id }
             )))?.first
-            if existing == nil {
+            if let existing {
+                // Only the sender updates their own identity
+                if dto.id == payload.senderIdentityId {
+                    existing.name = dto.name
+                    result.identitiesUpdated += 1
+                }
+            } else {
                 let entity = IdentityEntity(name: dto.name, isTrainer: dto.isTrainer)
                 entity.id = dto.id
                 context.insert(entity)
@@ -57,13 +82,18 @@ struct SyncEngine {
             }
         }
 
-        // 2. Exercises
+        // 2. Exercises — trainer has authority
         for dto in payload.exercises {
             let id = dto.id
             let existing = (try? context.fetch(FetchDescriptor<ExerciseEntity>(
                 predicate: #Predicate { $0.id == id }
             )))?.first
-            if existing == nil {
+            if let existing {
+                if senderIsTrainer {
+                    existing.name = dto.name
+                    result.exercisesUpdated += 1
+                }
+            } else {
                 let entity = ExerciseEntity(name: dto.name)
                 entity.id = dto.id
                 context.insert(entity)
@@ -71,13 +101,27 @@ struct SyncEngine {
             }
         }
 
-        // 3. Workouts
+        // 3. Workouts — trainee has authority for non-template workouts,
+        //               trainer has authority for template workouts
         for dto in payload.workouts {
             let id = dto.id
             let existing = (try? context.fetch(FetchDescriptor<WorkoutEntity>(
                 predicate: #Predicate { $0.id == id }
             )))?.first
-            if existing == nil {
+            if let existing {
+                let senderHasAuthority: Bool
+                if dto.isTemplate {
+                    senderHasAuthority = senderIsTrainer
+                } else {
+                    senderHasAuthority = !senderIsTrainer
+                }
+                if senderHasAuthority {
+                    existing.notes = dto.notes
+                    existing.isComplete = dto.isComplete
+                    existing.templateName = dto.templateName
+                    result.workoutsUpdated += 1
+                }
+            } else {
                 let entity = WorkoutEntity(
                     date: dto.date,
                     isTemplate: dto.isTemplate,
@@ -92,13 +136,19 @@ struct SyncEngine {
             }
         }
 
-        // 4. WorkoutGroups
+        // 4. WorkoutGroups — trainer has authority
         for dto in payload.workoutGroups {
             let id = dto.id
             let existing = (try? context.fetch(FetchDescriptor<WorkoutGroupEntity>(
                 predicate: #Predicate { $0.id == id }
             )))?.first
-            if existing == nil {
+            if let existing {
+                if senderIsTrainer {
+                    existing.order = dto.order
+                    existing.isSuperset = dto.isSuperset
+                    result.workoutGroupsUpdated += 1
+                }
+            } else {
                 let entity = WorkoutGroupEntity(order: dto.order, isSuperset: dto.isSuperset)
                 entity.id = dto.id
                 context.insert(entity)
@@ -106,13 +156,21 @@ struct SyncEngine {
             }
         }
 
-        // 5. Sets
+        // 5. Sets — trainee has authority (they enter their own workout data)
         for dto in payload.sets {
             let id = dto.id
             let existing = (try? context.fetch(FetchDescriptor<SetEntity>(
                 predicate: #Predicate { $0.id == id }
             )))?.first
-            if existing == nil {
+            if let existing {
+                if !senderIsTrainer {
+                    existing.weight = dto.weight
+                    existing.reps = dto.reps
+                    existing.isCompleted = dto.isCompleted
+                    existing.completedAt = dto.completedAt
+                    result.setsUpdated += 1
+                }
+            } else {
                 let entity = SetEntity(order: dto.order, weight: dto.weight, reps: dto.reps)
                 entity.id = dto.id
                 entity.isCompleted = dto.isCompleted
@@ -122,7 +180,9 @@ struct SyncEngine {
             }
         }
 
-        // 6. Join tables — TrainerTrainees
+        // 6. Join tables — INSERT IF NOT EXISTS only (immutable UUID pairs)
+
+        // TrainerTrainees
         for dto in payload.trainerTrainees {
             let trainerId = dto.trainerId
             let traineeId = dto.traineeId
@@ -201,5 +261,11 @@ struct SyncEngine {
         }
 
         return result
+    }
+
+    /// Deprecated: Use merge(_:into:) instead.
+    @available(*, deprecated, renamed: "merge(_:into:)")
+    static func put(_ payload: SyncPayload, into context: ModelContext) -> MergeResult {
+        merge(payload, into: context)
     }
 }

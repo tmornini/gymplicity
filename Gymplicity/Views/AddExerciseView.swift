@@ -98,6 +98,7 @@ struct AddExerciseView: View {
         guard !trimmed.isEmpty, let trainer else { return }
         let exercise = trainer.findOrCreateExercise(named: trimmed, in: modelContext)
         createSet(for: exercise)
+        SyncTrigger.structureChanged()
         dismiss()
     }
 

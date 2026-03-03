@@ -68,7 +68,10 @@ struct TemplateEditorView: View {
             TextField("Template Name", text: $nameText)
             Button("Save") {
                 let trimmed = nameText.trimmingCharacters(in: .whitespaces)
-                if !trimmed.isEmpty { template.templateName = trimmed }
+                if !trimmed.isEmpty {
+                    template.templateName = trimmed
+                    SyncTrigger.entityUpdated("WorkoutEntity", id: template.id)
+                }
             }
             Button("Cancel", role: .cancel) { }
         }
@@ -85,6 +88,7 @@ struct TemplateEditorView: View {
         modelContext.insert(WorkoutGroups(workoutId: template.id, groupId: group.id))
         targetGroup = group
         showingAddExercise = true
+        SyncTrigger.structureChanged()
     }
 
     private func deleteSets(from group: WorkoutGroupEntity, at offsets: IndexSet) {
@@ -92,6 +96,7 @@ struct TemplateEditorView: View {
         for index in offsets {
             modelContext.deleteSet(sorted[index])
         }
+        SyncTrigger.structureChanged()
     }
 }
 
@@ -243,6 +248,7 @@ private struct TemplateSetEntryView: View {
     private func save() {
         set.weight = Double(weightText) ?? 0
         set.reps = Int(repsText) ?? 0
+        SyncTrigger.entityUpdated("SetEntity", id: set.id)
         dismiss()
     }
 

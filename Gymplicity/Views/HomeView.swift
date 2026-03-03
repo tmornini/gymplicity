@@ -180,6 +180,7 @@ struct HomeView: View {
         let name = trimmed.isEmpty ? (isTrainer ? "Trainer" : "Trainee") : trimmed
         let identity = IdentityEntity(name: name, isTrainer: isTrainer)
         modelContext.insert(identity)
+        SyncTrigger.structureChanged()
     }
 
     private func startWorkout(for identity: IdentityEntity) {
@@ -188,12 +189,14 @@ struct HomeView: View {
         modelContext.insert(workout)
         let join = IdentityWorkouts(identityId: identity.id, workoutId: workout.id)
         modelContext.insert(join)
+        SyncTrigger.structureChanged()
     }
 
     private func deleteTrainees(from sorted: [IdentityEntity], at offsets: IndexSet) {
         for index in offsets {
             modelContext.deleteIdentity(sorted[index])
         }
+        SyncTrigger.structureChanged()
     }
 }
 

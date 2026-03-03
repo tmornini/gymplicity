@@ -4,7 +4,6 @@ import SwiftData
 struct GuidedWorkoutView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
-    @EnvironmentObject private var syncManager: SyncSessionManager
     @Bindable var workout: WorkoutEntity
     var onSwitchToList: (() -> Void)? = nil
     var initialSetIndex: Int? = nil
@@ -13,7 +12,6 @@ struct GuidedWorkoutView: View {
     @State private var weightText: String = ""
     @State private var repsText: String = ""
     @State private var showingEndConfirmation = false
-    @State private var showingSyncPrompt = false
     @State private var showWalkingTransition = false
     @FocusState private var focusedField: Field?
 
@@ -60,17 +58,6 @@ struct GuidedWorkoutView: View {
                 endWorkout()
             }
             Button("Cancel", role: .cancel) { }
-        }
-        .alert("Sync Now?", isPresented: $showingSyncPrompt) {
-            Button("Sync Now") {
-                syncManager.performSync()
-                if onSwitchToList == nil { dismiss() }
-            }
-            Button("Skip", role: .cancel) {
-                if onSwitchToList == nil { dismiss() }
-            }
-        } message: {
-            Text("A paired device is nearby. Sync this workout?")
         }
         .onAppear {
             if let saved = initialSetIndex {
@@ -241,11 +228,8 @@ struct GuidedWorkoutView: View {
 
     private func endWorkout() {
         workout.isComplete = true
-        if case .connected = syncManager.connectionState {
-            showingSyncPrompt = true
-        } else if onSwitchToList == nil {
-            dismiss()
-        }
+        SyncTrigger.entityUpdated("WorkoutEntity", id: workout.id)
+        if onSwitchToList == nil { dismiss() }
     }
 
     private func completeCurrentSet() {
@@ -254,6 +238,7 @@ struct GuidedWorkoutView: View {
         pair.set.reps = Int(repsText) ?? 0
         pair.set.isCompleted = true
         pair.set.completedAt = .now
+        SyncTrigger.entityUpdated("SetEntity", id: pair.set.id)
 
         if let next = workout.nextIncompleteSetIndex(after: currentIndex, in: modelContext) {
             // Brief walking transition

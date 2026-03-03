@@ -89,6 +89,41 @@ struct SyncPayload: Codable {
     let workoutGroupJoins: [WorkoutGroupsDTO]
     let groupSetJoins: [GroupSetsDTO]
     let exerciseSetJoins: [ExerciseSetsDTO]
+
+    /// Creates a delta payload containing only the specified changed entities.
+    /// Empty arrays default for entity types not included in this delta.
+    static func delta(
+        senderIdentityId: UUID,
+        identities: [IdentityDTO] = [],
+        exercises: [ExerciseDTO] = [],
+        workouts: [WorkoutDTO] = [],
+        workoutGroups: [WorkoutGroupDTO] = [],
+        sets: [SetDTO] = []
+    ) -> SyncPayload {
+        SyncPayload(
+            version: 1,
+            senderIdentityId: senderIdentityId,
+            identities: identities,
+            exercises: exercises,
+            workouts: workouts,
+            workoutGroups: workoutGroups,
+            sets: sets,
+            trainerTrainees: [],
+            trainerExercises: [],
+            identityWorkouts: [],
+            workoutGroupJoins: [],
+            groupSetJoins: [],
+            exerciseSetJoins: []
+        )
+    }
+}
+
+// MARK: - Sync Message
+
+enum SyncMessage: Codable {
+    case pairingRequest(traineeUUID: UUID, trainerName: String)
+    case pairingAccepted
+    case entityUpdates(SyncPayload)
 }
 
 // MARK: - Entity → DTO Extensions

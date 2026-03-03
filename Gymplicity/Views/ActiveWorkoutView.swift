@@ -4,12 +4,10 @@ import SwiftData
 struct ActiveWorkoutView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
-    @EnvironmentObject private var syncManager: SyncSessionManager
     @Bindable var workout: WorkoutEntity
     var onSwitchToGuided: (() -> Void)? = nil
     @State private var showingAddExercise = false
     @State private var showingEndConfirmation = false
-    @State private var showingSyncPrompt = false
     @State private var targetGroup: WorkoutGroupEntity?
 
     var body: some View {
@@ -130,17 +128,6 @@ struct ActiveWorkoutView: View {
                 AddExerciseView(group: group)
             }
         }
-        .alert("Sync Now?", isPresented: $showingSyncPrompt) {
-            Button("Sync Now") {
-                syncManager.performSync()
-                if onSwitchToGuided == nil { dismiss() }
-            }
-            Button("Skip", role: .cancel) {
-                if onSwitchToGuided == nil { dismiss() }
-            }
-        } message: {
-            Text("A paired device is nearby. Sync this workout?")
-        }
     }
 
     private func exerciseName(for group: WorkoutGroupEntity) -> String {
@@ -154,6 +141,7 @@ struct ActiveWorkoutView: View {
         modelContext.insert(join)
         targetGroup = group
         showingAddExercise = true
+        SyncTrigger.structureChanged()
     }
 
     private func addSetToGroup(_ group: WorkoutGroupEntity) {
@@ -173,6 +161,7 @@ struct ActiveWorkoutView: View {
         modelContext.insert(groupJoin)
         let exerciseJoin = ExerciseSets(exerciseId: exercise.id, setId: set.id)
         modelContext.insert(exerciseJoin)
+        SyncTrigger.structureChanged()
     }
 
     private func deleteSets(from group: WorkoutGroupEntity, at offsets: IndexSet) {
@@ -180,15 +169,13 @@ struct ActiveWorkoutView: View {
         for index in offsets {
             modelContext.deleteSet(sorted[index])
         }
+        SyncTrigger.structureChanged()
     }
 
     private func endWorkout() {
         workout.isComplete = true
-        if case .connected = syncManager.connectionState {
-            showingSyncPrompt = true
-        } else if onSwitchToGuided == nil {
-            dismiss()
-        }
+        SyncTrigger.entityUpdated("WorkoutEntity", id: workout.id)
+        if onSwitchToGuided == nil { dismiss() }
     }
 }
 
@@ -232,6 +219,7 @@ struct SetRow: View {
                     withAnimation {
                         set.isCompleted.toggle()
                         set.completedAt = set.isCompleted ? .now : nil
+                        SyncTrigger.entityUpdated("SetEntity", id: set.id)
                     }
                 } label: {
                     Image(systemName: set.isCompleted ? "checkmark.circle.fill" : "circle")

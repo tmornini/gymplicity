@@ -28,15 +28,13 @@ struct HomeView: View {
             }
             .navigationTitle("Gymplicity")
             .toolbar {
-                if let identity = currentIdentity {
+                if let identity = currentIdentity, identity.isTrainer {
                     ToolbarItem(placement: .topBarLeading) {
                         SyncStatusButton(syncManager: syncManager, identity: identity)
                     }
-                    if identity.isTrainer {
-                        ToolbarItem(placement: .primaryAction) {
-                            Button { showingAddTrainee = true } label: {
-                                Image(systemName: "person.badge.plus")
-                            }
+                    ToolbarItem(placement: .primaryAction) {
+                        Button { showingAddTrainee = true } label: {
+                            Image(systemName: "person.badge.plus")
                         }
                     }
                 }

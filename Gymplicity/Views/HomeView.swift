@@ -4,10 +4,12 @@ import SwiftData
 struct HomeView: View {
     @Environment(\.modelContext) private var modelContext
     @Query private var identities: [IdentityEntity]
+    @EnvironmentObject private var syncManager: SyncSessionManager
     @State private var showingAddTrainee = false
     @State private var showingSetup = false
     @State private var setupName = ""
     @State private var showingTemplateStart = false
+    @State private var showingSync = false
     @State private var selectedTrainee: IdentityEntity?
 
     private var currentIdentity: IdentityEntity? { identities.first }
@@ -32,10 +34,17 @@ struct HomeView: View {
             }
             .navigationTitle("Gymplicity")
             .toolbar {
-                if let identity = currentIdentity, identity.isTrainer {
-                    ToolbarItem(placement: .primaryAction) {
-                        Button { showingAddTrainee = true } label: {
-                            Image(systemName: "person.badge.plus")
+                if let identity = currentIdentity {
+                    ToolbarItem(placement: .topBarLeading) {
+                        Button { showingSync = true } label: {
+                            Image(systemName: "person.2.wave.2")
+                        }
+                    }
+                    if identity.isTrainer {
+                        ToolbarItem(placement: .primaryAction) {
+                            Button { showingAddTrainee = true } label: {
+                                Image(systemName: "person.badge.plus")
+                            }
                         }
                     }
                 }
@@ -43,6 +52,11 @@ struct HomeView: View {
             .sheet(isPresented: $showingAddTrainee) {
                 if let identity = currentIdentity {
                     AddTraineeView(trainer: identity)
+                }
+            }
+            .sheet(isPresented: $showingSync) {
+                if let identity = currentIdentity {
+                    SyncView(syncManager: syncManager, identity: identity)
                 }
             }
             .alert("Set Up Your Profile", isPresented: $showingSetup) {

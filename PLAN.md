@@ -19,9 +19,9 @@ should be able to log data in seconds.
 | Min Target | iOS 17+ | SwiftData + Swift Charts maturity |
 | Architecture | MVVM | Clean separation, testable, SwiftUI-natural |
 
-No backend server. Local-first with SwiftData. iCloud sync can be
-enabled later via CloudKit integration (SwiftData supports this
-natively).
+No backend server. Local-first with SwiftData. Peer-to-peer sync via
+Apple's Multipeer Connectivity framework (WiFi/Bluetooth) for sharing
+data between trainer and trainee devices.
 
 ---
 
@@ -74,6 +74,7 @@ IdentityWorkouts      (identityId, workoutId)
 WorkoutGroups         (workoutId, groupId)
 GroupSets             (groupId, setId)
 ExerciseSets          (exerciseId, setId)
+PairedDevices         (localIdentityId, remoteIdentityId, remoteName, lastSyncDate?)
 ```
 
 ### Derived Values (computed, not stored)
@@ -324,6 +325,32 @@ Accessible from any active workout via the bottom toolbar.
 └──────────────────────────────┘
 ```
 
+### 10. Sync View (sheet)
+
+Presented from toolbar in HomeView (trainers) and ProfileView (trainees).
+Handles peer discovery, pairing, and sync status via Multipeer Connectivity.
+
+```
+┌──────────────────────────────┐
+│ Sync                  [Done] │
+│──────────────────────────────│
+│                              │
+│  Nearby Devices              │
+│  ┌──────────────────────┐   │
+│  │ Alex M.              │   │
+│  │ Trainee     [Paired] │   │
+│  └──────────────────────┘   │
+│                              │
+│  ✓ Connected to Alex M.     │
+│  Synced 3 workouts, 15 sets │
+│  Background sync active      │
+│                              │
+│  [Sync Now]                  │
+└──────────────────────────────┘
+```
+
+**States:** Searching → Peer Found → Pairing (first time) → Syncing → Connected
+
 ---
 
 ## Implementation Phases
@@ -358,6 +385,16 @@ Accessible from any active workout via the bottom toolbar.
 - Settings screen
 - Seed/demo data for first launch
 - App icon and launch screen
+
+### Phase 5: Peer-to-Peer Sync
+- Codable DTOs mirroring all entities and join tables
+- PUT-based merge engine (idempotent INSERT IF NOT EXISTS)
+- Identity reconciliation for first-time pairing (trainer UUID wins)
+- Multipeer Connectivity session management (advertise/browse/connect)
+- PairedDevices join table for tracking paired devices
+- Sync UI with discovery, pairing, and connection status
+- End-of-workout sync prompt when paired device is nearby
+- Background sync (every 30s while connected)
 
 ---
 

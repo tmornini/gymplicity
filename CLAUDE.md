@@ -28,16 +28,25 @@ build/device YOUR_TEAM_ID    # pass Apple Team ID as argument
 
 IdentityEntity, ExerciseEntity, WorkoutEntity, WorkoutGroupEntity, SetEntity
 
-### Join Tables (6)
+### Join Tables (7)
 
 TrainerTrainees, TrainerExercises, IdentityWorkouts, WorkoutGroups,
-GroupSets, ExerciseSets
+GroupSets, ExerciseSets, PairedDevices
 
-### Views (12)
+### Views (13)
 
 HomeView, ActiveWorkoutView, SetEntryView, AddExerciseView, ProfileView,
 ProgressChartsView, AddTraineeView, WorkoutHistoryView, TemplateListView,
-TemplateEditorView, StartFromTemplateView, GuidedWorkoutView
+TemplateEditorView, StartFromTemplateView, GuidedWorkoutView, SyncView
+
+### Sync Module (4 files in Gymplicity/Sync/)
+
+SyncPayload, SyncEngine, SyncSessionManager, IdentityReconciliation
+
+- **SyncPayload:** Codable DTOs mirroring all entities/joins + payload builder
+- **SyncEngine:** Idempotent PUT merge (INSERT IF NOT EXISTS by UUID)
+- **SyncSessionManager:** Multipeer Connectivity lifecycle (advertise/browse/connect/send)
+- **IdentityReconciliation:** First-time pairing UUID rewrite (trainer's UUID wins)
 
 ## Conventions
 

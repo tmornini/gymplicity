@@ -3,9 +3,12 @@ import SwiftData
 
 @main
 struct GymplicityApp: App {
+    @StateObject private var syncManager = SyncSessionManager(name: "Gymplicity", role: "unknown")
+
     var body: some Scene {
         WindowGroup {
             HomeView()
+                .environmentObject(syncManager)
         }
         .modelContainer(for: [
             IdentityEntity.self,
@@ -19,6 +22,7 @@ struct GymplicityApp: App {
             WorkoutGroups.self,
             GroupSets.self,
             ExerciseSets.self,
+            PairedDevices.self,
         ])
     }
 }

@@ -152,6 +152,21 @@ final class ExerciseSets {
     }
 }
 
+@Model
+final class PairedDevices {
+    var localIdentityId: UUID
+    var remoteIdentityId: UUID
+    var remoteName: String
+    var lastSyncDate: Date?
+
+    init(localIdentityId: UUID, remoteIdentityId: UUID, remoteName: String) {
+        self.localIdentityId = localIdentityId
+        self.remoteIdentityId = remoteIdentityId
+        self.remoteName = remoteName
+        self.lastSyncDate = nil
+    }
+}
+
 // MARK: - IdentityEntity Traversal
 
 extension IdentityEntity {

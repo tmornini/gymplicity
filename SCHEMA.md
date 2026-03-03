@@ -138,6 +138,19 @@ Links an exercise catalog entry to the sets that reference it.
 | exerciseId | UUID |
 | setId | UUID |
 
+### PairedDevices
+
+Tracks which devices have been paired via Multipeer Connectivity sync.
+Used to distinguish "Paired" vs "New" peers in the sync UI and to find
+the correct remote identity for payload building.
+
+| Column | Type | Description |
+|--------|------|-------------|
+| localIdentityId | UUID | The local user's identity |
+| remoteIdentityId | UUID | The paired remote user's identity |
+| remoteName | String | Display name of the remote device/user |
+| lastSyncDate | Date? | Timestamp of most recent successful sync |
+
 ## Relationship Semantics
 
 | Join Table | Meaning | Delete Behavior |
@@ -148,6 +161,7 @@ Links an exercise catalog entry to the sets that reference it.
 | WorkoutGroups | Workout contains these groups | Cascade: delete workout &rarr; delete groups |
 | GroupSets | Group contains these sets | Cascade: delete group &rarr; delete sets |
 | ExerciseSets | Sets reference this exercise | Nullify: delete exercise &rarr; remove join rows, sets remain |
+| PairedDevices | Local identity paired with remote identity | Manual: pairing data independent of entity lifecycle |
 
 ## Computed Properties (not stored)
 

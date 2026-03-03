@@ -9,7 +9,7 @@ func makeTestContext() throws -> ModelContext {
         for: IdentityEntity.self, ExerciseEntity.self, WorkoutEntity.self,
         WorkoutGroupEntity.self, SetEntity.self, TrainerTrainees.self,
         TrainerExercises.self, IdentityWorkouts.self, WorkoutGroups.self,
-        GroupSets.self, ExerciseSets.self,
+        GroupSets.self, ExerciseSets.self, PairedDevices.self,
         configurations: config
     )
     return ModelContext(container)

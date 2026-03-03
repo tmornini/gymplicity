@@ -4,6 +4,7 @@ import SwiftData
 struct GuidedWorkoutView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
+    @EnvironmentObject private var syncManager: SyncSessionManager
     @Bindable var workout: WorkoutEntity
     var onSwitchToList: (() -> Void)? = nil
     var initialSetIndex: Int? = nil
@@ -12,6 +13,7 @@ struct GuidedWorkoutView: View {
     @State private var weightText: String = ""
     @State private var repsText: String = ""
     @State private var showingEndConfirmation = false
+    @State private var showingSyncPrompt = false
     @FocusState private var focusedField: Field?
 
     enum Field { case weight, reps }
@@ -58,12 +60,20 @@ struct GuidedWorkoutView: View {
         }
         .confirmationDialog("End Workout?", isPresented: $showingEndConfirmation) {
             Button("End Workout", role: .destructive) {
-                workout.isComplete = true
-                if onSwitchToList == nil {
-                    dismiss()
-                }
+                endWorkout()
             }
             Button("Cancel", role: .cancel) { }
+        }
+        .alert("Sync Now?", isPresented: $showingSyncPrompt) {
+            Button("Sync Now") {
+                syncManager.performSync()
+                if onSwitchToList == nil { dismiss() }
+            }
+            Button("Skip", role: .cancel) {
+                if onSwitchToList == nil { dismiss() }
+            }
+        } message: {
+            Text("A paired device is nearby. Sync this workout?")
         }
         .onAppear {
             if let saved = initialSetIndex {
@@ -191,10 +201,7 @@ struct GuidedWorkoutView: View {
                 .foregroundStyle(.secondary)
 
             Button("End Workout") {
-                workout.isComplete = true
-                if onSwitchToList == nil {
-                    dismiss()
-                }
+                endWorkout()
             }
             .buttonStyle(.borderedProminent)
             .padding(.top)
@@ -202,6 +209,15 @@ struct GuidedWorkoutView: View {
     }
 
     // MARK: - Actions
+
+    private func endWorkout() {
+        workout.isComplete = true
+        if case .connected = syncManager.connectionState {
+            showingSyncPrompt = true
+        } else if onSwitchToList == nil {
+            dismiss()
+        }
+    }
 
     private func completeCurrentSet() {
         guard let pair = currentPair else { return }

@@ -4,10 +4,12 @@ import SwiftData
 struct ActiveWorkoutView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
+    @EnvironmentObject private var syncManager: SyncSessionManager
     @Bindable var workout: WorkoutEntity
     var onSwitchToGuided: (() -> Void)? = nil
     @State private var showingAddExercise = false
     @State private var showingEndConfirmation = false
+    @State private var showingSyncPrompt = false
     @State private var targetGroup: WorkoutGroupEntity?
 
     var body: some View {
@@ -114,6 +116,17 @@ struct ActiveWorkoutView: View {
                 AddExerciseView(group: group)
             }
         }
+        .alert("Sync Now?", isPresented: $showingSyncPrompt) {
+            Button("Sync Now") {
+                syncManager.performSync()
+                if onSwitchToGuided == nil { dismiss() }
+            }
+            Button("Skip", role: .cancel) {
+                if onSwitchToGuided == nil { dismiss() }
+            }
+        } message: {
+            Text("A paired device is nearby. Sync this workout?")
+        }
     }
 
     private func exerciseName(for group: WorkoutGroupEntity) -> String {
@@ -157,7 +170,9 @@ struct ActiveWorkoutView: View {
 
     private func endWorkout() {
         workout.isComplete = true
-        if onSwitchToGuided == nil {
+        if case .connected = syncManager.connectionState {
+            showingSyncPrompt = true
+        } else if onSwitchToGuided == nil {
             dismiss()
         }
     }

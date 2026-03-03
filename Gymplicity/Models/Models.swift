@@ -303,6 +303,34 @@ extension WorkoutEntity {
         let uniqueIDs = Swift.Set(allSets.compactMap { $0.exercise(in: context)?.id })
         return uniqueIDs.count
     }
+
+    // MARK: - Guided Workout Helpers
+
+    func allSetsFlattened(in context: ModelContext) -> [(group: WorkoutGroupEntity, set: SetEntity)] {
+        sortedGroups(in: context).flatMap { group in
+            group.sortedSets(in: context).map { (group: group, set: $0) }
+        }
+    }
+
+    func firstIncompleteSetIndex(in context: ModelContext) -> Int? {
+        allSetsFlattened(in: context).firstIndex { !$0.set.isCompleted }
+    }
+
+    func nextIncompleteSetIndex(after index: Int, in context: ModelContext) -> Int? {
+        let all = allSetsFlattened(in: context)
+        // Scan forward from current position
+        if let found = all.dropFirst(index + 1).indices.first(where: { !all[$0].set.isCompleted }) {
+            return found
+        }
+        // Wrap around to beginning
+        return all.prefix(index).indices.first(where: { !all[$0].set.isCompleted })
+    }
+
+    func completionProgress(in context: ModelContext) -> Double {
+        let all = allSetsFlattened(in: context)
+        guard !all.isEmpty else { return 1.0 }
+        return Double(all.filter { $0.set.isCompleted }.count) / Double(all.count)
+    }
 }
 
 // MARK: - WorkoutGroupEntity Traversal

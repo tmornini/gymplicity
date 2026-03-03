@@ -84,6 +84,13 @@ struct ActiveWorkoutView: View {
                     .fontWeight(.semibold)
                     .tint(.red)
             }
+            ToolbarItem(placement: .bottomBar) {
+                NavigationLink {
+                    GuidedWorkoutView(workout: workout)
+                } label: {
+                    Label("Guided Mode", systemImage: "scope")
+                }
+            }
         }
         .confirmationDialog("End Workout?", isPresented: $showingEndConfirmation) {
             Button("End Workout", role: .destructive) { endWorkout() }

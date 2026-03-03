@@ -35,17 +35,13 @@ struct SyncView: View {
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Done") {
-                        syncManager.stopSearching()
                         dismiss()
                     }
                 }
             }
             .onAppear {
-                syncManager.configure(identity: identity, context: modelContext)
-                syncManager.startSearching()
-            }
-            .onDisappear {
-                syncManager.stopSearching()
+                syncManager.configureIfNeeded(identity: identity, context: modelContext)
+                syncManager.startSearchingIfNeeded()
             }
         }
     }
@@ -61,8 +57,8 @@ struct SyncView: View {
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
             Button("Start Searching") {
-                syncManager.configure(identity: identity, context: modelContext)
-                syncManager.startSearching()
+                syncManager.configureIfNeeded(identity: identity, context: modelContext)
+                syncManager.startSearchingIfNeeded()
             }
             .buttonStyle(.borderedProminent)
         }
@@ -77,7 +73,7 @@ struct SyncView: View {
                 Text("Looking for nearby devices...")
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
-                Text("Make sure both devices have the sync screen open")
+                Text("Make sure the other device has Gymplicity open")
                     .font(.caption)
                     .foregroundStyle(.tertiary)
                     .multilineTextAlignment(.center)

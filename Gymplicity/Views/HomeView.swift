@@ -9,7 +9,6 @@ struct HomeView: View {
     @State private var showingSetup = false
     @State private var setupName = ""
     @State private var showingTemplateStart = false
-    @State private var showingSync = false
     @State private var selectedTrainee: IdentityEntity?
 
     private var currentIdentity: IdentityEntity? { identities.first }
@@ -36,9 +35,7 @@ struct HomeView: View {
             .toolbar {
                 if let identity = currentIdentity {
                     ToolbarItem(placement: .topBarLeading) {
-                        Button { showingSync = true } label: {
-                            Image(systemName: "person.2.wave.2")
-                        }
+                        SyncStatusButton(syncManager: syncManager, identity: identity)
                     }
                     if identity.isTrainer {
                         ToolbarItem(placement: .primaryAction) {
@@ -54,9 +51,9 @@ struct HomeView: View {
                     AddTraineeView(trainer: identity)
                 }
             }
-            .sheet(isPresented: $showingSync) {
-                if let identity = currentIdentity {
-                    SyncView(syncManager: syncManager, identity: identity)
+            .onChange(of: currentIdentity?.id) { _, newId in
+                if newId != nil {
+                    syncManager.startAutoSync(container: modelContext.container)
                 }
             }
             .alert("Set Up Your Profile", isPresented: $showingSetup) {

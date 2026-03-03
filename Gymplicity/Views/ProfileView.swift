@@ -8,7 +8,6 @@ struct ProfileView: View {
     @State private var showingEditName = false
     @State private var editedName = ""
     @State private var showingTemplateStart = false
-    @State private var showingSync = false
 
     var body: some View {
         List {
@@ -91,9 +90,7 @@ struct ProfileView: View {
         .navigationTitle(identity.name)
         .toolbar {
             ToolbarItem(placement: .topBarLeading) {
-                Button { showingSync = true } label: {
-                    Image(systemName: "person.2.wave.2")
-                }
+                SyncStatusButton(syncManager: syncManager, identity: identity)
             }
             ToolbarItem(placement: .primaryAction) {
                 Button("Edit") {
@@ -101,9 +98,6 @@ struct ProfileView: View {
                     showingEditName = true
                 }
             }
-        }
-        .sheet(isPresented: $showingSync) {
-            SyncView(syncManager: syncManager, identity: identity)
         }
         .alert("Edit Name", isPresented: $showingEditName) {
             TextField("Name", text: $editedName)

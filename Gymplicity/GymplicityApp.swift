@@ -7,7 +7,7 @@ struct GymplicityApp: App {
 
     var body: some Scene {
         WindowGroup {
-            HomeView()
+            RootView()
                 .environmentObject(syncManager)
         }
         .modelContainer(for: [
@@ -22,6 +22,7 @@ struct GymplicityApp: App {
             WorkoutGroups.self,
             GroupSets.self,
             ExerciseSets.self,
+            TemplateInstances.self,
             PairedDevices.self,
         ])
     }

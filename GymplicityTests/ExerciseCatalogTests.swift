@@ -70,7 +70,7 @@ final class ExerciseCatalogTests: XCTestCase {
         XCTAssert(standalone.exerciseCatalog(in: ctx).isEmpty)
     }
 
-    func testAllExercisesDeduplicatesAndSorts() throws {
+    func testExercisesUsedDeduplicatesAndSorts() throws {
         let ctx = try makeTestContext()
         let trainer = ctx.makeTrainer()
         let bench = ctx.makeExercise(name: "Bench Press", trainer: trainer)
@@ -78,16 +78,16 @@ final class ExerciseCatalogTests: XCTestCase {
         let trainee = ctx.makeTrainee(trainer: trainer)
 
         // Two workouts both using Bench
-        let w1 = ctx.makeWorkout(for: trainee, date: .now.addingTimeInterval(-86400), isComplete: true)
+        let w1 = ctx.makeWorkout(for: trainee, date: .now.addingTimeInterval(-86400), isCompleted: true)
         let g1 = ctx.makeGroup(in: w1, order: 0)
         ctx.makeSet(in: g1, exercise: bench, order: 0, weight: 135, reps: 10)
 
-        let w2 = ctx.makeWorkout(for: trainee, isComplete: true)
+        let w2 = ctx.makeWorkout(for: trainee, isCompleted: true)
         let g2 = ctx.makeGroup(in: w2, order: 0)
         ctx.makeSet(in: g2, exercise: bench, order: 0, weight: 145, reps: 8)
         ctx.makeSet(in: g2, exercise: squat, order: 1, weight: 225, reps: 5)
 
-        let all = trainee.allExercises(in: ctx)
+        let all = trainee.exercisesUsed(in: ctx)
         XCTAssertEqual(all.count, 2)
         XCTAssertEqual(all.map(\.name), ["Bench Press", "Squat"])
     }

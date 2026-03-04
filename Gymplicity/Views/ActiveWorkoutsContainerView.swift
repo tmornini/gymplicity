@@ -39,6 +39,7 @@ struct ActiveWorkoutsContainerView: View {
                         case .list:
                             ActiveWorkoutView(
                                 workout: pair.workout,
+                                trainer: trainer,
                                 onSwitchToGuided: {
                                     viewModes[workoutId] = .guided
                                 }

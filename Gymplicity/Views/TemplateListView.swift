@@ -10,7 +10,7 @@ struct TemplateListView: View {
         List {
             ForEach(templates) { template in
                 NavigationLink {
-                    TemplateEditorView(template: template)
+                    TemplateEditorView(template: template, trainer: trainer)
                 } label: {
                     TemplateRow(template: template)
                 }
@@ -94,14 +94,6 @@ private struct TemplateRow: View {
     }
 
     private func exerciseNamesList() -> String {
-        let allSets = template.sortedGroups(in: modelContext).flatMap { $0.sortedSets(in: modelContext) }
-        var seen = Swift.Set<UUID>()
-        var names: [String] = []
-        for set in allSets {
-            if let exercise = set.exercise(in: modelContext), seen.insert(exercise.id).inserted {
-                names.append(exercise.name)
-            }
-        }
-        return names.joined(separator: ", ")
+        template.exerciseNames(in: modelContext)
     }
 }

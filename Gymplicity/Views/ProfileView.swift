@@ -3,7 +3,6 @@ import SwiftData
 
 struct ProfileView: View {
     @Environment(\.modelContext) private var modelContext
-    @EnvironmentObject private var syncManager: SyncSessionManager
     @Bindable var identity: IdentityEntity
     @State private var showingEditName = false
     @State private var editedName = ""
@@ -80,7 +79,7 @@ struct ProfileView: View {
                 }
             }
 
-            let exercises = identity.allExercises(in: modelContext)
+            let exercises = identity.exercisesUsed(in: modelContext)
             if !exercises.isEmpty {
                 Section("Progress by Exercise") {
                     ForEach(exercises) { exercise in
@@ -116,7 +115,7 @@ struct ProfileView: View {
             }
         }
         .sheet(isPresented: $showingSync) {
-            SyncView(syncManager: syncManager, identity: identity)
+            SyncView(identity: identity)
         }
         .alert("Edit Name", isPresented: $showingEditName) {
             TextField("Name", text: $editedName)
@@ -124,7 +123,7 @@ struct ProfileView: View {
                 let trimmed = editedName.trimmingCharacters(in: .whitespaces)
                 if !trimmed.isEmpty {
                     identity.name = trimmed
-                    SyncTrigger.entityUpdated("IdentityEntity", id: identity.id)
+                    SyncTrigger.entityUpdated(.identity, id: identity.id)
                 }
             }
             Button("Cancel", role: .cancel) { }
@@ -138,12 +137,7 @@ struct ProfileView: View {
     }
 
     private func startWorkout() {
-        guard identity.activeWorkouts(in: modelContext).isEmpty else { return }
-        let workout = WorkoutEntity()
-        modelContext.insert(workout)
-        let join = IdentityWorkouts(identityId: identity.id, workoutId: workout.id)
-        modelContext.insert(join)
-        SyncTrigger.structureChanged()
+        modelContext.startWorkout(for: identity)
     }
 
 }
@@ -181,15 +175,7 @@ private struct WorkoutRow: View {
     }
 
     private func exerciseNamesList() -> String {
-        let allSets = workout.sortedGroups(in: modelContext).flatMap { $0.sortedSets(in: modelContext) }
-        var seen = Swift.Set<UUID>()
-        var names: [String] = []
-        for set in allSets {
-            if let exercise = set.exercise(in: modelContext), seen.insert(exercise.id).inserted {
-                names.append(exercise.name)
-            }
-        }
-        return names.joined(separator: ", ")
+        workout.exerciseNames(in: modelContext)
     }
 
     private func formatVolume(_ volume: Double) -> String {

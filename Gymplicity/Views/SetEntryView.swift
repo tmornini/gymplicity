@@ -56,7 +56,7 @@ struct SetEntryView: View {
         set.reps = Int(repsText) ?? 0
         set.isCompleted = true
         set.completedAt = .now
-        SyncTrigger.entityUpdated("SetEntity", id: set.id)
+        SyncTrigger.entityUpdated(.set, id: set.id)
         dismiss()
     }
 }

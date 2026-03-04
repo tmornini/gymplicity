@@ -28,10 +28,10 @@ build/device YOUR_TEAM_ID    # pass Apple Team ID as argument
 
 IdentityEntity, ExerciseEntity, WorkoutEntity, WorkoutGroupEntity, SetEntity
 
-### Join Tables (7)
+### Join Tables (8)
 
 TrainerTrainees, TrainerExercises, IdentityWorkouts, WorkoutGroups,
-GroupSets, ExerciseSets, PairedDevices
+GroupSets, ExerciseSets, TemplateInstances, PairedDevices
 
 ### Views (13)
 
@@ -39,31 +39,38 @@ HomeView, ActiveWorkoutView, SetEntryView, AddExerciseView, ProfileView,
 ProgressChartsView, AddTraineeView, WorkoutHistoryView, TemplateListView,
 TemplateEditorView, StartFromTemplateView, GuidedWorkoutView, SyncView
 
-### Theme Module (7 files in Gymplicity/Theme/)
+### Theme Module (8 files in Gymplicity/Theme/)
 
-GymColors, GymTypography, GymMetrics, GymModifiers, MascotView,
-AnimatedMascotView, GymProgressBar
+GymColors, GymFont, GymMetrics, GymModifiers, MascotView,
+AnimatedMascotView, GymProgressBar, Weight
 
 - **Mascot "Lifty":** Bathroom-sign stick figure (Path strokes, round caps). 10 poses, 6 animations. 27 appearances across the app.
 - **Palette:** iron/steel/chalk/rubber + energy orange, power green, focus blue
 - **Typography:** SF Pro Rounded throughout, monospaced digits for numbers
 
-### Sync Module (4 files in Gymplicity/Sync/)
+### Sync Module (5 files in Gymplicity/Sync/)
 
-SyncPayload, SyncEngine, SyncSessionManager, IdentityReconciliation
+SyncPayload, SyncEngine, SyncSessionManager, SyncTrigger, IdentityReconciliation
 
 - **SyncPayload:** Codable DTOs mirroring all entities/joins + payload builder
-- **SyncEngine:** Idempotent PUT merge (INSERT IF NOT EXISTS by UUID)
+- **SyncEngine:** Idempotent role-based PUT merge (INSERT IF NOT EXISTS by UUID)
 - **SyncSessionManager:** Multipeer Connectivity lifecycle (advertise/browse/connect/send)
 - **IdentityReconciliation:** First-time pairing UUID rewrite (trainer's UUID wins)
 
 ## Conventions
 
-- `is` prefix for Bool properties (isTrainer, isComplete, isCompleted)
+- `is` prefix for Bool properties (isTrainer, isCompleted, isTemplate, isSuperset)
 - Entity postfix on all @Model classes (IdentityEntity, not Identity)
 - Relationship traversal via extension methods on entities, not stored properties
 - Cascade deletes down ownership chain; nullify for ExerciseSets
 - Computed properties (volume, exerciseCount) derived from traversal, never stored
+
+## Verb Semantics
+
+This app uses HTTP verb semantics (PUT/GET/DELETE), not CRUD:
+- **PUT:** Resources placed at client-generated UUIDs. SyncEngine implements PUT — role-based merge. Join tables use PUT (insert if not already present).
+- **GET:** All traversal methods (entity extensions that take ModelContext)
+- **DELETE:** Cascade deletes down ownership chain
 
 ## Rules
 

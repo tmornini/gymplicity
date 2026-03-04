@@ -5,14 +5,9 @@ struct AddExerciseView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var modelContext
     let group: WorkoutGroupEntity
+    let trainer: IdentityEntity?
     @State private var searchText = ""
     @FocusState private var nameFieldFocused: Bool
-
-    private var trainer: IdentityEntity? {
-        guard let workout = group.workout(in: modelContext),
-              let owner = workout.owner(in: modelContext) else { return nil }
-        return owner.isTrainer ? owner : owner.trainer(in: modelContext)
-    }
 
     private var suggestions: [ExerciseEntity] {
         guard let trainer else { return [] }
@@ -103,23 +98,7 @@ struct AddExerciseView: View {
     }
 
     private func createSet(for exercise: ExerciseEntity) {
-        let owner: IdentityEntity? = {
-            guard let workout = group.workout(in: modelContext) else { return nil }
-            return workout.owner(in: modelContext)
-        }()
-
-        var weight: Double = 0
-        var reps: Int = 0
-        if let owner, let lastSet = owner.lastSet(for: exercise, in: modelContext) {
-            weight = lastSet.weight
-            reps = lastSet.reps
-        }
-
-        let set = SetEntity(order: group.nextSetOrder(in: modelContext), weight: weight, reps: reps)
-        modelContext.insert(set)
-        let groupJoin = GroupSets(groupId: group.id, setId: set.id)
-        modelContext.insert(groupJoin)
-        let exerciseJoin = ExerciseSets(exerciseId: exercise.id, setId: set.id)
-        modelContext.insert(exerciseJoin)
+        let owner = group.workout(in: modelContext)?.owner(in: modelContext)
+        modelContext.addSet(to: group, exercise: exercise, seedingFrom: owner)
     }
 }

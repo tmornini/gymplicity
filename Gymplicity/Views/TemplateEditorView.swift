@@ -4,6 +4,7 @@ import SwiftData
 struct TemplateEditorView: View {
     @Environment(\.modelContext) private var modelContext
     @Bindable var template: WorkoutEntity
+    let trainer: IdentityEntity
     @State private var showingAddExercise = false
     @State private var targetGroup: WorkoutGroupEntity?
     @State private var editingName = false
@@ -41,7 +42,7 @@ struct TemplateEditorView: View {
                             .foregroundStyle(GymColors.energy)
                     }
                 } header: {
-                    Text("Superset \(group.order + 1)")
+                    Text(group.isSuperset ? "Superset \(group.order + 1)" : group.exerciseName(in: modelContext))
                         .font(GymFont.heading3)
                         .textCase(nil)
                 }
@@ -70,14 +71,14 @@ struct TemplateEditorView: View {
                 let trimmed = nameText.trimmingCharacters(in: .whitespaces)
                 if !trimmed.isEmpty {
                     template.templateName = trimmed
-                    SyncTrigger.entityUpdated("WorkoutEntity", id: template.id)
+                    SyncTrigger.entityUpdated(.workout, id: template.id)
                 }
             }
             Button("Cancel", role: .cancel) { }
         }
         .sheet(isPresented: $showingAddExercise) {
             if let group = targetGroup {
-                AddExerciseView(group: group)
+                AddExerciseView(group: group, trainer: trainer)
             }
         }
     }
@@ -92,10 +93,7 @@ struct TemplateEditorView: View {
     }
 
     private func deleteSets(from group: WorkoutGroupEntity, at offsets: IndexSet) {
-        let sorted = group.sortedSets(in: modelContext)
-        for index in offsets {
-            modelContext.deleteSet(sorted[index])
-        }
+        modelContext.deleteSets(from: group, at: offsets)
         SyncTrigger.structureChanged()
     }
 }
@@ -203,7 +201,7 @@ private struct TemplateSetEntryView: View {
     private func save() {
         set.weight = Double(weightText) ?? 0
         set.reps = Int(repsText) ?? 0
-        SyncTrigger.entityUpdated("SetEntity", id: set.id)
+        SyncTrigger.entityUpdated(.set, id: set.id)
         dismiss()
     }
 }

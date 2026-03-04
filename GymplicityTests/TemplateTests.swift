@@ -11,7 +11,7 @@ final class TemplateTests: XCTestCase {
 
         XCTAssertTrue(template.isTemplate)
         XCTAssertEqual(template.templateName, "Push Day")
-        XCTAssertFalse(template.isComplete)
+        XCTAssertFalse(template.isCompleted)
     }
 
     func testTemplatesFilteredFromActiveWorkouts() throws {
@@ -30,7 +30,7 @@ final class TemplateTests: XCTestCase {
         let trainer = ctx.makeTrainer()
         ctx.makeTemplate(name: "Push Day", for: trainer)
         let workout = ctx.makeWorkout(for: trainer)
-        workout.isComplete = true
+        workout.isCompleted = true
 
         XCTAssertEqual(trainer.completedWorkouts(in: ctx).count, 1)
         XCTAssertTrue(trainer.completedWorkouts(in: ctx).allSatisfy { !$0.isTemplate })
@@ -62,7 +62,7 @@ final class TemplateTests: XCTestCase {
         let workout = ctx.instantiateTemplate(template, for: trainee)
 
         XCTAssertFalse(workout.isTemplate)
-        XCTAssertFalse(workout.isComplete)
+        XCTAssertFalse(workout.isCompleted)
         let groups = workout.sortedGroups(in: ctx)
         XCTAssertEqual(groups.count, 1)
         let sets = groups[0].sortedSets(in: ctx)
@@ -95,7 +95,7 @@ final class TemplateTests: XCTestCase {
         XCTAssertNil(clonedSet.completedAt)
     }
 
-    func testClonedWorkoutHasTemplateId() throws {
+    func testClonedWorkoutLinkedViaJoinTable() throws {
         let ctx = try makeTestContext()
         let trainer = ctx.makeTrainer()
         let trainee = ctx.makeTrainee(trainer: trainer)
@@ -103,7 +103,7 @@ final class TemplateTests: XCTestCase {
 
         let workout = ctx.instantiateTemplate(template, for: trainee)
 
-        XCTAssertEqual(workout.templateId, template.id)
+        XCTAssertEqual(workout.template(in: ctx)?.id, template.id)
     }
 
     func testModifyTemplateAfterCloneDoesNotAffectClone() throws {

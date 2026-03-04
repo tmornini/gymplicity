@@ -46,10 +46,9 @@ WorkoutEntity
 ├── id: UUID
 ├── date: Date
 ├── notes: String?
-├── isComplete: Bool
+├── isCompleted: Bool
 ├── isTemplate: Bool
-├── templateName: String?
-└── templateId: UUID?
+└── templateName: String?
 
 WorkoutGroupEntity
 ├── id: UUID

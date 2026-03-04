@@ -5,6 +5,7 @@ struct ActiveWorkoutView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
     @Bindable var workout: WorkoutEntity
+    var trainer: IdentityEntity? = nil
     var onSwitchToGuided: (() -> Void)? = nil
     @State private var showingAddExercise = false
     @State private var showingEndConfirmation = false
@@ -48,7 +49,7 @@ struct ActiveWorkoutView: View {
                                 .foregroundStyle(GymColors.energy)
                         }
                     } header: {
-                        Text(exerciseName(for: group))
+                        Text(group.exerciseName(in: modelContext))
                             .font(GymFont.heading3)
                             .textCase(nil)
                     }
@@ -125,13 +126,9 @@ struct ActiveWorkoutView: View {
         }
         .sheet(isPresented: $showingAddExercise) {
             if let group = targetGroup {
-                AddExerciseView(group: group)
+                AddExerciseView(group: group, trainer: trainer ?? resolveTrainer())
             }
         }
-    }
-
-    private func exerciseName(for group: WorkoutGroupEntity) -> String {
-        group.sortedSets(in: modelContext).first?.exercise(in: modelContext)?.name ?? "Exercise"
     }
 
     private func addGroup(isSuperset: Bool) {
@@ -146,36 +143,23 @@ struct ActiveWorkoutView: View {
 
     private func addSetToGroup(_ group: WorkoutGroupEntity) {
         guard let exercise = group.sortedSets(in: modelContext).first?.exercise(in: modelContext) else { return }
-
-        var weight: Double = 0
-        var reps: Int = 0
-        if let owner = workout.owner(in: modelContext),
-           let lastSet = owner.lastSet(for: exercise, in: modelContext) {
-            weight = lastSet.weight
-            reps = lastSet.reps
-        }
-
-        let set = SetEntity(order: group.nextSetOrder(in: modelContext), weight: weight, reps: reps)
-        modelContext.insert(set)
-        let groupJoin = GroupSets(groupId: group.id, setId: set.id)
-        modelContext.insert(groupJoin)
-        let exerciseJoin = ExerciseSets(exerciseId: exercise.id, setId: set.id)
-        modelContext.insert(exerciseJoin)
+        modelContext.addSet(to: group, exercise: exercise, seedingFrom: workout.owner(in: modelContext))
         SyncTrigger.structureChanged()
     }
 
     private func deleteSets(from group: WorkoutGroupEntity, at offsets: IndexSet) {
-        let sorted = group.sortedSets(in: modelContext)
-        for index in offsets {
-            modelContext.deleteSet(sorted[index])
-        }
+        modelContext.deleteSets(from: group, at: offsets)
         SyncTrigger.structureChanged()
     }
 
     private func endWorkout() {
-        workout.isComplete = true
-        SyncTrigger.entityUpdated("WorkoutEntity", id: workout.id)
+        workout.markCompleted()
         if onSwitchToGuided == nil { dismiss() }
+    }
+
+    private func resolveTrainer() -> IdentityEntity? {
+        guard let owner = workout.owner(in: modelContext) else { return nil }
+        return owner.isTrainer ? owner : owner.trainer(in: modelContext)
     }
 }
 
@@ -219,7 +203,7 @@ struct SetRow: View {
                     withAnimation {
                         set.isCompleted.toggle()
                         set.completedAt = set.isCompleted ? .now : nil
-                        SyncTrigger.entityUpdated("SetEntity", id: set.id)
+                        SyncTrigger.entityUpdated(.set, id: set.id)
                     }
                 } label: {
                     Image(systemName: set.isCompleted ? "checkmark.circle.fill" : "circle")

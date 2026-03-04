@@ -180,8 +180,7 @@ struct GuidedWorkoutView: View {
     // MARK: - Actions
 
     private func endWorkout() {
-        workout.isComplete = true
-        SyncTrigger.entityUpdated("WorkoutEntity", id: workout.id)
+        workout.markCompleted()
         if onSwitchToList == nil { dismiss() }
     }
 
@@ -191,7 +190,7 @@ struct GuidedWorkoutView: View {
         pair.set.reps = Int(repsText) ?? 0
         pair.set.isCompleted = true
         pair.set.completedAt = .now
-        SyncTrigger.entityUpdated("SetEntity", id: pair.set.id)
+        SyncTrigger.entityUpdated(.set, id: pair.set.id)
 
         if let next = workout.nextIncompleteSetIndex(after: currentIndex, in: modelContext) {
             // Brief walking transition

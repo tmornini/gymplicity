@@ -10,7 +10,7 @@ final class WorkoutLifecycleTests: XCTestCase {
         let trainee = ctx.makeTrainee(trainer: trainer)
         let workout = ctx.makeWorkout(for: trainee)
 
-        XCTAssertFalse(workout.isComplete)
+        XCTAssertFalse(workout.isCompleted)
         XCTAssertEqual(trainee.activeWorkouts(in: ctx).count, 1)
         XCTAssert(trainee.completedWorkouts(in: ctx).isEmpty)
     }
@@ -83,7 +83,7 @@ final class WorkoutLifecycleTests: XCTestCase {
 
         XCTAssertEqual(trainee.activeWorkouts(in: ctx).count, 1)
 
-        workout.isComplete = true
+        workout.isCompleted = true
 
         XCTAssert(trainee.activeWorkouts(in: ctx).isEmpty)
         XCTAssertEqual(trainee.completedWorkouts(in: ctx).count, 1)

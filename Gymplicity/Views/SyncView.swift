@@ -4,7 +4,7 @@ import SwiftData
 struct SyncView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
-    @ObservedObject var syncManager: SyncSessionManager
+    @EnvironmentObject private var syncManager: SyncSessionManager
     let identity: IdentityEntity
     @State private var selectedTrainee: IdentityEntity?
     @State private var showingTraineePicker = false

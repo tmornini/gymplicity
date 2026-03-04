@@ -20,12 +20,12 @@ final class HistoryTests: XCTestCase {
         let trainee = ctx.makeTrainee(trainer: trainer)
 
         // Older workout
-        let w1 = ctx.makeWorkout(for: trainee, date: .now.addingTimeInterval(-86400 * 2), isComplete: true)
+        let w1 = ctx.makeWorkout(for: trainee, date: .now.addingTimeInterval(-86400 * 2), isCompleted: true)
         let g1 = ctx.makeGroup(in: w1, order: 0)
         ctx.makeSet(in: g1, exercise: bench, order: 0, weight: 135, reps: 10, isCompleted: true)
 
         // Newer workout
-        let w2 = ctx.makeWorkout(for: trainee, date: .now.addingTimeInterval(-86400), isComplete: true)
+        let w2 = ctx.makeWorkout(for: trainee, date: .now.addingTimeInterval(-86400), isCompleted: true)
         let g2 = ctx.makeGroup(in: w2, order: 0)
         ctx.makeSet(in: g2, exercise: bench, order: 0, weight: 155, reps: 8, isCompleted: true)
 
@@ -45,15 +45,15 @@ final class HistoryTests: XCTestCase {
         let day2 = Date.now.addingTimeInterval(-86400 * 2)
         let day3 = Date.now.addingTimeInterval(-86400)
 
-        let w1 = ctx.makeWorkout(for: trainee, date: day1, isComplete: true)
+        let w1 = ctx.makeWorkout(for: trainee, date: day1, isCompleted: true)
         let g1 = ctx.makeGroup(in: w1, order: 0)
         ctx.makeSet(in: g1, exercise: bench, order: 0, weight: 135, reps: 10)
 
-        let w2 = ctx.makeWorkout(for: trainee, date: day2, isComplete: true)
+        let w2 = ctx.makeWorkout(for: trainee, date: day2, isCompleted: true)
         let g2 = ctx.makeGroup(in: w2, order: 0)
         ctx.makeSet(in: g2, exercise: bench, order: 0, weight: 145, reps: 8)
 
-        let w3 = ctx.makeWorkout(for: trainee, date: day3, isComplete: true)
+        let w3 = ctx.makeWorkout(for: trainee, date: day3, isCompleted: true)
         let g3 = ctx.makeGroup(in: w3, order: 0)
         ctx.makeSet(in: g3, exercise: bench, order: 0, weight: 155, reps: 6)
 
@@ -72,7 +72,7 @@ final class HistoryTests: XCTestCase {
         let trainee = ctx.makeTrainee(trainer: trainer)
 
         // Completed workout
-        let completed = ctx.makeWorkout(for: trainee, date: .now.addingTimeInterval(-86400), isComplete: true)
+        let completed = ctx.makeWorkout(for: trainee, date: .now.addingTimeInterval(-86400), isCompleted: true)
         let g1 = ctx.makeGroup(in: completed, order: 0)
         ctx.makeSet(in: g1, exercise: bench, order: 0, weight: 135, reps: 10)
 

@@ -34,7 +34,7 @@ is UUID-based so renaming propagates everywhere.
 ### WorkoutEntity
 
 A single training session or a reusable template. Created on "Start",
-closed on "End Workout" (sets `isComplete = true`). Templates have
+closed on "End Workout" (sets `isCompleted = true`). Templates have
 `isTemplate = true` and are never completed &mdash; they serve as
 blueprints that are cloned into active workouts.
 
@@ -43,10 +43,9 @@ blueprints that are cloned into active workouts.
 | id | UUID | Primary key |
 | date | Date | Timestamp when the workout was created |
 | notes | String? | Optional free-form notes |
-| isComplete | Bool | False while active, true once ended |
+| isCompleted | Bool | False while active, true once ended |
 | isTemplate | Bool | True for reusable workout templates |
 | templateName | String? | Human-readable name (templates only, e.g. "Push Day") |
-| templateId | UUID? | Source template ID (set on instantiated workouts) |
 
 ### WorkoutGroupEntity
 
@@ -138,6 +137,15 @@ Links an exercise catalog entry to the sets that reference it.
 | exerciseId | UUID |
 | setId | UUID |
 
+### TemplateInstances
+
+Links a workout template to the workouts instantiated from it.
+
+| Column | Type |
+|--------|------|
+| templateId | UUID |
+| workoutId | UUID |
+
 ### PairedDevices
 
 Tracks which devices have been paired via Multipeer Connectivity sync.
@@ -161,6 +169,7 @@ the correct remote identity for payload building.
 | WorkoutGroups | Workout contains these groups | Cascade: delete workout &rarr; delete groups |
 | GroupSets | Group contains these sets | Cascade: delete group &rarr; delete sets |
 | ExerciseSets | Sets reference this exercise | Nullify: delete exercise &rarr; remove join rows, sets remain |
+| TemplateInstances | Workout instantiated from this template | Cascade: delete either side &rarr; remove join row |
 | PairedDevices | Local identity paired with remote identity | Manual: pairing data independent of entity lifecycle |
 
 ## Computed Properties (not stored)
@@ -171,7 +180,7 @@ the correct remote identity for payload building.
 - `activeWorkouts` &mdash; incomplete workouts (excludes templates)
 - `completedWorkouts` &mdash; completed workouts, newest first (excludes templates)
 - `templates` &mdash; workout templates, sorted by name
-- `allExercises` &mdash; unique exercises across all workouts
+- `exercisesUsed` &mdash; unique exercises across all workouts
 - `lastSet(for:)` &mdash; most recent completed set for a given exercise
 - `history(for:)` &mdash; all sets for a given exercise, oldest first
 

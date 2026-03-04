@@ -3,88 +3,13 @@ import SwiftData
 
 struct HomeView: View {
     @Environment(\.modelContext) private var modelContext
-    @Query private var identities: [IdentityEntity]
-    @EnvironmentObject private var syncManager: SyncSessionManager
+    let identity: IdentityEntity
     @State private var showingAddTrainee = false
-    @State private var showingSetup = false
-    @State private var setupName = ""
     @State private var showingTemplateStart = false
     @State private var selectedTrainee: IdentityEntity?
     @State private var showingSync = false
 
-    private var currentIdentity: IdentityEntity? { identities.first }
-
     var body: some View {
-        NavigationStack {
-            Group {
-                if let identity = currentIdentity {
-                    if identity.isTrainer {
-                        trainerView(identity: identity)
-                    } else {
-                        ProfileView(identity: identity)
-                    }
-                } else {
-                    welcomeView
-                }
-            }
-            .navigationTitle("Gymplicity")
-            .toolbar {
-                if let identity = currentIdentity, identity.isTrainer {
-                    ToolbarItem(placement: .topBarLeading) {
-                        Button { showingSync = true } label: {
-                            Image(systemName: "person.2.wave.2")
-                        }
-                    }
-                    ToolbarItem(placement: .primaryAction) {
-                        Button { showingAddTrainee = true } label: {
-                            Image(systemName: "person.badge.plus")
-                        }
-                    }
-                }
-            }
-            .sheet(isPresented: $showingAddTrainee) {
-                if let identity = currentIdentity {
-                    AddTraineeView(trainer: identity)
-                }
-            }
-            .sheet(isPresented: $showingSync) {
-                if let identity = currentIdentity {
-                    SyncView(syncManager: syncManager, identity: identity)
-                }
-            }
-            .alert("Set Up Your Profile", isPresented: $showingSetup) {
-                TextField("Your Name", text: $setupName)
-                Button("I'm a Trainer") { createIdentity(isTrainer: true) }
-                Button("I'm a Trainee") { createIdentity(isTrainer: false) }
-                Button("Cancel", role: .cancel) { }
-            }
-        }
-    }
-
-    // MARK: - Welcome View
-
-    private var welcomeView: some View {
-        VStack(spacing: GymMetrics.space24) {
-            Spacer()
-            AnimatedMascotView(pose: .waving, animation: .wave, color: GymColors.energy)
-                .frame(height: GymMetrics.mascotLarge)
-            Text("Welcome to Gymplicity")
-                .font(GymFont.heading1)
-            Text("Train smarter. Track everything.")
-                .font(GymFont.body)
-                .foregroundStyle(GymColors.secondaryText)
-            Button("Get Started") { showingSetup = true }
-                .buttonStyle(.gymPrimary)
-                .padding(.horizontal, 40)
-            Spacer()
-        }
-        .padding()
-    }
-
-    // MARK: - Trainer Layout
-
-    @ViewBuilder
-    private func trainerView(identity: IdentityEntity) -> some View {
         let trainees = identity.trainees(in: modelContext)
         let active = trainees.flatMap { trainee in
             trainee.activeWorkouts(in: modelContext).map { (identity: trainee, workout: $0) }
@@ -166,6 +91,24 @@ struct HomeView: View {
                 }
             }
         }
+        .toolbar {
+            ToolbarItem(placement: .topBarLeading) {
+                Button { showingSync = true } label: {
+                    Image(systemName: "person.2.wave.2")
+                }
+            }
+            ToolbarItem(placement: .primaryAction) {
+                Button { showingAddTrainee = true } label: {
+                    Image(systemName: "person.badge.plus")
+                }
+            }
+        }
+        .sheet(isPresented: $showingAddTrainee) {
+            AddTraineeView(trainer: identity)
+        }
+        .sheet(isPresented: $showingSync) {
+            SyncView(identity: identity)
+        }
         .sheet(isPresented: $showingTemplateStart) {
             if let trainee = selectedTrainee {
                 StartFromTemplateView(trainer: identity, trainee: trainee)
@@ -175,21 +118,8 @@ struct HomeView: View {
 
     // MARK: - Actions
 
-    private func createIdentity(isTrainer: Bool) {
-        let trimmed = setupName.trimmingCharacters(in: .whitespaces)
-        let name = trimmed.isEmpty ? (isTrainer ? "Trainer" : "Trainee") : trimmed
-        let identity = IdentityEntity(name: name, isTrainer: isTrainer)
-        modelContext.insert(identity)
-        SyncTrigger.structureChanged()
-    }
-
     private func startWorkout(for identity: IdentityEntity) {
-        guard identity.activeWorkouts(in: modelContext).isEmpty else { return }
-        let workout = WorkoutEntity()
-        modelContext.insert(workout)
-        let join = IdentityWorkouts(identityId: identity.id, workoutId: workout.id)
-        modelContext.insert(join)
-        SyncTrigger.structureChanged()
+        modelContext.startWorkout(for: identity)
     }
 
     private func deleteTrainees(from sorted: [IdentityEntity], at offsets: IndexSet) {
@@ -265,10 +195,8 @@ private struct TraineeRow: View {
             }
             Spacer()
             if active.isEmpty {
-                Button("Start") { }
-                    .buttonStyle(.bordered)
-                    .font(GymFont.caption)
-                    .allowsHitTesting(false)
+                Text("Start")
+                    .gymPill(GymColors.steel)
             } else {
                 Text("In Workout")
                     .gymPill(GymColors.power)

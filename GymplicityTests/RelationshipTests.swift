@@ -75,8 +75,8 @@ final class RelationshipTests: XCTestCase {
         let day1 = Date.now.addingTimeInterval(-86400 * 2)
         let day2 = Date.now.addingTimeInterval(-86400)
 
-        ctx.makeWorkout(for: trainee, date: day1, isComplete: true)
-        ctx.makeWorkout(for: trainee, date: day2, isComplete: true)
+        ctx.makeWorkout(for: trainee, date: day1, isCompleted: true)
+        ctx.makeWorkout(for: trainee, date: day2, isCompleted: true)
         ctx.makeWorkout(for: trainee)
 
         XCTAssertEqual(trainee.activeWorkouts(in: ctx).count, 1)

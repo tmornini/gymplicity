@@ -9,7 +9,7 @@ func makeTestContext() throws -> ModelContext {
         for: IdentityEntity.self, ExerciseEntity.self, WorkoutEntity.self,
         WorkoutGroupEntity.self, SetEntity.self, TrainerTrainees.self,
         TrainerExercises.self, IdentityWorkouts.self, WorkoutGroups.self,
-        GroupSets.self, ExerciseSets.self, PairedDevices.self,
+        GroupSets.self, ExerciseSets.self, TemplateInstances.self, PairedDevices.self,
         configurations: config
     )
     return ModelContext(container)
@@ -42,9 +42,9 @@ extension ModelContext {
     }
 
     @discardableResult
-    func makeWorkout(for identity: IdentityEntity, date: Date = .now, isComplete: Bool = false) -> WorkoutEntity {
+    func makeWorkout(for identity: IdentityEntity, date: Date = .now, isCompleted: Bool = false) -> WorkoutEntity {
         let workout = WorkoutEntity(date: date)
-        workout.isComplete = isComplete
+        workout.isCompleted = isCompleted
         insert(workout)
         insert(IdentityWorkouts(identityId: identity.id, workoutId: workout.id))
         return workout

@@ -20,12 +20,14 @@ struct MergeResult {
     var workoutGroupJoinsInserted = 0
     var groupSetJoinsInserted = 0
     var exerciseSetJoinsInserted = 0
+    var templateInstanceJoinsInserted = 0
 
     var totalInserted: Int {
         identitiesInserted + exercisesInserted + workoutsInserted +
         workoutGroupsInserted + setsInserted + trainerTraineesInserted +
         trainerExercisesInserted + identityWorkoutsInserted +
-        workoutGroupJoinsInserted + groupSetJoinsInserted + exerciseSetJoinsInserted
+        workoutGroupJoinsInserted + groupSetJoinsInserted + exerciseSetJoinsInserted +
+        templateInstanceJoinsInserted
     }
 
     var totalUpdated: Int {
@@ -53,7 +55,7 @@ struct MergeResult {
 // MARK: - Sync Engine
 
 struct SyncEngine {
-    /// Role-based UPSERT merge — inserts new records and updates existing ones
+    /// Role-based PUT merge — inserts new records and updates existing ones
     /// when the sender has authority over the entity type.
     /// Merge order: entities before joins, parents before children.
     static func merge(_ payload: SyncPayload, into context: ModelContext) -> MergeResult {
@@ -112,7 +114,7 @@ struct SyncEngine {
                 let senderHasAuthority = dto.isTemplate ? senderIsTrainer : true
                 if senderHasAuthority {
                     existing.notes = dto.notes
-                    existing.isComplete = dto.isComplete
+                    existing.isCompleted = dto.isCompleted
                     existing.templateName = dto.templateName
                     result.workoutsUpdated += 1
                 }
@@ -124,8 +126,7 @@ struct SyncEngine {
                 )
                 entity.id = dto.id
                 entity.notes = dto.notes
-                entity.isComplete = dto.isComplete
-                entity.templateId = dto.templateId
+                entity.isCompleted = dto.isCompleted
                 context.insert(entity)
                 result.workoutsInserted += 1
             }
@@ -253,12 +254,20 @@ struct SyncEngine {
             }
         }
 
+        // TemplateInstances joins
+        for dto in payload.templateInstanceJoins {
+            let templateId = dto.templateId
+            let workoutId = dto.workoutId
+            let existing = (try? context.fetch(FetchDescriptor<TemplateInstances>(
+                predicate: #Predicate { $0.templateId == templateId && $0.workoutId == workoutId }
+            )))?.first
+            if existing == nil {
+                context.insert(TemplateInstances(templateId: templateId, workoutId: workoutId))
+                result.templateInstanceJoinsInserted += 1
+            }
+        }
+
         return result
     }
 
-    /// Deprecated: Use merge(_:into:) instead.
-    @available(*, deprecated, renamed: "merge(_:into:)")
-    static func put(_ payload: SyncPayload, into context: ModelContext) -> MergeResult {
-        merge(payload, into: context)
-    }
 }

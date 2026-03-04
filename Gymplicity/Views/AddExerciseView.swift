@@ -9,11 +9,21 @@ struct AddExerciseView: View {
     @State private var searchText = ""
     @FocusState private var nameFieldFocused: Bool
 
-    private var suggestions: [ExerciseEntity] {
-        guard let trainer else { return [] }
-        let catalog = trainer.exercises(in: modelContext).sorted { $0.name < $1.name }
-        if searchText.isEmpty { return catalog }
-        return catalog.filter { $0.name.localizedCaseInsensitiveContains(searchText) }
+    private var searchResults: ExerciseSearchResults {
+        guard let trainer else {
+            return ExerciseSearchResults(userExercises: [], catalogExercises: [])
+        }
+        let userExercises = trainer.exerciseCatalog(in: modelContext)
+        let recentlyUsedIDs = Set(trainer.exercisesUsed(in: modelContext).map(\.id))
+        return ExerciseSearchEngine.shared.search(
+            query: searchText,
+            userExercises: userExercises,
+            recentlyUsedIDs: recentlyUsedIDs
+        )
+    }
+
+    private var hasResults: Bool {
+        !searchResults.userExercises.isEmpty || !searchResults.catalogExercises.isEmpty
     }
 
     var body: some View {
@@ -29,14 +39,34 @@ struct AddExerciseView: View {
 
                 Divider()
 
-                if !suggestions.isEmpty {
+                if hasResults {
                     List {
-                        ForEach(suggestions) { exercise in
-                            Button {
-                                addExisting(exercise)
-                            } label: {
-                                Text(exercise.name)
-                                    .foregroundStyle(.primary)
+                        if !searchResults.userExercises.isEmpty {
+                            Section("Your Exercises") {
+                                ForEach(searchResults.userExercises) { result in
+                                    Button {
+                                        addExisting(result.exercise)
+                                    } label: {
+                                        Text(result.exercise.name)
+                                            .foregroundStyle(.primary)
+                                    }
+                                }
+                            }
+                        }
+
+                        if !searchResults.catalogExercises.isEmpty {
+                            Section("Exercise Catalog") {
+                                ForEach(searchResults.catalogExercises) { result in
+                                    Button {
+                                        addFromCatalog(result.exercise)
+                                    } label: {
+                                        VStack(alignment: .leading, spacing: GymMetrics.space4) {
+                                            Text(result.exercise.name)
+                                                .foregroundStyle(.primary)
+                                            MatchReasonPillRow(reasons: result.reasons)
+                                        }
+                                    }
+                                }
                             }
                         }
                     }
@@ -88,6 +118,14 @@ struct AddExerciseView: View {
         dismiss()
     }
 
+    private func addFromCatalog(_ catalogExercise: CatalogExercise) {
+        guard let trainer else { return }
+        let exercise = trainer.findOrCreateExercise(named: catalogExercise.name, in: modelContext)
+        createSet(for: exercise)
+        SyncTrigger.structureChanged()
+        dismiss()
+    }
+
     private func addExercise() {
         let trimmed = searchText.trimmingCharacters(in: .whitespaces)
         guard !trimmed.isEmpty, let trainer else { return }
@@ -100,5 +138,20 @@ struct AddExerciseView: View {
     private func createSet(for exercise: ExerciseEntity) {
         let owner = group.workout(in: modelContext)?.owner(in: modelContext)
         modelContext.addSet(to: group, exercise: exercise, seedingFrom: owner)
+    }
+}
+
+// MARK: - Match Reason Pills
+
+private struct MatchReasonPillRow: View {
+    let reasons: [MatchReason]
+
+    var body: some View {
+        HStack(spacing: GymMetrics.space4) {
+            ForEach(Array(reasons.prefix(3).enumerated()), id: \.offset) { _, reason in
+                Text(reason.displayLabel)
+                    .gymPill(reason.pillColor)
+            }
+        }
     }
 }

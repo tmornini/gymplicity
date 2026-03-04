@@ -1,0 +1,7827 @@
+[
+  {
+    "id": "barbell-back-squat",
+    "name": "Barbell Back Squat",
+    "aliases": [
+      "squat",
+      "back squat",
+      "high bar squat",
+      "low bar squat",
+      "bb squat"
+    ],
+    "primaryMuscles": [
+      "quadriceps",
+      "glutes"
+    ],
+    "secondaryMuscles": [
+      "hamstrings",
+      "erector spinae",
+      "adductors",
+      "calves"
+    ],
+    "joints": [
+      "knee",
+      "hip",
+      "ankle"
+    ],
+    "bodyRegions": [
+      "legs"
+    ],
+    "equipment": [
+      "barbell"
+    ]
+  },
+  {
+    "id": "barbell-front-squat",
+    "name": "Barbell Front Squat",
+    "aliases": [
+      "front squat",
+      "front rack squat"
+    ],
+    "primaryMuscles": [
+      "quadriceps",
+      "glutes"
+    ],
+    "secondaryMuscles": [
+      "erector spinae",
+      "rectus abdominis",
+      "anterior deltoids"
+    ],
+    "joints": [
+      "knee",
+      "hip",
+      "ankle"
+    ],
+    "bodyRegions": [
+      "legs"
+    ],
+    "equipment": [
+      "barbell"
+    ]
+  },
+  {
+    "id": "goblet-squat",
+    "name": "Goblet Squat",
+    "aliases": [
+      "goblet",
+      "kb squat",
+      "db squat"
+    ],
+    "primaryMuscles": [
+      "quadriceps",
+      "glutes"
+    ],
+    "secondaryMuscles": [
+      "hamstrings",
+      "adductors",
+      "erector spinae"
+    ],
+    "joints": [
+      "knee",
+      "hip",
+      "ankle"
+    ],
+    "bodyRegions": [
+      "legs"
+    ],
+    "equipment": [
+      "dumbbell"
+    ]
+  },
+  {
+    "id": "barbell-overhead-squat",
+    "name": "Barbell Overhead Squat",
+    "aliases": [
+      "overhead squat",
+      "ohs"
+    ],
+    "primaryMuscles": [
+      "quadriceps",
+      "glutes"
+    ],
+    "secondaryMuscles": [
+      "erector spinae",
+      "anterior deltoids",
+      "lateral deltoids",
+      "trapezius",
+      "rectus abdominis"
+    ],
+    "joints": [
+      "knee",
+      "hip",
+      "ankle",
+      "shoulder"
+    ],
+    "bodyRegions": [
+      "legs",
+      "shoulders"
+    ],
+    "equipment": [
+      "barbell"
+    ]
+  },
+  {
+    "id": "bulgarian-split-squat",
+    "name": "Bulgarian Split Squat",
+    "aliases": [
+      "rear foot elevated split squat",
+      "rfess",
+      "bulgarian"
+    ],
+    "primaryMuscles": [
+      "quadriceps",
+      "glutes"
+    ],
+    "secondaryMuscles": [
+      "hamstrings",
+      "adductors",
+      "hip flexors"
+    ],
+    "joints": [
+      "knee",
+      "hip",
+      "ankle"
+    ],
+    "bodyRegions": [
+      "legs"
+    ],
+    "equipment": [
+      "dumbbell"
+    ]
+  },
+  {
+    "id": "bodyweight-squat",
+    "name": "Bodyweight Squat",
+    "aliases": [
+      "air squat",
+      "bw squat",
+      "unweighted squat"
+    ],
+    "primaryMuscles": [
+      "quadriceps",
+      "glutes"
+    ],
+    "secondaryMuscles": [
+      "hamstrings",
+      "calves",
+      "adductors"
+    ],
+    "joints": [
+      "knee",
+      "hip",
+      "ankle"
+    ],
+    "bodyRegions": [
+      "legs"
+    ],
+    "equipment": [
+      "bodyweight"
+    ]
+  },
+  {
+    "id": "smith-machine-squat",
+    "name": "Smith Machine Squat",
+    "aliases": [
+      "smith squat"
+    ],
+    "primaryMuscles": [
+      "quadriceps",
+      "glutes"
+    ],
+    "secondaryMuscles": [
+      "hamstrings",
+      "erector spinae",
+      "calves"
+    ],
+    "joints": [
+      "knee",
+      "hip",
+      "ankle"
+    ],
+    "bodyRegions": [
+      "legs"
+    ],
+    "equipment": [
+      "smith_machine"
+    ]
+  },
+  {
+    "id": "hack-squat",
+    "name": "Hack Squat",
+    "aliases": [
+      "hack squat machine",
+      "reverse hack squat"
+    ],
+    "primaryMuscles": [
+      "quadriceps",
+      "glutes"
+    ],
+    "secondaryMuscles": [
+      "hamstrings",
+      "calves"
+    ],
+    "joints": [
+      "knee",
+      "hip"
+    ],
+    "bodyRegions": [
+      "legs"
+    ],
+    "equipment": [
+      "machine"
+    ]
+  },
+  {
+    "id": "leg-press",
+    "name": "Leg Press",
+    "aliases": [
+      "45 degree leg press",
+      "seated leg press",
+      "machine leg press"
+    ],
+    "primaryMuscles": [
+      "quadriceps",
+      "glutes"
+    ],
+    "secondaryMuscles": [
+      "hamstrings",
+      "adductors",
+      "calves"
+    ],
+    "joints": [
+      "knee",
+      "hip"
+    ],
+    "bodyRegions": [
+      "legs"
+    ],
+    "equipment": [
+      "machine"
+    ]
+  },
+  {
+    "id": "single-leg-press",
+    "name": "Single Leg Press",
+    "aliases": [
+      "one leg press",
+      "unilateral leg press"
+    ],
+    "primaryMuscles": [
+      "quadriceps",
+      "glutes"
+    ],
+    "secondaryMuscles": [
+      "hamstrings",
+      "adductors"
+    ],
+    "joints": [
+      "knee",
+      "hip"
+    ],
+    "bodyRegions": [
+      "legs"
+    ],
+    "equipment": [
+      "machine"
+    ]
+  },
+  {
+    "id": "barbell-lunge",
+    "name": "Barbell Lunge",
+    "aliases": [
+      "bb lunge",
+      "forward lunge barbell"
+    ],
+    "primaryMuscles": [
+      "quadriceps",
+      "glutes"
+    ],
+    "secondaryMuscles": [
+      "hamstrings",
+      "adductors",
+      "calves"
+    ],
+    "joints": [
+      "knee",
+      "hip",
+      "ankle"
+    ],
+    "bodyRegions": [
+      "legs"
+    ],
+    "equipment": [
+      "barbell"
+    ]
+  },
+  {
+    "id": "dumbbell-lunge",
+    "name": "Dumbbell Lunge",
+    "aliases": [
+      "db lunge",
+      "forward lunge",
+      "lunge"
+    ],
+    "primaryMuscles": [
+      "quadriceps",
+      "glutes"
+    ],
+    "secondaryMuscles": [
+      "hamstrings",
+      "adductors",
+      "calves"
+    ],
+    "joints": [
+      "knee",
+      "hip",
+      "ankle"
+    ],
+    "bodyRegions": [
+      "legs"
+    ],
+    "equipment": [
+      "dumbbell"
+    ]
+  },
+  {
+    "id": "walking-lunge",
+    "name": "Walking Lunge",
+    "aliases": [
+      "db walking lunge",
+      "walking lunges"
+    ],
+    "primaryMuscles": [
+      "quadriceps",
+      "glutes"
+    ],
+    "secondaryMuscles": [
+      "hamstrings",
+      "adductors",
+      "calves"
+    ],
+    "joints": [
+      "knee",
+      "hip",
+      "ankle"
+    ],
+    "bodyRegions": [
+      "legs"
+    ],
+    "equipment": [
+      "dumbbell"
+    ]
+  },
+  {
+    "id": "reverse-lunge",
+    "name": "Reverse Lunge",
+    "aliases": [
+      "step back lunge",
+      "backward lunge"
+    ],
+    "primaryMuscles": [
+      "quadriceps",
+      "glutes"
+    ],
+    "secondaryMuscles": [
+      "hamstrings",
+      "adductors"
+    ],
+    "joints": [
+      "knee",
+      "hip",
+      "ankle"
+    ],
+    "bodyRegions": [
+      "legs"
+    ],
+    "equipment": [
+      "dumbbell"
+    ]
+  },
+  {
+    "id": "lateral-lunge",
+    "name": "Lateral Lunge",
+    "aliases": [
+      "side lunge",
+      "cossack squat"
+    ],
+    "primaryMuscles": [
+      "quadriceps",
+      "adductors",
+      "glutes"
+    ],
+    "secondaryMuscles": [
+      "hamstrings",
+      "calves"
+    ],
+    "joints": [
+      "knee",
+      "hip",
+      "ankle"
+    ],
+    "bodyRegions": [
+      "legs"
+    ],
+    "equipment": [
+      "bodyweight"
+    ]
+  },
+  {
+    "id": "step-up",
+    "name": "Dumbbell Step-Up",
+    "aliases": [
+      "step up",
+      "step ups",
+      "box step up",
+      "db step up"
+    ],
+    "primaryMuscles": [
+      "quadriceps",
+      "glutes"
+    ],
+    "secondaryMuscles": [
+      "hamstrings",
+      "calves"
+    ],
+    "joints": [
+      "knee",
+      "hip",
+      "ankle"
+    ],
+    "bodyRegions": [
+      "legs"
+    ],
+    "equipment": [
+      "dumbbell"
+    ]
+  },
+  {
+    "id": "leg-extension",
+    "name": "Leg Extension",
+    "aliases": [
+      "quad extension",
+      "machine leg extension",
+      "seated leg extension"
+    ],
+    "primaryMuscles": [
+      "quadriceps"
+    ],
+    "secondaryMuscles": [],
+    "joints": [
+      "knee"
+    ],
+    "bodyRegions": [
+      "legs"
+    ],
+    "equipment": [
+      "machine"
+    ]
+  },
+  {
+    "id": "leg-curl-lying",
+    "name": "Lying Leg Curl",
+    "aliases": [
+      "leg curl",
+      "hamstring curl",
+      "prone leg curl"
+    ],
+    "primaryMuscles": [
+      "hamstrings"
+    ],
+    "secondaryMuscles": [
+      "calves"
+    ],
+    "joints": [
+      "knee"
+    ],
+    "bodyRegions": [
+      "legs"
+    ],
+    "equipment": [
+      "machine"
+    ]
+  },
+  {
+    "id": "leg-curl-seated",
+    "name": "Seated Leg Curl",
+    "aliases": [
+      "seated hamstring curl"
+    ],
+    "primaryMuscles": [
+      "hamstrings"
+    ],
+    "secondaryMuscles": [
+      "calves"
+    ],
+    "joints": [
+      "knee"
+    ],
+    "bodyRegions": [
+      "legs"
+    ],
+    "equipment": [
+      "machine"
+    ]
+  },
+  {
+    "id": "nordic-hamstring-curl",
+    "name": "Nordic Hamstring Curl",
+    "aliases": [
+      "nordic curl",
+      "natural glute ham raise"
+    ],
+    "primaryMuscles": [
+      "hamstrings"
+    ],
+    "secondaryMuscles": [
+      "glutes",
+      "calves"
+    ],
+    "joints": [
+      "knee"
+    ],
+    "bodyRegions": [
+      "legs"
+    ],
+    "equipment": [
+      "bodyweight"
+    ]
+  },
+  {
+    "id": "glute-ham-raise",
+    "name": "Glute-Ham Raise",
+    "aliases": [
+      "ghr",
+      "glute ham developer"
+    ],
+    "primaryMuscles": [
+      "hamstrings",
+      "glutes"
+    ],
+    "secondaryMuscles": [
+      "erector spinae",
+      "calves"
+    ],
+    "joints": [
+      "knee",
+      "hip"
+    ],
+    "bodyRegions": [
+      "legs"
+    ],
+    "equipment": [
+      "machine"
+    ]
+  },
+  {
+    "id": "romanian-deadlift",
+    "name": "Barbell Romanian Deadlift",
+    "aliases": [
+      "rdl",
+      "romanian deadlift",
+      "stiff leg deadlift",
+      "bb rdl"
+    ],
+    "primaryMuscles": [
+      "hamstrings",
+      "glutes"
+    ],
+    "secondaryMuscles": [
+      "erector spinae",
+      "adductors",
+      "forearms"
+    ],
+    "joints": [
+      "hip",
+      "knee"
+    ],
+    "bodyRegions": [
+      "legs",
+      "back"
+    ],
+    "equipment": [
+      "barbell"
+    ]
+  },
+  {
+    "id": "dumbbell-romanian-deadlift",
+    "name": "Dumbbell Romanian Deadlift",
+    "aliases": [
+      "db rdl",
+      "dumbbell rdl"
+    ],
+    "primaryMuscles": [
+      "hamstrings",
+      "glutes"
+    ],
+    "secondaryMuscles": [
+      "erector spinae",
+      "adductors",
+      "forearms"
+    ],
+    "joints": [
+      "hip",
+      "knee"
+    ],
+    "bodyRegions": [
+      "legs",
+      "back"
+    ],
+    "equipment": [
+      "dumbbell"
+    ]
+  },
+  {
+    "id": "single-leg-romanian-deadlift",
+    "name": "Single Leg Romanian Deadlift",
+    "aliases": [
+      "single leg rdl",
+      "one leg rdl",
+      "sl rdl"
+    ],
+    "primaryMuscles": [
+      "hamstrings",
+      "glutes"
+    ],
+    "secondaryMuscles": [
+      "erector spinae",
+      "adductors"
+    ],
+    "joints": [
+      "hip",
+      "knee"
+    ],
+    "bodyRegions": [
+      "legs",
+      "back"
+    ],
+    "equipment": [
+      "dumbbell"
+    ]
+  },
+  {
+    "id": "hip-thrust",
+    "name": "Barbell Hip Thrust",
+    "aliases": [
+      "hip thrust",
+      "glute bridge barbell",
+      "bb hip thrust"
+    ],
+    "primaryMuscles": [
+      "glutes"
+    ],
+    "secondaryMuscles": [
+      "hamstrings",
+      "adductors"
+    ],
+    "joints": [
+      "hip",
+      "knee"
+    ],
+    "bodyRegions": [
+      "legs"
+    ],
+    "equipment": [
+      "barbell"
+    ]
+  },
+  {
+    "id": "glute-bridge",
+    "name": "Glute Bridge",
+    "aliases": [
+      "bridge",
+      "hip bridge",
+      "bodyweight glute bridge"
+    ],
+    "primaryMuscles": [
+      "glutes"
+    ],
+    "secondaryMuscles": [
+      "hamstrings"
+    ],
+    "joints": [
+      "hip",
+      "knee"
+    ],
+    "bodyRegions": [
+      "legs"
+    ],
+    "equipment": [
+      "bodyweight"
+    ]
+  },
+  {
+    "id": "cable-pull-through",
+    "name": "Cable Pull-Through",
+    "aliases": [
+      "pull through",
+      "cable pull through"
+    ],
+    "primaryMuscles": [
+      "glutes",
+      "hamstrings"
+    ],
+    "secondaryMuscles": [
+      "erector spinae"
+    ],
+    "joints": [
+      "hip"
+    ],
+    "bodyRegions": [
+      "legs"
+    ],
+    "equipment": [
+      "cable"
+    ]
+  },
+  {
+    "id": "hip-abduction-machine",
+    "name": "Hip Abduction Machine",
+    "aliases": [
+      "abductor machine",
+      "hip abduction",
+      "outer thigh machine"
+    ],
+    "primaryMuscles": [
+      "abductors",
+      "glutes"
+    ],
+    "secondaryMuscles": [],
+    "joints": [
+      "hip"
+    ],
+    "bodyRegions": [
+      "legs"
+    ],
+    "equipment": [
+      "machine"
+    ]
+  },
+  {
+    "id": "hip-adduction-machine",
+    "name": "Hip Adduction Machine",
+    "aliases": [
+      "adductor machine",
+      "hip adduction",
+      "inner thigh machine"
+    ],
+    "primaryMuscles": [
+      "adductors"
+    ],
+    "secondaryMuscles": [],
+    "joints": [
+      "hip"
+    ],
+    "bodyRegions": [
+      "legs"
+    ],
+    "equipment": [
+      "machine"
+    ]
+  },
+  {
+    "id": "standing-calf-raise",
+    "name": "Standing Calf Raise",
+    "aliases": [
+      "calf raise",
+      "standing calf raise machine",
+      "calf raises"
+    ],
+    "primaryMuscles": [
+      "gastrocnemius",
+      "soleus"
+    ],
+    "secondaryMuscles": [],
+    "joints": [
+      "ankle"
+    ],
+    "bodyRegions": [
+      "legs"
+    ],
+    "equipment": [
+      "machine"
+    ]
+  },
+  {
+    "id": "seated-calf-raise",
+    "name": "Seated Calf Raise",
+    "aliases": [
+      "seated calf raise machine"
+    ],
+    "primaryMuscles": [
+      "soleus"
+    ],
+    "secondaryMuscles": [
+      "gastrocnemius"
+    ],
+    "joints": [
+      "ankle"
+    ],
+    "bodyRegions": [
+      "legs"
+    ],
+    "equipment": [
+      "machine"
+    ]
+  },
+  {
+    "id": "single-leg-calf-raise",
+    "name": "Single Leg Calf Raise",
+    "aliases": [
+      "one leg calf raise",
+      "unilateral calf raise"
+    ],
+    "primaryMuscles": [
+      "gastrocnemius",
+      "soleus"
+    ],
+    "secondaryMuscles": [],
+    "joints": [
+      "ankle"
+    ],
+    "bodyRegions": [
+      "legs"
+    ],
+    "equipment": [
+      "bodyweight"
+    ]
+  },
+  {
+    "id": "tibialis-raise",
+    "name": "Tibialis Raise",
+    "aliases": [
+      "tib raise",
+      "toe raise",
+      "tibialis anterior raise"
+    ],
+    "primaryMuscles": [
+      "tibialis anterior"
+    ],
+    "secondaryMuscles": [],
+    "joints": [
+      "ankle"
+    ],
+    "bodyRegions": [
+      "legs"
+    ],
+    "equipment": [
+      "bodyweight"
+    ]
+  },
+  {
+    "id": "pistol-squat",
+    "name": "Pistol Squat",
+    "aliases": [
+      "single leg squat",
+      "one leg squat"
+    ],
+    "primaryMuscles": [
+      "quadriceps",
+      "glutes"
+    ],
+    "secondaryMuscles": [
+      "hamstrings",
+      "adductors",
+      "calves",
+      "hip flexors"
+    ],
+    "joints": [
+      "knee",
+      "hip",
+      "ankle"
+    ],
+    "bodyRegions": [
+      "legs"
+    ],
+    "equipment": [
+      "bodyweight"
+    ]
+  },
+  {
+    "id": "sissy-squat",
+    "name": "Sissy Squat",
+    "aliases": [
+      "sissy"
+    ],
+    "primaryMuscles": [
+      "quadriceps"
+    ],
+    "secondaryMuscles": [
+      "hip flexors"
+    ],
+    "joints": [
+      "knee"
+    ],
+    "bodyRegions": [
+      "legs"
+    ],
+    "equipment": [
+      "bodyweight"
+    ]
+  },
+  {
+    "id": "wall-sit",
+    "name": "Wall Sit",
+    "aliases": [
+      "wall squat",
+      "wall hold"
+    ],
+    "primaryMuscles": [
+      "quadriceps"
+    ],
+    "secondaryMuscles": [
+      "glutes",
+      "calves"
+    ],
+    "joints": [
+      "knee",
+      "hip"
+    ],
+    "bodyRegions": [
+      "legs"
+    ],
+    "equipment": [
+      "bodyweight"
+    ]
+  },
+  {
+    "id": "box-squat",
+    "name": "Box Squat",
+    "aliases": [
+      "box squat barbell"
+    ],
+    "primaryMuscles": [
+      "quadriceps",
+      "glutes"
+    ],
+    "secondaryMuscles": [
+      "hamstrings",
+      "erector spinae"
+    ],
+    "joints": [
+      "knee",
+      "hip"
+    ],
+    "bodyRegions": [
+      "legs"
+    ],
+    "equipment": [
+      "barbell"
+    ]
+  },
+  {
+    "id": "zercher-squat",
+    "name": "Zercher Squat",
+    "aliases": [
+      "zercher"
+    ],
+    "primaryMuscles": [
+      "quadriceps",
+      "glutes"
+    ],
+    "secondaryMuscles": [
+      "erector spinae",
+      "biceps",
+      "rectus abdominis"
+    ],
+    "joints": [
+      "knee",
+      "hip",
+      "elbow"
+    ],
+    "bodyRegions": [
+      "legs"
+    ],
+    "equipment": [
+      "barbell"
+    ]
+  },
+  {
+    "id": "barbell-flat-bench-press",
+    "name": "Barbell Flat Bench Press",
+    "aliases": [
+      "bench press",
+      "flat bench",
+      "bench",
+      "bb bench press",
+      "barbell bench"
+    ],
+    "primaryMuscles": [
+      "pectoralis major"
+    ],
+    "secondaryMuscles": [
+      "anterior deltoids",
+      "triceps",
+      "serratus anterior"
+    ],
+    "joints": [
+      "shoulder",
+      "elbow"
+    ],
+    "bodyRegions": [
+      "chest"
+    ],
+    "equipment": [
+      "barbell"
+    ]
+  },
+  {
+    "id": "barbell-incline-bench-press",
+    "name": "Barbell Incline Bench Press",
+    "aliases": [
+      "incline bench press",
+      "incline bench",
+      "incline barbell press"
+    ],
+    "primaryMuscles": [
+      "pectoralis major",
+      "anterior deltoids"
+    ],
+    "secondaryMuscles": [
+      "triceps",
+      "serratus anterior"
+    ],
+    "joints": [
+      "shoulder",
+      "elbow"
+    ],
+    "bodyRegions": [
+      "chest"
+    ],
+    "equipment": [
+      "barbell"
+    ]
+  },
+  {
+    "id": "barbell-decline-bench-press",
+    "name": "Barbell Decline Bench Press",
+    "aliases": [
+      "decline bench press",
+      "decline bench",
+      "decline barbell press"
+    ],
+    "primaryMuscles": [
+      "pectoralis major"
+    ],
+    "secondaryMuscles": [
+      "triceps",
+      "anterior deltoids"
+    ],
+    "joints": [
+      "shoulder",
+      "elbow"
+    ],
+    "bodyRegions": [
+      "chest"
+    ],
+    "equipment": [
+      "barbell"
+    ]
+  },
+  {
+    "id": "dumbbell-flat-bench-press",
+    "name": "Dumbbell Flat Bench Press",
+    "aliases": [
+      "db bench press",
+      "dumbbell bench",
+      "db bench",
+      "flat db press"
+    ],
+    "primaryMuscles": [
+      "pectoralis major"
+    ],
+    "secondaryMuscles": [
+      "anterior deltoids",
+      "triceps",
+      "serratus anterior"
+    ],
+    "joints": [
+      "shoulder",
+      "elbow"
+    ],
+    "bodyRegions": [
+      "chest"
+    ],
+    "equipment": [
+      "dumbbell"
+    ]
+  },
+  {
+    "id": "dumbbell-incline-bench-press",
+    "name": "Dumbbell Incline Bench Press",
+    "aliases": [
+      "incline db press",
+      "incline dumbbell press",
+      "db incline bench"
+    ],
+    "primaryMuscles": [
+      "pectoralis major",
+      "anterior deltoids"
+    ],
+    "secondaryMuscles": [
+      "triceps",
+      "serratus anterior"
+    ],
+    "joints": [
+      "shoulder",
+      "elbow"
+    ],
+    "bodyRegions": [
+      "chest"
+    ],
+    "equipment": [
+      "dumbbell"
+    ]
+  },
+  {
+    "id": "dumbbell-decline-bench-press",
+    "name": "Dumbbell Decline Bench Press",
+    "aliases": [
+      "decline db press",
+      "decline dumbbell press"
+    ],
+    "primaryMuscles": [
+      "pectoralis major"
+    ],
+    "secondaryMuscles": [
+      "triceps",
+      "anterior deltoids"
+    ],
+    "joints": [
+      "shoulder",
+      "elbow"
+    ],
+    "bodyRegions": [
+      "chest"
+    ],
+    "equipment": [
+      "dumbbell"
+    ]
+  },
+  {
+    "id": "close-grip-bench-press",
+    "name": "Close Grip Bench Press",
+    "aliases": [
+      "cgbp",
+      "close grip bench",
+      "narrow grip bench press"
+    ],
+    "primaryMuscles": [
+      "triceps",
+      "pectoralis major"
+    ],
+    "secondaryMuscles": [
+      "anterior deltoids"
+    ],
+    "joints": [
+      "shoulder",
+      "elbow"
+    ],
+    "bodyRegions": [
+      "chest",
+      "arms"
+    ],
+    "equipment": [
+      "barbell"
+    ]
+  },
+  {
+    "id": "smith-machine-bench-press",
+    "name": "Smith Machine Bench Press",
+    "aliases": [
+      "smith bench press",
+      "smith bench"
+    ],
+    "primaryMuscles": [
+      "pectoralis major"
+    ],
+    "secondaryMuscles": [
+      "anterior deltoids",
+      "triceps"
+    ],
+    "joints": [
+      "shoulder",
+      "elbow"
+    ],
+    "bodyRegions": [
+      "chest"
+    ],
+    "equipment": [
+      "smith_machine"
+    ]
+  },
+  {
+    "id": "floor-press",
+    "name": "Floor Press",
+    "aliases": [
+      "barbell floor press",
+      "db floor press"
+    ],
+    "primaryMuscles": [
+      "pectoralis major",
+      "triceps"
+    ],
+    "secondaryMuscles": [
+      "anterior deltoids"
+    ],
+    "joints": [
+      "shoulder",
+      "elbow"
+    ],
+    "bodyRegions": [
+      "chest"
+    ],
+    "equipment": [
+      "barbell"
+    ]
+  },
+  {
+    "id": "dumbbell-flat-fly",
+    "name": "Dumbbell Flat Fly",
+    "aliases": [
+      "chest fly",
+      "db fly",
+      "flat fly",
+      "dumbbell fly",
+      "pec fly"
+    ],
+    "primaryMuscles": [
+      "pectoralis major"
+    ],
+    "secondaryMuscles": [
+      "anterior deltoids",
+      "serratus anterior"
+    ],
+    "joints": [
+      "shoulder"
+    ],
+    "bodyRegions": [
+      "chest"
+    ],
+    "equipment": [
+      "dumbbell"
+    ]
+  },
+  {
+    "id": "dumbbell-incline-fly",
+    "name": "Dumbbell Incline Fly",
+    "aliases": [
+      "incline fly",
+      "incline db fly",
+      "incline chest fly"
+    ],
+    "primaryMuscles": [
+      "pectoralis major",
+      "anterior deltoids"
+    ],
+    "secondaryMuscles": [
+      "serratus anterior"
+    ],
+    "joints": [
+      "shoulder"
+    ],
+    "bodyRegions": [
+      "chest"
+    ],
+    "equipment": [
+      "dumbbell"
+    ]
+  },
+  {
+    "id": "cable-fly",
+    "name": "Cable Fly",
+    "aliases": [
+      "cable chest fly",
+      "cable crossover fly",
+      "standing cable fly"
+    ],
+    "primaryMuscles": [
+      "pectoralis major"
+    ],
+    "secondaryMuscles": [
+      "anterior deltoids",
+      "serratus anterior"
+    ],
+    "joints": [
+      "shoulder"
+    ],
+    "bodyRegions": [
+      "chest"
+    ],
+    "equipment": [
+      "cable"
+    ]
+  },
+  {
+    "id": "cable-crossover",
+    "name": "Cable Crossover",
+    "aliases": [
+      "high cable crossover",
+      "cable cross",
+      "crossover"
+    ],
+    "primaryMuscles": [
+      "pectoralis major"
+    ],
+    "secondaryMuscles": [
+      "anterior deltoids",
+      "serratus anterior"
+    ],
+    "joints": [
+      "shoulder"
+    ],
+    "bodyRegions": [
+      "chest"
+    ],
+    "equipment": [
+      "cable"
+    ]
+  },
+  {
+    "id": "low-cable-fly",
+    "name": "Low Cable Fly",
+    "aliases": [
+      "low to high cable fly",
+      "low cable crossover"
+    ],
+    "primaryMuscles": [
+      "pectoralis major",
+      "anterior deltoids"
+    ],
+    "secondaryMuscles": [
+      "serratus anterior"
+    ],
+    "joints": [
+      "shoulder"
+    ],
+    "bodyRegions": [
+      "chest"
+    ],
+    "equipment": [
+      "cable"
+    ]
+  },
+  {
+    "id": "machine-chest-press",
+    "name": "Machine Chest Press",
+    "aliases": [
+      "chest press machine",
+      "seated chest press",
+      "machine press"
+    ],
+    "primaryMuscles": [
+      "pectoralis major"
+    ],
+    "secondaryMuscles": [
+      "anterior deltoids",
+      "triceps"
+    ],
+    "joints": [
+      "shoulder",
+      "elbow"
+    ],
+    "bodyRegions": [
+      "chest"
+    ],
+    "equipment": [
+      "machine"
+    ]
+  },
+  {
+    "id": "machine-incline-chest-press",
+    "name": "Machine Incline Chest Press",
+    "aliases": [
+      "incline chest press machine",
+      "incline machine press"
+    ],
+    "primaryMuscles": [
+      "pectoralis major",
+      "anterior deltoids"
+    ],
+    "secondaryMuscles": [
+      "triceps"
+    ],
+    "joints": [
+      "shoulder",
+      "elbow"
+    ],
+    "bodyRegions": [
+      "chest"
+    ],
+    "equipment": [
+      "machine"
+    ]
+  },
+  {
+    "id": "pec-deck",
+    "name": "Pec Deck",
+    "aliases": [
+      "pec deck machine",
+      "butterfly",
+      "machine fly",
+      "pec fly machine"
+    ],
+    "primaryMuscles": [
+      "pectoralis major"
+    ],
+    "secondaryMuscles": [
+      "anterior deltoids"
+    ],
+    "joints": [
+      "shoulder"
+    ],
+    "bodyRegions": [
+      "chest"
+    ],
+    "equipment": [
+      "machine"
+    ]
+  },
+  {
+    "id": "push-up",
+    "name": "Push-Up",
+    "aliases": [
+      "push up",
+      "pushup",
+      "press up"
+    ],
+    "primaryMuscles": [
+      "pectoralis major"
+    ],
+    "secondaryMuscles": [
+      "anterior deltoids",
+      "triceps",
+      "rectus abdominis",
+      "serratus anterior"
+    ],
+    "joints": [
+      "shoulder",
+      "elbow"
+    ],
+    "bodyRegions": [
+      "chest"
+    ],
+    "equipment": [
+      "bodyweight"
+    ]
+  },
+  {
+    "id": "incline-push-up",
+    "name": "Incline Push-Up",
+    "aliases": [
+      "incline push up",
+      "elevated push up"
+    ],
+    "primaryMuscles": [
+      "pectoralis major"
+    ],
+    "secondaryMuscles": [
+      "anterior deltoids",
+      "triceps"
+    ],
+    "joints": [
+      "shoulder",
+      "elbow"
+    ],
+    "bodyRegions": [
+      "chest"
+    ],
+    "equipment": [
+      "bodyweight"
+    ]
+  },
+  {
+    "id": "decline-push-up",
+    "name": "Decline Push-Up",
+    "aliases": [
+      "decline push up",
+      "feet elevated push up"
+    ],
+    "primaryMuscles": [
+      "pectoralis major",
+      "anterior deltoids"
+    ],
+    "secondaryMuscles": [
+      "triceps",
+      "serratus anterior"
+    ],
+    "joints": [
+      "shoulder",
+      "elbow"
+    ],
+    "bodyRegions": [
+      "chest"
+    ],
+    "equipment": [
+      "bodyweight"
+    ]
+  },
+  {
+    "id": "diamond-push-up",
+    "name": "Diamond Push-Up",
+    "aliases": [
+      "diamond push up",
+      "close grip push up",
+      "triangle push up"
+    ],
+    "primaryMuscles": [
+      "triceps",
+      "pectoralis major"
+    ],
+    "secondaryMuscles": [
+      "anterior deltoids"
+    ],
+    "joints": [
+      "shoulder",
+      "elbow"
+    ],
+    "bodyRegions": [
+      "chest",
+      "arms"
+    ],
+    "equipment": [
+      "bodyweight"
+    ]
+  },
+  {
+    "id": "weighted-push-up",
+    "name": "Weighted Push-Up",
+    "aliases": [
+      "plate push up"
+    ],
+    "primaryMuscles": [
+      "pectoralis major"
+    ],
+    "secondaryMuscles": [
+      "anterior deltoids",
+      "triceps",
+      "rectus abdominis"
+    ],
+    "joints": [
+      "shoulder",
+      "elbow"
+    ],
+    "bodyRegions": [
+      "chest"
+    ],
+    "equipment": [
+      "plate"
+    ]
+  },
+  {
+    "id": "chest-dip",
+    "name": "Chest Dip",
+    "aliases": [
+      "dip",
+      "dips",
+      "parallel bar dip",
+      "weighted dip"
+    ],
+    "primaryMuscles": [
+      "pectoralis major",
+      "triceps"
+    ],
+    "secondaryMuscles": [
+      "anterior deltoids",
+      "serratus anterior"
+    ],
+    "joints": [
+      "shoulder",
+      "elbow"
+    ],
+    "bodyRegions": [
+      "chest",
+      "arms"
+    ],
+    "equipment": [
+      "bodyweight"
+    ]
+  },
+  {
+    "id": "dumbbell-pullover",
+    "name": "Dumbbell Pullover",
+    "aliases": [
+      "pullover",
+      "db pullover",
+      "chest pullover"
+    ],
+    "primaryMuscles": [
+      "pectoralis major",
+      "latissimus dorsi"
+    ],
+    "secondaryMuscles": [
+      "triceps",
+      "serratus anterior"
+    ],
+    "joints": [
+      "shoulder"
+    ],
+    "bodyRegions": [
+      "chest",
+      "back"
+    ],
+    "equipment": [
+      "dumbbell"
+    ]
+  },
+  {
+    "id": "svend-press",
+    "name": "Svend Press",
+    "aliases": [
+      "plate squeeze press"
+    ],
+    "primaryMuscles": [
+      "pectoralis major"
+    ],
+    "secondaryMuscles": [
+      "anterior deltoids"
+    ],
+    "joints": [
+      "shoulder",
+      "elbow"
+    ],
+    "bodyRegions": [
+      "chest"
+    ],
+    "equipment": [
+      "plate"
+    ]
+  },
+  {
+    "id": "conventional-deadlift",
+    "name": "Conventional Deadlift",
+    "aliases": [
+      "deadlift",
+      "barbell deadlift",
+      "dl"
+    ],
+    "primaryMuscles": [
+      "erector spinae",
+      "glutes",
+      "hamstrings"
+    ],
+    "secondaryMuscles": [
+      "quadriceps",
+      "latissimus dorsi",
+      "trapezius",
+      "forearms",
+      "rectus abdominis"
+    ],
+    "joints": [
+      "hip",
+      "knee"
+    ],
+    "bodyRegions": [
+      "back",
+      "legs"
+    ],
+    "equipment": [
+      "barbell"
+    ]
+  },
+  {
+    "id": "sumo-deadlift",
+    "name": "Sumo Deadlift",
+    "aliases": [
+      "sumo dl",
+      "wide stance deadlift"
+    ],
+    "primaryMuscles": [
+      "glutes",
+      "quadriceps",
+      "hamstrings"
+    ],
+    "secondaryMuscles": [
+      "erector spinae",
+      "adductors",
+      "trapezius",
+      "forearms"
+    ],
+    "joints": [
+      "hip",
+      "knee"
+    ],
+    "bodyRegions": [
+      "back",
+      "legs"
+    ],
+    "equipment": [
+      "barbell"
+    ]
+  },
+  {
+    "id": "trap-bar-deadlift",
+    "name": "Trap Bar Deadlift",
+    "aliases": [
+      "hex bar deadlift",
+      "trap bar dl"
+    ],
+    "primaryMuscles": [
+      "quadriceps",
+      "glutes",
+      "hamstrings"
+    ],
+    "secondaryMuscles": [
+      "erector spinae",
+      "trapezius",
+      "forearms"
+    ],
+    "joints": [
+      "hip",
+      "knee"
+    ],
+    "bodyRegions": [
+      "back",
+      "legs"
+    ],
+    "equipment": [
+      "trap_bar"
+    ]
+  },
+  {
+    "id": "deficit-deadlift",
+    "name": "Deficit Deadlift",
+    "aliases": [
+      "deficit dl"
+    ],
+    "primaryMuscles": [
+      "erector spinae",
+      "glutes",
+      "hamstrings"
+    ],
+    "secondaryMuscles": [
+      "quadriceps",
+      "latissimus dorsi",
+      "trapezius",
+      "forearms"
+    ],
+    "joints": [
+      "hip",
+      "knee"
+    ],
+    "bodyRegions": [
+      "back",
+      "legs"
+    ],
+    "equipment": [
+      "barbell"
+    ]
+  },
+  {
+    "id": "rack-pull",
+    "name": "Rack Pull",
+    "aliases": [
+      "block pull",
+      "partial deadlift"
+    ],
+    "primaryMuscles": [
+      "erector spinae",
+      "glutes",
+      "trapezius"
+    ],
+    "secondaryMuscles": [
+      "hamstrings",
+      "latissimus dorsi",
+      "forearms"
+    ],
+    "joints": [
+      "hip",
+      "knee"
+    ],
+    "bodyRegions": [
+      "back"
+    ],
+    "equipment": [
+      "barbell"
+    ]
+  },
+  {
+    "id": "barbell-bent-over-row",
+    "name": "Barbell Bent-Over Row",
+    "aliases": [
+      "bent over row",
+      "barbell row",
+      "bb row",
+      "pendlay row"
+    ],
+    "primaryMuscles": [
+      "latissimus dorsi",
+      "rhomboids",
+      "trapezius"
+    ],
+    "secondaryMuscles": [
+      "rear deltoids",
+      "biceps",
+      "erector spinae",
+      "forearms"
+    ],
+    "joints": [
+      "shoulder",
+      "elbow"
+    ],
+    "bodyRegions": [
+      "back"
+    ],
+    "equipment": [
+      "barbell"
+    ]
+  },
+  {
+    "id": "dumbbell-row",
+    "name": "Dumbbell Row",
+    "aliases": [
+      "one arm row",
+      "single arm row",
+      "db row",
+      "one arm dumbbell row"
+    ],
+    "primaryMuscles": [
+      "latissimus dorsi",
+      "rhomboids"
+    ],
+    "secondaryMuscles": [
+      "rear deltoids",
+      "biceps",
+      "trapezius",
+      "forearms"
+    ],
+    "joints": [
+      "shoulder",
+      "elbow"
+    ],
+    "bodyRegions": [
+      "back"
+    ],
+    "equipment": [
+      "dumbbell"
+    ]
+  },
+  {
+    "id": "chest-supported-row",
+    "name": "Chest Supported Row",
+    "aliases": [
+      "incline db row",
+      "seal row",
+      "chest supported dumbbell row"
+    ],
+    "primaryMuscles": [
+      "latissimus dorsi",
+      "rhomboids"
+    ],
+    "secondaryMuscles": [
+      "rear deltoids",
+      "biceps",
+      "trapezius"
+    ],
+    "joints": [
+      "shoulder",
+      "elbow"
+    ],
+    "bodyRegions": [
+      "back"
+    ],
+    "equipment": [
+      "dumbbell"
+    ]
+  },
+  {
+    "id": "t-bar-row",
+    "name": "T-Bar Row",
+    "aliases": [
+      "t bar row",
+      "landmine row"
+    ],
+    "primaryMuscles": [
+      "latissimus dorsi",
+      "rhomboids",
+      "trapezius"
+    ],
+    "secondaryMuscles": [
+      "rear deltoids",
+      "biceps",
+      "erector spinae"
+    ],
+    "joints": [
+      "shoulder",
+      "elbow"
+    ],
+    "bodyRegions": [
+      "back"
+    ],
+    "equipment": [
+      "barbell"
+    ]
+  },
+  {
+    "id": "cable-seated-row",
+    "name": "Cable Seated Row",
+    "aliases": [
+      "seated row",
+      "cable row",
+      "low row",
+      "seated cable row"
+    ],
+    "primaryMuscles": [
+      "latissimus dorsi",
+      "rhomboids"
+    ],
+    "secondaryMuscles": [
+      "rear deltoids",
+      "biceps",
+      "trapezius",
+      "erector spinae"
+    ],
+    "joints": [
+      "shoulder",
+      "elbow"
+    ],
+    "bodyRegions": [
+      "back"
+    ],
+    "equipment": [
+      "cable"
+    ]
+  },
+  {
+    "id": "machine-row",
+    "name": "Machine Row",
+    "aliases": [
+      "plate loaded row",
+      "hammer strength row"
+    ],
+    "primaryMuscles": [
+      "latissimus dorsi",
+      "rhomboids"
+    ],
+    "secondaryMuscles": [
+      "rear deltoids",
+      "biceps",
+      "trapezius"
+    ],
+    "joints": [
+      "shoulder",
+      "elbow"
+    ],
+    "bodyRegions": [
+      "back"
+    ],
+    "equipment": [
+      "machine"
+    ]
+  },
+  {
+    "id": "meadows-row",
+    "name": "Meadows Row",
+    "aliases": [
+      "landmine meadows row"
+    ],
+    "primaryMuscles": [
+      "latissimus dorsi",
+      "rhomboids"
+    ],
+    "secondaryMuscles": [
+      "rear deltoids",
+      "biceps",
+      "trapezius"
+    ],
+    "joints": [
+      "shoulder",
+      "elbow"
+    ],
+    "bodyRegions": [
+      "back"
+    ],
+    "equipment": [
+      "barbell"
+    ]
+  },
+  {
+    "id": "pull-up",
+    "name": "Pull-Up",
+    "aliases": [
+      "pull up",
+      "pullup",
+      "chin up overhand",
+      "dead hang pull up"
+    ],
+    "primaryMuscles": [
+      "latissimus dorsi"
+    ],
+    "secondaryMuscles": [
+      "biceps",
+      "rhomboids",
+      "rear deltoids",
+      "forearms",
+      "trapezius"
+    ],
+    "joints": [
+      "shoulder",
+      "elbow"
+    ],
+    "bodyRegions": [
+      "back"
+    ],
+    "equipment": [
+      "bodyweight"
+    ]
+  },
+  {
+    "id": "chin-up",
+    "name": "Chin-Up",
+    "aliases": [
+      "chin up",
+      "chinup",
+      "underhand pull up",
+      "supinated pull up"
+    ],
+    "primaryMuscles": [
+      "latissimus dorsi",
+      "biceps"
+    ],
+    "secondaryMuscles": [
+      "rhomboids",
+      "rear deltoids",
+      "forearms"
+    ],
+    "joints": [
+      "shoulder",
+      "elbow"
+    ],
+    "bodyRegions": [
+      "back",
+      "arms"
+    ],
+    "equipment": [
+      "bodyweight"
+    ]
+  },
+  {
+    "id": "weighted-pull-up",
+    "name": "Weighted Pull-Up",
+    "aliases": [
+      "weighted pull up",
+      "weighted pullup"
+    ],
+    "primaryMuscles": [
+      "latissimus dorsi"
+    ],
+    "secondaryMuscles": [
+      "biceps",
+      "rhomboids",
+      "rear deltoids",
+      "forearms"
+    ],
+    "joints": [
+      "shoulder",
+      "elbow"
+    ],
+    "bodyRegions": [
+      "back"
+    ],
+    "equipment": [
+      "bodyweight"
+    ]
+  },
+  {
+    "id": "neutral-grip-pull-up",
+    "name": "Neutral Grip Pull-Up",
+    "aliases": [
+      "neutral grip pull up",
+      "hammer grip pull up",
+      "parallel grip pull up"
+    ],
+    "primaryMuscles": [
+      "latissimus dorsi"
+    ],
+    "secondaryMuscles": [
+      "biceps",
+      "brachialis",
+      "rhomboids",
+      "forearms"
+    ],
+    "joints": [
+      "shoulder",
+      "elbow"
+    ],
+    "bodyRegions": [
+      "back"
+    ],
+    "equipment": [
+      "bodyweight"
+    ]
+  },
+  {
+    "id": "lat-pulldown",
+    "name": "Lat Pulldown",
+    "aliases": [
+      "wide grip pulldown",
+      "cable pulldown",
+      "lat pull down"
+    ],
+    "primaryMuscles": [
+      "latissimus dorsi"
+    ],
+    "secondaryMuscles": [
+      "biceps",
+      "rhomboids",
+      "rear deltoids",
+      "forearms"
+    ],
+    "joints": [
+      "shoulder",
+      "elbow"
+    ],
+    "bodyRegions": [
+      "back"
+    ],
+    "equipment": [
+      "cable"
+    ]
+  },
+  {
+    "id": "close-grip-lat-pulldown",
+    "name": "Close Grip Lat Pulldown",
+    "aliases": [
+      "close grip pulldown",
+      "v bar pulldown",
+      "narrow grip pulldown"
+    ],
+    "primaryMuscles": [
+      "latissimus dorsi"
+    ],
+    "secondaryMuscles": [
+      "biceps",
+      "rhomboids",
+      "brachialis"
+    ],
+    "joints": [
+      "shoulder",
+      "elbow"
+    ],
+    "bodyRegions": [
+      "back"
+    ],
+    "equipment": [
+      "cable"
+    ]
+  },
+  {
+    "id": "reverse-grip-lat-pulldown",
+    "name": "Reverse Grip Lat Pulldown",
+    "aliases": [
+      "underhand pulldown",
+      "supinated pulldown"
+    ],
+    "primaryMuscles": [
+      "latissimus dorsi"
+    ],
+    "secondaryMuscles": [
+      "biceps",
+      "rhomboids",
+      "brachialis"
+    ],
+    "joints": [
+      "shoulder",
+      "elbow"
+    ],
+    "bodyRegions": [
+      "back"
+    ],
+    "equipment": [
+      "cable"
+    ]
+  },
+  {
+    "id": "straight-arm-pulldown",
+    "name": "Straight Arm Pulldown",
+    "aliases": [
+      "straight arm pushdown",
+      "cable straight arm pulldown"
+    ],
+    "primaryMuscles": [
+      "latissimus dorsi"
+    ],
+    "secondaryMuscles": [
+      "triceps",
+      "rear deltoids",
+      "rectus abdominis"
+    ],
+    "joints": [
+      "shoulder"
+    ],
+    "bodyRegions": [
+      "back"
+    ],
+    "equipment": [
+      "cable"
+    ]
+  },
+  {
+    "id": "inverted-row",
+    "name": "Inverted Row",
+    "aliases": [
+      "body row",
+      "australian pull up",
+      "bodyweight row"
+    ],
+    "primaryMuscles": [
+      "latissimus dorsi",
+      "rhomboids"
+    ],
+    "secondaryMuscles": [
+      "rear deltoids",
+      "biceps",
+      "trapezius"
+    ],
+    "joints": [
+      "shoulder",
+      "elbow"
+    ],
+    "bodyRegions": [
+      "back"
+    ],
+    "equipment": [
+      "bodyweight"
+    ]
+  },
+  {
+    "id": "barbell-shrug",
+    "name": "Barbell Shrug",
+    "aliases": [
+      "shrug",
+      "shrugs",
+      "bb shrug",
+      "trap shrug"
+    ],
+    "primaryMuscles": [
+      "trapezius"
+    ],
+    "secondaryMuscles": [
+      "forearms"
+    ],
+    "joints": [
+      "shoulder"
+    ],
+    "bodyRegions": [
+      "back",
+      "shoulders"
+    ],
+    "equipment": [
+      "barbell"
+    ]
+  },
+  {
+    "id": "dumbbell-shrug",
+    "name": "Dumbbell Shrug",
+    "aliases": [
+      "db shrug",
+      "db shrugs"
+    ],
+    "primaryMuscles": [
+      "trapezius"
+    ],
+    "secondaryMuscles": [
+      "forearms"
+    ],
+    "joints": [
+      "shoulder"
+    ],
+    "bodyRegions": [
+      "back",
+      "shoulders"
+    ],
+    "equipment": [
+      "dumbbell"
+    ]
+  },
+  {
+    "id": "trap-bar-shrug",
+    "name": "Trap Bar Shrug",
+    "aliases": [
+      "hex bar shrug"
+    ],
+    "primaryMuscles": [
+      "trapezius"
+    ],
+    "secondaryMuscles": [
+      "forearms"
+    ],
+    "joints": [
+      "shoulder"
+    ],
+    "bodyRegions": [
+      "back",
+      "shoulders"
+    ],
+    "equipment": [
+      "trap_bar"
+    ]
+  },
+  {
+    "id": "back-extension",
+    "name": "Back Extension",
+    "aliases": [
+      "hyperextension",
+      "hyper extension",
+      "roman chair extension"
+    ],
+    "primaryMuscles": [
+      "erector spinae"
+    ],
+    "secondaryMuscles": [
+      "glutes",
+      "hamstrings"
+    ],
+    "joints": [
+      "hip"
+    ],
+    "bodyRegions": [
+      "back"
+    ],
+    "equipment": [
+      "bodyweight"
+    ]
+  },
+  {
+    "id": "weighted-back-extension",
+    "name": "Weighted Back Extension",
+    "aliases": [
+      "weighted hyper extension",
+      "weighted hyperextension"
+    ],
+    "primaryMuscles": [
+      "erector spinae"
+    ],
+    "secondaryMuscles": [
+      "glutes",
+      "hamstrings"
+    ],
+    "joints": [
+      "hip"
+    ],
+    "bodyRegions": [
+      "back"
+    ],
+    "equipment": [
+      "plate"
+    ]
+  },
+  {
+    "id": "reverse-fly-machine",
+    "name": "Reverse Fly Machine",
+    "aliases": [
+      "reverse pec deck",
+      "rear delt machine",
+      "machine reverse fly"
+    ],
+    "primaryMuscles": [
+      "rear deltoids",
+      "rhomboids"
+    ],
+    "secondaryMuscles": [
+      "trapezius"
+    ],
+    "joints": [
+      "shoulder"
+    ],
+    "bodyRegions": [
+      "back",
+      "shoulders"
+    ],
+    "equipment": [
+      "machine"
+    ]
+  },
+  {
+    "id": "single-arm-cable-row",
+    "name": "Single Arm Cable Row",
+    "aliases": [
+      "one arm cable row",
+      "unilateral cable row"
+    ],
+    "primaryMuscles": [
+      "latissimus dorsi",
+      "rhomboids"
+    ],
+    "secondaryMuscles": [
+      "rear deltoids",
+      "biceps"
+    ],
+    "joints": [
+      "shoulder",
+      "elbow"
+    ],
+    "bodyRegions": [
+      "back"
+    ],
+    "equipment": [
+      "cable"
+    ]
+  },
+  {
+    "id": "barbell-overhead-press",
+    "name": "Barbell Overhead Press",
+    "aliases": [
+      "overhead press",
+      "ohp",
+      "military press",
+      "shoulder press",
+      "barbell press",
+      "standing press"
+    ],
+    "primaryMuscles": [
+      "anterior deltoids",
+      "lateral deltoids"
+    ],
+    "secondaryMuscles": [
+      "triceps",
+      "trapezius",
+      "serratus anterior",
+      "rectus abdominis"
+    ],
+    "joints": [
+      "shoulder",
+      "elbow"
+    ],
+    "bodyRegions": [
+      "shoulders"
+    ],
+    "equipment": [
+      "barbell"
+    ]
+  },
+  {
+    "id": "dumbbell-overhead-press",
+    "name": "Dumbbell Overhead Press",
+    "aliases": [
+      "db shoulder press",
+      "dumbbell press",
+      "db ohp",
+      "seated dumbbell press"
+    ],
+    "primaryMuscles": [
+      "anterior deltoids",
+      "lateral deltoids"
+    ],
+    "secondaryMuscles": [
+      "triceps",
+      "trapezius"
+    ],
+    "joints": [
+      "shoulder",
+      "elbow"
+    ],
+    "bodyRegions": [
+      "shoulders"
+    ],
+    "equipment": [
+      "dumbbell"
+    ]
+  },
+  {
+    "id": "seated-barbell-press",
+    "name": "Seated Barbell Overhead Press",
+    "aliases": [
+      "seated ohp",
+      "seated military press",
+      "seated barbell press"
+    ],
+    "primaryMuscles": [
+      "anterior deltoids",
+      "lateral deltoids"
+    ],
+    "secondaryMuscles": [
+      "triceps",
+      "trapezius"
+    ],
+    "joints": [
+      "shoulder",
+      "elbow"
+    ],
+    "bodyRegions": [
+      "shoulders"
+    ],
+    "equipment": [
+      "barbell"
+    ]
+  },
+  {
+    "id": "arnold-press",
+    "name": "Arnold Press",
+    "aliases": [
+      "arnold dumbbell press"
+    ],
+    "primaryMuscles": [
+      "anterior deltoids",
+      "lateral deltoids"
+    ],
+    "secondaryMuscles": [
+      "triceps",
+      "trapezius"
+    ],
+    "joints": [
+      "shoulder",
+      "elbow"
+    ],
+    "bodyRegions": [
+      "shoulders"
+    ],
+    "equipment": [
+      "dumbbell"
+    ]
+  },
+  {
+    "id": "push-press",
+    "name": "Push Press",
+    "aliases": [
+      "barbell push press"
+    ],
+    "primaryMuscles": [
+      "anterior deltoids",
+      "lateral deltoids"
+    ],
+    "secondaryMuscles": [
+      "triceps",
+      "trapezius",
+      "quadriceps",
+      "glutes"
+    ],
+    "joints": [
+      "shoulder",
+      "elbow",
+      "hip",
+      "knee"
+    ],
+    "bodyRegions": [
+      "shoulders"
+    ],
+    "equipment": [
+      "barbell"
+    ]
+  },
+  {
+    "id": "smith-machine-overhead-press",
+    "name": "Smith Machine Overhead Press",
+    "aliases": [
+      "smith machine shoulder press",
+      "smith ohp"
+    ],
+    "primaryMuscles": [
+      "anterior deltoids",
+      "lateral deltoids"
+    ],
+    "secondaryMuscles": [
+      "triceps",
+      "trapezius"
+    ],
+    "joints": [
+      "shoulder",
+      "elbow"
+    ],
+    "bodyRegions": [
+      "shoulders"
+    ],
+    "equipment": [
+      "smith_machine"
+    ]
+  },
+  {
+    "id": "machine-shoulder-press",
+    "name": "Machine Shoulder Press",
+    "aliases": [
+      "shoulder press machine",
+      "seated machine press"
+    ],
+    "primaryMuscles": [
+      "anterior deltoids",
+      "lateral deltoids"
+    ],
+    "secondaryMuscles": [
+      "triceps",
+      "trapezius"
+    ],
+    "joints": [
+      "shoulder",
+      "elbow"
+    ],
+    "bodyRegions": [
+      "shoulders"
+    ],
+    "equipment": [
+      "machine"
+    ]
+  },
+  {
+    "id": "dumbbell-lateral-raise",
+    "name": "Dumbbell Lateral Raise",
+    "aliases": [
+      "lateral raise",
+      "side raise",
+      "db lateral raise",
+      "side lateral raise"
+    ],
+    "primaryMuscles": [
+      "lateral deltoids"
+    ],
+    "secondaryMuscles": [
+      "anterior deltoids",
+      "trapezius"
+    ],
+    "joints": [
+      "shoulder"
+    ],
+    "bodyRegions": [
+      "shoulders"
+    ],
+    "equipment": [
+      "dumbbell"
+    ]
+  },
+  {
+    "id": "cable-lateral-raise",
+    "name": "Cable Lateral Raise",
+    "aliases": [
+      "cable side raise"
+    ],
+    "primaryMuscles": [
+      "lateral deltoids"
+    ],
+    "secondaryMuscles": [
+      "anterior deltoids",
+      "trapezius"
+    ],
+    "joints": [
+      "shoulder"
+    ],
+    "bodyRegions": [
+      "shoulders"
+    ],
+    "equipment": [
+      "cable"
+    ]
+  },
+  {
+    "id": "machine-lateral-raise",
+    "name": "Machine Lateral Raise",
+    "aliases": [
+      "lateral raise machine"
+    ],
+    "primaryMuscles": [
+      "lateral deltoids"
+    ],
+    "secondaryMuscles": [
+      "anterior deltoids",
+      "trapezius"
+    ],
+    "joints": [
+      "shoulder"
+    ],
+    "bodyRegions": [
+      "shoulders"
+    ],
+    "equipment": [
+      "machine"
+    ]
+  },
+  {
+    "id": "dumbbell-front-raise",
+    "name": "Dumbbell Front Raise",
+    "aliases": [
+      "front raise",
+      "db front raise"
+    ],
+    "primaryMuscles": [
+      "anterior deltoids"
+    ],
+    "secondaryMuscles": [
+      "lateral deltoids",
+      "pectoralis major"
+    ],
+    "joints": [
+      "shoulder"
+    ],
+    "bodyRegions": [
+      "shoulders"
+    ],
+    "equipment": [
+      "dumbbell"
+    ]
+  },
+  {
+    "id": "cable-front-raise",
+    "name": "Cable Front Raise",
+    "aliases": [
+      "front cable raise"
+    ],
+    "primaryMuscles": [
+      "anterior deltoids"
+    ],
+    "secondaryMuscles": [
+      "lateral deltoids"
+    ],
+    "joints": [
+      "shoulder"
+    ],
+    "bodyRegions": [
+      "shoulders"
+    ],
+    "equipment": [
+      "cable"
+    ]
+  },
+  {
+    "id": "plate-front-raise",
+    "name": "Plate Front Raise",
+    "aliases": [
+      "plate raise"
+    ],
+    "primaryMuscles": [
+      "anterior deltoids"
+    ],
+    "secondaryMuscles": [
+      "lateral deltoids",
+      "trapezius"
+    ],
+    "joints": [
+      "shoulder"
+    ],
+    "bodyRegions": [
+      "shoulders"
+    ],
+    "equipment": [
+      "plate"
+    ]
+  },
+  {
+    "id": "dumbbell-reverse-fly",
+    "name": "Dumbbell Reverse Fly",
+    "aliases": [
+      "reverse fly",
+      "rear delt fly",
+      "bent over reverse fly",
+      "db reverse fly"
+    ],
+    "primaryMuscles": [
+      "rear deltoids"
+    ],
+    "secondaryMuscles": [
+      "rhomboids",
+      "trapezius"
+    ],
+    "joints": [
+      "shoulder"
+    ],
+    "bodyRegions": [
+      "shoulders",
+      "back"
+    ],
+    "equipment": [
+      "dumbbell"
+    ]
+  },
+  {
+    "id": "cable-reverse-fly",
+    "name": "Cable Reverse Fly",
+    "aliases": [
+      "cable rear delt fly",
+      "high cable reverse fly"
+    ],
+    "primaryMuscles": [
+      "rear deltoids"
+    ],
+    "secondaryMuscles": [
+      "rhomboids",
+      "trapezius"
+    ],
+    "joints": [
+      "shoulder"
+    ],
+    "bodyRegions": [
+      "shoulders",
+      "back"
+    ],
+    "equipment": [
+      "cable"
+    ]
+  },
+  {
+    "id": "face-pull",
+    "name": "Face Pull",
+    "aliases": [
+      "cable face pull",
+      "rope face pull"
+    ],
+    "primaryMuscles": [
+      "rear deltoids",
+      "rotator cuff"
+    ],
+    "secondaryMuscles": [
+      "rhomboids",
+      "trapezius"
+    ],
+    "joints": [
+      "shoulder",
+      "elbow"
+    ],
+    "bodyRegions": [
+      "shoulders",
+      "back"
+    ],
+    "equipment": [
+      "cable"
+    ]
+  },
+  {
+    "id": "barbell-upright-row",
+    "name": "Barbell Upright Row",
+    "aliases": [
+      "upright row",
+      "bb upright row"
+    ],
+    "primaryMuscles": [
+      "lateral deltoids",
+      "trapezius"
+    ],
+    "secondaryMuscles": [
+      "anterior deltoids",
+      "biceps",
+      "forearms"
+    ],
+    "joints": [
+      "shoulder",
+      "elbow"
+    ],
+    "bodyRegions": [
+      "shoulders"
+    ],
+    "equipment": [
+      "barbell"
+    ]
+  },
+  {
+    "id": "dumbbell-upright-row",
+    "name": "Dumbbell Upright Row",
+    "aliases": [
+      "db upright row"
+    ],
+    "primaryMuscles": [
+      "lateral deltoids",
+      "trapezius"
+    ],
+    "secondaryMuscles": [
+      "anterior deltoids",
+      "biceps"
+    ],
+    "joints": [
+      "shoulder",
+      "elbow"
+    ],
+    "bodyRegions": [
+      "shoulders"
+    ],
+    "equipment": [
+      "dumbbell"
+    ]
+  },
+  {
+    "id": "cable-upright-row",
+    "name": "Cable Upright Row",
+    "aliases": [],
+    "primaryMuscles": [
+      "lateral deltoids",
+      "trapezius"
+    ],
+    "secondaryMuscles": [
+      "anterior deltoids",
+      "biceps"
+    ],
+    "joints": [
+      "shoulder",
+      "elbow"
+    ],
+    "bodyRegions": [
+      "shoulders"
+    ],
+    "equipment": [
+      "cable"
+    ]
+  },
+  {
+    "id": "lu-raise",
+    "name": "Lu Raise",
+    "aliases": [
+      "lu lateral raise",
+      "y raise to lateral raise"
+    ],
+    "primaryMuscles": [
+      "lateral deltoids",
+      "anterior deltoids"
+    ],
+    "secondaryMuscles": [
+      "trapezius"
+    ],
+    "joints": [
+      "shoulder"
+    ],
+    "bodyRegions": [
+      "shoulders"
+    ],
+    "equipment": [
+      "dumbbell"
+    ]
+  },
+  {
+    "id": "handstand-push-up",
+    "name": "Handstand Push-Up",
+    "aliases": [
+      "handstand push up",
+      "hspu",
+      "wall handstand push up"
+    ],
+    "primaryMuscles": [
+      "anterior deltoids",
+      "lateral deltoids"
+    ],
+    "secondaryMuscles": [
+      "triceps",
+      "trapezius"
+    ],
+    "joints": [
+      "shoulder",
+      "elbow"
+    ],
+    "bodyRegions": [
+      "shoulders"
+    ],
+    "equipment": [
+      "bodyweight"
+    ]
+  },
+  {
+    "id": "band-pull-apart",
+    "name": "Band Pull-Apart",
+    "aliases": [
+      "band pull apart",
+      "resistance band pull apart"
+    ],
+    "primaryMuscles": [
+      "rear deltoids",
+      "rhomboids"
+    ],
+    "secondaryMuscles": [
+      "trapezius",
+      "rotator cuff"
+    ],
+    "joints": [
+      "shoulder"
+    ],
+    "bodyRegions": [
+      "shoulders",
+      "back"
+    ],
+    "equipment": [
+      "resistance_band"
+    ]
+  },
+  {
+    "id": "landmine-press",
+    "name": "Landmine Press",
+    "aliases": [
+      "angled press",
+      "single arm landmine press"
+    ],
+    "primaryMuscles": [
+      "anterior deltoids"
+    ],
+    "secondaryMuscles": [
+      "triceps",
+      "pectoralis major",
+      "serratus anterior"
+    ],
+    "joints": [
+      "shoulder",
+      "elbow"
+    ],
+    "bodyRegions": [
+      "shoulders",
+      "chest"
+    ],
+    "equipment": [
+      "barbell"
+    ]
+  },
+  {
+    "id": "barbell-curl",
+    "name": "Barbell Curl",
+    "aliases": [
+      "bb curl",
+      "standing barbell curl",
+      "bicep curl barbell"
+    ],
+    "primaryMuscles": [
+      "biceps"
+    ],
+    "secondaryMuscles": [
+      "brachialis",
+      "brachioradialis",
+      "forearms"
+    ],
+    "joints": [
+      "elbow"
+    ],
+    "bodyRegions": [
+      "arms"
+    ],
+    "equipment": [
+      "barbell"
+    ]
+  },
+  {
+    "id": "ez-bar-curl",
+    "name": "EZ Bar Curl",
+    "aliases": [
+      "ez curl",
+      "ez bar bicep curl",
+      "cambered bar curl"
+    ],
+    "primaryMuscles": [
+      "biceps"
+    ],
+    "secondaryMuscles": [
+      "brachialis",
+      "brachioradialis",
+      "forearms"
+    ],
+    "joints": [
+      "elbow"
+    ],
+    "bodyRegions": [
+      "arms"
+    ],
+    "equipment": [
+      "ez_bar"
+    ]
+  },
+  {
+    "id": "dumbbell-bicep-curl",
+    "name": "Dumbbell Bicep Curl",
+    "aliases": [
+      "bicep curl",
+      "db curl",
+      "dumbbell curl",
+      "standing db curl"
+    ],
+    "primaryMuscles": [
+      "biceps"
+    ],
+    "secondaryMuscles": [
+      "brachialis",
+      "brachioradialis",
+      "forearms"
+    ],
+    "joints": [
+      "elbow"
+    ],
+    "bodyRegions": [
+      "arms"
+    ],
+    "equipment": [
+      "dumbbell"
+    ]
+  },
+  {
+    "id": "hammer-curl",
+    "name": "Hammer Curl",
+    "aliases": [
+      "db hammer curl",
+      "neutral grip curl"
+    ],
+    "primaryMuscles": [
+      "brachialis",
+      "brachioradialis"
+    ],
+    "secondaryMuscles": [
+      "biceps",
+      "forearms"
+    ],
+    "joints": [
+      "elbow"
+    ],
+    "bodyRegions": [
+      "arms"
+    ],
+    "equipment": [
+      "dumbbell"
+    ]
+  },
+  {
+    "id": "incline-dumbbell-curl",
+    "name": "Incline Dumbbell Curl",
+    "aliases": [
+      "incline curl",
+      "incline db curl"
+    ],
+    "primaryMuscles": [
+      "biceps"
+    ],
+    "secondaryMuscles": [
+      "brachialis",
+      "forearms"
+    ],
+    "joints": [
+      "elbow"
+    ],
+    "bodyRegions": [
+      "arms"
+    ],
+    "equipment": [
+      "dumbbell"
+    ]
+  },
+  {
+    "id": "concentration-curl",
+    "name": "Concentration Curl",
+    "aliases": [
+      "seated concentration curl",
+      "db concentration curl"
+    ],
+    "primaryMuscles": [
+      "biceps"
+    ],
+    "secondaryMuscles": [
+      "brachialis"
+    ],
+    "joints": [
+      "elbow"
+    ],
+    "bodyRegions": [
+      "arms"
+    ],
+    "equipment": [
+      "dumbbell"
+    ]
+  },
+  {
+    "id": "preacher-curl",
+    "name": "Preacher Curl",
+    "aliases": [
+      "preacher curl barbell",
+      "scott curl"
+    ],
+    "primaryMuscles": [
+      "biceps"
+    ],
+    "secondaryMuscles": [
+      "brachialis",
+      "forearms"
+    ],
+    "joints": [
+      "elbow"
+    ],
+    "bodyRegions": [
+      "arms"
+    ],
+    "equipment": [
+      "ez_bar"
+    ]
+  },
+  {
+    "id": "dumbbell-preacher-curl",
+    "name": "Dumbbell Preacher Curl",
+    "aliases": [
+      "db preacher curl",
+      "single arm preacher curl"
+    ],
+    "primaryMuscles": [
+      "biceps"
+    ],
+    "secondaryMuscles": [
+      "brachialis"
+    ],
+    "joints": [
+      "elbow"
+    ],
+    "bodyRegions": [
+      "arms"
+    ],
+    "equipment": [
+      "dumbbell"
+    ]
+  },
+  {
+    "id": "cable-curl",
+    "name": "Cable Curl",
+    "aliases": [
+      "cable bicep curl",
+      "straight bar cable curl"
+    ],
+    "primaryMuscles": [
+      "biceps"
+    ],
+    "secondaryMuscles": [
+      "brachialis",
+      "forearms"
+    ],
+    "joints": [
+      "elbow"
+    ],
+    "bodyRegions": [
+      "arms"
+    ],
+    "equipment": [
+      "cable"
+    ]
+  },
+  {
+    "id": "cable-hammer-curl",
+    "name": "Cable Hammer Curl",
+    "aliases": [
+      "rope hammer curl",
+      "cable rope curl"
+    ],
+    "primaryMuscles": [
+      "brachialis",
+      "brachioradialis"
+    ],
+    "secondaryMuscles": [
+      "biceps",
+      "forearms"
+    ],
+    "joints": [
+      "elbow"
+    ],
+    "bodyRegions": [
+      "arms"
+    ],
+    "equipment": [
+      "cable"
+    ]
+  },
+  {
+    "id": "machine-bicep-curl",
+    "name": "Machine Bicep Curl",
+    "aliases": [
+      "machine curl",
+      "bicep curl machine"
+    ],
+    "primaryMuscles": [
+      "biceps"
+    ],
+    "secondaryMuscles": [
+      "brachialis"
+    ],
+    "joints": [
+      "elbow"
+    ],
+    "bodyRegions": [
+      "arms"
+    ],
+    "equipment": [
+      "machine"
+    ]
+  },
+  {
+    "id": "spider-curl",
+    "name": "Spider Curl",
+    "aliases": [
+      "prone incline curl"
+    ],
+    "primaryMuscles": [
+      "biceps"
+    ],
+    "secondaryMuscles": [
+      "brachialis"
+    ],
+    "joints": [
+      "elbow"
+    ],
+    "bodyRegions": [
+      "arms"
+    ],
+    "equipment": [
+      "dumbbell"
+    ]
+  },
+  {
+    "id": "cross-body-curl",
+    "name": "Cross Body Hammer Curl",
+    "aliases": [
+      "cross body curl",
+      "pinwheel curl"
+    ],
+    "primaryMuscles": [
+      "brachialis",
+      "biceps"
+    ],
+    "secondaryMuscles": [
+      "brachioradialis",
+      "forearms"
+    ],
+    "joints": [
+      "elbow"
+    ],
+    "bodyRegions": [
+      "arms"
+    ],
+    "equipment": [
+      "dumbbell"
+    ]
+  },
+  {
+    "id": "reverse-curl",
+    "name": "Reverse Curl",
+    "aliases": [
+      "reverse barbell curl",
+      "overhand curl"
+    ],
+    "primaryMuscles": [
+      "brachioradialis",
+      "forearms"
+    ],
+    "secondaryMuscles": [
+      "biceps",
+      "brachialis"
+    ],
+    "joints": [
+      "elbow"
+    ],
+    "bodyRegions": [
+      "arms"
+    ],
+    "equipment": [
+      "barbell"
+    ]
+  },
+  {
+    "id": "zottman-curl",
+    "name": "Zottman Curl",
+    "aliases": [
+      "zottman"
+    ],
+    "primaryMuscles": [
+      "biceps",
+      "brachioradialis"
+    ],
+    "secondaryMuscles": [
+      "brachialis",
+      "forearms"
+    ],
+    "joints": [
+      "elbow"
+    ],
+    "bodyRegions": [
+      "arms"
+    ],
+    "equipment": [
+      "dumbbell"
+    ]
+  },
+  {
+    "id": "twenty-ones",
+    "name": "21s Bicep Curl",
+    "aliases": [
+      "21s",
+      "twenty ones",
+      "seven seven seven"
+    ],
+    "primaryMuscles": [
+      "biceps"
+    ],
+    "secondaryMuscles": [
+      "brachialis",
+      "forearms"
+    ],
+    "joints": [
+      "elbow"
+    ],
+    "bodyRegions": [
+      "arms"
+    ],
+    "equipment": [
+      "ez_bar"
+    ]
+  },
+  {
+    "id": "cable-overhead-tricep-extension",
+    "name": "Cable Overhead Tricep Extension",
+    "aliases": [
+      "overhead cable extension",
+      "cable french press"
+    ],
+    "primaryMuscles": [
+      "triceps"
+    ],
+    "secondaryMuscles": [],
+    "joints": [
+      "elbow"
+    ],
+    "bodyRegions": [
+      "arms"
+    ],
+    "equipment": [
+      "cable"
+    ]
+  },
+  {
+    "id": "tricep-pushdown",
+    "name": "Tricep Pushdown",
+    "aliases": [
+      "cable pushdown",
+      "tricep push down",
+      "rope pushdown",
+      "pressdown",
+      "cable tricep extension"
+    ],
+    "primaryMuscles": [
+      "triceps"
+    ],
+    "secondaryMuscles": [],
+    "joints": [
+      "elbow"
+    ],
+    "bodyRegions": [
+      "arms"
+    ],
+    "equipment": [
+      "cable"
+    ]
+  },
+  {
+    "id": "tricep-pushdown-v-bar",
+    "name": "Tricep Pushdown V-Bar",
+    "aliases": [
+      "v bar pushdown",
+      "v bar tricep pushdown"
+    ],
+    "primaryMuscles": [
+      "triceps"
+    ],
+    "secondaryMuscles": [],
+    "joints": [
+      "elbow"
+    ],
+    "bodyRegions": [
+      "arms"
+    ],
+    "equipment": [
+      "cable"
+    ]
+  },
+  {
+    "id": "lying-tricep-extension",
+    "name": "Lying Tricep Extension",
+    "aliases": [
+      "skull crusher",
+      "skull crushers",
+      "nose breaker",
+      "french press",
+      "ez bar skull crusher"
+    ],
+    "primaryMuscles": [
+      "triceps"
+    ],
+    "secondaryMuscles": [],
+    "joints": [
+      "elbow"
+    ],
+    "bodyRegions": [
+      "arms"
+    ],
+    "equipment": [
+      "ez_bar"
+    ]
+  },
+  {
+    "id": "dumbbell-skull-crusher",
+    "name": "Dumbbell Lying Tricep Extension",
+    "aliases": [
+      "db skull crusher",
+      "dumbbell skull crusher"
+    ],
+    "primaryMuscles": [
+      "triceps"
+    ],
+    "secondaryMuscles": [],
+    "joints": [
+      "elbow"
+    ],
+    "bodyRegions": [
+      "arms"
+    ],
+    "equipment": [
+      "dumbbell"
+    ]
+  },
+  {
+    "id": "overhead-dumbbell-tricep-extension",
+    "name": "Overhead Dumbbell Tricep Extension",
+    "aliases": [
+      "db overhead extension",
+      "single arm overhead extension",
+      "one arm overhead tricep"
+    ],
+    "primaryMuscles": [
+      "triceps"
+    ],
+    "secondaryMuscles": [],
+    "joints": [
+      "elbow"
+    ],
+    "bodyRegions": [
+      "arms"
+    ],
+    "equipment": [
+      "dumbbell"
+    ]
+  },
+  {
+    "id": "dumbbell-kickback",
+    "name": "Dumbbell Kickback",
+    "aliases": [
+      "tricep kickback",
+      "db kickback"
+    ],
+    "primaryMuscles": [
+      "triceps"
+    ],
+    "secondaryMuscles": [],
+    "joints": [
+      "elbow"
+    ],
+    "bodyRegions": [
+      "arms"
+    ],
+    "equipment": [
+      "dumbbell"
+    ]
+  },
+  {
+    "id": "tricep-dip",
+    "name": "Tricep Dip",
+    "aliases": [
+      "bench dip",
+      "bench dips",
+      "chair dip"
+    ],
+    "primaryMuscles": [
+      "triceps"
+    ],
+    "secondaryMuscles": [
+      "anterior deltoids",
+      "pectoralis major"
+    ],
+    "joints": [
+      "shoulder",
+      "elbow"
+    ],
+    "bodyRegions": [
+      "arms"
+    ],
+    "equipment": [
+      "bodyweight"
+    ]
+  },
+  {
+    "id": "overhead-barbell-tricep-extension",
+    "name": "Overhead Barbell Tricep Extension",
+    "aliases": [
+      "barbell french press",
+      "standing barbell tricep extension"
+    ],
+    "primaryMuscles": [
+      "triceps"
+    ],
+    "secondaryMuscles": [],
+    "joints": [
+      "elbow"
+    ],
+    "bodyRegions": [
+      "arms"
+    ],
+    "equipment": [
+      "barbell"
+    ]
+  },
+  {
+    "id": "machine-tricep-extension",
+    "name": "Machine Tricep Extension",
+    "aliases": [
+      "tricep extension machine"
+    ],
+    "primaryMuscles": [
+      "triceps"
+    ],
+    "secondaryMuscles": [],
+    "joints": [
+      "elbow"
+    ],
+    "bodyRegions": [
+      "arms"
+    ],
+    "equipment": [
+      "machine"
+    ]
+  },
+  {
+    "id": "single-arm-cable-pushdown",
+    "name": "Single Arm Cable Pushdown",
+    "aliases": [
+      "one arm pushdown",
+      "unilateral tricep pushdown"
+    ],
+    "primaryMuscles": [
+      "triceps"
+    ],
+    "secondaryMuscles": [],
+    "joints": [
+      "elbow"
+    ],
+    "bodyRegions": [
+      "arms"
+    ],
+    "equipment": [
+      "cable"
+    ]
+  },
+  {
+    "id": "wrist-curl",
+    "name": "Wrist Curl",
+    "aliases": [
+      "barbell wrist curl",
+      "forearm curl"
+    ],
+    "primaryMuscles": [
+      "forearms"
+    ],
+    "secondaryMuscles": [],
+    "joints": [
+      "wrist"
+    ],
+    "bodyRegions": [
+      "arms"
+    ],
+    "equipment": [
+      "barbell"
+    ]
+  },
+  {
+    "id": "reverse-wrist-curl",
+    "name": "Reverse Wrist Curl",
+    "aliases": [
+      "wrist extension",
+      "barbell reverse wrist curl"
+    ],
+    "primaryMuscles": [
+      "forearms"
+    ],
+    "secondaryMuscles": [],
+    "joints": [
+      "wrist"
+    ],
+    "bodyRegions": [
+      "arms"
+    ],
+    "equipment": [
+      "barbell"
+    ]
+  },
+  {
+    "id": "farmer-walk",
+    "name": "Farmer's Walk",
+    "aliases": [
+      "farmer walk",
+      "farmers carry",
+      "farmer carry"
+    ],
+    "primaryMuscles": [
+      "forearms",
+      "trapezius"
+    ],
+    "secondaryMuscles": [
+      "erector spinae",
+      "rectus abdominis",
+      "obliques"
+    ],
+    "joints": [
+      "wrist",
+      "shoulder"
+    ],
+    "bodyRegions": [
+      "arms",
+      "core"
+    ],
+    "equipment": [
+      "dumbbell"
+    ]
+  },
+  {
+    "id": "dead-hang",
+    "name": "Dead Hang",
+    "aliases": [
+      "bar hang",
+      "passive hang"
+    ],
+    "primaryMuscles": [
+      "forearms"
+    ],
+    "secondaryMuscles": [
+      "latissimus dorsi",
+      "rotator cuff"
+    ],
+    "joints": [
+      "wrist",
+      "shoulder"
+    ],
+    "bodyRegions": [
+      "arms"
+    ],
+    "equipment": [
+      "bodyweight"
+    ]
+  },
+  {
+    "id": "plank",
+    "name": "Plank",
+    "aliases": [
+      "front plank",
+      "forearm plank"
+    ],
+    "primaryMuscles": [
+      "rectus abdominis",
+      "transverse abdominis"
+    ],
+    "secondaryMuscles": [
+      "obliques",
+      "erector spinae",
+      "anterior deltoids",
+      "glutes"
+    ],
+    "joints": [
+      "shoulder"
+    ],
+    "bodyRegions": [
+      "core"
+    ],
+    "equipment": [
+      "bodyweight"
+    ]
+  },
+  {
+    "id": "side-plank",
+    "name": "Side Plank",
+    "aliases": [
+      "lateral plank"
+    ],
+    "primaryMuscles": [
+      "obliques",
+      "transverse abdominis"
+    ],
+    "secondaryMuscles": [
+      "rectus abdominis",
+      "glutes",
+      "lateral deltoids"
+    ],
+    "joints": [
+      "shoulder"
+    ],
+    "bodyRegions": [
+      "core"
+    ],
+    "equipment": [
+      "bodyweight"
+    ]
+  },
+  {
+    "id": "crunch",
+    "name": "Crunch",
+    "aliases": [
+      "crunches",
+      "ab crunch",
+      "basic crunch"
+    ],
+    "primaryMuscles": [
+      "rectus abdominis"
+    ],
+    "secondaryMuscles": [
+      "obliques"
+    ],
+    "joints": [],
+    "bodyRegions": [
+      "core"
+    ],
+    "equipment": [
+      "bodyweight"
+    ]
+  },
+  {
+    "id": "bicycle-crunch",
+    "name": "Bicycle Crunch",
+    "aliases": [
+      "bicycle crunches",
+      "cross body crunch"
+    ],
+    "primaryMuscles": [
+      "rectus abdominis",
+      "obliques"
+    ],
+    "secondaryMuscles": [
+      "hip flexors"
+    ],
+    "joints": [
+      "hip"
+    ],
+    "bodyRegions": [
+      "core"
+    ],
+    "equipment": [
+      "bodyweight"
+    ]
+  },
+  {
+    "id": "reverse-crunch",
+    "name": "Reverse Crunch",
+    "aliases": [
+      "reverse crunches"
+    ],
+    "primaryMuscles": [
+      "rectus abdominis"
+    ],
+    "secondaryMuscles": [
+      "obliques",
+      "hip flexors"
+    ],
+    "joints": [
+      "hip"
+    ],
+    "bodyRegions": [
+      "core"
+    ],
+    "equipment": [
+      "bodyweight"
+    ]
+  },
+  {
+    "id": "cable-crunch",
+    "name": "Cable Crunch",
+    "aliases": [
+      "kneeling cable crunch",
+      "rope crunch"
+    ],
+    "primaryMuscles": [
+      "rectus abdominis"
+    ],
+    "secondaryMuscles": [
+      "obliques"
+    ],
+    "joints": [],
+    "bodyRegions": [
+      "core"
+    ],
+    "equipment": [
+      "cable"
+    ]
+  },
+  {
+    "id": "decline-sit-up",
+    "name": "Decline Sit-Up",
+    "aliases": [
+      "decline situp",
+      "weighted decline sit up"
+    ],
+    "primaryMuscles": [
+      "rectus abdominis"
+    ],
+    "secondaryMuscles": [
+      "obliques",
+      "hip flexors"
+    ],
+    "joints": [
+      "hip"
+    ],
+    "bodyRegions": [
+      "core"
+    ],
+    "equipment": [
+      "bodyweight"
+    ]
+  },
+  {
+    "id": "sit-up",
+    "name": "Sit-Up",
+    "aliases": [
+      "sit up",
+      "situp"
+    ],
+    "primaryMuscles": [
+      "rectus abdominis"
+    ],
+    "secondaryMuscles": [
+      "hip flexors",
+      "obliques"
+    ],
+    "joints": [
+      "hip"
+    ],
+    "bodyRegions": [
+      "core"
+    ],
+    "equipment": [
+      "bodyweight"
+    ]
+  },
+  {
+    "id": "hanging-leg-raise",
+    "name": "Hanging Leg Raise",
+    "aliases": [
+      "hanging leg raises",
+      "leg raise",
+      "hanging knee raise"
+    ],
+    "primaryMuscles": [
+      "rectus abdominis",
+      "hip flexors"
+    ],
+    "secondaryMuscles": [
+      "obliques",
+      "forearms"
+    ],
+    "joints": [
+      "hip"
+    ],
+    "bodyRegions": [
+      "core"
+    ],
+    "equipment": [
+      "bodyweight"
+    ]
+  },
+  {
+    "id": "lying-leg-raise",
+    "name": "Lying Leg Raise",
+    "aliases": [
+      "flat leg raise",
+      "supine leg raise"
+    ],
+    "primaryMuscles": [
+      "rectus abdominis",
+      "hip flexors"
+    ],
+    "secondaryMuscles": [
+      "obliques"
+    ],
+    "joints": [
+      "hip"
+    ],
+    "bodyRegions": [
+      "core"
+    ],
+    "equipment": [
+      "bodyweight"
+    ]
+  },
+  {
+    "id": "captain-chair-leg-raise",
+    "name": "Captain's Chair Leg Raise",
+    "aliases": [
+      "vertical leg raise",
+      "roman chair leg raise"
+    ],
+    "primaryMuscles": [
+      "rectus abdominis",
+      "hip flexors"
+    ],
+    "secondaryMuscles": [
+      "obliques"
+    ],
+    "joints": [
+      "hip"
+    ],
+    "bodyRegions": [
+      "core"
+    ],
+    "equipment": [
+      "bodyweight"
+    ]
+  },
+  {
+    "id": "hanging-windshield-wiper",
+    "name": "Hanging Windshield Wiper",
+    "aliases": [
+      "windshield wipers"
+    ],
+    "primaryMuscles": [
+      "obliques",
+      "rectus abdominis"
+    ],
+    "secondaryMuscles": [
+      "hip flexors",
+      "forearms"
+    ],
+    "joints": [
+      "hip"
+    ],
+    "bodyRegions": [
+      "core"
+    ],
+    "equipment": [
+      "bodyweight"
+    ]
+  },
+  {
+    "id": "russian-twist",
+    "name": "Russian Twist",
+    "aliases": [
+      "russian twists",
+      "seated twist"
+    ],
+    "primaryMuscles": [
+      "obliques"
+    ],
+    "secondaryMuscles": [
+      "rectus abdominis",
+      "hip flexors"
+    ],
+    "joints": [
+      "hip"
+    ],
+    "bodyRegions": [
+      "core"
+    ],
+    "equipment": [
+      "bodyweight"
+    ]
+  },
+  {
+    "id": "weighted-russian-twist",
+    "name": "Weighted Russian Twist",
+    "aliases": [
+      "medicine ball russian twist",
+      "plate russian twist"
+    ],
+    "primaryMuscles": [
+      "obliques"
+    ],
+    "secondaryMuscles": [
+      "rectus abdominis"
+    ],
+    "joints": [
+      "hip"
+    ],
+    "bodyRegions": [
+      "core"
+    ],
+    "equipment": [
+      "plate"
+    ]
+  },
+  {
+    "id": "cable-woodchop",
+    "name": "Cable Woodchop",
+    "aliases": [
+      "woodchop",
+      "wood chop",
+      "cable chop"
+    ],
+    "primaryMuscles": [
+      "obliques"
+    ],
+    "secondaryMuscles": [
+      "rectus abdominis",
+      "transverse abdominis",
+      "anterior deltoids"
+    ],
+    "joints": [
+      "hip",
+      "shoulder"
+    ],
+    "bodyRegions": [
+      "core"
+    ],
+    "equipment": [
+      "cable"
+    ]
+  },
+  {
+    "id": "pallof-press",
+    "name": "Pallof Press",
+    "aliases": [
+      "anti rotation press",
+      "cable pallof press"
+    ],
+    "primaryMuscles": [
+      "obliques",
+      "transverse abdominis"
+    ],
+    "secondaryMuscles": [
+      "rectus abdominis"
+    ],
+    "joints": [
+      "shoulder",
+      "elbow"
+    ],
+    "bodyRegions": [
+      "core"
+    ],
+    "equipment": [
+      "cable"
+    ]
+  },
+  {
+    "id": "ab-wheel-rollout",
+    "name": "Ab Wheel Rollout",
+    "aliases": [
+      "ab wheel",
+      "ab rollout",
+      "rollout"
+    ],
+    "primaryMuscles": [
+      "rectus abdominis"
+    ],
+    "secondaryMuscles": [
+      "obliques",
+      "latissimus dorsi",
+      "erector spinae",
+      "hip flexors"
+    ],
+    "joints": [
+      "shoulder",
+      "hip"
+    ],
+    "bodyRegions": [
+      "core"
+    ],
+    "equipment": [
+      "bodyweight"
+    ]
+  },
+  {
+    "id": "dragon-flag",
+    "name": "Dragon Flag",
+    "aliases": [
+      "body lever"
+    ],
+    "primaryMuscles": [
+      "rectus abdominis"
+    ],
+    "secondaryMuscles": [
+      "obliques",
+      "hip flexors",
+      "transverse abdominis"
+    ],
+    "joints": [
+      "hip"
+    ],
+    "bodyRegions": [
+      "core"
+    ],
+    "equipment": [
+      "bodyweight"
+    ]
+  },
+  {
+    "id": "v-up",
+    "name": "V-Up",
+    "aliases": [
+      "v ups",
+      "v sit up",
+      "jackknife"
+    ],
+    "primaryMuscles": [
+      "rectus abdominis"
+    ],
+    "secondaryMuscles": [
+      "hip flexors",
+      "obliques"
+    ],
+    "joints": [
+      "hip"
+    ],
+    "bodyRegions": [
+      "core"
+    ],
+    "equipment": [
+      "bodyweight"
+    ]
+  },
+  {
+    "id": "mountain-climber",
+    "name": "Mountain Climber",
+    "aliases": [
+      "mountain climbers"
+    ],
+    "primaryMuscles": [
+      "rectus abdominis",
+      "hip flexors"
+    ],
+    "secondaryMuscles": [
+      "obliques",
+      "quadriceps",
+      "anterior deltoids"
+    ],
+    "joints": [
+      "hip",
+      "knee",
+      "shoulder"
+    ],
+    "bodyRegions": [
+      "core"
+    ],
+    "equipment": [
+      "bodyweight"
+    ]
+  },
+  {
+    "id": "dead-bug",
+    "name": "Dead Bug",
+    "aliases": [
+      "dead bugs"
+    ],
+    "primaryMuscles": [
+      "rectus abdominis",
+      "transverse abdominis"
+    ],
+    "secondaryMuscles": [
+      "obliques",
+      "hip flexors"
+    ],
+    "joints": [
+      "hip",
+      "shoulder"
+    ],
+    "bodyRegions": [
+      "core"
+    ],
+    "equipment": [
+      "bodyweight"
+    ]
+  },
+  {
+    "id": "bird-dog",
+    "name": "Bird Dog",
+    "aliases": [
+      "bird dogs",
+      "quadruped arm leg raise"
+    ],
+    "primaryMuscles": [
+      "erector spinae",
+      "rectus abdominis"
+    ],
+    "secondaryMuscles": [
+      "glutes",
+      "transverse abdominis"
+    ],
+    "joints": [
+      "hip",
+      "shoulder"
+    ],
+    "bodyRegions": [
+      "core"
+    ],
+    "equipment": [
+      "bodyweight"
+    ]
+  },
+  {
+    "id": "hollow-hold",
+    "name": "Hollow Hold",
+    "aliases": [
+      "hollow body hold",
+      "hollow body"
+    ],
+    "primaryMuscles": [
+      "rectus abdominis",
+      "transverse abdominis"
+    ],
+    "secondaryMuscles": [
+      "hip flexors",
+      "obliques"
+    ],
+    "joints": [
+      "hip"
+    ],
+    "bodyRegions": [
+      "core"
+    ],
+    "equipment": [
+      "bodyweight"
+    ]
+  },
+  {
+    "id": "l-sit",
+    "name": "L-Sit",
+    "aliases": [
+      "l sit hold"
+    ],
+    "primaryMuscles": [
+      "rectus abdominis",
+      "hip flexors"
+    ],
+    "secondaryMuscles": [
+      "obliques",
+      "triceps"
+    ],
+    "joints": [
+      "hip",
+      "shoulder"
+    ],
+    "bodyRegions": [
+      "core"
+    ],
+    "equipment": [
+      "bodyweight"
+    ]
+  },
+  {
+    "id": "toes-to-bar",
+    "name": "Toes to Bar",
+    "aliases": [
+      "t2b",
+      "toes to bar"
+    ],
+    "primaryMuscles": [
+      "rectus abdominis",
+      "hip flexors"
+    ],
+    "secondaryMuscles": [
+      "obliques",
+      "forearms",
+      "latissimus dorsi"
+    ],
+    "joints": [
+      "hip",
+      "shoulder"
+    ],
+    "bodyRegions": [
+      "core"
+    ],
+    "equipment": [
+      "bodyweight"
+    ]
+  },
+  {
+    "id": "machine-ab-crunch",
+    "name": "Machine Ab Crunch",
+    "aliases": [
+      "ab crunch machine",
+      "seated ab crunch"
+    ],
+    "primaryMuscles": [
+      "rectus abdominis"
+    ],
+    "secondaryMuscles": [
+      "obliques"
+    ],
+    "joints": [],
+    "bodyRegions": [
+      "core"
+    ],
+    "equipment": [
+      "machine"
+    ]
+  },
+  {
+    "id": "landmine-rotation",
+    "name": "Landmine Rotation",
+    "aliases": [
+      "landmine twist",
+      "barbell rotation"
+    ],
+    "primaryMuscles": [
+      "obliques",
+      "transverse abdominis"
+    ],
+    "secondaryMuscles": [
+      "rectus abdominis",
+      "anterior deltoids"
+    ],
+    "joints": [
+      "hip",
+      "shoulder"
+    ],
+    "bodyRegions": [
+      "core"
+    ],
+    "equipment": [
+      "barbell"
+    ]
+  },
+  {
+    "id": "suitcase-carry",
+    "name": "Suitcase Carry",
+    "aliases": [
+      "single arm farmer carry",
+      "one arm carry"
+    ],
+    "primaryMuscles": [
+      "obliques",
+      "forearms"
+    ],
+    "secondaryMuscles": [
+      "trapezius",
+      "erector spinae",
+      "transverse abdominis"
+    ],
+    "joints": [
+      "wrist",
+      "shoulder"
+    ],
+    "bodyRegions": [
+      "core",
+      "arms"
+    ],
+    "equipment": [
+      "dumbbell"
+    ]
+  },
+  {
+    "id": "barbell-clean",
+    "name": "Barbell Clean",
+    "aliases": [
+      "clean",
+      "power clean",
+      "squat clean"
+    ],
+    "primaryMuscles": [
+      "quadriceps",
+      "glutes",
+      "hamstrings",
+      "trapezius"
+    ],
+    "secondaryMuscles": [
+      "erector spinae",
+      "anterior deltoids",
+      "forearms",
+      "calves"
+    ],
+    "joints": [
+      "hip",
+      "knee",
+      "ankle",
+      "shoulder",
+      "elbow"
+    ],
+    "bodyRegions": [
+      "legs",
+      "back",
+      "shoulders"
+    ],
+    "equipment": [
+      "barbell"
+    ]
+  },
+  {
+    "id": "hang-clean",
+    "name": "Hang Clean",
+    "aliases": [
+      "hang power clean"
+    ],
+    "primaryMuscles": [
+      "quadriceps",
+      "glutes",
+      "hamstrings",
+      "trapezius"
+    ],
+    "secondaryMuscles": [
+      "erector spinae",
+      "anterior deltoids",
+      "forearms"
+    ],
+    "joints": [
+      "hip",
+      "knee",
+      "shoulder",
+      "elbow"
+    ],
+    "bodyRegions": [
+      "legs",
+      "back",
+      "shoulders"
+    ],
+    "equipment": [
+      "barbell"
+    ]
+  },
+  {
+    "id": "barbell-snatch",
+    "name": "Barbell Snatch",
+    "aliases": [
+      "snatch",
+      "power snatch",
+      "squat snatch"
+    ],
+    "primaryMuscles": [
+      "quadriceps",
+      "glutes",
+      "hamstrings",
+      "trapezius"
+    ],
+    "secondaryMuscles": [
+      "erector spinae",
+      "anterior deltoids",
+      "lateral deltoids",
+      "forearms"
+    ],
+    "joints": [
+      "hip",
+      "knee",
+      "ankle",
+      "shoulder"
+    ],
+    "bodyRegions": [
+      "legs",
+      "back",
+      "shoulders"
+    ],
+    "equipment": [
+      "barbell"
+    ]
+  },
+  {
+    "id": "hang-snatch",
+    "name": "Hang Snatch",
+    "aliases": [
+      "hang power snatch"
+    ],
+    "primaryMuscles": [
+      "quadriceps",
+      "glutes",
+      "hamstrings",
+      "trapezius"
+    ],
+    "secondaryMuscles": [
+      "erector spinae",
+      "anterior deltoids",
+      "lateral deltoids"
+    ],
+    "joints": [
+      "hip",
+      "knee",
+      "shoulder"
+    ],
+    "bodyRegions": [
+      "legs",
+      "back",
+      "shoulders"
+    ],
+    "equipment": [
+      "barbell"
+    ]
+  },
+  {
+    "id": "clean-and-jerk",
+    "name": "Clean and Jerk",
+    "aliases": [
+      "c&j",
+      "clean & jerk"
+    ],
+    "primaryMuscles": [
+      "quadriceps",
+      "glutes",
+      "hamstrings",
+      "anterior deltoids",
+      "triceps"
+    ],
+    "secondaryMuscles": [
+      "erector spinae",
+      "trapezius",
+      "calves",
+      "forearms"
+    ],
+    "joints": [
+      "hip",
+      "knee",
+      "ankle",
+      "shoulder",
+      "elbow"
+    ],
+    "bodyRegions": [
+      "legs",
+      "back",
+      "shoulders"
+    ],
+    "equipment": [
+      "barbell"
+    ]
+  },
+  {
+    "id": "clean-and-press",
+    "name": "Clean and Press",
+    "aliases": [
+      "clean & press",
+      "clean to press"
+    ],
+    "primaryMuscles": [
+      "quadriceps",
+      "glutes",
+      "anterior deltoids"
+    ],
+    "secondaryMuscles": [
+      "hamstrings",
+      "trapezius",
+      "triceps",
+      "erector spinae"
+    ],
+    "joints": [
+      "hip",
+      "knee",
+      "shoulder",
+      "elbow"
+    ],
+    "bodyRegions": [
+      "legs",
+      "shoulders"
+    ],
+    "equipment": [
+      "barbell"
+    ]
+  },
+  {
+    "id": "barbell-thruster",
+    "name": "Barbell Thruster",
+    "aliases": [
+      "thruster",
+      "squat to press"
+    ],
+    "primaryMuscles": [
+      "quadriceps",
+      "glutes",
+      "anterior deltoids"
+    ],
+    "secondaryMuscles": [
+      "hamstrings",
+      "triceps",
+      "trapezius",
+      "rectus abdominis"
+    ],
+    "joints": [
+      "hip",
+      "knee",
+      "ankle",
+      "shoulder",
+      "elbow"
+    ],
+    "bodyRegions": [
+      "legs",
+      "shoulders"
+    ],
+    "equipment": [
+      "barbell"
+    ]
+  },
+  {
+    "id": "dumbbell-thruster",
+    "name": "Dumbbell Thruster",
+    "aliases": [
+      "db thruster"
+    ],
+    "primaryMuscles": [
+      "quadriceps",
+      "glutes",
+      "anterior deltoids"
+    ],
+    "secondaryMuscles": [
+      "hamstrings",
+      "triceps",
+      "trapezius"
+    ],
+    "joints": [
+      "hip",
+      "knee",
+      "ankle",
+      "shoulder",
+      "elbow"
+    ],
+    "bodyRegions": [
+      "legs",
+      "shoulders"
+    ],
+    "equipment": [
+      "dumbbell"
+    ]
+  },
+  {
+    "id": "kettlebell-swing",
+    "name": "Kettlebell Swing",
+    "aliases": [
+      "kb swing",
+      "russian swing",
+      "american swing"
+    ],
+    "primaryMuscles": [
+      "glutes",
+      "hamstrings"
+    ],
+    "secondaryMuscles": [
+      "erector spinae",
+      "rectus abdominis",
+      "anterior deltoids",
+      "quadriceps"
+    ],
+    "joints": [
+      "hip",
+      "knee",
+      "shoulder"
+    ],
+    "bodyRegions": [
+      "legs",
+      "back"
+    ],
+    "equipment": [
+      "kettlebell"
+    ]
+  },
+  {
+    "id": "single-arm-kettlebell-swing",
+    "name": "Single Arm Kettlebell Swing",
+    "aliases": [
+      "one arm kb swing"
+    ],
+    "primaryMuscles": [
+      "glutes",
+      "hamstrings"
+    ],
+    "secondaryMuscles": [
+      "erector spinae",
+      "rectus abdominis",
+      "forearms",
+      "anterior deltoids"
+    ],
+    "joints": [
+      "hip",
+      "knee",
+      "shoulder"
+    ],
+    "bodyRegions": [
+      "legs",
+      "back"
+    ],
+    "equipment": [
+      "kettlebell"
+    ]
+  },
+  {
+    "id": "kettlebell-clean",
+    "name": "Kettlebell Clean",
+    "aliases": [
+      "kb clean"
+    ],
+    "primaryMuscles": [
+      "glutes",
+      "hamstrings",
+      "trapezius"
+    ],
+    "secondaryMuscles": [
+      "erector spinae",
+      "biceps",
+      "forearms",
+      "quadriceps"
+    ],
+    "joints": [
+      "hip",
+      "knee",
+      "shoulder",
+      "elbow"
+    ],
+    "bodyRegions": [
+      "legs",
+      "back"
+    ],
+    "equipment": [
+      "kettlebell"
+    ]
+  },
+  {
+    "id": "kettlebell-snatch",
+    "name": "Kettlebell Snatch",
+    "aliases": [
+      "kb snatch"
+    ],
+    "primaryMuscles": [
+      "glutes",
+      "hamstrings",
+      "anterior deltoids"
+    ],
+    "secondaryMuscles": [
+      "erector spinae",
+      "trapezius",
+      "quadriceps",
+      "forearms"
+    ],
+    "joints": [
+      "hip",
+      "knee",
+      "shoulder"
+    ],
+    "bodyRegions": [
+      "legs",
+      "shoulders"
+    ],
+    "equipment": [
+      "kettlebell"
+    ]
+  },
+  {
+    "id": "kettlebell-press",
+    "name": "Kettlebell Press",
+    "aliases": [
+      "kb press",
+      "kb overhead press"
+    ],
+    "primaryMuscles": [
+      "anterior deltoids",
+      "lateral deltoids"
+    ],
+    "secondaryMuscles": [
+      "triceps",
+      "trapezius"
+    ],
+    "joints": [
+      "shoulder",
+      "elbow"
+    ],
+    "bodyRegions": [
+      "shoulders"
+    ],
+    "equipment": [
+      "kettlebell"
+    ]
+  },
+  {
+    "id": "turkish-get-up",
+    "name": "Turkish Get-Up",
+    "aliases": [
+      "tgu",
+      "turkish getup",
+      "get up"
+    ],
+    "primaryMuscles": [
+      "anterior deltoids",
+      "obliques",
+      "glutes"
+    ],
+    "secondaryMuscles": [
+      "rectus abdominis",
+      "triceps",
+      "quadriceps",
+      "hip flexors",
+      "trapezius"
+    ],
+    "joints": [
+      "shoulder",
+      "hip",
+      "knee"
+    ],
+    "bodyRegions": [
+      "shoulders",
+      "core",
+      "legs"
+    ],
+    "equipment": [
+      "kettlebell"
+    ]
+  },
+  {
+    "id": "kettlebell-windmill",
+    "name": "Kettlebell Windmill",
+    "aliases": [
+      "kb windmill",
+      "windmill"
+    ],
+    "primaryMuscles": [
+      "obliques",
+      "glutes"
+    ],
+    "secondaryMuscles": [
+      "hamstrings",
+      "anterior deltoids",
+      "erector spinae"
+    ],
+    "joints": [
+      "hip",
+      "shoulder"
+    ],
+    "bodyRegions": [
+      "core",
+      "shoulders"
+    ],
+    "equipment": [
+      "kettlebell"
+    ]
+  },
+  {
+    "id": "kettlebell-row",
+    "name": "Kettlebell Row",
+    "aliases": [
+      "kb row",
+      "single arm kb row"
+    ],
+    "primaryMuscles": [
+      "latissimus dorsi",
+      "rhomboids"
+    ],
+    "secondaryMuscles": [
+      "biceps",
+      "rear deltoids",
+      "trapezius"
+    ],
+    "joints": [
+      "shoulder",
+      "elbow"
+    ],
+    "bodyRegions": [
+      "back"
+    ],
+    "equipment": [
+      "kettlebell"
+    ]
+  },
+  {
+    "id": "kettlebell-deadlift",
+    "name": "Kettlebell Deadlift",
+    "aliases": [
+      "kb deadlift"
+    ],
+    "primaryMuscles": [
+      "glutes",
+      "hamstrings",
+      "erector spinae"
+    ],
+    "secondaryMuscles": [
+      "quadriceps",
+      "forearms"
+    ],
+    "joints": [
+      "hip",
+      "knee"
+    ],
+    "bodyRegions": [
+      "legs",
+      "back"
+    ],
+    "equipment": [
+      "kettlebell"
+    ]
+  },
+  {
+    "id": "kettlebell-halo",
+    "name": "Kettlebell Halo",
+    "aliases": [
+      "kb halo",
+      "halo"
+    ],
+    "primaryMuscles": [
+      "anterior deltoids",
+      "lateral deltoids"
+    ],
+    "secondaryMuscles": [
+      "trapezius",
+      "rotator cuff",
+      "rectus abdominis"
+    ],
+    "joints": [
+      "shoulder"
+    ],
+    "bodyRegions": [
+      "shoulders",
+      "core"
+    ],
+    "equipment": [
+      "kettlebell"
+    ]
+  },
+  {
+    "id": "kettlebell-clean-and-press",
+    "name": "Kettlebell Clean and Press",
+    "aliases": [
+      "kb clean and press",
+      "kb clean & press"
+    ],
+    "primaryMuscles": [
+      "glutes",
+      "anterior deltoids",
+      "hamstrings"
+    ],
+    "secondaryMuscles": [
+      "trapezius",
+      "triceps",
+      "erector spinae",
+      "quadriceps"
+    ],
+    "joints": [
+      "hip",
+      "knee",
+      "shoulder",
+      "elbow"
+    ],
+    "bodyRegions": [
+      "legs",
+      "shoulders"
+    ],
+    "equipment": [
+      "kettlebell"
+    ]
+  },
+  {
+    "id": "battle-rope-wave",
+    "name": "Battle Rope Wave",
+    "aliases": [
+      "battle ropes",
+      "rope wave",
+      "battling ropes"
+    ],
+    "primaryMuscles": [
+      "anterior deltoids",
+      "forearms"
+    ],
+    "secondaryMuscles": [
+      "rectus abdominis",
+      "biceps",
+      "lateral deltoids"
+    ],
+    "joints": [
+      "shoulder",
+      "elbow"
+    ],
+    "bodyRegions": [
+      "arms",
+      "shoulders"
+    ],
+    "equipment": [
+      "bodyweight"
+    ]
+  },
+  {
+    "id": "burpee",
+    "name": "Burpee",
+    "aliases": [
+      "burpees"
+    ],
+    "primaryMuscles": [
+      "quadriceps",
+      "pectoralis major",
+      "anterior deltoids"
+    ],
+    "secondaryMuscles": [
+      "glutes",
+      "hamstrings",
+      "triceps",
+      "rectus abdominis"
+    ],
+    "joints": [
+      "hip",
+      "knee",
+      "shoulder",
+      "elbow",
+      "ankle"
+    ],
+    "bodyRegions": [
+      "legs",
+      "chest",
+      "core"
+    ],
+    "equipment": [
+      "bodyweight"
+    ]
+  },
+  {
+    "id": "box-jump",
+    "name": "Box Jump",
+    "aliases": [
+      "box jumps",
+      "plyometric box jump"
+    ],
+    "primaryMuscles": [
+      "quadriceps",
+      "glutes",
+      "calves"
+    ],
+    "secondaryMuscles": [
+      "hamstrings",
+      "hip flexors"
+    ],
+    "joints": [
+      "hip",
+      "knee",
+      "ankle"
+    ],
+    "bodyRegions": [
+      "legs"
+    ],
+    "equipment": [
+      "bodyweight"
+    ]
+  },
+  {
+    "id": "broad-jump",
+    "name": "Broad Jump",
+    "aliases": [
+      "standing long jump"
+    ],
+    "primaryMuscles": [
+      "quadriceps",
+      "glutes",
+      "calves"
+    ],
+    "secondaryMuscles": [
+      "hamstrings",
+      "hip flexors"
+    ],
+    "joints": [
+      "hip",
+      "knee",
+      "ankle"
+    ],
+    "bodyRegions": [
+      "legs"
+    ],
+    "equipment": [
+      "bodyweight"
+    ]
+  },
+  {
+    "id": "jump-squat",
+    "name": "Jump Squat",
+    "aliases": [
+      "squat jump",
+      "bodyweight jump squat"
+    ],
+    "primaryMuscles": [
+      "quadriceps",
+      "glutes",
+      "calves"
+    ],
+    "secondaryMuscles": [
+      "hamstrings"
+    ],
+    "joints": [
+      "hip",
+      "knee",
+      "ankle"
+    ],
+    "bodyRegions": [
+      "legs"
+    ],
+    "equipment": [
+      "bodyweight"
+    ]
+  },
+  {
+    "id": "muscle-up",
+    "name": "Muscle-Up",
+    "aliases": [
+      "muscle up",
+      "bar muscle up"
+    ],
+    "primaryMuscles": [
+      "latissimus dorsi",
+      "pectoralis major",
+      "triceps"
+    ],
+    "secondaryMuscles": [
+      "biceps",
+      "anterior deltoids",
+      "rectus abdominis"
+    ],
+    "joints": [
+      "shoulder",
+      "elbow"
+    ],
+    "bodyRegions": [
+      "back",
+      "chest",
+      "arms"
+    ],
+    "equipment": [
+      "bodyweight"
+    ]
+  },
+  {
+    "id": "ring-muscle-up",
+    "name": "Ring Muscle-Up",
+    "aliases": [
+      "ring muscle up",
+      "rings muscle up"
+    ],
+    "primaryMuscles": [
+      "latissimus dorsi",
+      "pectoralis major",
+      "triceps"
+    ],
+    "secondaryMuscles": [
+      "biceps",
+      "anterior deltoids",
+      "rectus abdominis"
+    ],
+    "joints": [
+      "shoulder",
+      "elbow"
+    ],
+    "bodyRegions": [
+      "back",
+      "chest",
+      "arms"
+    ],
+    "equipment": [
+      "bodyweight"
+    ]
+  },
+  {
+    "id": "ring-dip",
+    "name": "Ring Dip",
+    "aliases": [
+      "ring dips",
+      "gymnastic dip"
+    ],
+    "primaryMuscles": [
+      "pectoralis major",
+      "triceps"
+    ],
+    "secondaryMuscles": [
+      "anterior deltoids",
+      "serratus anterior"
+    ],
+    "joints": [
+      "shoulder",
+      "elbow"
+    ],
+    "bodyRegions": [
+      "chest",
+      "arms"
+    ],
+    "equipment": [
+      "bodyweight"
+    ]
+  },
+  {
+    "id": "ring-row",
+    "name": "Ring Row",
+    "aliases": [
+      "ring rows",
+      "gymnastic row"
+    ],
+    "primaryMuscles": [
+      "latissimus dorsi",
+      "rhomboids"
+    ],
+    "secondaryMuscles": [
+      "biceps",
+      "rear deltoids"
+    ],
+    "joints": [
+      "shoulder",
+      "elbow"
+    ],
+    "bodyRegions": [
+      "back"
+    ],
+    "equipment": [
+      "bodyweight"
+    ]
+  },
+  {
+    "id": "suspension-row",
+    "name": "Suspension Trainer Row",
+    "aliases": [
+      "trx row",
+      "suspension row"
+    ],
+    "primaryMuscles": [
+      "latissimus dorsi",
+      "rhomboids"
+    ],
+    "secondaryMuscles": [
+      "biceps",
+      "rear deltoids",
+      "trapezius"
+    ],
+    "joints": [
+      "shoulder",
+      "elbow"
+    ],
+    "bodyRegions": [
+      "back"
+    ],
+    "equipment": [
+      "suspension"
+    ]
+  },
+  {
+    "id": "suspension-chest-press",
+    "name": "Suspension Trainer Chest Press",
+    "aliases": [
+      "trx chest press",
+      "suspension push up"
+    ],
+    "primaryMuscles": [
+      "pectoralis major"
+    ],
+    "secondaryMuscles": [
+      "anterior deltoids",
+      "triceps",
+      "rectus abdominis"
+    ],
+    "joints": [
+      "shoulder",
+      "elbow"
+    ],
+    "bodyRegions": [
+      "chest"
+    ],
+    "equipment": [
+      "suspension"
+    ]
+  },
+  {
+    "id": "suspension-y-fly",
+    "name": "Suspension Trainer Y-Fly",
+    "aliases": [
+      "trx y fly",
+      "trx y raise"
+    ],
+    "primaryMuscles": [
+      "rear deltoids",
+      "trapezius"
+    ],
+    "secondaryMuscles": [
+      "rhomboids",
+      "rotator cuff"
+    ],
+    "joints": [
+      "shoulder"
+    ],
+    "bodyRegions": [
+      "shoulders",
+      "back"
+    ],
+    "equipment": [
+      "suspension"
+    ]
+  },
+  {
+    "id": "suspension-bicep-curl",
+    "name": "Suspension Trainer Bicep Curl",
+    "aliases": [
+      "trx curl",
+      "trx bicep curl"
+    ],
+    "primaryMuscles": [
+      "biceps"
+    ],
+    "secondaryMuscles": [
+      "brachialis",
+      "forearms"
+    ],
+    "joints": [
+      "elbow"
+    ],
+    "bodyRegions": [
+      "arms"
+    ],
+    "equipment": [
+      "suspension"
+    ]
+  },
+  {
+    "id": "suspension-tricep-extension",
+    "name": "Suspension Trainer Tricep Extension",
+    "aliases": [
+      "trx tricep extension",
+      "trx tricep press"
+    ],
+    "primaryMuscles": [
+      "triceps"
+    ],
+    "secondaryMuscles": [
+      "rectus abdominis"
+    ],
+    "joints": [
+      "elbow"
+    ],
+    "bodyRegions": [
+      "arms"
+    ],
+    "equipment": [
+      "suspension"
+    ]
+  },
+  {
+    "id": "suspension-pike",
+    "name": "Suspension Trainer Pike",
+    "aliases": [
+      "trx pike",
+      "trx pike push up"
+    ],
+    "primaryMuscles": [
+      "rectus abdominis",
+      "anterior deltoids"
+    ],
+    "secondaryMuscles": [
+      "obliques",
+      "hip flexors",
+      "triceps"
+    ],
+    "joints": [
+      "hip",
+      "shoulder"
+    ],
+    "bodyRegions": [
+      "core",
+      "shoulders"
+    ],
+    "equipment": [
+      "suspension"
+    ]
+  },
+  {
+    "id": "suspension-fallout",
+    "name": "Suspension Trainer Fallout",
+    "aliases": [
+      "trx fallout",
+      "trx rollout"
+    ],
+    "primaryMuscles": [
+      "rectus abdominis"
+    ],
+    "secondaryMuscles": [
+      "latissimus dorsi",
+      "obliques",
+      "erector spinae"
+    ],
+    "joints": [
+      "shoulder"
+    ],
+    "bodyRegions": [
+      "core"
+    ],
+    "equipment": [
+      "suspension"
+    ]
+  },
+  {
+    "id": "good-morning",
+    "name": "Good Morning",
+    "aliases": [
+      "barbell good morning",
+      "good mornings"
+    ],
+    "primaryMuscles": [
+      "hamstrings",
+      "erector spinae"
+    ],
+    "secondaryMuscles": [
+      "glutes",
+      "rectus abdominis"
+    ],
+    "joints": [
+      "hip"
+    ],
+    "bodyRegions": [
+      "back",
+      "legs"
+    ],
+    "equipment": [
+      "barbell"
+    ]
+  },
+  {
+    "id": "sumo-squat",
+    "name": "Sumo Squat",
+    "aliases": [
+      "wide stance squat",
+      "plie squat"
+    ],
+    "primaryMuscles": [
+      "quadriceps",
+      "glutes",
+      "adductors"
+    ],
+    "secondaryMuscles": [
+      "hamstrings",
+      "calves"
+    ],
+    "joints": [
+      "knee",
+      "hip",
+      "ankle"
+    ],
+    "bodyRegions": [
+      "legs"
+    ],
+    "equipment": [
+      "dumbbell"
+    ]
+  },
+  {
+    "id": "curtsy-lunge",
+    "name": "Curtsy Lunge",
+    "aliases": [
+      "curtsey lunge",
+      "crossover lunge"
+    ],
+    "primaryMuscles": [
+      "glutes",
+      "quadriceps"
+    ],
+    "secondaryMuscles": [
+      "adductors",
+      "hamstrings"
+    ],
+    "joints": [
+      "knee",
+      "hip"
+    ],
+    "bodyRegions": [
+      "legs"
+    ],
+    "equipment": [
+      "bodyweight"
+    ]
+  },
+  {
+    "id": "safety-bar-squat",
+    "name": "Safety Bar Squat",
+    "aliases": [
+      "ssb squat",
+      "safety squat bar"
+    ],
+    "primaryMuscles": [
+      "quadriceps",
+      "glutes"
+    ],
+    "secondaryMuscles": [
+      "hamstrings",
+      "erector spinae"
+    ],
+    "joints": [
+      "knee",
+      "hip",
+      "ankle"
+    ],
+    "bodyRegions": [
+      "legs"
+    ],
+    "equipment": [
+      "barbell"
+    ]
+  },
+  {
+    "id": "cable-kickback",
+    "name": "Cable Glute Kickback",
+    "aliases": [
+      "glute kickback",
+      "cable kickback",
+      "donkey kickback"
+    ],
+    "primaryMuscles": [
+      "glutes"
+    ],
+    "secondaryMuscles": [
+      "hamstrings"
+    ],
+    "joints": [
+      "hip"
+    ],
+    "bodyRegions": [
+      "legs"
+    ],
+    "equipment": [
+      "cable"
+    ]
+  },
+  {
+    "id": "smith-machine-hip-thrust",
+    "name": "Smith Machine Hip Thrust",
+    "aliases": [
+      "smith hip thrust"
+    ],
+    "primaryMuscles": [
+      "glutes"
+    ],
+    "secondaryMuscles": [
+      "hamstrings",
+      "adductors"
+    ],
+    "joints": [
+      "hip",
+      "knee"
+    ],
+    "bodyRegions": [
+      "legs"
+    ],
+    "equipment": [
+      "smith_machine"
+    ]
+  },
+  {
+    "id": "banded-clamshell",
+    "name": "Banded Clamshell",
+    "aliases": [
+      "clamshell",
+      "clam shell",
+      "hip clam"
+    ],
+    "primaryMuscles": [
+      "glutes",
+      "abductors"
+    ],
+    "secondaryMuscles": [],
+    "joints": [
+      "hip"
+    ],
+    "bodyRegions": [
+      "legs"
+    ],
+    "equipment": [
+      "resistance_band"
+    ]
+  },
+  {
+    "id": "banded-walk",
+    "name": "Banded Lateral Walk",
+    "aliases": [
+      "monster walk",
+      "lateral band walk",
+      "crab walk"
+    ],
+    "primaryMuscles": [
+      "glutes",
+      "abductors"
+    ],
+    "secondaryMuscles": [
+      "quadriceps"
+    ],
+    "joints": [
+      "hip",
+      "knee"
+    ],
+    "bodyRegions": [
+      "legs"
+    ],
+    "equipment": [
+      "resistance_band"
+    ]
+  },
+  {
+    "id": "resistance-band-pull-apart",
+    "name": "Resistance Band Pull-Apart",
+    "aliases": [
+      "band pull apart horizontal"
+    ],
+    "primaryMuscles": [
+      "rear deltoids",
+      "rhomboids"
+    ],
+    "secondaryMuscles": [
+      "trapezius"
+    ],
+    "joints": [
+      "shoulder"
+    ],
+    "bodyRegions": [
+      "shoulders",
+      "back"
+    ],
+    "equipment": [
+      "resistance_band"
+    ]
+  },
+  {
+    "id": "resistance-band-squat",
+    "name": "Resistance Band Squat",
+    "aliases": [
+      "band squat",
+      "banded squat"
+    ],
+    "primaryMuscles": [
+      "quadriceps",
+      "glutes"
+    ],
+    "secondaryMuscles": [
+      "hamstrings"
+    ],
+    "joints": [
+      "knee",
+      "hip"
+    ],
+    "bodyRegions": [
+      "legs"
+    ],
+    "equipment": [
+      "resistance_band"
+    ]
+  },
+  {
+    "id": "resistance-band-curl",
+    "name": "Resistance Band Curl",
+    "aliases": [
+      "band curl",
+      "banded bicep curl"
+    ],
+    "primaryMuscles": [
+      "biceps"
+    ],
+    "secondaryMuscles": [
+      "brachialis"
+    ],
+    "joints": [
+      "elbow"
+    ],
+    "bodyRegions": [
+      "arms"
+    ],
+    "equipment": [
+      "resistance_band"
+    ]
+  },
+  {
+    "id": "resistance-band-press",
+    "name": "Resistance Band Overhead Press",
+    "aliases": [
+      "band press",
+      "banded press"
+    ],
+    "primaryMuscles": [
+      "anterior deltoids",
+      "lateral deltoids"
+    ],
+    "secondaryMuscles": [
+      "triceps"
+    ],
+    "joints": [
+      "shoulder",
+      "elbow"
+    ],
+    "bodyRegions": [
+      "shoulders"
+    ],
+    "equipment": [
+      "resistance_band"
+    ]
+  },
+  {
+    "id": "resistance-band-row",
+    "name": "Resistance Band Row",
+    "aliases": [
+      "band row",
+      "banded row"
+    ],
+    "primaryMuscles": [
+      "latissimus dorsi",
+      "rhomboids"
+    ],
+    "secondaryMuscles": [
+      "biceps",
+      "rear deltoids"
+    ],
+    "joints": [
+      "shoulder",
+      "elbow"
+    ],
+    "bodyRegions": [
+      "back"
+    ],
+    "equipment": [
+      "resistance_band"
+    ]
+  },
+  {
+    "id": "resistance-band-deadlift",
+    "name": "Resistance Band Deadlift",
+    "aliases": [
+      "band deadlift",
+      "banded deadlift"
+    ],
+    "primaryMuscles": [
+      "glutes",
+      "hamstrings",
+      "erector spinae"
+    ],
+    "secondaryMuscles": [
+      "quadriceps"
+    ],
+    "joints": [
+      "hip",
+      "knee"
+    ],
+    "bodyRegions": [
+      "legs",
+      "back"
+    ],
+    "equipment": [
+      "resistance_band"
+    ]
+  },
+  {
+    "id": "cable-face-pull-high",
+    "name": "High Cable Face Pull",
+    "aliases": [
+      "high face pull"
+    ],
+    "primaryMuscles": [
+      "rear deltoids",
+      "rotator cuff"
+    ],
+    "secondaryMuscles": [
+      "rhomboids",
+      "trapezius"
+    ],
+    "joints": [
+      "shoulder",
+      "elbow"
+    ],
+    "bodyRegions": [
+      "shoulders",
+      "back"
+    ],
+    "equipment": [
+      "cable"
+    ]
+  },
+  {
+    "id": "behind-the-neck-press",
+    "name": "Behind the Neck Press",
+    "aliases": [
+      "btn press",
+      "behind neck press"
+    ],
+    "primaryMuscles": [
+      "anterior deltoids",
+      "lateral deltoids"
+    ],
+    "secondaryMuscles": [
+      "triceps",
+      "trapezius"
+    ],
+    "joints": [
+      "shoulder",
+      "elbow"
+    ],
+    "bodyRegions": [
+      "shoulders"
+    ],
+    "equipment": [
+      "barbell"
+    ]
+  },
+  {
+    "id": "snatch-grip-deadlift",
+    "name": "Snatch Grip Deadlift",
+    "aliases": [
+      "wide grip deadlift"
+    ],
+    "primaryMuscles": [
+      "erector spinae",
+      "glutes",
+      "hamstrings",
+      "trapezius"
+    ],
+    "secondaryMuscles": [
+      "quadriceps",
+      "latissimus dorsi",
+      "forearms"
+    ],
+    "joints": [
+      "hip",
+      "knee"
+    ],
+    "bodyRegions": [
+      "back",
+      "legs"
+    ],
+    "equipment": [
+      "barbell"
+    ]
+  },
+  {
+    "id": "jefferson-deadlift",
+    "name": "Jefferson Deadlift",
+    "aliases": [
+      "jefferson squat",
+      "straddle deadlift"
+    ],
+    "primaryMuscles": [
+      "quadriceps",
+      "glutes",
+      "hamstrings"
+    ],
+    "secondaryMuscles": [
+      "erector spinae",
+      "obliques",
+      "forearms"
+    ],
+    "joints": [
+      "hip",
+      "knee"
+    ],
+    "bodyRegions": [
+      "legs",
+      "back"
+    ],
+    "equipment": [
+      "barbell"
+    ]
+  },
+  {
+    "id": "helms-row",
+    "name": "Helms Row",
+    "aliases": [
+      "chest supported db row"
+    ],
+    "primaryMuscles": [
+      "latissimus dorsi",
+      "rhomboids"
+    ],
+    "secondaryMuscles": [
+      "rear deltoids",
+      "biceps",
+      "trapezius"
+    ],
+    "joints": [
+      "shoulder",
+      "elbow"
+    ],
+    "bodyRegions": [
+      "back"
+    ],
+    "equipment": [
+      "dumbbell"
+    ]
+  },
+  {
+    "id": "kroc-row",
+    "name": "Kroc Row",
+    "aliases": [
+      "heavy dumbbell row"
+    ],
+    "primaryMuscles": [
+      "latissimus dorsi"
+    ],
+    "secondaryMuscles": [
+      "biceps",
+      "rear deltoids",
+      "trapezius",
+      "forearms"
+    ],
+    "joints": [
+      "shoulder",
+      "elbow"
+    ],
+    "bodyRegions": [
+      "back"
+    ],
+    "equipment": [
+      "dumbbell"
+    ]
+  },
+  {
+    "id": "seal-row",
+    "name": "Seal Row",
+    "aliases": [
+      "chest supported barbell row"
+    ],
+    "primaryMuscles": [
+      "latissimus dorsi",
+      "rhomboids"
+    ],
+    "secondaryMuscles": [
+      "rear deltoids",
+      "biceps",
+      "trapezius"
+    ],
+    "joints": [
+      "shoulder",
+      "elbow"
+    ],
+    "bodyRegions": [
+      "back"
+    ],
+    "equipment": [
+      "barbell"
+    ]
+  },
+  {
+    "id": "yates-row",
+    "name": "Yates Row",
+    "aliases": [
+      "underhand barbell row",
+      "reverse grip row"
+    ],
+    "primaryMuscles": [
+      "latissimus dorsi",
+      "rhomboids"
+    ],
+    "secondaryMuscles": [
+      "biceps",
+      "rear deltoids",
+      "trapezius"
+    ],
+    "joints": [
+      "shoulder",
+      "elbow"
+    ],
+    "bodyRegions": [
+      "back"
+    ],
+    "equipment": [
+      "barbell"
+    ]
+  },
+  {
+    "id": "smith-machine-row",
+    "name": "Smith Machine Row",
+    "aliases": [
+      "smith row",
+      "smith machine bent over row"
+    ],
+    "primaryMuscles": [
+      "latissimus dorsi",
+      "rhomboids"
+    ],
+    "secondaryMuscles": [
+      "rear deltoids",
+      "biceps",
+      "trapezius"
+    ],
+    "joints": [
+      "shoulder",
+      "elbow"
+    ],
+    "bodyRegions": [
+      "back"
+    ],
+    "equipment": [
+      "smith_machine"
+    ]
+  },
+  {
+    "id": "wide-grip-pull-up",
+    "name": "Wide Grip Pull-Up",
+    "aliases": [
+      "wide pull up",
+      "wide grip pullup"
+    ],
+    "primaryMuscles": [
+      "latissimus dorsi"
+    ],
+    "secondaryMuscles": [
+      "biceps",
+      "rhomboids",
+      "rear deltoids"
+    ],
+    "joints": [
+      "shoulder",
+      "elbow"
+    ],
+    "bodyRegions": [
+      "back"
+    ],
+    "equipment": [
+      "bodyweight"
+    ]
+  },
+  {
+    "id": "assisted-pull-up",
+    "name": "Assisted Pull-Up",
+    "aliases": [
+      "machine pull up",
+      "band assisted pull up",
+      "gravitron pull up"
+    ],
+    "primaryMuscles": [
+      "latissimus dorsi"
+    ],
+    "secondaryMuscles": [
+      "biceps",
+      "rhomboids",
+      "rear deltoids"
+    ],
+    "joints": [
+      "shoulder",
+      "elbow"
+    ],
+    "bodyRegions": [
+      "back"
+    ],
+    "equipment": [
+      "machine"
+    ]
+  },
+  {
+    "id": "single-arm-lat-pulldown",
+    "name": "Single Arm Lat Pulldown",
+    "aliases": [
+      "one arm lat pulldown",
+      "unilateral pulldown"
+    ],
+    "primaryMuscles": [
+      "latissimus dorsi"
+    ],
+    "secondaryMuscles": [
+      "biceps",
+      "rhomboids"
+    ],
+    "joints": [
+      "shoulder",
+      "elbow"
+    ],
+    "bodyRegions": [
+      "back"
+    ],
+    "equipment": [
+      "cable"
+    ]
+  },
+  {
+    "id": "cable-pullover",
+    "name": "Cable Pullover",
+    "aliases": [
+      "straight arm cable pullover"
+    ],
+    "primaryMuscles": [
+      "latissimus dorsi"
+    ],
+    "secondaryMuscles": [
+      "pectoralis major",
+      "triceps"
+    ],
+    "joints": [
+      "shoulder"
+    ],
+    "bodyRegions": [
+      "back"
+    ],
+    "equipment": [
+      "cable"
+    ]
+  },
+  {
+    "id": "dumbbell-lateral-raise-leaning",
+    "name": "Leaning Dumbbell Lateral Raise",
+    "aliases": [
+      "leaning lateral raise",
+      "incline lateral raise"
+    ],
+    "primaryMuscles": [
+      "lateral deltoids"
+    ],
+    "secondaryMuscles": [
+      "anterior deltoids",
+      "trapezius"
+    ],
+    "joints": [
+      "shoulder"
+    ],
+    "bodyRegions": [
+      "shoulders"
+    ],
+    "equipment": [
+      "dumbbell"
+    ]
+  },
+  {
+    "id": "prone-y-raise",
+    "name": "Prone Y-Raise",
+    "aliases": [
+      "y raise",
+      "incline y raise"
+    ],
+    "primaryMuscles": [
+      "rear deltoids",
+      "trapezius"
+    ],
+    "secondaryMuscles": [
+      "rhomboids",
+      "rotator cuff"
+    ],
+    "joints": [
+      "shoulder"
+    ],
+    "bodyRegions": [
+      "shoulders",
+      "back"
+    ],
+    "equipment": [
+      "dumbbell"
+    ]
+  },
+  {
+    "id": "cable-external-rotation",
+    "name": "Cable External Rotation",
+    "aliases": [
+      "external rotation",
+      "rotator cuff cable"
+    ],
+    "primaryMuscles": [
+      "rotator cuff"
+    ],
+    "secondaryMuscles": [
+      "rear deltoids"
+    ],
+    "joints": [
+      "shoulder"
+    ],
+    "bodyRegions": [
+      "shoulders"
+    ],
+    "equipment": [
+      "cable"
+    ]
+  },
+  {
+    "id": "dumbbell-external-rotation",
+    "name": "Dumbbell External Rotation",
+    "aliases": [
+      "side lying external rotation"
+    ],
+    "primaryMuscles": [
+      "rotator cuff"
+    ],
+    "secondaryMuscles": [
+      "rear deltoids"
+    ],
+    "joints": [
+      "shoulder"
+    ],
+    "bodyRegions": [
+      "shoulders"
+    ],
+    "equipment": [
+      "dumbbell"
+    ]
+  },
+  {
+    "id": "band-external-rotation",
+    "name": "Band External Rotation",
+    "aliases": [
+      "banded external rotation"
+    ],
+    "primaryMuscles": [
+      "rotator cuff"
+    ],
+    "secondaryMuscles": [
+      "rear deltoids"
+    ],
+    "joints": [
+      "shoulder"
+    ],
+    "bodyRegions": [
+      "shoulders"
+    ],
+    "equipment": [
+      "resistance_band"
+    ]
+  },
+  {
+    "id": "incline-bench-row",
+    "name": "Incline Bench Dumbbell Row",
+    "aliases": [
+      "incline row",
+      "incline db row"
+    ],
+    "primaryMuscles": [
+      "latissimus dorsi",
+      "rhomboids"
+    ],
+    "secondaryMuscles": [
+      "rear deltoids",
+      "biceps"
+    ],
+    "joints": [
+      "shoulder",
+      "elbow"
+    ],
+    "bodyRegions": [
+      "back"
+    ],
+    "equipment": [
+      "dumbbell"
+    ]
+  },
+  {
+    "id": "deficit-push-up",
+    "name": "Deficit Push-Up",
+    "aliases": [
+      "deep push up",
+      "raised push up"
+    ],
+    "primaryMuscles": [
+      "pectoralis major"
+    ],
+    "secondaryMuscles": [
+      "anterior deltoids",
+      "triceps"
+    ],
+    "joints": [
+      "shoulder",
+      "elbow"
+    ],
+    "bodyRegions": [
+      "chest"
+    ],
+    "equipment": [
+      "bodyweight"
+    ]
+  },
+  {
+    "id": "pike-push-up",
+    "name": "Pike Push-Up",
+    "aliases": [
+      "pike push up",
+      "pike press"
+    ],
+    "primaryMuscles": [
+      "anterior deltoids"
+    ],
+    "secondaryMuscles": [
+      "triceps",
+      "lateral deltoids"
+    ],
+    "joints": [
+      "shoulder",
+      "elbow"
+    ],
+    "bodyRegions": [
+      "shoulders"
+    ],
+    "equipment": [
+      "bodyweight"
+    ]
+  },
+  {
+    "id": "dumbbell-squeeze-press",
+    "name": "Dumbbell Squeeze Press",
+    "aliases": [
+      "hex press",
+      "crush press"
+    ],
+    "primaryMuscles": [
+      "pectoralis major"
+    ],
+    "secondaryMuscles": [
+      "triceps",
+      "anterior deltoids"
+    ],
+    "joints": [
+      "shoulder",
+      "elbow"
+    ],
+    "bodyRegions": [
+      "chest"
+    ],
+    "equipment": [
+      "dumbbell"
+    ]
+  },
+  {
+    "id": "smith-machine-incline-press",
+    "name": "Smith Machine Incline Press",
+    "aliases": [
+      "smith incline bench",
+      "smith incline press"
+    ],
+    "primaryMuscles": [
+      "pectoralis major",
+      "anterior deltoids"
+    ],
+    "secondaryMuscles": [
+      "triceps"
+    ],
+    "joints": [
+      "shoulder",
+      "elbow"
+    ],
+    "bodyRegions": [
+      "chest"
+    ],
+    "equipment": [
+      "smith_machine"
+    ]
+  },
+  {
+    "id": "dips-machine",
+    "name": "Machine Dip",
+    "aliases": [
+      "assisted dip",
+      "dip machine"
+    ],
+    "primaryMuscles": [
+      "pectoralis major",
+      "triceps"
+    ],
+    "secondaryMuscles": [
+      "anterior deltoids"
+    ],
+    "joints": [
+      "shoulder",
+      "elbow"
+    ],
+    "bodyRegions": [
+      "chest",
+      "arms"
+    ],
+    "equipment": [
+      "machine"
+    ]
+  },
+  {
+    "id": "plate-loaded-chest-press",
+    "name": "Plate Loaded Chest Press",
+    "aliases": [
+      "hammer strength chest press"
+    ],
+    "primaryMuscles": [
+      "pectoralis major"
+    ],
+    "secondaryMuscles": [
+      "anterior deltoids",
+      "triceps"
+    ],
+    "joints": [
+      "shoulder",
+      "elbow"
+    ],
+    "bodyRegions": [
+      "chest"
+    ],
+    "equipment": [
+      "machine"
+    ]
+  },
+  {
+    "id": "jm-press",
+    "name": "JM Press",
+    "aliases": [
+      "jm bench press"
+    ],
+    "primaryMuscles": [
+      "triceps"
+    ],
+    "secondaryMuscles": [
+      "pectoralis major",
+      "anterior deltoids"
+    ],
+    "joints": [
+      "elbow",
+      "shoulder"
+    ],
+    "bodyRegions": [
+      "arms",
+      "chest"
+    ],
+    "equipment": [
+      "barbell"
+    ]
+  },
+  {
+    "id": "spoto-press",
+    "name": "Spoto Press",
+    "aliases": [
+      "paused bench press",
+      "dead stop bench"
+    ],
+    "primaryMuscles": [
+      "pectoralis major"
+    ],
+    "secondaryMuscles": [
+      "anterior deltoids",
+      "triceps"
+    ],
+    "joints": [
+      "shoulder",
+      "elbow"
+    ],
+    "bodyRegions": [
+      "chest"
+    ],
+    "equipment": [
+      "barbell"
+    ]
+  },
+  {
+    "id": "larsen-press",
+    "name": "Larsen Press",
+    "aliases": [
+      "feet up bench press",
+      "legs up bench"
+    ],
+    "primaryMuscles": [
+      "pectoralis major"
+    ],
+    "secondaryMuscles": [
+      "anterior deltoids",
+      "triceps",
+      "rectus abdominis"
+    ],
+    "joints": [
+      "shoulder",
+      "elbow"
+    ],
+    "bodyRegions": [
+      "chest"
+    ],
+    "equipment": [
+      "barbell"
+    ]
+  },
+  {
+    "id": "ez-bar-preacher-curl",
+    "name": "EZ Bar Preacher Curl",
+    "aliases": [
+      "ez preacher curl"
+    ],
+    "primaryMuscles": [
+      "biceps"
+    ],
+    "secondaryMuscles": [
+      "brachialis",
+      "forearms"
+    ],
+    "joints": [
+      "elbow"
+    ],
+    "bodyRegions": [
+      "arms"
+    ],
+    "equipment": [
+      "ez_bar"
+    ]
+  },
+  {
+    "id": "bayesian-curl",
+    "name": "Bayesian Cable Curl",
+    "aliases": [
+      "bayesian curl",
+      "behind body cable curl"
+    ],
+    "primaryMuscles": [
+      "biceps"
+    ],
+    "secondaryMuscles": [
+      "brachialis"
+    ],
+    "joints": [
+      "elbow"
+    ],
+    "bodyRegions": [
+      "arms"
+    ],
+    "equipment": [
+      "cable"
+    ]
+  },
+  {
+    "id": "high-cable-curl",
+    "name": "High Cable Curl",
+    "aliases": [
+      "overhead cable curl",
+      "crucifix curl"
+    ],
+    "primaryMuscles": [
+      "biceps"
+    ],
+    "secondaryMuscles": [
+      "brachialis"
+    ],
+    "joints": [
+      "elbow"
+    ],
+    "bodyRegions": [
+      "arms"
+    ],
+    "equipment": [
+      "cable"
+    ]
+  },
+  {
+    "id": "drag-curl",
+    "name": "Drag Curl",
+    "aliases": [
+      "barbell drag curl"
+    ],
+    "primaryMuscles": [
+      "biceps",
+      "brachialis"
+    ],
+    "secondaryMuscles": [
+      "forearms"
+    ],
+    "joints": [
+      "elbow",
+      "shoulder"
+    ],
+    "bodyRegions": [
+      "arms"
+    ],
+    "equipment": [
+      "barbell"
+    ]
+  },
+  {
+    "id": "waiter-curl",
+    "name": "Waiter Curl",
+    "aliases": [
+      "dumbbell waiter curl"
+    ],
+    "primaryMuscles": [
+      "biceps"
+    ],
+    "secondaryMuscles": [
+      "forearms"
+    ],
+    "joints": [
+      "elbow"
+    ],
+    "bodyRegions": [
+      "arms"
+    ],
+    "equipment": [
+      "dumbbell"
+    ]
+  },
+  {
+    "id": "dip-belt-weighted-dip",
+    "name": "Weighted Dip",
+    "aliases": [
+      "weighted dips",
+      "belt dip"
+    ],
+    "primaryMuscles": [
+      "pectoralis major",
+      "triceps"
+    ],
+    "secondaryMuscles": [
+      "anterior deltoids",
+      "serratus anterior"
+    ],
+    "joints": [
+      "shoulder",
+      "elbow"
+    ],
+    "bodyRegions": [
+      "chest",
+      "arms"
+    ],
+    "equipment": [
+      "bodyweight"
+    ]
+  },
+  {
+    "id": "grip-crush",
+    "name": "Grip Crush",
+    "aliases": [
+      "hand gripper",
+      "captains of crush",
+      "grip trainer"
+    ],
+    "primaryMuscles": [
+      "forearms"
+    ],
+    "secondaryMuscles": [],
+    "joints": [
+      "wrist"
+    ],
+    "bodyRegions": [
+      "arms"
+    ],
+    "equipment": [
+      "bodyweight"
+    ]
+  },
+  {
+    "id": "plate-pinch",
+    "name": "Plate Pinch",
+    "aliases": [
+      "pinch grip hold"
+    ],
+    "primaryMuscles": [
+      "forearms"
+    ],
+    "secondaryMuscles": [],
+    "joints": [
+      "wrist"
+    ],
+    "bodyRegions": [
+      "arms"
+    ],
+    "equipment": [
+      "plate"
+    ]
+  },
+  {
+    "id": "cable-high-row",
+    "name": "Cable High Row",
+    "aliases": [
+      "high cable row",
+      "standing cable row"
+    ],
+    "primaryMuscles": [
+      "latissimus dorsi",
+      "rear deltoids"
+    ],
+    "secondaryMuscles": [
+      "rhomboids",
+      "biceps",
+      "trapezius"
+    ],
+    "joints": [
+      "shoulder",
+      "elbow"
+    ],
+    "bodyRegions": [
+      "back"
+    ],
+    "equipment": [
+      "cable"
+    ]
+  },
+  {
+    "id": "stiff-leg-deadlift",
+    "name": "Stiff Leg Deadlift",
+    "aliases": [
+      "sldl",
+      "straight leg deadlift"
+    ],
+    "primaryMuscles": [
+      "hamstrings",
+      "erector spinae"
+    ],
+    "secondaryMuscles": [
+      "glutes",
+      "forearms"
+    ],
+    "joints": [
+      "hip"
+    ],
+    "bodyRegions": [
+      "legs",
+      "back"
+    ],
+    "equipment": [
+      "barbell"
+    ]
+  },
+  {
+    "id": "split-squat",
+    "name": "Split Squat",
+    "aliases": [
+      "static lunge",
+      "stationary lunge"
+    ],
+    "primaryMuscles": [
+      "quadriceps",
+      "glutes"
+    ],
+    "secondaryMuscles": [
+      "hamstrings",
+      "adductors"
+    ],
+    "joints": [
+      "knee",
+      "hip"
+    ],
+    "bodyRegions": [
+      "legs"
+    ],
+    "equipment": [
+      "bodyweight"
+    ]
+  },
+  {
+    "id": "landmine-squat",
+    "name": "Landmine Squat",
+    "aliases": [
+      "landmine goblet squat"
+    ],
+    "primaryMuscles": [
+      "quadriceps",
+      "glutes"
+    ],
+    "secondaryMuscles": [
+      "hamstrings",
+      "erector spinae"
+    ],
+    "joints": [
+      "knee",
+      "hip"
+    ],
+    "bodyRegions": [
+      "legs"
+    ],
+    "equipment": [
+      "barbell"
+    ]
+  },
+  {
+    "id": "reverse-hyperextension",
+    "name": "Reverse Hyperextension",
+    "aliases": [
+      "reverse hyper",
+      "reverse hypers"
+    ],
+    "primaryMuscles": [
+      "glutes",
+      "erector spinae"
+    ],
+    "secondaryMuscles": [
+      "hamstrings"
+    ],
+    "joints": [
+      "hip"
+    ],
+    "bodyRegions": [
+      "back",
+      "legs"
+    ],
+    "equipment": [
+      "machine"
+    ]
+  },
+  {
+    "id": "good-morning-dumbbell",
+    "name": "Dumbbell Good Morning",
+    "aliases": [
+      "db good morning"
+    ],
+    "primaryMuscles": [
+      "hamstrings",
+      "erector spinae"
+    ],
+    "secondaryMuscles": [
+      "glutes"
+    ],
+    "joints": [
+      "hip"
+    ],
+    "bodyRegions": [
+      "back",
+      "legs"
+    ],
+    "equipment": [
+      "dumbbell"
+    ]
+  },
+  {
+    "id": "seated-dumbbell-overhead-press",
+    "name": "Seated Dumbbell Overhead Press",
+    "aliases": [
+      "seated db press",
+      "seated shoulder press db"
+    ],
+    "primaryMuscles": [
+      "anterior deltoids",
+      "lateral deltoids"
+    ],
+    "secondaryMuscles": [
+      "triceps",
+      "trapezius"
+    ],
+    "joints": [
+      "shoulder",
+      "elbow"
+    ],
+    "bodyRegions": [
+      "shoulders"
+    ],
+    "equipment": [
+      "dumbbell"
+    ]
+  },
+  {
+    "id": "one-arm-dumbbell-press",
+    "name": "Single Arm Dumbbell Press",
+    "aliases": [
+      "one arm press",
+      "single arm overhead press"
+    ],
+    "primaryMuscles": [
+      "anterior deltoids",
+      "lateral deltoids"
+    ],
+    "secondaryMuscles": [
+      "triceps",
+      "obliques"
+    ],
+    "joints": [
+      "shoulder",
+      "elbow"
+    ],
+    "bodyRegions": [
+      "shoulders"
+    ],
+    "equipment": [
+      "dumbbell"
+    ]
+  },
+  {
+    "id": "z-press",
+    "name": "Z Press",
+    "aliases": [
+      "seated floor press",
+      "z press barbell"
+    ],
+    "primaryMuscles": [
+      "anterior deltoids",
+      "lateral deltoids"
+    ],
+    "secondaryMuscles": [
+      "triceps",
+      "rectus abdominis"
+    ],
+    "joints": [
+      "shoulder",
+      "elbow"
+    ],
+    "bodyRegions": [
+      "shoulders"
+    ],
+    "equipment": [
+      "barbell"
+    ]
+  },
+  {
+    "id": "dumbbell-shrug-incline",
+    "name": "Incline Dumbbell Shrug",
+    "aliases": [
+      "incline shrug",
+      "prone incline shrug"
+    ],
+    "primaryMuscles": [
+      "trapezius"
+    ],
+    "secondaryMuscles": [
+      "rhomboids"
+    ],
+    "joints": [
+      "shoulder"
+    ],
+    "bodyRegions": [
+      "back"
+    ],
+    "equipment": [
+      "dumbbell"
+    ]
+  },
+  {
+    "id": "cable-shrug",
+    "name": "Cable Shrug",
+    "aliases": [],
+    "primaryMuscles": [
+      "trapezius"
+    ],
+    "secondaryMuscles": [
+      "forearms"
+    ],
+    "joints": [
+      "shoulder"
+    ],
+    "bodyRegions": [
+      "back"
+    ],
+    "equipment": [
+      "cable"
+    ]
+  },
+  {
+    "id": "hanging-knee-raise",
+    "name": "Hanging Knee Raise",
+    "aliases": [
+      "knee raise",
+      "hanging knee tuck"
+    ],
+    "primaryMuscles": [
+      "rectus abdominis",
+      "hip flexors"
+    ],
+    "secondaryMuscles": [
+      "obliques"
+    ],
+    "joints": [
+      "hip"
+    ],
+    "bodyRegions": [
+      "core"
+    ],
+    "equipment": [
+      "bodyweight"
+    ]
+  },
+  {
+    "id": "weighted-plank",
+    "name": "Weighted Plank",
+    "aliases": [
+      "plate plank"
+    ],
+    "primaryMuscles": [
+      "rectus abdominis",
+      "transverse abdominis"
+    ],
+    "secondaryMuscles": [
+      "obliques",
+      "erector spinae"
+    ],
+    "joints": [
+      "shoulder"
+    ],
+    "bodyRegions": [
+      "core"
+    ],
+    "equipment": [
+      "plate"
+    ]
+  },
+  {
+    "id": "copenhagen-plank",
+    "name": "Copenhagen Plank",
+    "aliases": [
+      "copenhagen adductor plank"
+    ],
+    "primaryMuscles": [
+      "adductors",
+      "obliques"
+    ],
+    "secondaryMuscles": [
+      "rectus abdominis",
+      "transverse abdominis"
+    ],
+    "joints": [
+      "hip"
+    ],
+    "bodyRegions": [
+      "core",
+      "legs"
+    ],
+    "equipment": [
+      "bodyweight"
+    ]
+  },
+  {
+    "id": "sled-push",
+    "name": "Sled Push",
+    "aliases": [
+      "prowler push",
+      "prowler"
+    ],
+    "primaryMuscles": [
+      "quadriceps",
+      "glutes"
+    ],
+    "secondaryMuscles": [
+      "calves",
+      "anterior deltoids",
+      "hamstrings"
+    ],
+    "joints": [
+      "hip",
+      "knee",
+      "ankle",
+      "shoulder"
+    ],
+    "bodyRegions": [
+      "legs"
+    ],
+    "equipment": [
+      "machine"
+    ]
+  },
+  {
+    "id": "sled-pull",
+    "name": "Sled Pull",
+    "aliases": [
+      "prowler pull",
+      "sled drag"
+    ],
+    "primaryMuscles": [
+      "hamstrings",
+      "glutes"
+    ],
+    "secondaryMuscles": [
+      "quadriceps",
+      "calves",
+      "erector spinae"
+    ],
+    "joints": [
+      "hip",
+      "knee",
+      "ankle"
+    ],
+    "bodyRegions": [
+      "legs"
+    ],
+    "equipment": [
+      "machine"
+    ]
+  },
+  {
+    "id": "tire-flip",
+    "name": "Tire Flip",
+    "aliases": [
+      "tire flips"
+    ],
+    "primaryMuscles": [
+      "glutes",
+      "hamstrings",
+      "quadriceps"
+    ],
+    "secondaryMuscles": [
+      "erector spinae",
+      "biceps",
+      "anterior deltoids",
+      "forearms"
+    ],
+    "joints": [
+      "hip",
+      "knee",
+      "shoulder",
+      "elbow"
+    ],
+    "bodyRegions": [
+      "legs",
+      "back"
+    ],
+    "equipment": [
+      "bodyweight"
+    ]
+  },
+  {
+    "id": "rope-climb",
+    "name": "Rope Climb",
+    "aliases": [
+      "climbing rope"
+    ],
+    "primaryMuscles": [
+      "latissimus dorsi",
+      "biceps",
+      "forearms"
+    ],
+    "secondaryMuscles": [
+      "rectus abdominis",
+      "rear deltoids"
+    ],
+    "joints": [
+      "shoulder",
+      "elbow",
+      "wrist"
+    ],
+    "bodyRegions": [
+      "back",
+      "arms"
+    ],
+    "equipment": [
+      "bodyweight"
+    ]
+  },
+  {
+    "id": "wall-ball",
+    "name": "Wall Ball",
+    "aliases": [
+      "wall ball shot",
+      "wall balls"
+    ],
+    "primaryMuscles": [
+      "quadriceps",
+      "glutes",
+      "anterior deltoids"
+    ],
+    "secondaryMuscles": [
+      "hamstrings",
+      "triceps",
+      "rectus abdominis"
+    ],
+    "joints": [
+      "hip",
+      "knee",
+      "shoulder",
+      "elbow"
+    ],
+    "bodyRegions": [
+      "legs",
+      "shoulders"
+    ],
+    "equipment": [
+      "bodyweight"
+    ]
+  },
+  {
+    "id": "rowing-machine",
+    "name": "Rowing Machine",
+    "aliases": [
+      "erg",
+      "row machine",
+      "concept 2",
+      "rower"
+    ],
+    "primaryMuscles": [
+      "latissimus dorsi",
+      "quadriceps",
+      "glutes"
+    ],
+    "secondaryMuscles": [
+      "hamstrings",
+      "biceps",
+      "erector spinae",
+      "rectus abdominis"
+    ],
+    "joints": [
+      "hip",
+      "knee",
+      "shoulder",
+      "elbow"
+    ],
+    "bodyRegions": [
+      "back",
+      "legs"
+    ],
+    "equipment": [
+      "machine"
+    ]
+  },
+  {
+    "id": "assault-bike",
+    "name": "Assault Bike",
+    "aliases": [
+      "air bike",
+      "fan bike",
+      "airdyne"
+    ],
+    "primaryMuscles": [
+      "quadriceps",
+      "glutes"
+    ],
+    "secondaryMuscles": [
+      "hamstrings",
+      "calves",
+      "anterior deltoids",
+      "biceps",
+      "triceps"
+    ],
+    "joints": [
+      "hip",
+      "knee",
+      "shoulder",
+      "elbow"
+    ],
+    "bodyRegions": [
+      "legs",
+      "arms"
+    ],
+    "equipment": [
+      "machine"
+    ]
+  },
+  {
+    "id": "ski-erg",
+    "name": "Ski Erg",
+    "aliases": [
+      "ski ergometer",
+      "skierg"
+    ],
+    "primaryMuscles": [
+      "latissimus dorsi",
+      "triceps"
+    ],
+    "secondaryMuscles": [
+      "rectus abdominis",
+      "rear deltoids"
+    ],
+    "joints": [
+      "shoulder",
+      "elbow",
+      "hip"
+    ],
+    "bodyRegions": [
+      "back",
+      "arms"
+    ],
+    "equipment": [
+      "machine"
+    ]
+  },
+  {
+    "id": "man-maker",
+    "name": "Man Maker",
+    "aliases": [
+      "man makers"
+    ],
+    "primaryMuscles": [
+      "pectoralis major",
+      "anterior deltoids",
+      "quadriceps"
+    ],
+    "secondaryMuscles": [
+      "latissimus dorsi",
+      "triceps",
+      "glutes",
+      "rectus abdominis"
+    ],
+    "joints": [
+      "shoulder",
+      "elbow",
+      "hip",
+      "knee"
+    ],
+    "bodyRegions": [
+      "chest",
+      "shoulders",
+      "legs"
+    ],
+    "equipment": [
+      "dumbbell"
+    ]
+  },
+  {
+    "id": "devils-press",
+    "name": "Devil's Press",
+    "aliases": [
+      "devils press",
+      "db devil press"
+    ],
+    "primaryMuscles": [
+      "pectoralis major",
+      "anterior deltoids",
+      "glutes"
+    ],
+    "secondaryMuscles": [
+      "hamstrings",
+      "triceps",
+      "rectus abdominis"
+    ],
+    "joints": [
+      "shoulder",
+      "elbow",
+      "hip",
+      "knee"
+    ],
+    "bodyRegions": [
+      "chest",
+      "shoulders",
+      "legs"
+    ],
+    "equipment": [
+      "dumbbell"
+    ]
+  },
+  {
+    "id": "power-clean",
+    "name": "Power Clean",
+    "aliases": [
+      "power clean barbell"
+    ],
+    "primaryMuscles": [
+      "quadriceps",
+      "glutes",
+      "hamstrings",
+      "trapezius"
+    ],
+    "secondaryMuscles": [
+      "erector spinae",
+      "anterior deltoids",
+      "calves"
+    ],
+    "joints": [
+      "hip",
+      "knee",
+      "ankle",
+      "shoulder"
+    ],
+    "bodyRegions": [
+      "legs",
+      "back"
+    ],
+    "equipment": [
+      "barbell"
+    ]
+  },
+  {
+    "id": "muscle-clean",
+    "name": "Muscle Clean",
+    "aliases": [],
+    "primaryMuscles": [
+      "trapezius",
+      "anterior deltoids",
+      "biceps"
+    ],
+    "secondaryMuscles": [
+      "erector spinae",
+      "glutes"
+    ],
+    "joints": [
+      "hip",
+      "shoulder",
+      "elbow"
+    ],
+    "bodyRegions": [
+      "shoulders",
+      "back"
+    ],
+    "equipment": [
+      "barbell"
+    ]
+  },
+  {
+    "id": "snatch-pull",
+    "name": "Snatch Pull",
+    "aliases": [
+      "snatch high pull"
+    ],
+    "primaryMuscles": [
+      "trapezius",
+      "erector spinae",
+      "glutes"
+    ],
+    "secondaryMuscles": [
+      "hamstrings",
+      "quadriceps",
+      "anterior deltoids"
+    ],
+    "joints": [
+      "hip",
+      "knee",
+      "shoulder"
+    ],
+    "bodyRegions": [
+      "back",
+      "legs"
+    ],
+    "equipment": [
+      "barbell"
+    ]
+  },
+  {
+    "id": "clean-pull",
+    "name": "Clean Pull",
+    "aliases": [
+      "clean high pull"
+    ],
+    "primaryMuscles": [
+      "trapezius",
+      "erector spinae",
+      "glutes"
+    ],
+    "secondaryMuscles": [
+      "hamstrings",
+      "quadriceps",
+      "anterior deltoids"
+    ],
+    "joints": [
+      "hip",
+      "knee",
+      "shoulder"
+    ],
+    "bodyRegions": [
+      "back",
+      "legs"
+    ],
+    "equipment": [
+      "barbell"
+    ]
+  },
+  {
+    "id": "hang-power-snatch",
+    "name": "Hang Power Snatch",
+    "aliases": [],
+    "primaryMuscles": [
+      "trapezius",
+      "glutes",
+      "hamstrings"
+    ],
+    "secondaryMuscles": [
+      "anterior deltoids",
+      "erector spinae",
+      "quadriceps"
+    ],
+    "joints": [
+      "hip",
+      "knee",
+      "shoulder"
+    ],
+    "bodyRegions": [
+      "shoulders",
+      "legs",
+      "back"
+    ],
+    "equipment": [
+      "barbell"
+    ]
+  },
+  {
+    "id": "dumbbell-snatch",
+    "name": "Dumbbell Snatch",
+    "aliases": [
+      "db snatch",
+      "single arm db snatch"
+    ],
+    "primaryMuscles": [
+      "glutes",
+      "hamstrings",
+      "anterior deltoids"
+    ],
+    "secondaryMuscles": [
+      "trapezius",
+      "quadriceps",
+      "erector spinae"
+    ],
+    "joints": [
+      "hip",
+      "knee",
+      "shoulder"
+    ],
+    "bodyRegions": [
+      "legs",
+      "shoulders"
+    ],
+    "equipment": [
+      "dumbbell"
+    ]
+  },
+  {
+    "id": "bear-crawl",
+    "name": "Bear Crawl",
+    "aliases": [
+      "bear crawls"
+    ],
+    "primaryMuscles": [
+      "anterior deltoids",
+      "quadriceps",
+      "rectus abdominis"
+    ],
+    "secondaryMuscles": [
+      "triceps",
+      "hip flexors"
+    ],
+    "joints": [
+      "shoulder",
+      "hip",
+      "knee"
+    ],
+    "bodyRegions": [
+      "core",
+      "shoulders"
+    ],
+    "equipment": [
+      "bodyweight"
+    ]
+  },
+  {
+    "id": "inchworm",
+    "name": "Inchworm",
+    "aliases": [
+      "walk out",
+      "hand walk"
+    ],
+    "primaryMuscles": [
+      "rectus abdominis",
+      "anterior deltoids"
+    ],
+    "secondaryMuscles": [
+      "hamstrings",
+      "triceps"
+    ],
+    "joints": [
+      "shoulder",
+      "hip"
+    ],
+    "bodyRegions": [
+      "core"
+    ],
+    "equipment": [
+      "bodyweight"
+    ]
+  },
+  {
+    "id": "glute-bridge-single-leg",
+    "name": "Single Leg Glute Bridge",
+    "aliases": [
+      "one leg glute bridge",
+      "single leg bridge"
+    ],
+    "primaryMuscles": [
+      "glutes"
+    ],
+    "secondaryMuscles": [
+      "hamstrings"
+    ],
+    "joints": [
+      "hip",
+      "knee"
+    ],
+    "bodyRegions": [
+      "legs"
+    ],
+    "equipment": [
+      "bodyweight"
+    ]
+  },
+  {
+    "id": "dumbbell-calf-raise",
+    "name": "Dumbbell Calf Raise",
+    "aliases": [
+      "db calf raise"
+    ],
+    "primaryMuscles": [
+      "gastrocnemius",
+      "soleus"
+    ],
+    "secondaryMuscles": [],
+    "joints": [
+      "ankle"
+    ],
+    "bodyRegions": [
+      "legs"
+    ],
+    "equipment": [
+      "dumbbell"
+    ]
+  },
+  {
+    "id": "dumbbell-floor-press",
+    "name": "Dumbbell Floor Press",
+    "aliases": [
+      "db floor press"
+    ],
+    "primaryMuscles": [
+      "pectoralis major",
+      "triceps"
+    ],
+    "secondaryMuscles": [
+      "anterior deltoids"
+    ],
+    "joints": [
+      "shoulder",
+      "elbow"
+    ],
+    "bodyRegions": [
+      "chest"
+    ],
+    "equipment": [
+      "dumbbell"
+    ]
+  },
+  {
+    "id": "standing-cable-chest-press",
+    "name": "Standing Cable Chest Press",
+    "aliases": [
+      "cable chest press"
+    ],
+    "primaryMuscles": [
+      "pectoralis major"
+    ],
+    "secondaryMuscles": [
+      "anterior deltoids",
+      "triceps"
+    ],
+    "joints": [
+      "shoulder",
+      "elbow"
+    ],
+    "bodyRegions": [
+      "chest"
+    ],
+    "equipment": [
+      "cable"
+    ]
+  },
+  {
+    "id": "incline-cable-fly",
+    "name": "Incline Cable Fly",
+    "aliases": [
+      "low to high cable fly incline"
+    ],
+    "primaryMuscles": [
+      "pectoralis major"
+    ],
+    "secondaryMuscles": [
+      "anterior deltoids"
+    ],
+    "joints": [
+      "shoulder"
+    ],
+    "bodyRegions": [
+      "chest"
+    ],
+    "equipment": [
+      "cable"
+    ]
+  },
+  {
+    "id": "clapping-push-up",
+    "name": "Clapping Push-Up",
+    "aliases": [
+      "clap push up",
+      "plyometric push up",
+      "plyo push up"
+    ],
+    "primaryMuscles": [
+      "pectoralis major"
+    ],
+    "secondaryMuscles": [
+      "anterior deltoids",
+      "triceps"
+    ],
+    "joints": [
+      "shoulder",
+      "elbow"
+    ],
+    "bodyRegions": [
+      "chest"
+    ],
+    "equipment": [
+      "bodyweight"
+    ]
+  },
+  {
+    "id": "sprinter-lunge",
+    "name": "Sprinter Lunge",
+    "aliases": [
+      "explosive lunge",
+      "jump lunge"
+    ],
+    "primaryMuscles": [
+      "quadriceps",
+      "glutes"
+    ],
+    "secondaryMuscles": [
+      "hamstrings",
+      "calves"
+    ],
+    "joints": [
+      "knee",
+      "hip",
+      "ankle"
+    ],
+    "bodyRegions": [
+      "legs"
+    ],
+    "equipment": [
+      "bodyweight"
+    ]
+  },
+  {
+    "id": "glute-bridge-barbell",
+    "name": "Barbell Glute Bridge",
+    "aliases": [
+      "weighted glute bridge",
+      "bb glute bridge"
+    ],
+    "primaryMuscles": [
+      "glutes"
+    ],
+    "secondaryMuscles": [
+      "hamstrings"
+    ],
+    "joints": [
+      "hip",
+      "knee"
+    ],
+    "bodyRegions": [
+      "legs"
+    ],
+    "equipment": [
+      "barbell"
+    ]
+  },
+  {
+    "id": "single-leg-hip-thrust",
+    "name": "Single Leg Hip Thrust",
+    "aliases": [
+      "one leg hip thrust"
+    ],
+    "primaryMuscles": [
+      "glutes"
+    ],
+    "secondaryMuscles": [
+      "hamstrings"
+    ],
+    "joints": [
+      "hip",
+      "knee"
+    ],
+    "bodyRegions": [
+      "legs"
+    ],
+    "equipment": [
+      "bodyweight"
+    ]
+  },
+  {
+    "id": "frog-pump",
+    "name": "Frog Pump",
+    "aliases": [
+      "frog pumps",
+      "banded frog pump"
+    ],
+    "primaryMuscles": [
+      "glutes"
+    ],
+    "secondaryMuscles": [
+      "adductors"
+    ],
+    "joints": [
+      "hip"
+    ],
+    "bodyRegions": [
+      "legs"
+    ],
+    "equipment": [
+      "bodyweight"
+    ]
+  }
+]

@@ -30,6 +30,7 @@ is UUID-based so renaming propagates everywhere.
 |--------|------|-------------|
 | id | UUID | Primary key |
 | name | String | Human-readable name |
+| catalogId | String? | Slug from built-in exercise catalog (nil for custom exercises) |
 
 ### WorkoutEntity
 

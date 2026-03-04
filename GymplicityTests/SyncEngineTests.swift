@@ -70,7 +70,7 @@ final class SyncEngineTests: XCTestCase {
         let payload = makePayload(
             senderIdentityId: trainer.id,
             identities: [IdentityDTO(id: trainer.id, name: "Trainer", isTrainer: true)],
-            exercises: [ExerciseDTO(id: bench.id, name: "Bench")]
+            exercises: [ExerciseDTO(id: bench.id, name: "Bench", catalogId: nil)]
         )
         let result = SyncEngine.merge(payload, into: ctx)
 
@@ -87,7 +87,7 @@ final class SyncEngineTests: XCTestCase {
         let payload = makePayload(
             senderIdentityId: trainee.id,
             identities: [IdentityDTO(id: trainee.id, name: "Trainee", isTrainer: false)],
-            exercises: [ExerciseDTO(id: bench.id, name: "Renamed")]
+            exercises: [ExerciseDTO(id: bench.id, name: "Renamed", catalogId: nil)]
         )
         let result = SyncEngine.merge(payload, into: ctx)
 
@@ -103,7 +103,7 @@ final class SyncEngineTests: XCTestCase {
         let payload = makePayload(
             senderIdentityId: trainee.id,
             identities: [IdentityDTO(id: trainee.id, name: "T", isTrainer: false)],
-            exercises: [ExerciseDTO(id: newId, name: "New Exercise")]
+            exercises: [ExerciseDTO(id: newId, name: "New Exercise", catalogId: nil)]
         )
         let result = SyncEngine.merge(payload, into: ctx)
 
@@ -335,8 +335,8 @@ final class SyncEngineTests: XCTestCase {
             senderIdentityId: trainer.id,
             identities: [IdentityDTO(id: trainer.id, name: "Trainer", isTrainer: true)],
             exercises: [
-                ExerciseDTO(id: bench.id, name: "Bench"),        // update
-                ExerciseDTO(id: newExerciseId, name: "Squat")    // insert
+                ExerciseDTO(id: bench.id, name: "Bench", catalogId: nil),        // update
+                ExerciseDTO(id: newExerciseId, name: "Squat", catalogId: nil)    // insert
             ]
         )
         let result = SyncEngine.merge(payload, into: ctx)

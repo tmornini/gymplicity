@@ -93,10 +93,11 @@ struct SyncEngine {
             if let existing {
                 if senderIsTrainer {
                     existing.name = dto.name
+                    existing.catalogId = dto.catalogId
                     result.exercisesUpdated += 1
                 }
             } else {
-                let entity = ExerciseEntity(name: dto.name)
+                let entity = ExerciseEntity(name: dto.name, catalogId: dto.catalogId)
                 entity.id = dto.id
                 context.insert(entity)
                 result.exercisesInserted += 1

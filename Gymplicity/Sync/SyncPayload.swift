@@ -12,6 +12,7 @@ struct IdentityDTO: Codable {
 struct ExerciseDTO: Codable {
     let id: UUID
     let name: String
+    let catalogId: String?
 }
 
 struct WorkoutDTO: Codable {
@@ -142,7 +143,7 @@ extension IdentityEntity {
 
 extension ExerciseEntity {
     func toDTO() -> ExerciseDTO {
-        ExerciseDTO(id: id, name: name)
+        ExerciseDTO(id: id, name: name, catalogId: catalogId)
     }
 }
 

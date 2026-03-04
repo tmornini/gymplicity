@@ -121,6 +121,9 @@ struct AddExerciseView: View {
     private func addFromCatalog(_ catalogExercise: CatalogExercise) {
         guard let trainer else { return }
         let exercise = trainer.findOrCreateExercise(named: catalogExercise.name, in: modelContext)
+        if exercise.catalogId == nil {
+            exercise.catalogId = catalogExercise.id
+        }
         createSet(for: exercise)
         SyncTrigger.structureChanged()
         dismiss()

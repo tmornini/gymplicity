@@ -85,3 +85,38 @@ extension ModelContext {
         return set
     }
 }
+
+// MARK: - Payload Factory
+
+func makePayload(
+    senderIdentityId: UUID,
+    identities: [IdentityDTO] = [],
+    exercises: [ExerciseDTO] = [],
+    workouts: [WorkoutDTO] = [],
+    workoutGroups: [WorkoutGroupDTO] = [],
+    sets: [SetDTO] = [],
+    trainerTrainees: [TrainerTraineesDTO] = [],
+    trainerExercises: [TrainerExercisesDTO] = [],
+    identityWorkouts: [IdentityWorkoutsDTO] = [],
+    workoutGroupJoins: [WorkoutGroupsDTO] = [],
+    groupSetJoins: [GroupSetsDTO] = [],
+    exerciseSetJoins: [ExerciseSetsDTO] = [],
+    templateInstanceJoins: [TemplateInstancesDTO] = []
+) -> SyncPayload {
+    SyncPayload(
+        version: 1,
+        senderIdentityId: senderIdentityId,
+        identities: identities,
+        exercises: exercises,
+        workouts: workouts,
+        workoutGroups: workoutGroups,
+        sets: sets,
+        trainerTrainees: trainerTrainees,
+        trainerExercises: trainerExercises,
+        identityWorkouts: identityWorkouts,
+        workoutGroupJoins: workoutGroupJoins,
+        groupSetJoins: groupSetJoins,
+        exerciseSetJoins: exerciseSetJoins,
+        templateInstanceJoins: templateInstanceJoins
+    )
+}

@@ -1,0 +1,127 @@
+import XCTest
+import SwiftData
+@testable import Gymplicity
+
+final class SyncPayloadBuilderTests: XCTestCase {
+
+    func testPayloadIncludesBothIdentities() throws {
+        let ctx = try makeTestContext()
+        let trainer = ctx.makeTrainer(name: "Coach")
+        let trainee = ctx.makeTrainee(name: "Alex", trainer: trainer)
+
+        let payload = SyncPayloadBuilder.build(localIdentity: trainer, pairedIdentity: trainee, context: ctx)
+
+        XCTAssertEqual(payload.identities.count, 2)
+        let ids = Set(payload.identities.map(\.id))
+        XCTAssert(ids.contains(trainer.id))
+        XCTAssert(ids.contains(trainee.id))
+    }
+
+    func testPayloadIncludesTrainerExercises() throws {
+        let ctx = try makeTestContext()
+        let trainer = ctx.makeTrainer()
+        let trainee = ctx.makeTrainee(trainer: trainer)
+        ctx.makeExercise(name: "Bench", trainer: trainer)
+        ctx.makeExercise(name: "Squat", trainer: trainer)
+
+        let payload = SyncPayloadBuilder.build(localIdentity: trainer, pairedIdentity: trainee, context: ctx)
+
+        XCTAssertEqual(payload.exercises.count, 2)
+        let names = Set(payload.exercises.map(\.name))
+        XCTAssert(names.contains("Bench"))
+        XCTAssert(names.contains("Squat"))
+    }
+
+    func testPayloadIncludesAllTraineeWorkouts() throws {
+        let ctx = try makeTestContext()
+        let trainer = ctx.makeTrainer()
+        let trainee = ctx.makeTrainee(trainer: trainer)
+        ctx.makeWorkout(for: trainee)                           // active
+        ctx.makeWorkout(for: trainee, isCompleted: true)        // completed
+
+        let payload = SyncPayloadBuilder.build(localIdentity: trainee, pairedIdentity: trainer, context: ctx)
+
+        XCTAssertEqual(payload.workouts.count, 2)
+    }
+
+    func testPayloadIncludesTrainerTemplatesOnly() throws {
+        let ctx = try makeTestContext()
+        let trainer = ctx.makeTrainer()
+        let trainee = ctx.makeTrainee(trainer: trainer)
+        ctx.makeTemplate(name: "Push Day", for: trainer)
+        ctx.makeWorkout(for: trainer) // trainer's personal workout — should be excluded
+
+        let payload = SyncPayloadBuilder.build(localIdentity: trainer, pairedIdentity: trainee, context: ctx)
+
+        // Only trainee's 0 workouts + trainer's 1 template
+        let templateWorkouts = payload.workouts.filter(\.isTemplate)
+        let nonTemplateWorkouts = payload.workouts.filter { !$0.isTemplate }
+        XCTAssertEqual(templateWorkouts.count, 1)
+        XCTAssertEqual(nonTemplateWorkouts.count, 0)
+    }
+
+    func testPayloadIncludesTemplateInstancesJoins() throws {
+        let ctx = try makeTestContext()
+        let trainer = ctx.makeTrainer()
+        let trainee = ctx.makeTrainee(trainer: trainer)
+        let template = ctx.makeTemplate(name: "Push", for: trainer)
+        let workout = ctx.instantiateTemplate(template, for: trainee)
+
+        let payload = SyncPayloadBuilder.build(localIdentity: trainer, pairedIdentity: trainee, context: ctx)
+
+        XCTAssertFalse(payload.templateInstanceJoins.isEmpty)
+        let tiJoin = payload.templateInstanceJoins.first {
+            $0.templateId == template.id && $0.workoutId == workout.id
+        }
+        XCTAssertNotNil(tiJoin)
+    }
+
+    func testPayloadIncludesGroupsSetsAndExerciseLinks() throws {
+        let ctx = try makeTestContext()
+        let trainer = ctx.makeTrainer()
+        let trainee = ctx.makeTrainee(trainer: trainer)
+        let bench = ctx.makeExercise(name: "Bench", trainer: trainer)
+        let workout = ctx.makeWorkout(for: trainee)
+        let group = ctx.makeGroup(in: workout, order: 0)
+        ctx.makeSet(in: group, exercise: bench, order: 0, weight: 135, reps: 10)
+
+        let payload = SyncPayloadBuilder.build(localIdentity: trainer, pairedIdentity: trainee, context: ctx)
+
+        XCTAssertEqual(payload.workoutGroups.count, 1)
+        XCTAssertEqual(payload.sets.count, 1)
+        XCTAssertEqual(payload.exerciseSetJoins.count, 1)
+        XCTAssertEqual(payload.groupSetJoins.count, 1)
+        XCTAssertEqual(payload.workoutGroupJoins.count, 1)
+    }
+
+    func testIdentityWorkoutsIncludesTraineeAndTrainerTemplateJoins() throws {
+        let ctx = try makeTestContext()
+        let trainer = ctx.makeTrainer()
+        let trainee = ctx.makeTrainee(trainer: trainer)
+        ctx.makeWorkout(for: trainee)
+        ctx.makeTemplate(name: "Pull Day", for: trainer)
+        ctx.makeWorkout(for: trainer) // trainer's personal — its IW join excluded
+
+        let payload = SyncPayloadBuilder.build(localIdentity: trainer, pairedIdentity: trainee, context: ctx)
+
+        // 1 trainee workout join + 1 trainer template join = 2
+        XCTAssertEqual(payload.identityWorkouts.count, 2)
+    }
+
+    func testDeltaProducesEmptyJoinArrays() throws {
+        let senderId = UUID()
+        let payload = SyncPayload.delta(
+            senderIdentityId: senderId,
+            identities: [IdentityDTO(id: senderId, name: "Test", isTrainer: true)]
+        )
+
+        XCTAssertEqual(payload.identities.count, 1)
+        XCTAssert(payload.trainerTrainees.isEmpty)
+        XCTAssert(payload.trainerExercises.isEmpty)
+        XCTAssert(payload.identityWorkouts.isEmpty)
+        XCTAssert(payload.workoutGroupJoins.isEmpty)
+        XCTAssert(payload.groupSetJoins.isEmpty)
+        XCTAssert(payload.exerciseSetJoins.isEmpty)
+        XCTAssert(payload.templateInstanceJoins.isEmpty)
+    }
+}

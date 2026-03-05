@@ -11,7 +11,7 @@ struct AddTraineeView: View {
     var body: some View {
         NavigationStack {
             VStack(spacing: GymMetrics.space24) {
-                AnimatedMascotView(pose: .spotting, animation: .bounce, color: GymColors.energy)
+                AnimatedMascotView(pose: .waving, animation: .bounce, color: GymColors.energy)
                     .frame(height: 80)
                 Text("Who's training today?")
                     .font(GymFont.heading2)

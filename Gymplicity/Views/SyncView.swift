@@ -118,7 +118,7 @@ struct SyncView: View {
                         }
                     } header: {
                         HStack(spacing: GymMetrics.space4) {
-                            MascotView(pose: .spotting, color: GymColors.secondaryText)
+                            MascotView(pose: .waving, color: GymColors.secondaryText)
                                 .frame(height: GymMetrics.mascotInline)
                             Text("Nearby Devices")
                         }
@@ -170,7 +170,7 @@ struct SyncView: View {
         } else {
             VStack(spacing: GymMetrics.space16) {
                 Spacer()
-                MascotView(pose: .spotting, color: GymColors.focus)
+                MascotView(pose: .waving, color: GymColors.focus)
                     .frame(height: GymMetrics.mascotMedium)
                 Text("\(peerName) wants to pair with you")
                     .font(GymFont.heading2)

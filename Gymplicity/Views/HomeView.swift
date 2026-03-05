@@ -77,7 +77,7 @@ struct HomeView: View {
             if trainees.isEmpty {
                 Section {
                     VStack(spacing: GymMetrics.space16) {
-                        AnimatedMascotView(pose: .spotting, animation: .pulse, color: GymColors.secondaryText)
+                        AnimatedMascotView(pose: .waving, animation: .pulse, color: GymColors.secondaryText)
                             .frame(height: GymMetrics.mascotMedium)
                         Text("Add your first trainee")
                             .font(GymFont.body)

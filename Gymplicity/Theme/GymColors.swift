@@ -32,6 +32,11 @@ enum GymColors {
     /// Hints
     static let tertiaryText = Color(hex: 0x6B737A)
 
+    // MARK: - Mascot
+
+    /// Default mascot fill color
+    static let mascotGray = Color(hex: 0x8E9399)
+
     // MARK: - Semantic Aliases
 
     static let activeIndicator = power

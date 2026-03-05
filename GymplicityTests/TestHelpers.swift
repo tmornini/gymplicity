@@ -9,7 +9,7 @@ func makeTestContext() throws -> ModelContext {
         for: IdentityEntity.self, ExerciseEntity.self, WorkoutEntity.self,
         WorkoutGroupEntity.self, SetEntity.self, TrainerTrainees.self,
         TrainerExercises.self, IdentityWorkouts.self, WorkoutGroups.self,
-        GroupSets.self, ExerciseSets.self, TemplateInstances.self, PairedDevices.self,
+        GroupSets.self, ExerciseSets.self, TemplateInstances.self, IdentityAliases.self, PairedDevices.self,
         configurations: config
     )
     return ModelContext(container)
@@ -101,7 +101,8 @@ func makePayload(
     workoutGroupJoins: [WorkoutGroupsDTO] = [],
     groupSetJoins: [GroupSetsDTO] = [],
     exerciseSetJoins: [ExerciseSetsDTO] = [],
-    templateInstanceJoins: [TemplateInstancesDTO] = []
+    templateInstanceJoins: [TemplateInstancesDTO] = [],
+    identityAliases: [IdentityAliasesDTO] = []
 ) -> SyncPayload {
     SyncPayload(
         version: 1,
@@ -117,6 +118,7 @@ func makePayload(
         workoutGroupJoins: workoutGroupJoins,
         groupSetJoins: groupSetJoins,
         exerciseSetJoins: exerciseSetJoins,
-        templateInstanceJoins: templateInstanceJoins
+        templateInstanceJoins: templateInstanceJoins,
+        identityAliases: identityAliases
     )
 }

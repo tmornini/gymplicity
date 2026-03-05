@@ -74,6 +74,11 @@ struct TemplateInstancesDTO: Codable {
     let workoutId: UUID
 }
 
+struct IdentityAliasesDTO: Codable {
+    let identityId1: UUID
+    let identityId2: UUID
+}
+
 // MARK: - Payload Envelope
 
 struct SyncPayload: Codable {
@@ -95,6 +100,7 @@ struct SyncPayload: Codable {
     let groupSetJoins: [GroupSetsDTO]
     let exerciseSetJoins: [ExerciseSetsDTO]
     let templateInstanceJoins: [TemplateInstancesDTO]
+    let identityAliases: [IdentityAliasesDTO]
 
     /// Creates a delta payload containing only the specified changed entities.
     /// Empty arrays default for entity types not included in this delta.
@@ -120,7 +126,8 @@ struct SyncPayload: Codable {
             workoutGroupJoins: [],
             groupSetJoins: [],
             exerciseSetJoins: [],
-            templateInstanceJoins: []
+            templateInstanceJoins: [],
+            identityAliases: []
         )
     }
 }
@@ -128,12 +135,25 @@ struct SyncPayload: Codable {
 // MARK: - Sync Message
 
 enum SyncMessage: Codable {
-    case pairingRequest(traineeUUID: UUID, trainerName: String)
-    case pairingAccepted
+    case pairingOffer(
+        senderUUID: UUID,
+        senderName: String,
+        senderIsTrainer: Bool,
+        linkedIdentityUUID: UUID?,
+        linkedIdentityName: String?
+    )
+    case pairingAccepted(
+        responderUUID: UUID,
+        responderName: String,
+        responderIsTrainer: Bool,
+        linkedIdentityUUID: UUID?,
+        linkedIdentityName: String?
+    )
+    case pairingDeclined
     case entityUpdates(SyncPayload)
 }
 
-// MARK: - Entity → DTO Extensions
+// MARK: - Entity -> DTO Extensions
 
 extension IdentityEntity {
     func toDTO() -> IdentityDTO {
@@ -213,6 +233,12 @@ extension TemplateInstances {
     }
 }
 
+extension IdentityAliases {
+    func toDTO() -> IdentityAliasesDTO {
+        IdentityAliasesDTO(identityId1: identityId1, identityId2: identityId2)
+    }
+}
+
 // MARK: - Payload Builder
 
 struct SyncPayloadBuilder {
@@ -252,12 +278,16 @@ struct SyncPayloadBuilder {
             predicate: #Predicate { exerciseIds.contains($0.id) }
         ))) ?? []
 
-        // 4. Trainee's workouts (all — completed, active, templates)
+        // 4. Resolve alias group for the trainee to get full workout history
+        let traineeAliasGroup = IdentityReconciliation.aliasGroup(for: traineeId, in: context)
+        let traineeAliasIds = Array(traineeAliasGroup)
+
+        // 5. Trainee's workouts (all aliases — completed, active, templates)
         let iwJoinsTrainee = (try? context.fetch(FetchDescriptor<IdentityWorkouts>(
-            predicate: #Predicate { $0.identityId == traineeId }
+            predicate: #Predicate { traineeAliasIds.contains($0.identityId) }
         ))) ?? []
 
-        // 5. Trainer's templates
+        // 6. Trainer's templates
         let iwJoinsTrainer = (try? context.fetch(FetchDescriptor<IdentityWorkouts>(
             predicate: #Predicate { $0.identityId == trainerId }
         ))) ?? []
@@ -284,13 +314,13 @@ struct SyncPayloadBuilder {
         var iwJoins = iwJoinsTrainee
         iwJoins.append(contentsOf: iwJoinsTrainer.filter { templateIds.contains($0.workoutId) })
 
-        // 6. TemplateInstances for workouts in scope
+        // 7. TemplateInstances for workouts in scope
         let allWIdsForTI = Array(allWorkoutIds)
         let tiJoins = (try? context.fetch(FetchDescriptor<TemplateInstances>(
             predicate: #Predicate { allWIdsForTI.contains($0.workoutId) || allWIdsForTI.contains($0.templateId) }
         ))) ?? []
 
-        // 7. Batch fetch groups, sets, exercise links (O(5) queries instead of O(w*g*s))
+        // 8. Batch fetch groups, sets, exercise links (O(5) queries instead of O(w*g*s))
         let wgJoins = (try? context.fetch(FetchDescriptor<WorkoutGroups>(
             predicate: #Predicate { allWIds.contains($0.workoutId) }
         ))) ?? []
@@ -311,7 +341,15 @@ struct SyncPayloadBuilder {
             predicate: #Predicate { setIds.contains($0.setId) }
         ))) ?? []
 
-        // 8. Package into SyncPayload
+        // 9. IdentityAliases for identities in scope
+        let allIdentityIds = Array(traineeAliasGroup.union([trainerId]))
+        let aliasRows = (try? context.fetch(FetchDescriptor<IdentityAliases>(
+            predicate: #Predicate {
+                allIdentityIds.contains($0.identityId1) || allIdentityIds.contains($0.identityId2)
+            }
+        ))) ?? []
+
+        // 10. Package into SyncPayload
         return SyncPayload(
             version: 1,
             senderIdentityId: localIdentity.id,
@@ -326,7 +364,8 @@ struct SyncPayloadBuilder {
             workoutGroupJoins: wgJoins.map { $0.toDTO() },
             groupSetJoins: gsJoins.map { $0.toDTO() },
             exerciseSetJoins: esJoins.map { $0.toDTO() },
-            templateInstanceJoins: tiJoins.map { $0.toDTO() }
+            templateInstanceJoins: tiJoins.map { $0.toDTO() },
+            identityAliases: aliasRows.map { $0.toDTO() }
         )
     }
 }

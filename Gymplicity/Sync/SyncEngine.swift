@@ -21,13 +21,14 @@ struct MergeResult {
     var groupSetJoinsInserted = 0
     var exerciseSetJoinsInserted = 0
     var templateInstanceJoinsInserted = 0
+    var identityAliasesInserted = 0
 
     var totalInserted: Int {
         identitiesInserted + exercisesInserted + workoutsInserted +
         workoutGroupsInserted + setsInserted + trainerTraineesInserted +
         trainerExercisesInserted + identityWorkoutsInserted +
         workoutGroupJoinsInserted + groupSetJoinsInserted + exerciseSetJoinsInserted +
-        templateInstanceJoinsInserted
+        templateInstanceJoinsInserted + identityAliasesInserted
     }
 
     var totalUpdated: Int {
@@ -265,6 +266,22 @@ struct SyncEngine {
             if existing == nil {
                 context.insert(TemplateInstances(templateId: templateId, workoutId: workoutId))
                 result.templateInstanceJoinsInserted += 1
+            }
+        }
+
+        // IdentityAliases joins
+        for dto in payload.identityAliases {
+            let id1 = dto.identityId1
+            let id2 = dto.identityId2
+            let existing = (try? context.fetch(FetchDescriptor<IdentityAliases>(
+                predicate: #Predicate {
+                    ($0.identityId1 == id1 && $0.identityId2 == id2) ||
+                    ($0.identityId1 == id2 && $0.identityId2 == id1)
+                }
+            )))?.first
+            if existing == nil {
+                context.insert(IdentityAliases(identityId1: id1, identityId2: id2))
+                result.identityAliasesInserted += 1
             }
         }
 

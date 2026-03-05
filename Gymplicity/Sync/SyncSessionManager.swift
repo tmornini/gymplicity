@@ -10,6 +10,7 @@ enum SyncConnectionState: Equatable {
     case searching
     case connecting
     case pairing(peerName: String)
+    case waitingForResponse(peerName: String)
     case syncing(peerName: String)
     case connected(peerName: String)
     case error(String)
@@ -33,6 +34,9 @@ class SyncSessionManager: NSObject, ObservableObject {
     @Published var discoveredPeers: [DiscoveredPeer] = []
     @Published var lastSyncResult: MergeResult?
 
+    // Transient pairing state — no DB writes until mutual acceptance
+    @Published var pendingOffer: SyncMessage?
+
     private var localPeerID: MCPeerID
     private var session: MCSession?
     private var advertiser: MCNearbyServiceAdvertiser?
@@ -41,8 +45,8 @@ class SyncSessionManager: NSObject, ObservableObject {
     private var localIdentity: IdentityEntity?
     private var modelContext: ModelContext?
 
-    // Pairing state
-    private var pendingPairingTraineeUUID: UUID?
+    // The offer WE sent (so we can process it on acceptance)
+    private var sentOffer: SyncMessage?
     private var connectedPeer: MCPeerID?
 
     // Change-driven sync subscriptions
@@ -103,6 +107,8 @@ class SyncSessionManager: NSObject, ObservableObject {
         browser = nil
         session = nil
         connectedPeer = nil
+        pendingOffer = nil
+        sentOffer = nil
         connectionState = .idle
         discoveredPeers = []
     }
@@ -115,34 +121,83 @@ class SyncSessionManager: NSObject, ObservableObject {
         browser.invitePeer(peer.peerID, to: session, withContext: nil, timeout: 30)
     }
 
-    // MARK: - Pairing (trainer initiates)
+    // MARK: - Symmetric Pairing
 
-    func sendPairingRequest(traineeUUID: UUID) {
+    func sendPairingOffer(linkedIdentityUUID: UUID?, linkedIdentityName: String?) {
         guard let session, let connectedPeer, let identity = localIdentity else { return }
-        let message = SyncMessage.pairingRequest(traineeUUID: traineeUUID, trainerName: identity.name)
-        if let data = try? JSONEncoder().encode(message) {
+        let offer = SyncMessage.pairingOffer(
+            senderUUID: identity.id,
+            senderName: identity.name,
+            senderIsTrainer: identity.isTrainer,
+            linkedIdentityUUID: linkedIdentityUUID,
+            linkedIdentityName: linkedIdentityName
+        )
+        sentOffer = offer
+        if let data = try? JSONEncoder().encode(offer) {
             try? session.send(data, toPeers: [connectedPeer], with: .reliable)
         }
-        connectionState = .pairing(peerName: connectedPeer.displayName)
+        connectionState = .waitingForResponse(peerName: connectedPeer.displayName)
     }
 
-    func acceptPairing() {
-        guard let session, let connectedPeer else { return }
-        // Perform identity rewrite if needed
-        if let traineeUUID = pendingPairingTraineeUUID,
-           let context = modelContext,
-           let localIdentity {
-            IdentityReconciliation.rewriteIdentity(from: localIdentity.id, to: traineeUUID, in: context)
-            localIdentity.id = traineeUUID
+    func acceptPairing(linkedIdentityUUID: UUID?, linkedIdentityName: String?) {
+        guard let session, let connectedPeer, let identity = localIdentity,
+              let context = modelContext else { return }
+
+        // Build and send acceptance
+        let accept = SyncMessage.pairingAccepted(
+            responderUUID: identity.id,
+            responderName: identity.name,
+            responderIsTrainer: identity.isTrainer,
+            linkedIdentityUUID: linkedIdentityUUID,
+            linkedIdentityName: linkedIdentityName
+        )
+
+        // Process alias from the stored offer (responder side)
+        if case .pairingOffer(let senderUUID, _, let senderIsTrainer, let linkedUUID, _) = pendingOffer {
+            if let linkedUUID, linkedUUID != identity.id {
+                IdentityReconciliation.createAlias(id1: linkedUUID, id2: identity.id, in: context)
+            }
+            // Create TrainerTrainees if this is a new relationship
+            let trainerUUID = senderIsTrainer ? senderUUID : identity.id
+            let traineeUUID = senderIsTrainer ? identity.id : senderUUID
+            createTrainerTraineesIfNeeded(trainerUUID: trainerUUID, traineeUUID: traineeUUID, in: context)
         }
-        // Send acceptance
-        let message = SyncMessage.pairingAccepted
+
+        if let data = try? JSONEncoder().encode(accept) {
+            try? session.send(data, toPeers: [connectedPeer], with: .reliable)
+        }
+
+        pendingOffer = nil
+        performSync()
+    }
+
+    func declinePairing() {
+        guard let session, let connectedPeer else { return }
+        let message = SyncMessage.pairingDeclined
         if let data = try? JSONEncoder().encode(message) {
             try? session.send(data, toPeers: [connectedPeer], with: .reliable)
         }
-        pendingPairingTraineeUUID = nil
-        // Proceed to sync
-        performSync()
+        pendingOffer = nil
+        sentOffer = nil
+        connectionState = .searching
+    }
+
+    // MARK: - Pairing Helpers
+
+    private func createTrainerTraineesIfNeeded(trainerUUID: UUID, traineeUUID: UUID, in context: ModelContext) {
+        // Check if relationship already exists (possibly via alias)
+        let trainerAliases = IdentityReconciliation.aliasGroup(for: trainerUUID, in: context)
+        let traineeAliases = IdentityReconciliation.aliasGroup(for: traineeUUID, in: context)
+        let trainerIds = Array(trainerAliases)
+        let traineeIds = Array(traineeAliases)
+
+        let existing = (try? context.fetch(FetchDescriptor<TrainerTrainees>(
+            predicate: #Predicate { trainerIds.contains($0.trainerId) && traineeIds.contains($0.traineeId) }
+        )))?.first
+
+        if existing == nil {
+            context.insert(TrainerTrainees(trainerId: trainerUUID, traineeId: traineeUUID))
+        }
     }
 
     // MARK: - Full Sync
@@ -324,8 +379,16 @@ class SyncSessionManager: NSObject, ObservableObject {
                 predicate: #Predicate { $0.localIdentityId == localId }
             )))?.first {
                 let remoteId = pairing.remoteIdentityId
-                return (try? context.fetch(FetchDescriptor<IdentityEntity>(
+                // Try direct lookup first
+                if let direct = (try? context.fetch(FetchDescriptor<IdentityEntity>(
                     predicate: #Predicate { $0.id == remoteId }
+                )))?.first {
+                    return direct
+                }
+                // Fall back to alias group lookup
+                let aliasIds = Array(IdentityReconciliation.aliasGroup(for: remoteId, in: context))
+                return (try? context.fetch(FetchDescriptor<IdentityEntity>(
+                    predicate: #Predicate { aliasIds.contains($0.id) }
                 )))?.first
             }
             // Fallback: if single trainee, use them
@@ -395,17 +458,41 @@ class SyncSessionManager: NSObject, ObservableObject {
         guard let message = try? JSONDecoder().decode(SyncMessage.self, from: data) else { return }
         DispatchQueue.main.async {
             switch message {
-            case .pairingRequest(let traineeUUID, _):
-                // Trainee receives this — store pending UUID for user confirmation
-                self.pendingPairingTraineeUUID = traineeUUID
+            case .pairingOffer:
+                // Store offer transiently — no DB writes
+                self.pendingOffer = message
                 self.connectionState = .pairing(peerName: peer.displayName)
 
-            case .pairingAccepted:
-                // Trainer receives this — proceed to sync
+            case .pairingAccepted(let responderUUID, _, let responderIsTrainer, let linkedUUID, _):
+                guard let context = self.modelContext, let identity = self.localIdentity else { return }
+
+                // Process alias from their acceptance
+                if let linkedUUID, linkedUUID != identity.id {
+                    IdentityReconciliation.createAlias(id1: linkedUUID, id2: identity.id, in: context)
+                }
+
+                // Process alias from our own offer
+                if case .pairingOffer(_, _, _, let ourLinkedUUID, _) = self.sentOffer {
+                    if let ourLinkedUUID, ourLinkedUUID != responderUUID {
+                        IdentityReconciliation.createAlias(id1: ourLinkedUUID, id2: responderUUID, in: context)
+                    }
+                }
+
+                // Create TrainerTrainees if new relationship
+                let senderIsTrainer = identity.isTrainer
+                let trainerUUID = senderIsTrainer ? identity.id : responderUUID
+                let traineeUUID = senderIsTrainer ? responderUUID : identity.id
+                self.createTrainerTraineesIfNeeded(trainerUUID: trainerUUID, traineeUUID: traineeUUID, in: context)
+
+                self.sentOffer = nil
                 self.performSync()
 
+            case .pairingDeclined:
+                self.pendingOffer = nil
+                self.sentOffer = nil
+                self.connectionState = .searching
+
             case .entityUpdates(let payload):
-                // Received a delta update from the connected peer
                 self.handleReceivedDelta(payload)
             }
         }
@@ -440,6 +527,8 @@ extension SyncSessionManager: MCSessionDelegate {
                 if self.connectedPeer == peerID {
                     self.connectedPeer = nil
                     self.tearDownSyncSubscriptions()
+                    self.pendingOffer = nil
+                    self.sentOffer = nil
                     self.connectionState = .searching
                 }
             case .connecting:

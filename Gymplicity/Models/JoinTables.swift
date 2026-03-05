@@ -81,6 +81,17 @@ final class TemplateInstances {
 }
 
 @Model
+final class IdentityAliases {
+    var identityId1: UUID
+    var identityId2: UUID
+
+    init(identityId1: UUID, identityId2: UUID) {
+        self.identityId1 = identityId1
+        self.identityId2 = identityId2
+    }
+}
+
+@Model
 final class PairedDevices {
     var localIdentityId: UUID
     var remoteIdentityId: UUID

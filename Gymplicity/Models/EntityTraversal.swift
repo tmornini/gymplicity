@@ -45,9 +45,9 @@ extension IdentityEntity {
     }
 
     func workouts(in context: ModelContext) -> [WorkoutEntity] {
-        let id = self.id
+        let aliasIds = Array(IdentityReconciliation.aliasGroup(for: self.id, in: context))
         let joins = (try? context.fetch(FetchDescriptor<IdentityWorkouts>(
-            predicate: #Predicate { $0.identityId == id }
+            predicate: #Predicate { aliasIds.contains($0.identityId) }
         ))) ?? []
         let ids = joins.map(\.workoutId)
         return (try? context.fetch(FetchDescriptor<WorkoutEntity>(

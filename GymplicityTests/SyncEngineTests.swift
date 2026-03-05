@@ -325,6 +325,66 @@ final class SyncEngineTests: XCTestCase {
         XCTAssertEqual(result.totalUpdated, 0)
     }
 
+    // MARK: - IdentityAliases
+
+    func testIdentityAliasesInsertedFromPayload() throws {
+        let ctx = try makeTestContext()
+        let senderId = UUID()
+        let id1 = UUID()
+        let id2 = UUID()
+
+        let payload = makePayload(
+            senderIdentityId: senderId,
+            identityAliases: [IdentityAliasesDTO(identityId1: id1, identityId2: id2)]
+        )
+        let result = SyncEngine.merge(payload, into: ctx)
+
+        XCTAssertEqual(result.identityAliasesInserted, 1)
+        let rows = try ctx.fetch(FetchDescriptor<IdentityAliases>())
+        XCTAssertEqual(rows.count, 1)
+    }
+
+    func testDuplicateIdentityAliasSkipped() throws {
+        let ctx = try makeTestContext()
+        let senderId = UUID()
+        let id1 = UUID()
+        let id2 = UUID()
+
+        // Insert first
+        ctx.insert(IdentityAliases(identityId1: id1, identityId2: id2))
+
+        let payload = makePayload(
+            senderIdentityId: senderId,
+            identityAliases: [IdentityAliasesDTO(identityId1: id1, identityId2: id2)]
+        )
+        let result = SyncEngine.merge(payload, into: ctx)
+
+        XCTAssertEqual(result.identityAliasesInserted, 0)
+    }
+
+    func testReverseOrderAliasSkipped() throws {
+        let ctx = try makeTestContext()
+        let senderId = UUID()
+        let id1 = UUID()
+        let id2 = UUID()
+
+        // Insert in one order
+        ctx.insert(IdentityAliases(identityId1: id1, identityId2: id2))
+
+        // Payload has reverse order
+        let payload = makePayload(
+            senderIdentityId: senderId,
+            identityAliases: [IdentityAliasesDTO(identityId1: id2, identityId2: id1)]
+        )
+        let result = SyncEngine.merge(payload, into: ctx)
+
+        XCTAssertEqual(result.identityAliasesInserted, 0)
+        let rows = try ctx.fetch(FetchDescriptor<IdentityAliases>())
+        XCTAssertEqual(rows.count, 1)
+    }
+
+    // MARK: - MergeResult
+
     func testMixedInsertsAndUpdatesSummary() throws {
         let ctx = try makeTestContext()
         let trainer = ctx.makeTrainer()

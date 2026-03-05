@@ -6,8 +6,8 @@ struct SyncView: View {
     @Environment(\.dismiss) private var dismiss
     @EnvironmentObject private var syncManager: SyncSessionManager
     let identity: IdentityEntity
-    @State private var selectedTrainee: IdentityEntity?
-    @State private var showingTraineePicker = false
+    @State private var showingMatchPicker = false
+    @State private var showingOfferVerification = false
 
     var body: some View {
         NavigationStack {
@@ -21,6 +21,8 @@ struct SyncView: View {
                     connectingView
                 case .pairing(let peerName):
                     pairingView(peerName: peerName)
+                case .waitingForResponse(let peerName):
+                    waitingView(peerName: peerName)
                 case .syncing(let peerName):
                     syncingView(peerName: peerName)
                 case .connected(let peerName):
@@ -127,19 +129,10 @@ struct SyncView: View {
                 .listStyle(.insetGrouped)
             }
         }
-        .confirmationDialog("Select Trainee", isPresented: $showingTraineePicker) {
-            let trainees = identity.trainees(in: modelContext)
-            ForEach(trainees) { trainee in
-                Button(trainee.name) {
-                    selectedTrainee = trainee
-                    if let trainee = selectedTrainee {
-                        syncManager.sendPairingRequest(traineeUUID: trainee.id)
-                    }
-                }
-            }
-            Button("Cancel", role: .cancel) { }
+        .confirmationDialog("Match Identity", isPresented: $showingMatchPicker) {
+            matchPickerButtons
         } message: {
-            Text("Which trainee is this device?")
+            Text(matchPickerMessage)
         }
     }
 
@@ -157,41 +150,125 @@ struct SyncView: View {
 
     @ViewBuilder
     private func pairingView(peerName: String) -> some View {
-        if identity.isTrainer {
+        if let offer = syncManager.pendingOffer,
+           case .pairingOffer(_, let senderName, let senderIsTrainer, _, let linkedName) = offer {
+            if let linkedName {
+                // Verification step: sender linked us to a specific identity
+                verificationView(
+                    peerName: peerName,
+                    senderName: senderName,
+                    senderIsTrainer: senderIsTrainer,
+                    linkedName: linkedName
+                )
+            } else {
+                // No linked identity — go straight to match-or-new
+                matchOrNewView(peerName: peerName, senderName: senderName, senderIsTrainer: senderIsTrainer)
+            }
+        } else {
+            // Fallback
             VStack(spacing: GymMetrics.space16) {
                 Spacer()
                 AnimatedMascotView(pose: .stretching, animation: .wobble, color: GymColors.energy)
                     .frame(height: 80)
-                Text("Waiting for \(peerName) to accept pairing...")
+                Text("Pairing with \(peerName)...")
                     .font(GymFont.body)
                     .foregroundStyle(GymColors.secondaryText)
                 Spacer()
             }
-        } else {
-            VStack(spacing: GymMetrics.space16) {
-                Spacer()
-                MascotView(pose: .waving, color: GymColors.focus)
-                    .frame(height: GymMetrics.mascotMedium)
-                Text("\(peerName) wants to pair with you")
-                    .font(GymFont.heading2)
-                Text("This will link your account to their trainer profile")
-                    .font(GymFont.body)
-                    .foregroundStyle(GymColors.secondaryText)
-                    .multilineTextAlignment(.center)
-                HStack(spacing: GymMetrics.space16) {
-                    Button("Decline") {
-                        syncManager.stopSearching()
-                        syncManager.startSearching()
-                    }
-                    .buttonStyle(.bordered)
-                    Button("Accept") {
-                        syncManager.acceptPairing()
-                    }
-                    .buttonStyle(.gymPrimary)
+        }
+    }
+
+    private func verificationView(peerName: String, senderName: String, senderIsTrainer: Bool, linkedName: String) -> some View {
+        VStack(spacing: GymMetrics.space16) {
+            Spacer()
+            MascotView(pose: .waving, color: GymColors.focus)
+                .frame(height: GymMetrics.mascotMedium)
+            Text("\(senderName) (\(senderIsTrainer ? "trainer" : "trainee")) wants to pair with you as \"\(linkedName)\"")
+                .font(GymFont.heading2)
+                .multilineTextAlignment(.center)
+            Text("Is this you?")
+                .font(GymFont.body)
+                .foregroundStyle(GymColors.secondaryText)
+            HStack(spacing: GymMetrics.space16) {
+                Button("That's not me") {
+                    syncManager.declinePairing()
                 }
-                .padding(.horizontal, 40)
-                Spacer()
+                .buttonStyle(.bordered)
+                Button("Yes, that's me") {
+                    // Proceed to match-or-new (do they also have a profile for the sender?)
+                    showingMatchPicker = true
+                }
+                .buttonStyle(.gymPrimary)
             }
+            .padding(.horizontal, 40)
+            Spacer()
+        }
+    }
+
+    private func matchOrNewView(peerName: String, senderName: String, senderIsTrainer: Bool) -> some View {
+        VStack(spacing: GymMetrics.space16) {
+            Spacer()
+            MascotView(pose: .waving, color: GymColors.focus)
+                .frame(height: GymMetrics.mascotMedium)
+            Text("\(senderName) (\(senderIsTrainer ? "trainer" : "trainee")) wants to pair")
+                .font(GymFont.heading2)
+                .multilineTextAlignment(.center)
+            Text("Do you already have a profile for them?")
+                .font(GymFont.body)
+                .foregroundStyle(GymColors.secondaryText)
+                .multilineTextAlignment(.center)
+
+            VStack(spacing: GymMetrics.space8) {
+                // Show existing profiles to match
+                let candidates = matchCandidates(forTrainer: senderIsTrainer)
+                ForEach(candidates) { candidate in
+                    Button {
+                        syncManager.acceptPairing(linkedIdentityUUID: candidate.id, linkedIdentityName: candidate.name)
+                    } label: {
+                        HStack {
+                            Text(candidate.name)
+                                .font(GymFont.body)
+                            Spacer()
+                            Image(systemName: "checkmark.circle")
+                        }
+                        .padding(.horizontal, GymMetrics.space16)
+                        .padding(.vertical, GymMetrics.space12)
+                        .background(GymColors.steel.opacity(0.2))
+                        .cornerRadius(GymMetrics.radiusMedium)
+                    }
+                    .foregroundStyle(.primary)
+                }
+
+                Button("New — first time connecting") {
+                    syncManager.acceptPairing(linkedIdentityUUID: nil, linkedIdentityName: nil)
+                }
+                .buttonStyle(.gymPrimary)
+            }
+            .padding(.horizontal, 20)
+
+            Button("Decline") {
+                syncManager.declinePairing()
+            }
+            .foregroundStyle(GymColors.secondaryText)
+            .padding(.top, GymMetrics.space8)
+
+            Spacer()
+        }
+    }
+
+    private func waitingView(peerName: String) -> some View {
+        VStack(spacing: GymMetrics.space16) {
+            Spacer()
+            AnimatedMascotView(pose: .stretching, animation: .wobble, color: GymColors.energy)
+                .frame(height: 80)
+            Text("Waiting for \(peerName) to respond...")
+                .font(GymFont.body)
+                .foregroundStyle(GymColors.secondaryText)
+            Button("Cancel") {
+                syncManager.declinePairing()
+            }
+            .buttonStyle(.bordered)
+            Spacer()
         }
     }
 
@@ -257,8 +334,9 @@ struct SyncView: View {
 
     private func handlePeerTap(_ peer: DiscoveredPeer) {
         syncManager.connectToPeer(peer)
-        if identity.isTrainer && !isPaired(with: peer) {
-            showingTraineePicker = true
+        if !isPaired(with: peer) {
+            // Show match picker after connection is established
+            showingMatchPicker = true
         }
     }
 
@@ -268,5 +346,65 @@ struct SyncView: View {
             predicate: #Predicate { $0.localIdentityId == localId }
         ))) ?? []
         return pairings.contains { $0.remoteName == peer.name }
+    }
+
+    /// Returns candidates the user might match the peer to
+    private func matchCandidates(forTrainer senderIsTrainer: Bool) -> [IdentityEntity] {
+        if senderIsTrainer {
+            // Sender is a trainer — show our trainers (if we're a trainee with multiple trainers)
+            if let trainer = identity.trainer(in: modelContext) {
+                return [trainer]
+            }
+            return []
+        } else {
+            // Sender is a trainee — show our trainees
+            return identity.trainees(in: modelContext)
+        }
+    }
+
+    private var matchPickerMessage: String {
+        if identity.isTrainer {
+            "Which of your trainees is this device?"
+        } else {
+            "Is this one of your trainers?"
+        }
+    }
+
+    @ViewBuilder
+    private var matchPickerButtons: some View {
+        if identity.isTrainer {
+            let trainees = identity.trainees(in: modelContext)
+            ForEach(trainees) { trainee in
+                Button(trainee.name) {
+                    syncManager.sendPairingOffer(
+                        linkedIdentityUUID: trainee.id,
+                        linkedIdentityName: trainee.name
+                    )
+                }
+            }
+            Button("New trainee") {
+                syncManager.sendPairingOffer(
+                    linkedIdentityUUID: nil,
+                    linkedIdentityName: nil
+                )
+            }
+        } else {
+            // Trainee initiating — show known trainers
+            if let trainer = identity.trainer(in: modelContext) {
+                Button(trainer.name) {
+                    syncManager.sendPairingOffer(
+                        linkedIdentityUUID: trainer.id,
+                        linkedIdentityName: trainer.name
+                    )
+                }
+            }
+            Button("New trainer") {
+                syncManager.sendPairingOffer(
+                    linkedIdentityUUID: nil,
+                    linkedIdentityName: nil
+                )
+            }
+        }
+        Button("Cancel", role: .cancel) { }
     }
 }

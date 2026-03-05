@@ -108,6 +108,45 @@ final class SyncPayloadBuilderTests: XCTestCase {
         XCTAssertEqual(payload.identityWorkouts.count, 2)
     }
 
+    func testPayloadIncludesAliasedTraineeWorkouts() throws {
+        let ctx = try makeTestContext()
+        let trainer = ctx.makeTrainer()
+        let traineeA = ctx.makeTrainee(name: "Alex-A", trainer: trainer)
+        let traineeB = IdentityEntity(name: "Alex-B", isTrainer: false)
+        ctx.insert(traineeB)
+
+        // Both identities have workouts
+        ctx.makeWorkout(for: traineeA, isCompleted: true)
+        ctx.makeWorkout(for: traineeB, isCompleted: true)
+
+        // Create alias
+        IdentityReconciliation.createAlias(id1: traineeA.id, id2: traineeB.id, in: ctx)
+
+        let payload = SyncPayloadBuilder.build(localIdentity: trainer, pairedIdentity: traineeA, context: ctx)
+
+        // Should include workouts from both aliased identities
+        XCTAssertEqual(payload.workouts.count, 2)
+        XCTAssertFalse(payload.identityAliases.isEmpty)
+    }
+
+    func testPayloadIncludesIdentityAliasRows() throws {
+        let ctx = try makeTestContext()
+        let trainer = ctx.makeTrainer()
+        let trainee = ctx.makeTrainee(trainer: trainer)
+        let aliasId = UUID()
+
+        IdentityReconciliation.createAlias(id1: trainee.id, id2: aliasId, in: ctx)
+
+        let payload = SyncPayloadBuilder.build(localIdentity: trainer, pairedIdentity: trainee, context: ctx)
+
+        XCTAssertEqual(payload.identityAliases.count, 1)
+        let alias = payload.identityAliases.first!
+        XCTAssert(
+            (alias.identityId1 == trainee.id && alias.identityId2 == aliasId) ||
+            (alias.identityId1 == aliasId && alias.identityId2 == trainee.id)
+        )
+    }
+
     func testDeltaProducesEmptyJoinArrays() throws {
         let senderId = UUID()
         let payload = SyncPayload.delta(
@@ -123,5 +162,6 @@ final class SyncPayloadBuilderTests: XCTestCase {
         XCTAssert(payload.groupSetJoins.isEmpty)
         XCTAssert(payload.exerciseSetJoins.isEmpty)
         XCTAssert(payload.templateInstanceJoins.isEmpty)
+        XCTAssert(payload.identityAliases.isEmpty)
     }
 }

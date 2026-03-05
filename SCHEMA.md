@@ -147,6 +147,18 @@ Links a workout template to the workouts instantiated from it.
 | templateId | UUID |
 | workoutId | UUID |
 
+### IdentityAliases
+
+Links two identity UUIDs that represent the same person. Created during
+pairing when a trainer matches a peer to an existing trainee profile, or
+when a trainee matches a peer to an existing trainer profile. Enables
+federated identity without destructive UUID rewriting.
+
+| Column | Type |
+|--------|------|
+| identityId1 | UUID |
+| identityId2 | UUID |
+
 ### PairedDevices
 
 Tracks which devices have been paired via Multipeer Connectivity sync.
@@ -171,6 +183,7 @@ the correct remote identity for payload building.
 | GroupSets | Group contains these sets | Cascade: delete group &rarr; delete sets |
 | ExerciseSets | Sets reference this exercise | Nullify: delete exercise &rarr; remove join rows, sets remain |
 | TemplateInstances | Workout instantiated from this template | Cascade: delete either side &rarr; remove join row |
+| IdentityAliases | Two UUIDs represent the same person | Manual: alias data independent of entity lifecycle |
 | PairedDevices | Local identity paired with remote identity | Manual: pairing data independent of entity lifecycle |
 
 ## Computed Properties (not stored)

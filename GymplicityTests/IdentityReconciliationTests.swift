@@ -4,82 +4,158 @@ import SwiftData
 
 final class IdentityReconciliationTests: XCTestCase {
 
-    func testIdentityUUIDRewritten() throws {
+    // MARK: - createAlias
+
+    func testCreateAliasInsertsRow() throws {
         let ctx = try makeTestContext()
-        let trainee = ctx.makeTrainee(name: "Alex", trainer: ctx.makeTrainer())
-        let oldId = trainee.id
-        let newId = UUID()
+        let a = UUID()
+        let b = UUID()
 
-        IdentityReconciliation.rewriteIdentity(from: oldId, to: newId, in: ctx)
+        IdentityReconciliation.createAlias(id1: a, id2: b, in: ctx)
 
-        XCTAssertEqual(trainee.id, newId)
+        let rows = try ctx.fetch(FetchDescriptor<IdentityAliases>())
+        XCTAssertEqual(rows.count, 1)
+        XCTAssertEqual(rows.first?.identityId1, a)
+        XCTAssertEqual(rows.first?.identityId2, b)
     }
 
-    func testIdentityWorkoutsUpdatedForMatchingRows() throws {
+    func testCreateAliasSelfIsNoOp() throws {
         let ctx = try makeTestContext()
-        let trainer = ctx.makeTrainer()
-        let trainee = ctx.makeTrainee(name: "Alex", trainer: trainer)
-        let oldId = trainee.id
-        let newId = UUID()
-        ctx.makeWorkout(for: trainee)
+        let a = UUID()
 
-        IdentityReconciliation.rewriteIdentity(from: oldId, to: newId, in: ctx)
+        IdentityReconciliation.createAlias(id1: a, id2: a, in: ctx)
 
-        let iwJoins = try ctx.fetch(FetchDescriptor<IdentityWorkouts>(
-            predicate: #Predicate { $0.identityId == newId }
-        ))
-        XCTAssertEqual(iwJoins.count, 1)
-
-        // Old ID should have no joins
-        let oldJoins = try ctx.fetch(FetchDescriptor<IdentityWorkouts>(
-            predicate: #Predicate { $0.identityId == oldId }
-        ))
-        XCTAssert(oldJoins.isEmpty)
+        let rows = try ctx.fetch(FetchDescriptor<IdentityAliases>())
+        XCTAssert(rows.isEmpty)
     }
 
-    func testTrainerTraineesUpdatedForMatchingRows() throws {
+    func testCreateAliasDuplicateSkipped() throws {
         let ctx = try makeTestContext()
-        let trainer = ctx.makeTrainer()
-        let trainee = ctx.makeTrainee(name: "Alex", trainer: trainer)
-        let oldId = trainee.id
-        let newId = UUID()
+        let a = UUID()
+        let b = UUID()
 
-        IdentityReconciliation.rewriteIdentity(from: oldId, to: newId, in: ctx)
+        IdentityReconciliation.createAlias(id1: a, id2: b, in: ctx)
+        IdentityReconciliation.createAlias(id1: a, id2: b, in: ctx)
 
-        let ttJoins = try ctx.fetch(FetchDescriptor<TrainerTrainees>(
-            predicate: #Predicate { $0.traineeId == newId }
-        ))
-        XCTAssertEqual(ttJoins.count, 1)
-        XCTAssertEqual(ttJoins.first?.trainerId, trainer.id)
+        let rows = try ctx.fetch(FetchDescriptor<IdentityAliases>())
+        XCTAssertEqual(rows.count, 1)
     }
 
-    func testSameIdIsNoOp() throws {
+    func testCreateAliasReverseOrderDuplicateSkipped() throws {
         let ctx = try makeTestContext()
-        let trainer = ctx.makeTrainer()
-        let trainee = ctx.makeTrainee(name: "Alex", trainer: trainer)
-        let id = trainee.id
+        let a = UUID()
+        let b = UUID()
 
-        IdentityReconciliation.rewriteIdentity(from: id, to: id, in: ctx)
+        IdentityReconciliation.createAlias(id1: a, id2: b, in: ctx)
+        IdentityReconciliation.createAlias(id1: b, id2: a, in: ctx)
 
-        // Identity unchanged
-        XCTAssertEqual(trainee.id, id)
-        XCTAssertEqual(trainee.name, "Alex")
+        let rows = try ctx.fetch(FetchDescriptor<IdentityAliases>())
+        XCTAssertEqual(rows.count, 1)
     }
 
-    func testIdentityNotFoundLocallyCompletesWithoutCrash() throws {
+    // MARK: - aliasGroup
+
+    func testAliasGroupNoAliasReturnsSelf() throws {
+        let ctx = try makeTestContext()
+        let a = UUID()
+
+        let group = IdentityReconciliation.aliasGroup(for: a, in: ctx)
+
+        XCTAssertEqual(group, [a])
+    }
+
+    func testAliasGroupSingleAlias() throws {
+        let ctx = try makeTestContext()
+        let a = UUID()
+        let b = UUID()
+        IdentityReconciliation.createAlias(id1: a, id2: b, in: ctx)
+
+        let groupA = IdentityReconciliation.aliasGroup(for: a, in: ctx)
+        let groupB = IdentityReconciliation.aliasGroup(for: b, in: ctx)
+
+        XCTAssertEqual(groupA, [a, b])
+        XCTAssertEqual(groupB, [a, b])
+    }
+
+    func testAliasGroupTransitiveChain() throws {
+        let ctx = try makeTestContext()
+        let a = UUID()
+        let b = UUID()
+        let c = UUID()
+        IdentityReconciliation.createAlias(id1: a, id2: b, in: ctx)
+        IdentityReconciliation.createAlias(id1: b, id2: c, in: ctx)
+
+        let group = IdentityReconciliation.aliasGroup(for: a, in: ctx)
+
+        XCTAssertEqual(group, [a, b, c])
+    }
+
+    func testAliasGroupDisjointSetsNotConnected() throws {
+        let ctx = try makeTestContext()
+        let a = UUID()
+        let b = UUID()
+        let c = UUID()
+        let d = UUID()
+        IdentityReconciliation.createAlias(id1: a, id2: b, in: ctx)
+        IdentityReconciliation.createAlias(id1: c, id2: d, in: ctx)
+
+        let groupA = IdentityReconciliation.aliasGroup(for: a, in: ctx)
+
+        XCTAssertEqual(groupA, [a, b])
+        XCTAssertFalse(groupA.contains(c))
+        XCTAssertFalse(groupA.contains(d))
+    }
+
+    // MARK: - Alias-aware traversal
+
+    func testWorkoutsReturnedAcrossAliases() throws {
         let ctx = try makeTestContext()
         let trainer = ctx.makeTrainer()
-        let trainee = ctx.makeTrainee(name: "Alex", trainer: trainer)
-        let oldId = trainee.id
-        let newId = UUID()
-        let missingId = UUID()
+        let traineeA = ctx.makeTrainee(name: "Alex-A", trainer: trainer)
+        let traineeB = IdentityEntity(name: "Alex-B", isTrainer: false)
+        ctx.insert(traineeB)
 
-        // Rewrite from an ID that has no matching IdentityEntity
-        // but trainee's joins reference oldId, not missingId
-        IdentityReconciliation.rewriteIdentity(from: missingId, to: newId, in: ctx)
+        // Each identity has a workout
+        ctx.makeWorkout(for: traineeA, isCompleted: true)
+        ctx.makeWorkout(for: traineeB, isCompleted: true)
 
-        // Trainee entity unchanged
-        XCTAssertEqual(trainee.id, oldId)
-        // No crash — test passes if we get here
+        // Before alias: each sees only their own
+        XCTAssertEqual(traineeA.workouts(in: ctx).count, 1)
+        XCTAssertEqual(traineeB.workouts(in: ctx).count, 1)
+
+        // Create alias
+        IdentityReconciliation.createAlias(id1: traineeA.id, id2: traineeB.id, in: ctx)
+
+        // After alias: both see both workouts
+        XCTAssertEqual(traineeA.workouts(in: ctx).count, 2)
+        XCTAssertEqual(traineeB.workouts(in: ctx).count, 2)
+    }
+
+    func testCompletedWorkoutsAliasAware() throws {
+        let ctx = try makeTestContext()
+        let trainer = ctx.makeTrainer()
+        let traineeA = ctx.makeTrainee(name: "A", trainer: trainer)
+        let traineeB = IdentityEntity(name: "B", isTrainer: false)
+        ctx.insert(traineeB)
+        ctx.makeWorkout(for: traineeA, isCompleted: true)
+        ctx.makeWorkout(for: traineeB, isCompleted: true)
+        ctx.makeWorkout(for: traineeB) // active, should not appear
+
+        IdentityReconciliation.createAlias(id1: traineeA.id, id2: traineeB.id, in: ctx)
+
+        XCTAssertEqual(traineeA.completedWorkouts(in: ctx).count, 2)
+    }
+
+    func testWithoutAliasOnlyOwnWorkouts() throws {
+        let ctx = try makeTestContext()
+        let trainer = ctx.makeTrainer()
+        let traineeA = ctx.makeTrainee(name: "A", trainer: trainer)
+        let traineeB = ctx.makeTrainee(name: "B", trainer: trainer)
+        ctx.makeWorkout(for: traineeA)
+        ctx.makeWorkout(for: traineeB)
+
+        // No alias — each sees only their own
+        XCTAssertEqual(traineeA.workouts(in: ctx).count, 1)
+        XCTAssertEqual(traineeB.workouts(in: ctx).count, 1)
     }
 }

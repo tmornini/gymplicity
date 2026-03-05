@@ -23,6 +23,7 @@ struct GymplicityApp: App {
             GroupSets.self,
             ExerciseSets.self,
             TemplateInstances.self,
+            IdentityAliases.self,
             PairedDevices.self,
         ])
     }

@@ -2,35 +2,53 @@ import Foundation
 import SwiftData
 
 struct IdentityReconciliation {
-    /// Rewrites a trainee's local identity UUID to match the trainer's version.
-    /// Updates the IdentityEntity itself and all join table rows referencing the old UUID.
-    ///
-    /// Trainer's UUID wins (trainer-first app). Call this on the trainee's device
-    /// when pairing for the first time.
-    static func rewriteIdentity(from oldId: UUID, to newId: UUID, in context: ModelContext) {
-        guard oldId != newId else { return }
+    /// Inserts an IdentityAliases row linking two UUIDs if the pair doesn't already exist.
+    /// No-op when id1 == id2.
+    static func createAlias(id1: UUID, id2: UUID, in context: ModelContext) {
+        guard id1 != id2 else { return }
 
-        // 1. Update the IdentityEntity itself
-        if let identity = (try? context.fetch(FetchDescriptor<IdentityEntity>(
-            predicate: #Predicate { $0.id == oldId }
-        )))?.first {
-            identity.id = newId
+        // Check both orderings
+        let a = id1, b = id2
+        let existing = (try? context.fetch(FetchDescriptor<IdentityAliases>(
+            predicate: #Predicate {
+                ($0.identityId1 == a && $0.identityId2 == b) ||
+                ($0.identityId1 == b && $0.identityId2 == a)
+            }
+        )))?.first
+
+        if existing == nil {
+            context.insert(IdentityAliases(identityId1: id1, identityId2: id2))
+        }
+    }
+
+    /// Returns the connected component of UUIDs reachable from the given UUID
+    /// through IdentityAliases rows. Always includes the input UUID itself.
+    static func aliasGroup(for uuid: UUID, in context: ModelContext) -> Set<UUID> {
+        var visited = Set<UUID>()
+        var frontier = Set<UUID>([uuid])
+
+        while !frontier.isEmpty {
+            visited.formUnion(frontier)
+            var nextFrontier = Set<UUID>()
+
+            for id in frontier {
+                let rows = (try? context.fetch(FetchDescriptor<IdentityAliases>(
+                    predicate: #Predicate {
+                        $0.identityId1 == id || $0.identityId2 == id
+                    }
+                ))) ?? []
+
+                for row in rows {
+                    let other = row.identityId1 == id ? row.identityId2 : row.identityId1
+                    if !visited.contains(other) {
+                        nextFrontier.insert(other)
+                    }
+                }
+            }
+
+            frontier = nextFrontier
         }
 
-        // 2. Update IdentityWorkouts rows where identityId == oldId
-        let iwJoins = (try? context.fetch(FetchDescriptor<IdentityWorkouts>(
-            predicate: #Predicate { $0.identityId == oldId }
-        ))) ?? []
-        for join in iwJoins {
-            join.identityId = newId
-        }
-
-        // 3. Update TrainerTrainees rows where traineeId == oldId
-        let ttJoins = (try? context.fetch(FetchDescriptor<TrainerTrainees>(
-            predicate: #Predicate { $0.traineeId == oldId }
-        ))) ?? []
-        for join in ttJoins {
-            join.traineeId = newId
-        }
+        return visited
     }
 }

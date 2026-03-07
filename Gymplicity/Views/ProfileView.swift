@@ -10,8 +10,44 @@ struct ProfileView: View {
     @State private var showingSync = false
 
     var body: some View {
+        let allWorkouts = identity.workouts(in: modelContext)
+        let active = allWorkouts.filter { !$0.isCompleted && !$0.isTemplate }
+        let completed = allWorkouts
+            .filter { $0.isCompleted && !$0.isTemplate }
+            .sorted { $0.date > $1.date }
+
+        // Batch-fetch subgraph for all workouts to derive exercisesUsed
+        let allNonTemplate = allWorkouts.filter { !$0.isTemplate }
+        let subgraph = BatchTraversal.workoutSubgraph(workoutIds: allNonTemplate.map(\.id), in: modelContext)
+
+        // Derive exercisesUsed from the subgraph
+        let exercisesUsed: [ExerciseEntity] = {
+            var seen = Set<UUID>()
+            var exercises: [ExerciseEntity] = []
+            for workout in allNonTemplate {
+                for group in subgraph.sortedGroups(for: workout.id) {
+                    for set in subgraph.sortedSets(for: group.id) {
+                        if let ex = subgraph.exerciseBySet[set.id], seen.insert(ex.id).inserted {
+                            exercises.append(ex)
+                        }
+                    }
+                }
+            }
+            return exercises.sorted { $0.name < $1.name }
+        }()
+
+        // Batch-fetch lastSets for all exercises
+        let lastSets = BatchTraversal.lastSets(for: identity, exerciseIds: exercisesUsed.map(\.id), in: modelContext)
+
+        // Batch-fetch subgraph for completed workouts (for WorkoutRow)
+        let completedSubgraph: WorkoutSubgraph = {
+            guard !completed.isEmpty else {
+                return WorkoutSubgraph(groupsByWorkout: [:], setsByGroup: [:], exerciseBySet: [:])
+            }
+            return BatchTraversal.workoutSubgraph(workoutIds: completed.map(\.id), in: modelContext)
+        }()
+
         List {
-            let active = identity.activeWorkouts(in: modelContext)
             if !active.isEmpty {
                 Section("Active Workout") {
                     ForEach(active) { workout in
@@ -24,7 +60,8 @@ struct ProfileView: View {
                                     .frame(width: GymMetrics.completionDotSize, height: GymMetrics.completionDotSize)
                                 Text(workout.date, style: .date)
                                 Spacer()
-                                Text("\(workout.exerciseCount(in: modelContext)) ex")
+                                let count = subgraph.exerciseCount(for: workout.id)
+                                Text("\(count) ex")
                                     .foregroundStyle(GymColors.secondaryText)
                             }
                         }
@@ -54,14 +91,18 @@ struct ProfileView: View {
                 }
             }
 
-            let completed = identity.completedWorkouts(in: modelContext)
             if !completed.isEmpty {
                 Section("Recent Workouts") {
                     ForEach(completed.prefix(20)) { workout in
                         NavigationLink {
                             WorkoutHistoryView(workout: workout)
                         } label: {
-                            WorkoutRow(workout: workout)
+                            WorkoutRow(
+                                workout: workout,
+                                exerciseCount: completedSubgraph.exerciseCount(for: workout.id),
+                                totalVolume: completedSubgraph.totalVolume(for: workout.id),
+                                exerciseNames: completedSubgraph.exerciseNames(for: workout.id)
+                            )
                         }
                     }
                 }
@@ -79,17 +120,16 @@ struct ProfileView: View {
                 }
             }
 
-            let exercises = identity.exercisesUsed(in: modelContext)
-            if !exercises.isEmpty {
+            if !exercisesUsed.isEmpty {
                 Section("Progress by Exercise") {
-                    ForEach(exercises) { exercise in
+                    ForEach(exercisesUsed) { exercise in
                         NavigationLink {
                             ProgressChartsView(identity: identity, exercise: exercise)
                         } label: {
                             HStack {
                                 Text(exercise.name)
                                 Spacer()
-                                if let lastSet = identity.lastSet(for: exercise, in: modelContext) {
+                                if let lastSet = lastSets[exercise.id] {
                                     Text("\(Weight.formatted(lastSet.weight)) x \(lastSet.reps)")
                                         .font(GymFont.bodyMono)
                                         .foregroundStyle(GymColors.secondaryText)
@@ -143,27 +183,26 @@ struct ProfileView: View {
 }
 
 private struct WorkoutRow: View {
-    @Environment(\.modelContext) private var modelContext
     let workout: WorkoutEntity
+    let exerciseCount: Int
+    let totalVolume: Double
+    let exerciseNames: String
 
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
-            let count = workout.exerciseCount(in: modelContext)
             HStack {
                 Text(workout.date, style: .date)
                     .font(GymFont.body)
                 Spacer()
-                Text("\(count) exercise\(count == 1 ? "" : "s")")
+                Text("\(exerciseCount) exercise\(exerciseCount == 1 ? "" : "s")")
                     .font(GymFont.caption)
                     .foregroundStyle(GymColors.secondaryText)
             }
-            let volume = workout.totalVolume(in: modelContext)
-            if volume > 0 {
-                Text("Total volume: \(formatVolume(volume)) lb")
+            if totalVolume > 0 {
+                Text("Total volume: \(formatVolume(totalVolume)) lb")
                     .font(GymFont.caption)
                     .foregroundStyle(GymColors.secondaryText)
             }
-            let exerciseNames = exerciseNamesList()
             if !exerciseNames.isEmpty {
                 Text(exerciseNames)
                     .font(GymFont.caption)
@@ -172,10 +211,6 @@ private struct WorkoutRow: View {
             }
         }
         .padding(.vertical, 2)
-    }
-
-    private func exerciseNamesList() -> String {
-        workout.exerciseNames(in: modelContext)
     }
 
     private func formatVolume(_ volume: Double) -> String {

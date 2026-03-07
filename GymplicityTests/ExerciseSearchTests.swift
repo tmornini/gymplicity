@@ -77,22 +77,22 @@ final class LevenshteinTests: XCTestCase {
 }
 
 final class ParsedQueryTests: XCTestCase {
-    func testSimpleTokens() {
+    func testSimpleTerms() {
         let q = ParsedQuery("bench press")
-        XCTAssertEqual(q.positiveTokens, ["bench", "press"])
-        XCTAssertTrue(q.negativeTokens.isEmpty)
+        XCTAssertEqual(q.positiveTerms, ["bench", "press"])
+        XCTAssertTrue(q.negativeTerms.isEmpty)
     }
 
     func testNegation() {
         let q = ParsedQuery("back !delts")
-        XCTAssertEqual(q.positiveTokens, ["back"])
-        XCTAssertEqual(q.negativeTokens, ["delts"])
+        XCTAssertEqual(q.positiveTerms, ["back"])
+        XCTAssertEqual(q.negativeTerms, ["delts"])
     }
 
     func testMultipleNegations() {
         let q = ParsedQuery("curl !cable !machine")
-        XCTAssertEqual(q.positiveTokens, ["curl"])
-        XCTAssertEqual(q.negativeTokens, ["cable", "machine"])
+        XCTAssertEqual(q.positiveTerms, ["curl"])
+        XCTAssertEqual(q.negativeTerms, ["cable", "machine"])
     }
 
     func testEmptyQuery() {
@@ -102,20 +102,20 @@ final class ParsedQueryTests: XCTestCase {
 
     func testOnlyNegation() {
         let q = ParsedQuery("!delts")
-        XCTAssertTrue(q.positiveTokens.isEmpty)
-        XCTAssertEqual(q.negativeTokens, ["delts"])
+        XCTAssertTrue(q.positiveTerms.isEmpty)
+        XCTAssertEqual(q.negativeTerms, ["delts"])
         XCTAssertFalse(q.isEmpty)
     }
 
     func testBangAloneIgnored() {
         let q = ParsedQuery("squat !")
-        XCTAssertEqual(q.positiveTokens, ["squat"])
-        XCTAssertTrue(q.negativeTokens.isEmpty)
+        XCTAssertEqual(q.positiveTerms, ["squat"])
+        XCTAssertTrue(q.negativeTerms.isEmpty)
     }
 
     func testCaseInsensitive() {
         let q = ParsedQuery("BENCH Press")
-        XCTAssertEqual(q.positiveTokens, ["bench", "press"])
+        XCTAssertEqual(q.positiveTerms, ["bench", "press"])
     }
 }
 

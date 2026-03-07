@@ -14,21 +14,27 @@ struct ActiveWorkoutsContainerView: View {
     enum ViewMode { case list, guided }
 
     private var sortedPairs: [(identity: IdentityEntity, workout: WorkoutEntity)] {
-        trainer.trainees(in: modelContext)
-            .flatMap { trainee in
-                trainee.activeWorkouts(in: modelContext).map { (identity: trainee, workout: $0) }
-            }
-            .sorted { $0.workout.date < $1.workout.date }
-    }
+        let traineeList = trainer.trainees(in: modelContext)
+        let traineeIds = traineeList.map(\.id)
+        let workoutsByID = BatchTraversal.workoutsByIdentity(identityIds: traineeIds, in: modelContext)
+        let traineeMap = Dictionary(traineeList.map { ($0.id, $0) }, uniquingKeysWith: { a, _ in a })
 
-    private var currentPair: (identity: IdentityEntity, workout: WorkoutEntity)? {
-        let pairs = sortedPairs
-        guard currentIndex >= 0, currentIndex < pairs.count else { return nil }
-        return pairs[currentIndex]
+        return workoutsByID.flatMap { (identityId, workouts) -> [(identity: IdentityEntity, workout: WorkoutEntity)] in
+            guard let trainee = traineeMap[identityId] else { return [] }
+            return workouts
+                .filter { !$0.isCompleted && !$0.isTemplate }
+                .map { (identity: trainee, workout: $0) }
+        }
+        .sorted { $0.workout.date < $1.workout.date }
     }
 
     var body: some View {
         let pairs = sortedPairs
+        let currentPair: (identity: IdentityEntity, workout: WorkoutEntity)? = {
+            guard currentIndex >= 0, currentIndex < pairs.count else { return nil }
+            return pairs[currentIndex]
+        }()
+
         Group {
             if let pair = currentPair {
                 let workoutId = pair.workout.id
@@ -106,12 +112,11 @@ struct ActiveWorkoutsContainerView: View {
         .onAppear {
             guard !hasInitialized else { return }
             hasInitialized = true
-            let pairs = sortedPairs
             if let index = pairs.firstIndex(where: { $0.workout.id == initialWorkoutId }) {
                 currentIndex = index
             }
         }
-        .onChange(of: sortedPairs.map(\.workout.id)) { oldIds, newIds in
+        .onChange(of: pairs.map(\.workout.id)) { oldIds, newIds in
             guard oldIds != newIds else { return }
             if newIds.isEmpty {
                 dismiss()
@@ -158,7 +163,7 @@ struct ActiveWorkoutsContainerView: View {
                     DragGesture(minimumDistance: 30)
                         .onEnded { value in
                             if value.translation.width > 50 {
-                                goToPrevious()
+                                goToPrevious(count: sortedPairs.count)
                             }
                         }
                 )
@@ -172,7 +177,7 @@ struct ActiveWorkoutsContainerView: View {
                     DragGesture(minimumDistance: 30)
                         .onEnded { value in
                             if value.translation.width < -50 {
-                                goToNext()
+                                goToNext(count: sortedPairs.count)
                             }
                         }
                 )
@@ -182,16 +187,14 @@ struct ActiveWorkoutsContainerView: View {
 
     // MARK: - Navigation
 
-    private func goToPrevious() {
-        let count = sortedPairs.count
+    private func goToPrevious(count: Int) {
         guard count > 1 else { return }
         withAnimation(.easeInOut(duration: 0.25)) {
             currentIndex = (currentIndex - 1 + count) % count
         }
     }
 
-    private func goToNext() {
-        let count = sortedPairs.count
+    private func goToNext(count: Int) {
         guard count > 1 else { return }
         withAnimation(.easeInOut(duration: 0.25)) {
             currentIndex = (currentIndex + 1) % count

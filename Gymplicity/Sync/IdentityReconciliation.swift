@@ -23,29 +23,32 @@ struct IdentityReconciliation {
 
     /// Returns the connected component of UUIDs reachable from the given UUID
     /// through IdentityAliases rows. Always includes the input UUID itself.
+    /// Uses a single query to fetch all alias rows, then BFS in-memory.
     static func aliasGroup(for uuid: UUID, in context: ModelContext) -> Set<UUID> {
+        // Fetch ALL alias rows in one query (table is tiny)
+        let allRows = (try? context.fetch(FetchDescriptor<IdentityAliases>())) ?? []
+
+        // Build adjacency list in-memory
+        var adjacency: [UUID: Set<UUID>] = [:]
+        for row in allRows {
+            adjacency[row.identityId1, default: []].insert(row.identityId2)
+            adjacency[row.identityId2, default: []].insert(row.identityId1)
+        }
+
+        // BFS in-memory
         var visited = Set<UUID>()
         var frontier = Set<UUID>([uuid])
 
         while !frontier.isEmpty {
             visited.formUnion(frontier)
             var nextFrontier = Set<UUID>()
-
             for id in frontier {
-                let rows = (try? context.fetch(FetchDescriptor<IdentityAliases>(
-                    predicate: #Predicate {
-                        $0.identityId1 == id || $0.identityId2 == id
-                    }
-                ))) ?? []
-
-                for row in rows {
-                    let other = row.identityId1 == id ? row.identityId2 : row.identityId1
-                    if !visited.contains(other) {
-                        nextFrontier.insert(other)
+                for neighbor in adjacency[id] ?? [] {
+                    if !visited.contains(neighbor) {
+                        nextFrontier.insert(neighbor)
                     }
                 }
             }
-
             frontier = nextFrontier
         }
 

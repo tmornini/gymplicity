@@ -4,8 +4,8 @@ import SwiftData
 // MARK: - ParsedQuery
 
 struct ParsedQuery {
-    let positiveTokens: [String]
-    let negativeTokens: [String]
+    let positiveTerms: [String]
+    let negativeTerms: [String]
 
     init(_ input: String) {
         var positive: [String] = []
@@ -18,11 +18,11 @@ struct ParsedQuery {
                 positive.append(word)
             }
         }
-        self.positiveTokens = positive
-        self.negativeTokens = negative
+        self.positiveTerms = positive
+        self.negativeTerms = negative
     }
 
-    var isEmpty: Bool { positiveTokens.isEmpty && negativeTokens.isEmpty }
+    var isEmpty: Bool { positiveTerms.isEmpty && negativeTerms.isEmpty }
 }
 
 // MARK: - Levenshtein
@@ -146,14 +146,17 @@ struct ExerciseSearchResults {
 final class ExerciseSearchEngine {
     static let shared = ExerciseSearchEngine()
 
-    private lazy var indexedCatalog: [IndexedCatalogExercise] = {
+    private let indexedCatalog: [IndexedCatalogExercise]
+
+    private init() {
         guard let url = Bundle.main.url(forResource: "exercises", withExtension: "json"),
               let data = try? Data(contentsOf: url),
               let exercises = try? JSONDecoder().decode([CatalogExercise].self, from: data) else {
-            return []
+            indexedCatalog = []
+            return
         }
-        return exercises.map { IndexedCatalogExercise($0) }
-    }()
+        indexedCatalog = exercises.map { IndexedCatalogExercise($0) }
+    }
 
     func search(
         query: String,
@@ -192,15 +195,15 @@ final class ExerciseSearchEngine {
         return exercises.compactMap { exercise in
             let name = exercise.name.lowercased()
 
-            for neg in query.negativeTokens {
+            for neg in query.negativeTerms {
                 if Levenshtein.matches(neg, against: name) { return nil }
             }
 
-            for pos in query.positiveTokens {
+            for pos in query.positiveTerms {
                 if !Levenshtein.matches(pos, against: name) { return nil }
             }
 
-            let exactBonus = name == query.positiveTokens.joined(separator: " ") ? 0 : 1
+            let exactBonus = name == query.positiveTerms.joined(separator: " ") ? 0 : 1
             return UserExerciseResult(exercise: exercise, score: exactBonus)
         }
         .sorted { $0.score < $1.score || ($0.score == $1.score && $0.exercise.name < $1.exercise.name) }
@@ -213,14 +216,14 @@ final class ExerciseSearchEngine {
         return indexedCatalog.compactMap { indexed in
             if excludingNames.contains(indexed.exercise.name.lowercased()) { return nil }
 
-            for neg in query.negativeTokens {
+            for neg in query.negativeTerms {
                 if indexed.searchBlob.contains(neg) { return nil }
             }
 
             var allReasons: [MatchReason] = []
 
-            for token in query.positiveTokens {
-                let reasons = matchToken(token, against: indexed)
+            for term in query.positiveTerms {
+                let reasons = matchTerm(term, against: indexed)
                 if reasons.isEmpty { return nil }
                 allReasons.append(contentsOf: reasons)
             }
@@ -232,41 +235,53 @@ final class ExerciseSearchEngine {
         .sorted { $0.score < $1.score || ($0.score == $1.score && $0.exercise.name < $1.exercise.name) }
     }
 
-    private func matchToken(_ token: String, against indexed: IndexedCatalogExercise) -> [MatchReason] {
+    private func matchTerm(_ term: String, against indexed: IndexedCatalogExercise) -> [MatchReason] {
         var reasons: [MatchReason] = []
 
-        if indexed.nameTokens.contains(where: { Levenshtein.matches(token, against: $0) }) {
+        if indexed.nameWords.contains(where: { Levenshtein.matches(term, against: $0) }) {
             reasons.append(.exactName)
         }
 
-        if indexed.aliasTokens.contains(where: { Levenshtein.matches(token, against: $0) }) {
+        if indexed.aliasWords.contains(where: { Levenshtein.matches(term, against: $0) }) {
             let matchedAlias = indexed.exercise.aliases.first {
-                Levenshtein.matches(token, against: $0.lowercased())
+                Levenshtein.matches(term, against: $0.lowercased())
             }
-            reasons.append(.alias(matchedAlias ?? token))
+            reasons.append(.alias(matchedAlias ?? term))
         }
 
-        for muscle in indexed.exercise.primaryMuscles {
-            if Levenshtein.matches(token, against: muscle) {
-                reasons.append(.primaryMuscle(muscle))
-            }
-        }
-
-        for muscle in indexed.exercise.secondaryMuscles {
-            if Levenshtein.matches(token, against: muscle) {
-                reasons.append(.secondaryMuscle(muscle))
+        for word in indexed.primaryMuscleWords {
+            if Levenshtein.matches(term, against: word) {
+                let displayName = indexed.exercise.primaryMuscles.first {
+                    $0.lowercased().contains(word)
+                } ?? word
+                reasons.append(.primaryMuscle(displayName))
             }
         }
 
-        for joint in indexed.exercise.joints {
-            if Levenshtein.matches(token, against: joint) {
-                reasons.append(.joint(joint))
+        for word in indexed.secondaryMuscleWords {
+            if Levenshtein.matches(term, against: word) {
+                let displayName = indexed.exercise.secondaryMuscles.first {
+                    $0.lowercased().contains(word)
+                } ?? word
+                reasons.append(.secondaryMuscle(displayName))
             }
         }
 
-        for region in indexed.exercise.bodyRegions {
-            if Levenshtein.matches(token, against: region) {
-                reasons.append(.bodyRegion(region))
+        for word in indexed.jointWords {
+            if Levenshtein.matches(term, against: word) {
+                let displayName = indexed.exercise.joints.first {
+                    $0.lowercased().contains(word)
+                } ?? word
+                reasons.append(.joint(displayName))
+            }
+        }
+
+        for word in indexed.regionWords {
+            if Levenshtein.matches(term, against: word) {
+                let displayName = indexed.exercise.bodyRegions.first {
+                    $0.lowercased().contains(word)
+                } ?? word
+                reasons.append(.bodyRegion(displayName))
             }
         }
 

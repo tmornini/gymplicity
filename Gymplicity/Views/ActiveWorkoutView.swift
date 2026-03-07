@@ -12,12 +12,24 @@ struct ActiveWorkoutView: View {
     @State private var targetGroup: WorkoutGroupEntity?
 
     var body: some View {
+        let snapshot = WorkoutSnapshot.load(workout, in: modelContext)
+        let owner = workout.owner(in: modelContext)
+
+        // Batch-fetch lastSets for all exercises in this workout
+        let exerciseIds = Array(Set(snapshot.groups.flatMap { g in g.sets.compactMap { $0.exercise?.id } }))
+        let lastSets = owner.map { BatchTraversal.lastSets(for: $0, exerciseIds: exerciseIds, in: modelContext) } ?? [:]
+
         List {
-            ForEach(workout.sortedGroups(in: modelContext)) { group in
+            ForEach(snapshot.groups) { groupSnap in
+                let group = groupSnap.group
                 if group.isSuperset {
                     Section {
-                        ForEach(group.sortedSets(in: modelContext)) { set in
-                            SetRow(set: set, group: group, workout: workout)
+                        ForEach(groupSnap.sets) { setSnap in
+                            SetRow(
+                                set: setSnap.set,
+                                exercise: setSnap.exercise,
+                                previousSet: setSnap.exercise.flatMap { lastSets[$0.id] }
+                            )
                         }
                         .onDelete { offsets in deleteSets(from: group, at: offsets) }
 
@@ -36,8 +48,12 @@ struct ActiveWorkoutView: View {
                     }
                 } else {
                     Section {
-                        ForEach(group.sortedSets(in: modelContext)) { set in
-                            SetRow(set: set, group: group, workout: workout)
+                        ForEach(groupSnap.sets) { setSnap in
+                            SetRow(
+                                set: setSnap.set,
+                                exercise: setSnap.exercise,
+                                previousSet: setSnap.exercise.flatMap { lastSets[$0.id] }
+                            )
                         }
                         .onDelete { offsets in deleteSets(from: group, at: offsets) }
 
@@ -49,7 +65,7 @@ struct ActiveWorkoutView: View {
                                 .foregroundStyle(GymColors.energy)
                         }
                     } header: {
-                        Text(group.exerciseName(in: modelContext))
+                        Text(groupSnap.exerciseName)
                             .font(GymFont.heading3)
                             .textCase(nil)
                     }
@@ -79,7 +95,7 @@ struct ActiveWorkoutView: View {
             if onSwitchToGuided == nil {
                 ToolbarItem(placement: .principal) {
                     VStack(spacing: 0) {
-                        Text(workout.owner(in: modelContext)?.name ?? "Workout")
+                        Text(owner?.name ?? "Workout")
                             .font(GymFont.heading3)
                         Text(workout.date, style: .date)
                             .font(GymFont.caption)
@@ -120,8 +136,8 @@ struct ActiveWorkoutView: View {
             Button("End Workout", role: .destructive) { endWorkout() }
             Button("Cancel", role: .cancel) { }
         } message: {
-            let groups = workout.groups(in: modelContext)
-            let setCount = groups.flatMap { $0.sets(in: modelContext) }.count
+            let groups = snapshot.groups
+            let setCount = groups.flatMap(\.sets).count
             Text("This workout has \(groups.count) group\(groups.count == 1 ? "" : "s") and \(setCount) set\(setCount == 1 ? "" : "s").")
         }
         .sheet(isPresented: $showingAddExercise) {
@@ -166,10 +182,9 @@ struct ActiveWorkoutView: View {
 // MARK: - Set Row
 
 struct SetRow: View {
-    @Environment(\.modelContext) private var modelContext
     @Bindable var set: SetEntity
-    let group: WorkoutGroupEntity
-    let workout: WorkoutEntity
+    let exercise: ExerciseEntity?
+    let previousSet: SetEntity?
     @State private var showingEditor = false
 
     var body: some View {
@@ -177,7 +192,6 @@ struct SetRow: View {
             showingEditor = true
         } label: {
             HStack {
-                let exercise = set.exercise(in: modelContext)
                 Text(exercise?.name ?? "Exercise")
                     .font(GymFont.label)
                     .foregroundStyle(GymColors.secondaryText)
@@ -220,16 +234,9 @@ struct SetRow: View {
         .sheet(isPresented: $showingEditor) {
             SetEntryView(
                 set: set,
-                exercise: set.exercise(in: modelContext),
-                previousSet: previousSet()
+                exercise: exercise,
+                previousSet: previousSet
             )
         }
     }
-
-    private func previousSet() -> SetEntity? {
-        guard let exercise = set.exercise(in: modelContext),
-              let owner = workout.owner(in: modelContext) else { return nil }
-        return owner.lastSet(for: exercise, in: modelContext)
-    }
-
 }

@@ -7,24 +7,10 @@ struct AddExerciseView: View {
     let group: WorkoutGroupEntity
     let trainer: IdentityEntity?
     @State private var searchText = ""
+    @State private var results = ExerciseSearchResults(userExercises: [], catalogExercises: [])
+    @State private var cachedUserExercises: [ExerciseEntity] = []
+    @State private var cachedRecentlyUsedIDs: Set<UUID> = []
     @FocusState private var nameFieldFocused: Bool
-
-    private var searchResults: ExerciseSearchResults {
-        guard let trainer else {
-            return ExerciseSearchResults(userExercises: [], catalogExercises: [])
-        }
-        let userExercises = trainer.exerciseCatalog(in: modelContext)
-        let recentlyUsedIDs = Set(trainer.exercisesUsed(in: modelContext).map(\.id))
-        return ExerciseSearchEngine.shared.search(
-            query: searchText,
-            userExercises: userExercises,
-            recentlyUsedIDs: recentlyUsedIDs
-        )
-    }
-
-    private var hasResults: Bool {
-        !searchResults.userExercises.isEmpty || !searchResults.catalogExercises.isEmpty
-    }
 
     var body: some View {
         NavigationStack {
@@ -39,11 +25,11 @@ struct AddExerciseView: View {
 
                 Divider()
 
-                if hasResults {
+                if !results.userExercises.isEmpty || !results.catalogExercises.isEmpty {
                     List {
-                        if !searchResults.userExercises.isEmpty {
+                        if !results.userExercises.isEmpty {
                             Section("Your Exercises") {
-                                ForEach(searchResults.userExercises) { result in
+                                ForEach(results.userExercises) { result in
                                     Button {
                                         addExisting(result.exercise)
                                     } label: {
@@ -54,9 +40,9 @@ struct AddExerciseView: View {
                             }
                         }
 
-                        if !searchResults.catalogExercises.isEmpty {
+                        if !results.catalogExercises.isEmpty {
                             Section("Exercise Catalog") {
-                                ForEach(searchResults.catalogExercises) { result in
+                                ForEach(results.catalogExercises) { result in
                                     Button {
                                         addFromCatalog(result.exercise)
                                     } label: {
@@ -108,7 +94,26 @@ struct AddExerciseView: View {
                         .disabled(searchText.trimmingCharacters(in: .whitespaces).isEmpty)
                 }
             }
-            .onAppear { nameFieldFocused = true }
+            .onAppear {
+                nameFieldFocused = true
+                guard let trainer else { return }
+                cachedUserExercises = trainer.exerciseCatalog(in: modelContext)
+                cachedRecentlyUsedIDs = Set(trainer.exercisesUsed(in: modelContext).map(\.id))
+                results = ExerciseSearchEngine.shared.search(
+                    query: "",
+                    userExercises: cachedUserExercises,
+                    recentlyUsedIDs: cachedRecentlyUsedIDs
+                )
+            }
+            .task(id: searchText) {
+                try? await Task.sleep(for: .milliseconds(200))
+                guard !Task.isCancelled else { return }
+                results = ExerciseSearchEngine.shared.search(
+                    query: searchText,
+                    userExercises: cachedUserExercises,
+                    recentlyUsedIDs: cachedRecentlyUsedIDs
+                )
+            }
         }
         .presentationDetents([.medium, .large])
     }

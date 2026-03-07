@@ -11,9 +11,23 @@ struct HomeView: View {
 
     var body: some View {
         let trainees = identity.trainees(in: modelContext)
+        let traineeIds = trainees.map(\.id)
+        let workoutsByIdentity = BatchTraversal.workoutsByIdentity(identityIds: traineeIds, in: modelContext)
+
         let active = trainees.flatMap { trainee in
-            trainee.activeWorkouts(in: modelContext).map { (identity: trainee, workout: $0) }
+            (workoutsByIdentity[trainee.id] ?? [])
+                .filter { !$0.isCompleted && !$0.isTemplate }
+                .map { (identity: trainee, workout: $0) }
         }.sorted { $0.workout.date < $1.workout.date }
+
+        let subgraph: WorkoutSubgraph = {
+            let activeWorkoutIds = active.map(\.workout.id)
+            guard !activeWorkoutIds.isEmpty else {
+                return WorkoutSubgraph(groupsByWorkout: [:], setsByGroup: [:], exerciseBySet: [:])
+            }
+            return BatchTraversal.workoutSubgraph(workoutIds: activeWorkoutIds, in: modelContext)
+        }()
+
         List {
             if !active.isEmpty {
                 Section {
@@ -21,7 +35,11 @@ struct HomeView: View {
                         NavigationLink {
                             ActiveWorkoutsContainerView(trainer: identity, initialWorkoutId: pair.workout.id)
                         } label: {
-                            ActiveWorkoutRow(identity: pair.identity, workout: pair.workout)
+                            ActiveWorkoutRow(
+                                identity: pair.identity,
+                                workout: pair.workout,
+                                exerciseCount: subgraph.exerciseCount(for: pair.workout.id)
+                            )
                         }
                     }
                 } header: {
@@ -49,14 +67,18 @@ struct HomeView: View {
             }
 
             Section("Trainees") {
-                ForEach(trainees.sorted(by: { $0.name < $1.name })) { trainee in
+                let sortedTrainees = trainees.sorted(by: { $0.name < $1.name })
+                ForEach(sortedTrainees) { trainee in
+                    let traineeWorkouts = workoutsByIdentity[trainee.id] ?? []
+                    let completed = traineeWorkouts.filter { $0.isCompleted && !$0.isTemplate }
+                    let hasActive = traineeWorkouts.contains { !$0.isCompleted && !$0.isTemplate }
                     NavigationLink {
                         ProfileView(identity: trainee)
                     } label: {
-                        TraineeRow(identity: trainee)
+                        TraineeRow(identity: trainee, completedCount: completed.count, hasActiveWorkout: hasActive)
                     }
                     .swipeActions(edge: .trailing, allowsFullSwipe: false) {
-                        if trainee.activeWorkouts(in: modelContext).isEmpty {
+                        if !hasActive {
                             Button("Start") { startWorkout(for: trainee) }
                                 .tint(GymColors.power)
                             if !identity.templates(in: modelContext).isEmpty {
@@ -70,7 +92,7 @@ struct HomeView: View {
                     }
                 }
                 .onDelete { offsets in
-                    deleteTrainees(from: trainees.sorted(by: { $0.name < $1.name }), at: offsets)
+                    deleteTrainees(from: sortedTrainees, at: offsets)
                 }
             }
 
@@ -133,9 +155,9 @@ struct HomeView: View {
 // MARK: - Row Views
 
 private struct ActiveWorkoutRow: View {
-    @Environment(\.modelContext) private var modelContext
     let identity: IdentityEntity
     let workout: WorkoutEntity
+    let exerciseCount: Int
 
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
@@ -149,9 +171,8 @@ private struct ActiveWorkoutRow: View {
             Text(timeAgo(workout.date))
                 .font(GymFont.caption)
                 .foregroundStyle(GymColors.secondaryText)
-            let count = workout.exerciseCount(in: modelContext)
-            if count > 0 {
-                Text("\(count) exercise\(count == 1 ? "" : "s")")
+            if exerciseCount > 0 {
+                Text("\(exerciseCount) exercise\(exerciseCount == 1 ? "" : "s")")
                     .font(GymFont.caption)
                     .foregroundStyle(GymColors.secondaryText)
             }
@@ -169,12 +190,11 @@ private struct ActiveWorkoutRow: View {
 }
 
 private struct TraineeRow: View {
-    @Environment(\.modelContext) private var modelContext
     let identity: IdentityEntity
+    let completedCount: Int
+    let hasActiveWorkout: Bool
 
     var body: some View {
-        let completed = identity.completedWorkouts(in: modelContext)
-        let active = identity.activeWorkouts(in: modelContext)
         HStack {
             ZStack {
                 Circle()
@@ -187,14 +207,14 @@ private struct TraineeRow: View {
             VStack(alignment: .leading, spacing: 2) {
                 Text(identity.name)
                     .font(GymFont.body)
-                if !completed.isEmpty {
-                    Text("\(completed.count) workout\(completed.count == 1 ? "" : "s")")
+                if completedCount > 0 {
+                    Text("\(completedCount) workout\(completedCount == 1 ? "" : "s")")
                         .font(GymFont.caption)
                         .foregroundStyle(GymColors.secondaryText)
                 }
             }
             Spacer()
-            if active.isEmpty {
+            if !hasActiveWorkout {
                 Text("Start")
                     .gymPill(GymColors.steel)
             } else {

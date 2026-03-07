@@ -15,23 +15,27 @@ struct GuidedWorkoutView: View {
     @State private var showWalkingTransition = false
     @FocusState private var focusedField: WeightRepsField.Field?
 
-    private var flatSets: [(group: WorkoutGroupEntity, set: SetEntity)] {
-        workout.allSetsFlattened(in: modelContext)
-    }
-
-    private var currentPair: (group: WorkoutGroupEntity, set: SetEntity)? {
-        guard currentIndex >= 0, currentIndex < flatSets.count else { return nil }
-        return flatSets[currentIndex]
-    }
-
     var body: some View {
+        let snapshot = WorkoutSnapshot.load(workout, in: modelContext)
+        let flatSets = snapshot.allSetsFlattened
+        let owner = workout.owner(in: modelContext)
+
+        // Batch-fetch lastSets for all exercises
+        let exerciseIds = Array(Set(snapshot.groups.flatMap { g in g.sets.compactMap { $0.exercise?.id } }))
+        let lastSets = owner.map { BatchTraversal.lastSets(for: $0, exerciseIds: exerciseIds, in: modelContext) } ?? [:]
+
+        let currentPair: (group: WorkoutGroupEntity, set: SetEntity)? = {
+            guard currentIndex >= 0, currentIndex < flatSets.count else { return nil }
+            return flatSets[currentIndex]
+        }()
+
         Group {
             if let pair = currentPair {
-                guidedContent(pair: pair)
+                guidedContent(pair: pair, snapshot: snapshot, flatSets: flatSets, lastSets: lastSets)
             } else if flatSets.isEmpty {
                 emptyState
             } else {
-                completionView
+                completionView(setCount: flatSets.count)
             }
         }
         .navigationBarTitleDisplayMode(.inline)
@@ -84,12 +88,18 @@ struct GuidedWorkoutView: View {
     // MARK: - Guided Content
 
     @ViewBuilder
-    private func guidedContent(pair: (group: WorkoutGroupEntity, set: SetEntity)) -> some View {
-        let exercise = pair.set.exercise(in: modelContext)
-        let groups = workout.sortedGroups(in: modelContext)
-        let groupIndex = groups.firstIndex(where: { $0.id == pair.group.id }) ?? 0
-        let setsInGroup = pair.group.sortedSets(in: modelContext)
-        let setIndex = setsInGroup.firstIndex(where: { $0.id == pair.set.id }) ?? 0
+    private func guidedContent(
+        pair: (group: WorkoutGroupEntity, set: SetEntity),
+        snapshot: WorkoutSnapshot,
+        flatSets: [(group: WorkoutGroupEntity, set: SetEntity)],
+        lastSets: [UUID: SetEntity]
+    ) -> some View {
+        let exercise = snapshot.subgraph.exercise(for: pair.set.id)
+        let groups = snapshot.groups
+        let groupIndex = groups.firstIndex(where: { $0.group.id == pair.group.id }) ?? 0
+        let groupSnap = groups.indices.contains(groupIndex) ? groups[groupIndex] : nil
+        let setIndex = groupSnap?.sets.firstIndex(where: { $0.set.id == pair.set.id }) ?? 0
+        let setsInGroupCount = groupSnap?.sets.count ?? 0
 
         VStack(spacing: 20) {
             Spacer()
@@ -101,7 +111,7 @@ struct GuidedWorkoutView: View {
                     .font(GymFont.heading1)
             }
 
-            Text("Group \(groupIndex + 1) of \(groups.count) \u{00B7} Set \(setIndex + 1) of \(setsInGroup.count)")
+            Text("Group \(groupIndex + 1) of \(groups.count) \u{00B7} Set \(setIndex + 1) of \(setsInGroupCount)")
                 .font(GymFont.label)
                 .foregroundStyle(GymColors.secondaryText)
 
@@ -115,9 +125,9 @@ struct GuidedWorkoutView: View {
                 focusedField: $focusedField
             )
 
-            progressBar
+            progressBar(snapshot: snapshot, flatSets: flatSets)
 
-            LastSetReference(set: previousSet(for: exercise))
+            LastSetReference(set: exercise.flatMap { lastSets[$0.id] })
 
             Button {
                 completeCurrentSet()
@@ -144,8 +154,8 @@ struct GuidedWorkoutView: View {
 
     // MARK: - Progress Bar
 
-    private var progressBar: some View {
-        let progress = workout.completionProgress(in: modelContext)
+    private func progressBar(snapshot: WorkoutSnapshot, flatSets: [(group: WorkoutGroupEntity, set: SetEntity)]) -> some View {
+        let progress = snapshot.completionProgress
         let completed = flatSets.filter { $0.set.isCompleted }.count
         return VStack(spacing: GymMetrics.space4) {
             GymProgressBar(progress: progress)
@@ -158,13 +168,13 @@ struct GuidedWorkoutView: View {
 
     // MARK: - Completion View
 
-    private var completionView: some View {
+    private func completionView(setCount: Int) -> some View {
         VStack(spacing: GymMetrics.space16) {
             AnimatedMascotView(pose: .celebrating, animation: .bounce, color: GymColors.power)
                 .frame(height: GymMetrics.mascotLarge)
             Text("All Sets Complete!")
                 .font(GymFont.heading1)
-            Text("\(flatSets.count) sets finished")
+            Text("\(setCount) sets finished")
                 .font(GymFont.body)
                 .foregroundStyle(GymColors.secondaryText)
 
@@ -185,7 +195,10 @@ struct GuidedWorkoutView: View {
     }
 
     private func completeCurrentSet() {
-        guard let pair = currentPair else { return }
+        let flatSets = workout.allSetsFlattened(in: modelContext)
+        guard currentIndex >= 0, currentIndex < flatSets.count else { return }
+        let pair = flatSets[currentIndex]
+
         pair.set.weight = Double(weightText) ?? 0
         pair.set.reps = Int(repsText) ?? 0
         pair.set.isCompleted = true
@@ -212,15 +225,12 @@ struct GuidedWorkoutView: View {
     }
 
     private func loadCurrentSet() {
-        guard let pair = currentPair else { return }
+        let flatSets = workout.allSetsFlattened(in: modelContext)
+        guard currentIndex >= 0, currentIndex < flatSets.count else { return }
+        let pair = flatSets[currentIndex]
         weightText = pair.set.weight > 0 ? Weight.rawValue(pair.set.weight) : ""
         repsText = pair.set.reps > 0 ? "\(pair.set.reps)" : ""
         focusedField = .weight
         onSetIndexChange?(currentIndex)
-    }
-
-    private func previousSet(for exercise: ExerciseEntity?) -> SetEntity? {
-        guard let exercise, let owner = workout.owner(in: modelContext) else { return nil }
-        return owner.lastSet(for: exercise, in: modelContext)
     }
 }

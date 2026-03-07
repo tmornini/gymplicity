@@ -23,6 +23,7 @@ struct RootView: View {
                 }
             }
             .navigationTitle("Gymplicity")
+            .task { _ = ExerciseSearchEngine.shared }
             .alert("Set Up Your Profile", isPresented: $showingSetup) {
                 TextField("Your Name", text: $setupName)
                 Button("I'm a Trainer") { createIdentity(isTrainer: true) }

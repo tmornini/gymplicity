@@ -8,8 +8,11 @@ struct HomeView: View {
     @State private var showingTemplateStart = false
     @State private var selectedTrainee: IdentityEntity?
     @State private var showingSync = false
+    @State private var newWorkout: WorkoutEntity?
+    @State private var newWorkoutTrainee: IdentityEntity?
 
     var body: some View {
+        let hasTemplates = !identity.templates(in: modelContext).isEmpty
         let trainees = identity.trainees(in: modelContext)
         let traineeIds = trainees.map(\.id)
         let workoutsByIdentity = BatchTraversal.workoutsByIdentity(identityIds: traineeIds, in: modelContext)
@@ -81,7 +84,7 @@ struct HomeView: View {
                         if !hasActive {
                             Button("Start") { startWorkout(for: trainee) }
                                 .tint(GymColors.power)
-                            if !identity.templates(in: modelContext).isEmpty {
+                            if hasTemplates {
                                 Button("Template") {
                                     selectedTrainee = trainee
                                     showingTemplateStart = true
@@ -136,12 +139,18 @@ struct HomeView: View {
                 StartFromTemplateView(trainer: identity, trainee: trainee)
             }
         }
+        .navigationDestination(item: $newWorkout) { workout in
+            ActiveWorkoutsContainerView(trainer: identity, initialWorkoutId: workout.id)
+        }
     }
 
     // MARK: - Actions
 
-    private func startWorkout(for identity: IdentityEntity) {
-        modelContext.startWorkout(for: identity)
+    private func startWorkout(for trainee: IdentityEntity) {
+        if let workout = modelContext.startWorkout(for: trainee) {
+            newWorkoutTrainee = trainee
+            newWorkout = workout
+        }
     }
 
     private func deleteTrainees(from sorted: [IdentityEntity], at offsets: IndexSet) {

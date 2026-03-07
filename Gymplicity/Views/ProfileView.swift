@@ -8,6 +8,7 @@ struct ProfileView: View {
     @State private var editedName = ""
     @State private var showingTemplateStart = false
     @State private var showingSync = false
+    @State private var newWorkout: WorkoutEntity?
 
     var body: some View {
         let allWorkouts = identity.workouts(in: modelContext)
@@ -36,15 +37,31 @@ struct ProfileView: View {
             return exercises.sorted { $0.name < $1.name }
         }()
 
-        // Batch-fetch lastSets for all exercises
-        let lastSets = BatchTraversal.lastSets(for: identity, exerciseIds: exercisesUsed.map(\.id), in: modelContext)
-
-        // Batch-fetch subgraph for completed workouts (for WorkoutRow)
-        let completedSubgraph: WorkoutSubgraph = {
-            guard !completed.isEmpty else {
-                return WorkoutSubgraph(groupsByWorkout: [:], setsByGroup: [:], exerciseBySet: [:])
+        // Compute lastSets inline from existing subgraph (avoids redundant queries)
+        let lastSets: [UUID: SetEntity] = {
+            var result: [UUID: SetEntity] = [:]
+            let targetIds = Set(exercisesUsed.map(\.id))
+            guard !targetIds.isEmpty else { return [:] }
+            for workout in completed {
+                for group in subgraph.sortedGroups(for: workout.id) {
+                    for set in subgraph.sortedSets(for: group.id) {
+                        if let exercise = subgraph.exerciseBySet[set.id],
+                           targetIds.contains(exercise.id),
+                           result[exercise.id] == nil {
+                            result[exercise.id] = set
+                        }
+                    }
+                }
+                if result.count == targetIds.count { break }
             }
-            return BatchTraversal.workoutSubgraph(workoutIds: completed.map(\.id), in: modelContext)
+            return result
+        }()
+
+        // Pre-compute trainerWithTemplates to avoid re-evaluation in view tree
+        let trainerForTemplates: IdentityEntity? = {
+            let trainer = identity.isTrainer ? identity : identity.trainer(in: modelContext)
+            guard let trainer, !trainer.templates(in: modelContext).isEmpty else { return nil }
+            return trainer
         }()
 
         List {
@@ -79,7 +96,7 @@ struct ProfileView: View {
                             .foregroundStyle(GymColors.energy)
                     }
                 }
-                if let trainer = trainerWithTemplates() {
+                if let trainer = trainerForTemplates {
                     Button {
                         showingTemplateStart = true
                     } label: {
@@ -99,9 +116,9 @@ struct ProfileView: View {
                         } label: {
                             WorkoutRow(
                                 workout: workout,
-                                exerciseCount: completedSubgraph.exerciseCount(for: workout.id),
-                                totalVolume: completedSubgraph.totalVolume(for: workout.id),
-                                exerciseNames: completedSubgraph.exerciseNames(for: workout.id)
+                                exerciseCount: subgraph.exerciseCount(for: workout.id),
+                                totalVolume: subgraph.totalVolume(for: workout.id),
+                                exerciseNames: subgraph.exerciseNames(for: workout.id)
                             )
                         }
                     }
@@ -157,6 +174,9 @@ struct ProfileView: View {
         .sheet(isPresented: $showingSync) {
             SyncView(identity: identity)
         }
+        .navigationDestination(item: $newWorkout) { workout in
+            ActiveWorkoutView(workout: workout)
+        }
         .alert("Edit Name", isPresented: $showingEditName) {
             TextField("Name", text: $editedName)
             Button("Save") {
@@ -170,14 +190,8 @@ struct ProfileView: View {
         }
     }
 
-    private func trainerWithTemplates() -> IdentityEntity? {
-        let trainer = identity.isTrainer ? identity : identity.trainer(in: modelContext)
-        guard let trainer, !trainer.templates(in: modelContext).isEmpty else { return nil }
-        return trainer
-    }
-
     private func startWorkout() {
-        modelContext.startWorkout(for: identity)
+        newWorkout = modelContext.startWorkout(for: identity)
     }
 
 }

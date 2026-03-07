@@ -178,6 +178,32 @@ struct BatchTraversal {
         return result
     }
 
+    /// Returns exercise IDs used across all workouts for an identity, querying only join tables.
+    /// ~5-6 queries total regardless of data size (vs N+1 entity traversal).
+    static func exerciseIdsUsed(for identity: IdentityEntity, in context: ModelContext) -> Set<UUID> {
+        let workoutIds = identity.workouts(in: context).map(\.id)
+        guard !workoutIds.isEmpty else { return [] }
+
+        let wIds = workoutIds
+        let wgJoins = (try? context.fetch(FetchDescriptor<WorkoutGroups>(
+            predicate: #Predicate { wIds.contains($0.workoutId) }
+        ))) ?? []
+        let groupIds = wgJoins.map(\.groupId)
+        guard !groupIds.isEmpty else { return [] }
+
+        let gsJoins = (try? context.fetch(FetchDescriptor<GroupSets>(
+            predicate: #Predicate { groupIds.contains($0.groupId) }
+        ))) ?? []
+        let setIds = gsJoins.map(\.setId)
+        guard !setIds.isEmpty else { return [] }
+
+        let esJoins = (try? context.fetch(FetchDescriptor<ExerciseSets>(
+            predicate: #Predicate { setIds.contains($0.setId) }
+        ))) ?? []
+
+        return Set(esJoins.map(\.exerciseId))
+    }
+
     /// Batch-fetch the most recent completed set for each exercise, for a given identity.
     static func lastSets(
         for identity: IdentityEntity,

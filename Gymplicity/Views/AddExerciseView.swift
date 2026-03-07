@@ -8,8 +8,8 @@ struct AddExerciseView: View {
     let trainer: IdentityEntity?
     @State private var searchText = ""
     @State private var results = ExerciseSearchResults(userExercises: [], catalogExercises: [])
-    @State private var cachedUserExercises: [ExerciseEntity] = []
-    @State private var cachedRecentlyUsedIDs: Set<UUID> = []
+    @State private var userExercises: [ExerciseEntity] = []
+    @State private var recentlyUsedIDs: Set<UUID> = []
     @FocusState private var nameFieldFocused: Bool
 
     var body: some View {
@@ -97,12 +97,12 @@ struct AddExerciseView: View {
             .onAppear {
                 nameFieldFocused = true
                 guard let trainer else { return }
-                cachedUserExercises = trainer.exerciseCatalog(in: modelContext)
-                cachedRecentlyUsedIDs = Set(trainer.exercisesUsed(in: modelContext).map(\.id))
+                userExercises = trainer.exerciseCatalog(in: modelContext)
+                recentlyUsedIDs = BatchTraversal.exerciseIdsUsed(for: trainer, in: modelContext)
                 results = ExerciseSearchEngine.shared.search(
                     query: "",
-                    userExercises: cachedUserExercises,
-                    recentlyUsedIDs: cachedRecentlyUsedIDs
+                    userExercises: userExercises,
+                    recentlyUsedIDs: recentlyUsedIDs
                 )
             }
             .task(id: searchText) {
@@ -110,8 +110,8 @@ struct AddExerciseView: View {
                 guard !Task.isCancelled else { return }
                 results = ExerciseSearchEngine.shared.search(
                     query: searchText,
-                    userExercises: cachedUserExercises,
-                    recentlyUsedIDs: cachedRecentlyUsedIDs
+                    userExercises: userExercises,
+                    recentlyUsedIDs: recentlyUsedIDs
                 )
             }
         }

@@ -91,4 +91,34 @@ final class ExerciseCatalogTests: XCTestCase {
         XCTAssertEqual(all.count, 2)
         XCTAssertEqual(all.map(\.name), ["Bench Press", "Squat"])
     }
+
+    func testBatchExerciseIdsUsedMatchesEntityTraversal() throws {
+        let ctx = try makeTestContext()
+        let trainer = ctx.makeTrainer()
+        let bench = ctx.makeExercise(name: "Bench Press", trainer: trainer)
+        let squat = ctx.makeExercise(name: "Squat", trainer: trainer)
+        let trainee = ctx.makeTrainee(trainer: trainer)
+
+        let w1 = ctx.makeWorkout(for: trainee, date: .now.addingTimeInterval(-86400), isCompleted: true)
+        let g1 = ctx.makeGroup(in: w1, order: 0)
+        ctx.makeSet(in: g1, exercise: bench, order: 0, weight: 135, reps: 10)
+
+        let w2 = ctx.makeWorkout(for: trainee, isCompleted: true)
+        let g2 = ctx.makeGroup(in: w2, order: 0)
+        ctx.makeSet(in: g2, exercise: bench, order: 0, weight: 145, reps: 8)
+        ctx.makeSet(in: g2, exercise: squat, order: 1, weight: 225, reps: 5)
+
+        let entityIds = Set(trainee.exercisesUsed(in: ctx).map(\.id))
+        let batchIds = BatchTraversal.exerciseIdsUsed(for: trainee, in: ctx)
+
+        XCTAssertEqual(batchIds, entityIds)
+    }
+
+    func testBatchExerciseIdsUsedEmptyForNewUser() throws {
+        let ctx = try makeTestContext()
+        let trainer = ctx.makeTrainer()
+
+        let ids = BatchTraversal.exerciseIdsUsed(for: trainer, in: ctx)
+        XCTAssert(ids.isEmpty)
+    }
 }

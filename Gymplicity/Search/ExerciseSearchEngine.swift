@@ -11,7 +11,7 @@ struct ParsedQuery {
         var positive: [String] = []
         var negative: [String] = []
         for word in input.lowercased().split(separator: " ").map(String.init) {
-            if word.hasPrefix("!") {
+            if word.hasPrefix("-") {
                 let stripped = String(word.dropFirst())
                 if !stripped.isEmpty { negative.append(stripped) }
             } else {

@@ -84,13 +84,13 @@ final class ParsedQueryTests: XCTestCase {
     }
 
     func testNegation() {
-        let q = ParsedQuery("back !delts")
+        let q = ParsedQuery("back -delts")
         XCTAssertEqual(q.positiveTerms, ["back"])
         XCTAssertEqual(q.negativeTerms, ["delts"])
     }
 
     func testMultipleNegations() {
-        let q = ParsedQuery("curl !cable !machine")
+        let q = ParsedQuery("curl -cable -machine")
         XCTAssertEqual(q.positiveTerms, ["curl"])
         XCTAssertEqual(q.negativeTerms, ["cable", "machine"])
     }
@@ -101,14 +101,14 @@ final class ParsedQueryTests: XCTestCase {
     }
 
     func testOnlyNegation() {
-        let q = ParsedQuery("!delts")
+        let q = ParsedQuery("-delts")
         XCTAssertTrue(q.positiveTerms.isEmpty)
         XCTAssertEqual(q.negativeTerms, ["delts"])
         XCTAssertFalse(q.isEmpty)
     }
 
-    func testBangAloneIgnored() {
-        let q = ParsedQuery("squat !")
+    func testHyphenAloneIgnored() {
+        let q = ParsedQuery("squat -")
         XCTAssertEqual(q.positiveTerms, ["squat"])
         XCTAssertTrue(q.negativeTerms.isEmpty)
     }
@@ -177,7 +177,7 @@ final class ExerciseSearchEngineTests: XCTestCase {
     func testNegationExcludes() {
         let engine = ExerciseSearchEngine.shared
         let all = engine.search(query: "back", userExercises: [])
-        let filtered = engine.search(query: "back !legs", userExercises: [])
+        let filtered = engine.search(query: "back -legs", userExercises: [])
         XCTAssertLessThan(filtered.catalogExercises.count, all.catalogExercises.count,
                           "Negation should reduce results")
     }

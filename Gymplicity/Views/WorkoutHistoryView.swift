@@ -3,7 +3,9 @@ import SwiftData
 
 struct WorkoutHistoryView: View {
     @Environment(\.modelContext) private var modelContext
+    @Environment(\.dismiss) private var dismiss
     let workout: WorkoutEntity
+    @State private var showingDeleteConfirmation = false
 
     var body: some View {
         List {
@@ -79,6 +81,26 @@ struct WorkoutHistoryView: View {
         }
         .navigationTitle("Workout Details")
         .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .primaryAction) {
+                Button { showingDeleteConfirmation = true } label: {
+                    Image(systemName: "trash")
+                        .foregroundStyle(GymColors.danger)
+                }
+            }
+        }
+        .confirmationDialog("Delete Workout?", isPresented: $showingDeleteConfirmation) {
+            Button("Delete Workout", role: .destructive) {
+                modelContext.deleteWorkout(workout)
+                SyncTrigger.structureChanged()
+                dismiss()
+            }
+            Button("Cancel", role: .cancel) { }
+        } message: {
+            let groups = workout.groups(in: modelContext)
+            let setCount = groups.flatMap { $0.sets(in: modelContext) }.count
+            Text("This workout has \(groups.count) group\(groups.count == 1 ? "" : "s") and \(setCount) set\(setCount == 1 ? "" : "s"). This cannot be undone.")
+        }
     }
 
     private func groupHeader(_ group: WorkoutGroupEntity) -> String {

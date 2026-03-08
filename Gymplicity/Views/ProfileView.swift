@@ -83,6 +83,7 @@ struct ProfileView: View {
                             }
                         }
                     }
+                    .onDelete { offsets in deleteWorkouts(from: active, at: offsets) }
                 }
             }
 
@@ -110,7 +111,8 @@ struct ProfileView: View {
 
             if !completed.isEmpty {
                 Section("Recent Workouts") {
-                    ForEach(completed.prefix(20)) { workout in
+                    let recentCompleted = Array(completed.prefix(20))
+                    ForEach(recentCompleted) { workout in
                         NavigationLink {
                             WorkoutHistoryView(workout: workout)
                         } label: {
@@ -122,6 +124,7 @@ struct ProfileView: View {
                             )
                         }
                     }
+                    .onDelete { offsets in deleteWorkouts(from: recentCompleted, at: offsets) }
                 }
             } else {
                 Section {
@@ -192,6 +195,13 @@ struct ProfileView: View {
 
     private func startWorkout() {
         newWorkout = modelContext.startWorkout(for: identity)
+    }
+
+    private func deleteWorkouts(from workouts: [WorkoutEntity], at offsets: IndexSet) {
+        for index in offsets {
+            modelContext.deleteWorkout(workouts[index])
+        }
+        SyncTrigger.structureChanged()
     }
 
 }

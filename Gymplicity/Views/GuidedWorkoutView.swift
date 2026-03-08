@@ -12,6 +12,7 @@ struct GuidedWorkoutView: View {
     @State private var weightText: String = ""
     @State private var repsText: String = ""
     @State private var showingEndConfirmation = false
+    @State private var showingDeleteWorkout = false
     @State private var showWalkingTransition = false
     @FocusState private var focusedField: WeightRepsField.Field?
 
@@ -54,12 +55,28 @@ struct GuidedWorkoutView: View {
                     .fontWeight(.semibold)
                     .foregroundStyle(GymColors.danger)
             }
+            ToolbarItem(placement: .primaryAction) {
+                Button { showingDeleteWorkout = true } label: {
+                    Image(systemName: "trash")
+                        .foregroundStyle(GymColors.danger)
+                }
+            }
         }
         .confirmationDialog("End Workout?", isPresented: $showingEndConfirmation) {
             Button("End Workout", role: .destructive) {
                 endWorkout()
             }
             Button("Cancel", role: .cancel) { }
+        }
+        .confirmationDialog("Delete Workout?", isPresented: $showingDeleteWorkout) {
+            Button("Delete Workout", role: .destructive) {
+                deleteWorkout()
+            }
+            Button("Cancel", role: .cancel) { }
+        } message: {
+            let groups = snapshot.groups
+            let setCount = groups.flatMap(\.sets).count
+            Text("This workout has \(groups.count) group\(groups.count == 1 ? "" : "s") and \(setCount) set\(setCount == 1 ? "" : "s"). This cannot be undone.")
         }
         .onAppear {
             if let saved = initialSetIndex {
@@ -191,6 +208,12 @@ struct GuidedWorkoutView: View {
 
     private func endWorkout() {
         workout.markCompleted()
+        if onSwitchToList == nil { dismiss() }
+    }
+
+    private func deleteWorkout() {
+        modelContext.deleteWorkout(workout)
+        SyncTrigger.structureChanged()
         if onSwitchToList == nil { dismiss() }
     }
 

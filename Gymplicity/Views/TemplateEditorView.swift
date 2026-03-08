@@ -7,6 +7,7 @@ struct TemplateEditorView: View {
     let trainer: IdentityEntity
     @State private var showingAddExercise = false
     @State private var targetGroup: WorkoutGroupEntity?
+    @State private var groupToDelete: WorkoutGroupEntity?
     @State private var editingName = false
     @State private var nameText = ""
 
@@ -41,6 +42,13 @@ struct TemplateEditorView: View {
                             .font(GymFont.label)
                             .foregroundStyle(GymColors.energy)
                     }
+
+                    Button(role: .destructive) {
+                        groupToDelete = group
+                    } label: {
+                        Label(group.isSuperset ? "Remove Superset" : "Remove Group", systemImage: "trash")
+                            .font(GymFont.label)
+                    }
                 } header: {
                     Text(group.isSuperset ? "Superset \(group.order + 1)" : group.exerciseName(in: modelContext))
                         .font(GymFont.heading3)
@@ -64,6 +72,25 @@ struct TemplateEditorView: View {
                 Text(template.templateName ?? "Template")
                     .font(GymFont.heading3)
             }
+        }
+        .confirmationDialog(
+            groupToDelete?.isSuperset == true ? "Remove Superset?" : "Remove Group?",
+            isPresented: Binding(
+                get: { groupToDelete != nil },
+                set: { if !$0 { groupToDelete = nil } }
+            ),
+            presenting: groupToDelete
+        ) { group in
+            Button("Remove", role: .destructive) {
+                modelContext.deleteGroup(group)
+                SyncTrigger.structureChanged()
+                groupToDelete = nil
+            }
+            Button("Cancel", role: .cancel) { groupToDelete = nil }
+        } message: { group in
+            let setCount = group.sets(in: modelContext).count
+            let label = group.isSuperset ? "superset" : "group"
+            Text("This \(label) has \(setCount) set\(setCount == 1 ? "" : "s") that will be deleted.")
         }
         .alert("Rename Template", isPresented: $editingName) {
             TextField("Template Name", text: $nameText)

@@ -9,7 +9,9 @@ struct ActiveWorkoutView: View {
     var onSwitchToGuided: (() -> Void)? = nil
     @State private var showingAddExercise = false
     @State private var showingEndConfirmation = false
+    @State private var showingDeleteWorkout = false
     @State private var targetGroup: WorkoutGroupEntity?
+    @State private var groupToDelete: WorkoutGroupEntity?
 
     var body: some View {
         let snapshot = WorkoutSnapshot.load(workout, in: modelContext)
@@ -41,6 +43,13 @@ struct ActiveWorkoutView: View {
                                 .font(GymFont.label)
                                 .foregroundStyle(GymColors.energy)
                         }
+
+                        Button(role: .destructive) {
+                            groupToDelete = group
+                        } label: {
+                            Label("Remove Superset", systemImage: "trash")
+                                .font(GymFont.label)
+                        }
                     } header: {
                         Text("Superset \(group.order + 1)")
                             .font(GymFont.heading3)
@@ -63,6 +72,13 @@ struct ActiveWorkoutView: View {
                             Label("Add Set", systemImage: "plus")
                                 .font(GymFont.label)
                                 .foregroundStyle(GymColors.energy)
+                        }
+
+                        Button(role: .destructive) {
+                            groupToDelete = group
+                        } label: {
+                            Label("Remove Group", systemImage: "trash")
+                                .font(GymFont.label)
                         }
                     } header: {
                         Text(groupSnap.exerciseName)
@@ -108,6 +124,12 @@ struct ActiveWorkoutView: View {
                     .fontWeight(.semibold)
                     .foregroundStyle(GymColors.danger)
             }
+            ToolbarItem(placement: .primaryAction) {
+                Button { showingDeleteWorkout = true } label: {
+                    Image(systemName: "trash")
+                        .foregroundStyle(GymColors.danger)
+                }
+            }
             ToolbarItem(placement: .bottomBar) {
                 if let switchToGuided = onSwitchToGuided {
                     Button { switchToGuided() } label: {
@@ -140,6 +162,33 @@ struct ActiveWorkoutView: View {
             let setCount = groups.flatMap(\.sets).count
             Text("This workout has \(groups.count) group\(groups.count == 1 ? "" : "s") and \(setCount) set\(setCount == 1 ? "" : "s").")
         }
+        .confirmationDialog(
+            groupToDelete?.isSuperset == true ? "Remove Superset?" : "Remove Group?",
+            isPresented: Binding(
+                get: { groupToDelete != nil },
+                set: { if !$0 { groupToDelete = nil } }
+            ),
+            presenting: groupToDelete
+        ) { group in
+            Button("Remove", role: .destructive) {
+                modelContext.deleteGroup(group)
+                SyncTrigger.structureChanged()
+                groupToDelete = nil
+            }
+            Button("Cancel", role: .cancel) { groupToDelete = nil }
+        } message: { group in
+            let setCount = group.sets(in: modelContext).count
+            let label = group.isSuperset ? "superset" : "group"
+            Text("This \(label) has \(setCount) set\(setCount == 1 ? "" : "s") that will be deleted.")
+        }
+        .confirmationDialog("Delete Workout?", isPresented: $showingDeleteWorkout) {
+            Button("Delete Workout", role: .destructive) { deleteWorkout() }
+            Button("Cancel", role: .cancel) { }
+        } message: {
+            let groups = snapshot.groups
+            let setCount = groups.flatMap(\.sets).count
+            Text("This workout has \(groups.count) group\(groups.count == 1 ? "" : "s") and \(setCount) set\(setCount == 1 ? "" : "s"). This cannot be undone.")
+        }
         .sheet(isPresented: $showingAddExercise) {
             if let group = targetGroup {
                 AddExerciseView(group: group, trainer: trainer ?? resolveTrainer())
@@ -170,6 +219,12 @@ struct ActiveWorkoutView: View {
 
     private func endWorkout() {
         workout.markCompleted()
+        if onSwitchToGuided == nil { dismiss() }
+    }
+
+    private func deleteWorkout() {
+        modelContext.deleteWorkout(workout)
+        SyncTrigger.structureChanged()
         if onSwitchToGuided == nil { dismiss() }
     }
 

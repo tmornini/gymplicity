@@ -2,7 +2,7 @@ import XCTest
 import SwiftData
 @testable import Gymplicity
 
-final class SyncEngineTests: XCTestCase {
+@MainActor final class SyncEngineTests: XCTestCase {
 
     // MARK: - Identity Authority
 

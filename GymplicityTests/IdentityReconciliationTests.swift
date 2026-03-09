@@ -2,7 +2,7 @@ import XCTest
 import SwiftData
 @testable import Gymplicity
 
-final class IdentityReconciliationTests: XCTestCase {
+@MainActor final class IdentityReconciliationTests: XCTestCase {
 
     // MARK: - createAlias
 

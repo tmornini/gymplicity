@@ -2,7 +2,7 @@ import XCTest
 import SwiftData
 @testable import Gymplicity
 
-final class TemplateTests: XCTestCase {
+@MainActor final class TemplateTests: XCTestCase {
 
     func testCreateTemplate() throws {
         let ctx = try makeTestContext()

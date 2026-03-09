@@ -85,7 +85,7 @@ struct WorkoutSubgraph {
 
 struct BatchTraversal {
     /// Fetches the full subgraph for a set of workouts in ~6 queries.
-    static func workoutSubgraph(workoutIds: [UUID], in context: ModelContext) -> WorkoutSubgraph {
+    @MainActor static func workoutSubgraph(workoutIds: [UUID], in context: ModelContext) -> WorkoutSubgraph {
         guard !workoutIds.isEmpty else {
             return WorkoutSubgraph(groupsByWorkout: [:], setsByGroup: [:], exerciseBySet: [:])
         }
@@ -155,7 +155,7 @@ struct BatchTraversal {
     }
 
     /// Batch-fetch workouts for multiple identities. Returns [identityId: [WorkoutEntity]].
-    static func workoutsByIdentity(identityIds: [UUID], in context: ModelContext) -> [UUID: [WorkoutEntity]] {
+    @MainActor static func workoutsByIdentity(identityIds: [UUID], in context: ModelContext) -> [UUID: [WorkoutEntity]] {
         guard !identityIds.isEmpty else { return [:] }
 
         let ids = identityIds
@@ -180,7 +180,7 @@ struct BatchTraversal {
 
     /// Returns exercise IDs used across all workouts for an identity, querying only join tables.
     /// ~5-6 queries total regardless of data size (vs N+1 entity traversal).
-    static func exerciseIdsUsed(for identity: IdentityEntity, in context: ModelContext) -> Set<UUID> {
+    @MainActor static func exerciseIdsUsed(for identity: IdentityEntity, in context: ModelContext) -> Set<UUID> {
         let workoutIds = identity.workouts(in: context).map(\.id)
         guard !workoutIds.isEmpty else { return [] }
 
@@ -205,7 +205,7 @@ struct BatchTraversal {
     }
 
     /// Batch-fetch the most recent completed set for each exercise, for a given identity.
-    static func lastSets(
+    @MainActor static func lastSets(
         for identity: IdentityEntity,
         exerciseIds: [UUID],
         in context: ModelContext

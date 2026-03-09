@@ -5,7 +5,7 @@ import Combine
 
 // MARK: - Connection State
 
-enum SyncConnectionState: Equatable {
+enum SyncConnectionState: Equatable, Sendable {
     case idle
     case searching
     case connecting
@@ -18,7 +18,7 @@ enum SyncConnectionState: Equatable {
 
 // MARK: - Discovered Peer
 
-struct DiscoveredPeer: Identifiable {
+struct DiscoveredPeer: Identifiable, @unchecked Sendable {
     let peerID: MCPeerID
     let name: String
     let role: String
@@ -27,6 +27,7 @@ struct DiscoveredPeer: Identifiable {
 
 // MARK: - Sync Session Manager
 
+@MainActor
 class SyncSessionManager: NSObject, ObservableObject {
     private static let serviceType = "gymplicity"
 
@@ -233,11 +234,11 @@ class SyncSessionManager: NSObject, ObservableObject {
             .appendingPathComponent("sync-\(UUID().uuidString).json")
         do {
             try data.write(to: tempURL)
-            session.sendResource(at: tempURL, withName: "sync-payload", toPeer: connectedPeer) { error in
-                DispatchQueue.main.async {
+            session.sendResource(at: tempURL, withName: "sync-payload", toPeer: connectedPeer) { [weak self] error in
+                Task { @MainActor in
                     try? FileManager.default.removeItem(at: tempURL)
                     if let error {
-                        self.connectionState = .error("Send failed: \(error.localizedDescription)")
+                        self?.connectionState = .error("Send failed: \(error.localizedDescription)")
                     }
                     // State will update when we receive their payload back
                 }
@@ -406,30 +407,23 @@ class SyncSessionManager: NSObject, ObservableObject {
         do {
             let data = try Data(contentsOf: url)
             let payload = try JSONDecoder().decode(SyncPayload.self, from: data)
-            // Merge on main thread for SwiftData thread safety
-            DispatchQueue.main.async {
-                guard let context = self.modelContext else { return }
-                let result = SyncEngine.merge(payload, into: context)
-                self.lastSyncResult = result
-                if let peer = self.connectedPeer {
-                    self.connectionState = .connected(peerName: peer.displayName)
-                    self.updatePairedDevices(senderIdentityId: payload.senderIdentityId)
-                }
+            guard let context = self.modelContext else { return }
+            let result = SyncEngine.merge(payload, into: context)
+            self.lastSyncResult = result
+            if let peer = self.connectedPeer {
+                self.connectionState = .connected(peerName: peer.displayName)
+                self.updatePairedDevices(senderIdentityId: payload.senderIdentityId)
             }
         } catch {
-            DispatchQueue.main.async {
-                self.connectionState = .error("Failed to process sync data")
-            }
+            self.connectionState = .error("Failed to process sync data")
         }
         try? FileManager.default.removeItem(at: url)
     }
 
     private func handleReceivedDelta(_ payload: SyncPayload) {
-        DispatchQueue.main.async {
-            guard let context = self.modelContext else { return }
-            let result = SyncEngine.merge(payload, into: context)
-            self.lastSyncResult = result
-        }
+        guard let context = self.modelContext else { return }
+        let result = SyncEngine.merge(payload, into: context)
+        self.lastSyncResult = result
     }
 
     private func updatePairedDevices(senderIdentityId: UUID) {
@@ -456,45 +450,43 @@ class SyncSessionManager: NSObject, ObservableObject {
 
     private func handleMessage(_ data: Data, from peer: MCPeerID) {
         guard let message = try? JSONDecoder().decode(SyncMessage.self, from: data) else { return }
-        DispatchQueue.main.async {
-            switch message {
-            case .pairingOffer:
-                // Store offer transiently — no DB writes
-                self.pendingOffer = message
-                self.connectionState = .pairing(peerName: peer.displayName)
+        switch message {
+        case .pairingOffer:
+            // Store offer transiently — no DB writes
+            self.pendingOffer = message
+            self.connectionState = .pairing(peerName: peer.displayName)
 
-            case .pairingAccepted(let responderUUID, _, let responderIsTrainer, let linkedUUID, _):
-                guard let context = self.modelContext, let identity = self.localIdentity else { return }
+        case .pairingAccepted(let responderUUID, _, _, let linkedUUID, _):
+            guard let context = self.modelContext, let identity = self.localIdentity else { return }
 
-                // Process alias from their acceptance
-                if let linkedUUID, linkedUUID != identity.id {
-                    IdentityReconciliation.createAlias(id1: linkedUUID, id2: identity.id, in: context)
-                }
-
-                // Process alias from our own offer
-                if case .pairingOffer(_, _, _, let ourLinkedUUID, _) = self.sentOffer {
-                    if let ourLinkedUUID, ourLinkedUUID != responderUUID {
-                        IdentityReconciliation.createAlias(id1: ourLinkedUUID, id2: responderUUID, in: context)
-                    }
-                }
-
-                // Create TrainerTrainees if new relationship
-                let senderIsTrainer = identity.isTrainer
-                let trainerUUID = senderIsTrainer ? identity.id : responderUUID
-                let traineeUUID = senderIsTrainer ? responderUUID : identity.id
-                self.createTrainerTraineesIfNeeded(trainerUUID: trainerUUID, traineeUUID: traineeUUID, in: context)
-
-                self.sentOffer = nil
-                self.performSync()
-
-            case .pairingDeclined:
-                self.pendingOffer = nil
-                self.sentOffer = nil
-                self.connectionState = .searching
-
-            case .entityUpdates(let payload):
-                self.handleReceivedDelta(payload)
+            // Process alias from their acceptance
+            if let linkedUUID, linkedUUID != identity.id {
+                IdentityReconciliation.createAlias(id1: linkedUUID, id2: identity.id, in: context)
             }
+
+            // Process alias from our own offer
+            if case .pairingOffer(_, _, _, let ourLinkedUUID, _) = self.sentOffer {
+                if let ourLinkedUUID, ourLinkedUUID != responderUUID {
+                    IdentityReconciliation.createAlias(id1: ourLinkedUUID, id2: responderUUID, in: context)
+                }
+            }
+
+            // Create TrainerTrainees if new relationship
+            let senderIsTrainer = identity.isTrainer
+            let trainerUUID = senderIsTrainer ? identity.id : responderUUID
+            let traineeUUID = senderIsTrainer ? responderUUID : identity.id
+            self.createTrainerTraineesIfNeeded(trainerUUID: trainerUUID, traineeUUID: traineeUUID, in: context)
+
+            self.sentOffer = nil
+            self.performSync()
+
+        case .pairingDeclined:
+            self.pendingOffer = nil
+            self.sentOffer = nil
+            self.connectionState = .searching
+
+        case .entityUpdates(let payload):
+            self.handleReceivedDelta(payload)
         }
     }
 
@@ -511,8 +503,9 @@ class SyncSessionManager: NSObject, ObservableObject {
 // MARK: - MCSessionDelegate
 
 extension SyncSessionManager: MCSessionDelegate {
-    func session(_ session: MCSession, peer peerID: MCPeerID, didChange state: MCSessionState) {
-        DispatchQueue.main.async {
+    nonisolated func session(_ session: MCSession, peer peerID: MCPeerID, didChange state: MCSessionState) {
+        nonisolated(unsafe) let peerID = peerID
+        Task { @MainActor in
             switch state {
             case .connected:
                 self.connectedPeer = peerID
@@ -539,40 +532,47 @@ extension SyncSessionManager: MCSessionDelegate {
         }
     }
 
-    func session(_ session: MCSession, didReceive data: Data, fromPeer peerID: MCPeerID) {
-        handleMessage(data, from: peerID)
+    nonisolated func session(_ session: MCSession, didReceive data: Data, fromPeer peerID: MCPeerID) {
+        nonisolated(unsafe) let peerID = peerID
+        Task { @MainActor in
+            handleMessage(data, from: peerID)
+        }
     }
 
-    func session(_ session: MCSession, didReceive stream: InputStream, withName streamName: String, fromPeer peerID: MCPeerID) {
+    nonisolated func session(_ session: MCSession, didReceive stream: InputStream, withName streamName: String, fromPeer peerID: MCPeerID) {
         // Not used
     }
 
-    func session(_ session: MCSession, didStartReceivingResourceWithName resourceName: String, fromPeer peerID: MCPeerID, with progress: Progress) {
+    nonisolated func session(_ session: MCSession, didStartReceivingResourceWithName resourceName: String, fromPeer peerID: MCPeerID, with progress: Progress) {
         // Could publish progress for UI
     }
 
-    func session(_ session: MCSession, didFinishReceivingResourceWithName resourceName: String, fromPeer peerID: MCPeerID, at localURL: URL?, withError error: Error?) {
+    nonisolated func session(_ session: MCSession, didFinishReceivingResourceWithName resourceName: String, fromPeer peerID: MCPeerID, at localURL: URL?, withError error: Error?) {
         guard let localURL, error == nil else { return }
-        handleReceivedPayload(at: localURL)
+        Task { @MainActor in
+            handleReceivedPayload(at: localURL)
+        }
     }
 }
 
 // MARK: - MCNearbyServiceBrowserDelegate
 
 extension SyncSessionManager: MCNearbyServiceBrowserDelegate {
-    func browser(_ browser: MCNearbyServiceBrowser, foundPeer peerID: MCPeerID, withDiscoveryInfo info: [String: String]?) {
+    nonisolated func browser(_ browser: MCNearbyServiceBrowser, foundPeer peerID: MCPeerID, withDiscoveryInfo info: [String: String]?) {
         let name = info?["name"] ?? peerID.displayName
         let role = info?["role"] ?? "unknown"
         let peer = DiscoveredPeer(peerID: peerID, name: name, role: role)
-        DispatchQueue.main.async {
+        nonisolated(unsafe) let peerID = peerID
+        Task { @MainActor in
             if !self.discoveredPeers.contains(where: { $0.peerID == peerID }) {
                 self.discoveredPeers.append(peer)
             }
         }
     }
 
-    func browser(_ browser: MCNearbyServiceBrowser, lostPeer peerID: MCPeerID) {
-        DispatchQueue.main.async {
+    nonisolated func browser(_ browser: MCNearbyServiceBrowser, lostPeer peerID: MCPeerID) {
+        nonisolated(unsafe) let peerID = peerID
+        Task { @MainActor in
             self.discoveredPeers.removeAll { $0.peerID == peerID }
         }
     }
@@ -581,8 +581,11 @@ extension SyncSessionManager: MCNearbyServiceBrowserDelegate {
 // MARK: - MCNearbyServiceAdvertiserDelegate
 
 extension SyncSessionManager: MCNearbyServiceAdvertiserDelegate {
-    func advertiser(_ advertiser: MCNearbyServiceAdvertiser, didReceiveInvitationFromPeer peerID: MCPeerID, withContext context: Data?, invitationHandler: @escaping (Bool, MCSession?) -> Void) {
-        // Auto-accept invitations (both devices are on the sync screen)
-        invitationHandler(true, session)
+    nonisolated func advertiser(_ advertiser: MCNearbyServiceAdvertiser, didReceiveInvitationFromPeer peerID: MCPeerID, withContext context: Data?, invitationHandler: @escaping (Bool, MCSession?) -> Void) {
+        nonisolated(unsafe) let invitationHandler = invitationHandler
+        Task { @MainActor in
+            // Auto-accept invitations (both devices are on the sync screen)
+            invitationHandler(true, session)
+        }
     }
 }

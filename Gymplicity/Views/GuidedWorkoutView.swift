@@ -233,7 +233,8 @@ struct GuidedWorkoutView: View {
             withAnimation(.easeInOut(duration: 0.3)) {
                 showWalkingTransition = true
             }
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+            Task {
+                try? await Task.sleep(for: .milliseconds(300))
                 currentIndex = next
                 onSetIndexChange?(currentIndex)
                 loadCurrentSet()

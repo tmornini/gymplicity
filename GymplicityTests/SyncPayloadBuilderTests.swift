@@ -2,7 +2,7 @@ import XCTest
 import SwiftData
 @testable import Gymplicity
 
-final class SyncPayloadBuilderTests: XCTestCase {
+@MainActor final class SyncPayloadBuilderTests: XCTestCase {
 
     func testPayloadIncludesBothIdentities() throws {
         let ctx = try makeTestContext()

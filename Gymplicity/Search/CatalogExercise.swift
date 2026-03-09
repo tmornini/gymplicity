@@ -1,6 +1,6 @@
 import Foundation
 
-struct CatalogExercise: Codable, Identifiable {
+struct CatalogExercise: Codable, Identifiable, Sendable {
     let id: String
     let name: String
     let aliases: [String]
@@ -11,7 +11,7 @@ struct CatalogExercise: Codable, Identifiable {
     let equipment: [String]
 }
 
-struct IndexedCatalogExercise {
+struct IndexedCatalogExercise: Sendable {
     let exercise: CatalogExercise
     let nameWords: [String]
     let aliasWords: [String]

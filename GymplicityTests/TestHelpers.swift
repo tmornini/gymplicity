@@ -3,7 +3,7 @@ import SwiftData
 import XCTest
 @testable import Gymplicity
 
-func makeTestContext() throws -> ModelContext {
+@MainActor func makeTestContext() throws -> ModelContext {
     let config = ModelConfiguration(isStoredInMemoryOnly: true)
     let container = try ModelContainer(
         for: IdentityEntity.self, ExerciseEntity.self, WorkoutEntity.self,
@@ -18,14 +18,14 @@ func makeTestContext() throws -> ModelContext {
 // MARK: - Factory Methods
 
 extension ModelContext {
-    @discardableResult
+    @MainActor @discardableResult
     func makeTrainer(name: String = "Trainer") -> IdentityEntity {
         let trainer = IdentityEntity(name: name, isTrainer: true)
         insert(trainer)
         return trainer
     }
 
-    @discardableResult
+    @MainActor @discardableResult
     func makeTrainee(name: String = "Trainee", trainer: IdentityEntity) -> IdentityEntity {
         let trainee = IdentityEntity(name: name, isTrainer: false)
         insert(trainee)
@@ -33,7 +33,7 @@ extension ModelContext {
         return trainee
     }
 
-    @discardableResult
+    @MainActor @discardableResult
     func makeExercise(name: String, trainer: IdentityEntity) -> ExerciseEntity {
         let exercise = ExerciseEntity(name: name)
         insert(exercise)
@@ -41,7 +41,7 @@ extension ModelContext {
         return exercise
     }
 
-    @discardableResult
+    @MainActor @discardableResult
     func makeWorkout(for identity: IdentityEntity, date: Date = .now, isCompleted: Bool = false) -> WorkoutEntity {
         let workout = WorkoutEntity(date: date)
         workout.isCompleted = isCompleted
@@ -50,7 +50,7 @@ extension ModelContext {
         return workout
     }
 
-    @discardableResult
+    @MainActor @discardableResult
     func makeGroup(in workout: WorkoutEntity, order: Int, isSuperset: Bool = false) -> WorkoutGroupEntity {
         let group = WorkoutGroupEntity(order: order, isSuperset: isSuperset)
         insert(group)
@@ -58,7 +58,7 @@ extension ModelContext {
         return group
     }
 
-    @discardableResult
+    @MainActor @discardableResult
     func makeTemplate(name: String, for trainer: IdentityEntity) -> WorkoutEntity {
         let template = WorkoutEntity(isTemplate: true, templateName: name)
         insert(template)
@@ -66,7 +66,7 @@ extension ModelContext {
         return template
     }
 
-    @discardableResult
+    @MainActor @discardableResult
     func makeSet(
         in group: WorkoutGroupEntity,
         exercise: ExerciseEntity,
@@ -88,7 +88,7 @@ extension ModelContext {
 
 // MARK: - Payload Factory
 
-func makePayload(
+@MainActor func makePayload(
     senderIdentityId: UUID,
     identities: [IdentityDTO] = [],
     exercises: [ExerciseDTO] = [],

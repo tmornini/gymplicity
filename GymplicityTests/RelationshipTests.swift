@@ -2,7 +2,7 @@ import XCTest
 import SwiftData
 @testable import Gymplicity
 
-final class RelationshipTests: XCTestCase {
+@MainActor final class RelationshipTests: XCTestCase {
 
     // MARK: - Trainer / Trainee
 

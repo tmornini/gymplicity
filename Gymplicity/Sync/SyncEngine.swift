@@ -3,7 +3,7 @@ import SwiftData
 
 // MARK: - Merge Result
 
-struct MergeResult {
+struct MergeResult: Sendable {
     var identitiesInserted = 0
     var identitiesUpdated = 0
     var exercisesInserted = 0
@@ -59,7 +59,7 @@ struct SyncEngine {
     /// Role-based PUT merge — inserts new records and updates existing ones
     /// when the sender has authority over the entity type.
     /// Merge order: entities before joins, parents before children.
-    static func merge(_ payload: SyncPayload, into context: ModelContext) -> MergeResult {
+    @MainActor static func merge(_ payload: SyncPayload, into context: ModelContext) -> MergeResult {
         var result = MergeResult()
 
         // Determine sender role from payload identities

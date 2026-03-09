@@ -2,7 +2,7 @@ import XCTest
 import SwiftData
 @testable import Gymplicity
 
-final class WorkoutLifecycleTests: XCTestCase {
+@MainActor final class WorkoutLifecycleTests: XCTestCase {
 
     func testStartWorkoutAppearsInActiveWorkouts() throws {
         let ctx = try makeTestContext()

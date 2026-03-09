@@ -6,7 +6,7 @@ import SwiftData
 extension ModelContext {
     /// Adds a set to a group, seeding weight/reps from the owner's last set for this exercise.
     /// Data operation — does NOT trigger sync; caller owns sync timing.
-    @discardableResult
+    @MainActor @discardableResult
     func addSet(to group: WorkoutGroupEntity, exercise: ExerciseEntity, seedingFrom owner: IdentityEntity?) -> SetEntity {
         var weight: Double = 0
         var reps: Int = 0
@@ -23,7 +23,7 @@ extension ModelContext {
 
     /// Deletes sets from a group at the given offsets.
     /// Data operation — does NOT trigger sync; caller owns sync timing.
-    func deleteSets(from group: WorkoutGroupEntity, at offsets: IndexSet) {
+    @MainActor func deleteSets(from group: WorkoutGroupEntity, at offsets: IndexSet) {
         let sorted = group.sortedSets(in: self)
         for index in offsets {
             deleteSet(sorted[index])
@@ -32,7 +32,7 @@ extension ModelContext {
 
     /// Starts a new workout for the given identity if none is already active.
     /// Domain operation — includes sync trigger.
-    @discardableResult
+    @MainActor @discardableResult
     func startWorkout(for identity: IdentityEntity) -> WorkoutEntity? {
         guard identity.activeWorkouts(in: self).isEmpty else { return nil }
         let workout = WorkoutEntity()
@@ -46,7 +46,7 @@ extension ModelContext {
 // MARK: - Template Instantiation
 
 extension ModelContext {
-    @discardableResult
+    @MainActor @discardableResult
     func instantiateTemplate(_ template: WorkoutEntity, for identity: IdentityEntity) -> WorkoutEntity {
         let workout = WorkoutEntity()
         insert(workout)
@@ -74,7 +74,7 @@ extension ModelContext {
 // MARK: - Cascade Delete Helpers
 
 extension ModelContext {
-    func deleteIdentity(_ identity: IdentityEntity) {
+    @MainActor func deleteIdentity(_ identity: IdentityEntity) {
         // Delete trainees and their data
         for trainee in identity.trainees(in: self) {
             deleteIdentity(trainee)
@@ -98,7 +98,7 @@ extension ModelContext {
         delete(identity)
     }
 
-    func deleteExercise(_ exercise: ExerciseEntity) {
+    @MainActor func deleteExercise(_ exercise: ExerciseEntity) {
         let id = exercise.id
         // Nullify: remove ExerciseSets join rows but leave sets
         if let joins = try? fetch(FetchDescriptor<ExerciseSets>(
@@ -110,7 +110,7 @@ extension ModelContext {
         delete(exercise)
     }
 
-    func deleteWorkout(_ workout: WorkoutEntity) {
+    @MainActor func deleteWorkout(_ workout: WorkoutEntity) {
         for group in workout.groups(in: self) {
             deleteGroup(group)
         }
@@ -127,7 +127,7 @@ extension ModelContext {
         delete(workout)
     }
 
-    func deleteGroup(_ group: WorkoutGroupEntity) {
+    @MainActor func deleteGroup(_ group: WorkoutGroupEntity) {
         for set in group.sets(in: self) {
             deleteSet(set)
         }
@@ -141,7 +141,7 @@ extension ModelContext {
         delete(group)
     }
 
-    func deleteSet(_ set: SetEntity) {
+    @MainActor func deleteSet(_ set: SetEntity) {
         let id = set.id
         if let joins = try? fetch(FetchDescriptor<GroupSets>(
             predicate: #Predicate { $0.setId == id }

@@ -2,7 +2,7 @@ import XCTest
 import SwiftData
 @testable import Gymplicity
 
-final class DomainOperationTests: XCTestCase {
+@MainActor final class DomainOperationTests: XCTestCase {
 
     // MARK: - startWorkout(for:)
 

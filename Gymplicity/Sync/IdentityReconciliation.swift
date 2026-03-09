@@ -4,7 +4,7 @@ import SwiftData
 struct IdentityReconciliation {
     /// Inserts an IdentityAliases row linking two UUIDs if the pair doesn't already exist.
     /// No-op when id1 == id2.
-    static func createAlias(id1: UUID, id2: UUID, in context: ModelContext) {
+    @MainActor static func createAlias(id1: UUID, id2: UUID, in context: ModelContext) {
         guard id1 != id2 else { return }
 
         // Check both orderings
@@ -24,7 +24,7 @@ struct IdentityReconciliation {
     /// Returns the connected component of UUIDs reachable from the given UUID
     /// through IdentityAliases rows. Always includes the input UUID itself.
     /// Uses a single query to fetch all alias rows, then BFS in-memory.
-    static func aliasGroup(for uuid: UUID, in context: ModelContext) -> Set<UUID> {
+    @MainActor static func aliasGroup(for uuid: UUID, in context: ModelContext) -> Set<UUID> {
         // Fetch ALL alias rows in one query (table is tiny)
         let allRows = (try? context.fetch(FetchDescriptor<IdentityAliases>())) ?? []
 

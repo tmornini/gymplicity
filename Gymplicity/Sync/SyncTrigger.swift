@@ -1,6 +1,6 @@
 import Foundation
 
-enum SyncEntityType: String {
+enum SyncEntityType: String, Sendable {
     case set = "SetEntity"
     case workout = "WorkoutEntity"
     case identity = "IdentityEntity"

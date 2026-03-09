@@ -2,7 +2,7 @@ import XCTest
 import SwiftData
 @testable import Gymplicity
 
-final class CascadeDeleteTests: XCTestCase {
+@MainActor final class CascadeDeleteTests: XCTestCase {
 
     func testDeleteSetRemovesJoinRows() throws {
         let ctx = try makeTestContext()

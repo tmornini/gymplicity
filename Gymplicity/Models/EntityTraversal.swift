@@ -4,7 +4,7 @@ import SwiftData
 // MARK: - IdentityEntity Traversal
 
 extension IdentityEntity {
-    func trainees(in context: ModelContext) -> [IdentityEntity] {
+    @MainActor func trainees(in context: ModelContext) -> [IdentityEntity] {
         let id = self.id
         let joins = (try? context.fetch(FetchDescriptor<TrainerTrainees>(
             predicate: #Predicate { $0.trainerId == id }
@@ -15,7 +15,7 @@ extension IdentityEntity {
         ))) ?? []
     }
 
-    func trainer(in context: ModelContext) -> IdentityEntity? {
+    @MainActor func trainer(in context: ModelContext) -> IdentityEntity? {
         let id = self.id
         guard let join = (try? context.fetch(FetchDescriptor<TrainerTrainees>(
             predicate: #Predicate { $0.traineeId == id }
@@ -26,7 +26,7 @@ extension IdentityEntity {
         )))?.first
     }
 
-    func exercises(in context: ModelContext) -> [ExerciseEntity] {
+    @MainActor func exercises(in context: ModelContext) -> [ExerciseEntity] {
         let id = self.id
         let joins = (try? context.fetch(FetchDescriptor<TrainerExercises>(
             predicate: #Predicate { $0.trainerId == id }
@@ -37,14 +37,14 @@ extension IdentityEntity {
         ))) ?? []
     }
 
-    func exerciseCatalog(in context: ModelContext) -> [ExerciseEntity] {
+    @MainActor func exerciseCatalog(in context: ModelContext) -> [ExerciseEntity] {
         if isTrainer {
             return exercises(in: context).sorted { $0.name < $1.name }
         }
         return trainer(in: context)?.exercises(in: context).sorted { $0.name < $1.name } ?? []
     }
 
-    func workouts(in context: ModelContext) -> [WorkoutEntity] {
+    @MainActor func workouts(in context: ModelContext) -> [WorkoutEntity] {
         let aliasIds = Array(IdentityReconciliation.aliasGroup(for: self.id, in: context))
         let joins = (try? context.fetch(FetchDescriptor<IdentityWorkouts>(
             predicate: #Predicate { aliasIds.contains($0.identityId) }
@@ -55,23 +55,23 @@ extension IdentityEntity {
         ))) ?? []
     }
 
-    func activeWorkouts(in context: ModelContext) -> [WorkoutEntity] {
+    @MainActor func activeWorkouts(in context: ModelContext) -> [WorkoutEntity] {
         workouts(in: context).filter { !$0.isCompleted && !$0.isTemplate }
     }
 
-    func completedWorkouts(in context: ModelContext) -> [WorkoutEntity] {
+    @MainActor func completedWorkouts(in context: ModelContext) -> [WorkoutEntity] {
         workouts(in: context)
             .filter { $0.isCompleted && !$0.isTemplate }
             .sorted { $0.date > $1.date }
     }
 
-    func templates(in context: ModelContext) -> [WorkoutEntity] {
+    @MainActor func templates(in context: ModelContext) -> [WorkoutEntity] {
         workouts(in: context)
             .filter { $0.isTemplate }
             .sorted { ($0.templateName ?? "") < ($1.templateName ?? "") }
     }
 
-    func exercisesUsed(in context: ModelContext) -> [ExerciseEntity] {
+    @MainActor func exercisesUsed(in context: ModelContext) -> [ExerciseEntity] {
         let sets = workouts(in: context).flatMap { $0.groups(in: context).flatMap { $0.sets(in: context) } }
         let exercisesByID = Dictionary(
             sets.compactMap { $0.exercise(in: context) }.map { ($0.id, $0) },
@@ -80,13 +80,13 @@ extension IdentityEntity {
         return exercisesByID.values.sorted { $0.name < $1.name }
     }
 
-    func lastSet(for exercise: ExerciseEntity, in context: ModelContext) -> SetEntity? {
+    @MainActor func lastSet(for exercise: ExerciseEntity, in context: ModelContext) -> SetEntity? {
         completedWorkouts(in: context)
             .flatMap { $0.sortedGroups(in: context).flatMap { $0.sortedSets(in: context) } }
             .first { $0.exercise(in: context)?.id == exercise.id }
     }
 
-    func history(for exercise: ExerciseEntity, in context: ModelContext) -> [(date: Date, set: SetEntity)] {
+    @MainActor func history(for exercise: ExerciseEntity, in context: ModelContext) -> [(date: Date, set: SetEntity)] {
         completedWorkouts(in: context)
             .reversed()
             .flatMap { workout in
@@ -97,7 +97,7 @@ extension IdentityEntity {
             }
     }
 
-    func findOrCreateExercise(named name: String, in context: ModelContext) -> ExerciseEntity {
+    @MainActor func findOrCreateExercise(named name: String, in context: ModelContext) -> ExerciseEntity {
         let catalog = exercises(in: context)
         if let existing = catalog.first(where: { $0.name.lowercased() == name.lowercased() }) {
             return existing
@@ -113,7 +113,7 @@ extension IdentityEntity {
 // MARK: - WorkoutEntity Traversal
 
 extension WorkoutEntity {
-    func owner(in context: ModelContext) -> IdentityEntity? {
+    @MainActor func owner(in context: ModelContext) -> IdentityEntity? {
         let id = self.id
         guard let join = (try? context.fetch(FetchDescriptor<IdentityWorkouts>(
             predicate: #Predicate { $0.workoutId == id }
@@ -124,7 +124,7 @@ extension WorkoutEntity {
         )))?.first
     }
 
-    func groups(in context: ModelContext) -> [WorkoutGroupEntity] {
+    @MainActor func groups(in context: ModelContext) -> [WorkoutGroupEntity] {
         let id = self.id
         let joins = (try? context.fetch(FetchDescriptor<WorkoutGroups>(
             predicate: #Predicate { $0.workoutId == id }
@@ -135,19 +135,19 @@ extension WorkoutEntity {
         ))) ?? []
     }
 
-    func sortedGroups(in context: ModelContext) -> [WorkoutGroupEntity] {
+    @MainActor func sortedGroups(in context: ModelContext) -> [WorkoutGroupEntity] {
         groups(in: context).sorted { $0.order < $1.order }
     }
 
-    func nextGroupOrder(in context: ModelContext) -> Int {
+    @MainActor func nextGroupOrder(in context: ModelContext) -> Int {
         (groups(in: context).map(\.order).max() ?? -1) + 1
     }
 
-    func totalVolume(in context: ModelContext) -> Double {
+    @MainActor func totalVolume(in context: ModelContext) -> Double {
         groups(in: context).reduce(0) { $0 + $1.totalVolume(in: context) }
     }
 
-    func exerciseCount(in context: ModelContext) -> Int {
+    @MainActor func exerciseCount(in context: ModelContext) -> Int {
         let allSets = groups(in: context).flatMap { $0.sets(in: context) }
         let uniqueIDs = Swift.Set(allSets.compactMap { $0.exercise(in: context)?.id })
         return uniqueIDs.count
@@ -155,17 +155,17 @@ extension WorkoutEntity {
 
     // MARK: - Guided Workout Helpers
 
-    func allSetsFlattened(in context: ModelContext) -> [(group: WorkoutGroupEntity, set: SetEntity)] {
+    @MainActor func allSetsFlattened(in context: ModelContext) -> [(group: WorkoutGroupEntity, set: SetEntity)] {
         sortedGroups(in: context).flatMap { group in
             group.sortedSets(in: context).map { (group: group, set: $0) }
         }
     }
 
-    func firstIncompleteSetIndex(in context: ModelContext) -> Int? {
+    @MainActor func firstIncompleteSetIndex(in context: ModelContext) -> Int? {
         allSetsFlattened(in: context).firstIndex { !$0.set.isCompleted }
     }
 
-    func nextIncompleteSetIndex(after index: Int, in context: ModelContext) -> Int? {
+    @MainActor func nextIncompleteSetIndex(after index: Int, in context: ModelContext) -> Int? {
         let all = allSetsFlattened(in: context)
         // Scan forward from current position
         if let found = all.dropFirst(index + 1).indices.first(where: { !all[$0].set.isCompleted }) {
@@ -181,7 +181,7 @@ extension WorkoutEntity {
         SyncTrigger.entityUpdated(.workout, id: id)
     }
 
-    func template(in context: ModelContext) -> WorkoutEntity? {
+    @MainActor func template(in context: ModelContext) -> WorkoutEntity? {
         let id = self.id
         guard let join = (try? context.fetch(FetchDescriptor<TemplateInstances>(
             predicate: #Predicate { $0.workoutId == id }
@@ -192,7 +192,7 @@ extension WorkoutEntity {
         )))?.first
     }
 
-    func exerciseNames(in context: ModelContext) -> String {
+    @MainActor func exerciseNames(in context: ModelContext) -> String {
         let allSets = sortedGroups(in: context).flatMap { $0.sortedSets(in: context) }
         var seen = Swift.Set<UUID>()
         var names: [String] = []
@@ -204,7 +204,7 @@ extension WorkoutEntity {
         return names.joined(separator: ", ")
     }
 
-    func completionProgress(in context: ModelContext) -> Double {
+    @MainActor func completionProgress(in context: ModelContext) -> Double {
         let all = allSetsFlattened(in: context)
         guard !all.isEmpty else { return 1.0 }
         return Double(all.filter { $0.set.isCompleted }.count) / Double(all.count)
@@ -214,7 +214,7 @@ extension WorkoutEntity {
 // MARK: - WorkoutGroupEntity Traversal
 
 extension WorkoutGroupEntity {
-    func workout(in context: ModelContext) -> WorkoutEntity? {
+    @MainActor func workout(in context: ModelContext) -> WorkoutEntity? {
         let id = self.id
         guard let join = (try? context.fetch(FetchDescriptor<WorkoutGroups>(
             predicate: #Predicate { $0.groupId == id }
@@ -225,7 +225,7 @@ extension WorkoutGroupEntity {
         )))?.first
     }
 
-    func sets(in context: ModelContext) -> [SetEntity] {
+    @MainActor func sets(in context: ModelContext) -> [SetEntity] {
         let id = self.id
         let joins = (try? context.fetch(FetchDescriptor<GroupSets>(
             predicate: #Predicate { $0.groupId == id }
@@ -236,19 +236,19 @@ extension WorkoutGroupEntity {
         ))) ?? []
     }
 
-    func sortedSets(in context: ModelContext) -> [SetEntity] {
+    @MainActor func sortedSets(in context: ModelContext) -> [SetEntity] {
         sets(in: context).sorted { $0.order < $1.order }
     }
 
-    func nextSetOrder(in context: ModelContext) -> Int {
+    @MainActor func nextSetOrder(in context: ModelContext) -> Int {
         (sets(in: context).map(\.order).max() ?? -1) + 1
     }
 
-    func totalVolume(in context: ModelContext) -> Double {
+    @MainActor func totalVolume(in context: ModelContext) -> Double {
         sets(in: context).reduce(0) { $0 + $1.volume }
     }
 
-    func exerciseName(in context: ModelContext) -> String {
+    @MainActor func exerciseName(in context: ModelContext) -> String {
         sortedSets(in: context).first?.exercise(in: context)?.name ?? "Exercise"
     }
 }
@@ -256,7 +256,7 @@ extension WorkoutGroupEntity {
 // MARK: - SetEntity Traversal
 
 extension SetEntity {
-    func exercise(in context: ModelContext) -> ExerciseEntity? {
+    @MainActor func exercise(in context: ModelContext) -> ExerciseEntity? {
         let id = self.id
         guard let join = (try? context.fetch(FetchDescriptor<ExerciseSets>(
             predicate: #Predicate { $0.setId == id }
@@ -267,7 +267,7 @@ extension SetEntity {
         )))?.first
     }
 
-    func group(in context: ModelContext) -> WorkoutGroupEntity? {
+    @MainActor func group(in context: ModelContext) -> WorkoutGroupEntity? {
         let id = self.id
         guard let join = (try? context.fetch(FetchDescriptor<GroupSets>(
             predicate: #Predicate { $0.setId == id }

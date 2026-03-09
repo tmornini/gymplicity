@@ -2,7 +2,7 @@ import XCTest
 import SwiftData
 @testable import Gymplicity
 
-final class GuidedWorkoutTests: XCTestCase {
+@MainActor final class GuidedWorkoutTests: XCTestCase {
 
     func testAllSetsFlattenedReturnsCorrectOrder() throws {
         let ctx = try makeTestContext()

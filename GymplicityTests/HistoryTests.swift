@@ -2,7 +2,7 @@ import XCTest
 import SwiftData
 @testable import Gymplicity
 
-final class HistoryTests: XCTestCase {
+@MainActor final class HistoryTests: XCTestCase {
 
     func testLastSetReturnsNilForNewExercise() throws {
         let ctx = try makeTestContext()

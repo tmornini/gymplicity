@@ -3,7 +3,7 @@ import SwiftData
 
 // MARK: - ParsedQuery
 
-struct ParsedQuery {
+struct ParsedQuery: Sendable {
     let positiveTerms: [String]
     let negativeTerms: [String]
 
@@ -79,7 +79,7 @@ enum Levenshtein {
 
 // MARK: - MatchReason
 
-enum MatchReason: Hashable {
+enum MatchReason: Hashable, Sendable {
     case exactName
     case alias(String)
     case primaryMuscle(String)
@@ -129,7 +129,7 @@ struct UserExerciseResult: Identifiable {
     var id: UUID { exercise.id }
 }
 
-struct CatalogSearchResult: Identifiable {
+struct CatalogSearchResult: Identifiable, Sendable {
     let exercise: CatalogExercise
     let reasons: [MatchReason]
     let score: Int
@@ -143,7 +143,7 @@ struct ExerciseSearchResults {
 
 // MARK: - ExerciseSearchEngine
 
-final class ExerciseSearchEngine {
+final class ExerciseSearchEngine: @unchecked Sendable {
     static let shared = ExerciseSearchEngine()
 
     private let indexedCatalog: [IndexedCatalogExercise]

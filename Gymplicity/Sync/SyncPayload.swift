@@ -3,19 +3,19 @@ import SwiftData
 
 // MARK: - DTOs
 
-struct IdentityDTO: Codable {
+struct IdentityDTO: Codable, Sendable {
     let id: UUID
     let name: String
     let isTrainer: Bool
 }
 
-struct ExerciseDTO: Codable {
+struct ExerciseDTO: Codable, Sendable {
     let id: UUID
     let name: String
     let catalogId: String?
 }
 
-struct WorkoutDTO: Codable {
+struct WorkoutDTO: Codable, Sendable {
     let id: UUID
     let date: Date
     let notes: String?
@@ -24,13 +24,13 @@ struct WorkoutDTO: Codable {
     let templateName: String?
 }
 
-struct WorkoutGroupDTO: Codable {
+struct WorkoutGroupDTO: Codable, Sendable {
     let id: UUID
     let order: Int
     let isSuperset: Bool
 }
 
-struct SetDTO: Codable {
+struct SetDTO: Codable, Sendable {
     let id: UUID
     let order: Int
     let weight: Double
@@ -39,49 +39,49 @@ struct SetDTO: Codable {
     let completedAt: Date?
 }
 
-struct TrainerTraineesDTO: Codable {
+struct TrainerTraineesDTO: Codable, Sendable {
     let trainerId: UUID
     let traineeId: UUID
 }
 
-struct TrainerExercisesDTO: Codable {
+struct TrainerExercisesDTO: Codable, Sendable {
     let trainerId: UUID
     let exerciseId: UUID
 }
 
-struct IdentityWorkoutsDTO: Codable {
+struct IdentityWorkoutsDTO: Codable, Sendable {
     let identityId: UUID
     let workoutId: UUID
 }
 
-struct WorkoutGroupsDTO: Codable {
+struct WorkoutGroupsDTO: Codable, Sendable {
     let workoutId: UUID
     let groupId: UUID
 }
 
-struct GroupSetsDTO: Codable {
+struct GroupSetsDTO: Codable, Sendable {
     let groupId: UUID
     let setId: UUID
 }
 
-struct ExerciseSetsDTO: Codable {
+struct ExerciseSetsDTO: Codable, Sendable {
     let exerciseId: UUID
     let setId: UUID
 }
 
-struct TemplateInstancesDTO: Codable {
+struct TemplateInstancesDTO: Codable, Sendable {
     let templateId: UUID
     let workoutId: UUID
 }
 
-struct IdentityAliasesDTO: Codable {
+struct IdentityAliasesDTO: Codable, Sendable {
     let identityId1: UUID
     let identityId2: UUID
 }
 
 // MARK: - Payload Envelope
 
-struct SyncPayload: Codable {
+struct SyncPayload: Codable, Sendable {
     let version: Int
     let senderIdentityId: UUID
 
@@ -134,7 +134,7 @@ struct SyncPayload: Codable {
 
 // MARK: - Sync Message
 
-enum SyncMessage: Codable {
+enum SyncMessage: Codable, Sendable {
     case pairingOffer(
         senderUUID: UUID,
         senderName: String,
@@ -156,19 +156,19 @@ enum SyncMessage: Codable {
 // MARK: - Entity -> DTO Extensions
 
 extension IdentityEntity {
-    func toDTO() -> IdentityDTO {
+    @MainActor func toDTO() -> IdentityDTO {
         IdentityDTO(id: id, name: name, isTrainer: isTrainer)
     }
 }
 
 extension ExerciseEntity {
-    func toDTO() -> ExerciseDTO {
+    @MainActor func toDTO() -> ExerciseDTO {
         ExerciseDTO(id: id, name: name, catalogId: catalogId)
     }
 }
 
 extension WorkoutEntity {
-    func toDTO() -> WorkoutDTO {
+    @MainActor func toDTO() -> WorkoutDTO {
         WorkoutDTO(
             id: id, date: date, notes: notes, isCompleted: isCompleted,
             isTemplate: isTemplate, templateName: templateName
@@ -177,13 +177,13 @@ extension WorkoutEntity {
 }
 
 extension WorkoutGroupEntity {
-    func toDTO() -> WorkoutGroupDTO {
+    @MainActor func toDTO() -> WorkoutGroupDTO {
         WorkoutGroupDTO(id: id, order: order, isSuperset: isSuperset)
     }
 }
 
 extension SetEntity {
-    func toDTO() -> SetDTO {
+    @MainActor func toDTO() -> SetDTO {
         SetDTO(
             id: id, order: order, weight: weight, reps: reps,
             isCompleted: isCompleted, completedAt: completedAt
@@ -192,49 +192,49 @@ extension SetEntity {
 }
 
 extension TrainerTrainees {
-    func toDTO() -> TrainerTraineesDTO {
+    @MainActor func toDTO() -> TrainerTraineesDTO {
         TrainerTraineesDTO(trainerId: trainerId, traineeId: traineeId)
     }
 }
 
 extension TrainerExercises {
-    func toDTO() -> TrainerExercisesDTO {
+    @MainActor func toDTO() -> TrainerExercisesDTO {
         TrainerExercisesDTO(trainerId: trainerId, exerciseId: exerciseId)
     }
 }
 
 extension IdentityWorkouts {
-    func toDTO() -> IdentityWorkoutsDTO {
+    @MainActor func toDTO() -> IdentityWorkoutsDTO {
         IdentityWorkoutsDTO(identityId: identityId, workoutId: workoutId)
     }
 }
 
 extension WorkoutGroups {
-    func toDTO() -> WorkoutGroupsDTO {
+    @MainActor func toDTO() -> WorkoutGroupsDTO {
         WorkoutGroupsDTO(workoutId: workoutId, groupId: groupId)
     }
 }
 
 extension GroupSets {
-    func toDTO() -> GroupSetsDTO {
+    @MainActor func toDTO() -> GroupSetsDTO {
         GroupSetsDTO(groupId: groupId, setId: setId)
     }
 }
 
 extension ExerciseSets {
-    func toDTO() -> ExerciseSetsDTO {
+    @MainActor func toDTO() -> ExerciseSetsDTO {
         ExerciseSetsDTO(exerciseId: exerciseId, setId: setId)
     }
 }
 
 extension TemplateInstances {
-    func toDTO() -> TemplateInstancesDTO {
+    @MainActor func toDTO() -> TemplateInstancesDTO {
         TemplateInstancesDTO(templateId: templateId, workoutId: workoutId)
     }
 }
 
 extension IdentityAliases {
-    func toDTO() -> IdentityAliasesDTO {
+    @MainActor func toDTO() -> IdentityAliasesDTO {
         IdentityAliasesDTO(identityId1: identityId1, identityId2: identityId2)
     }
 }
@@ -244,7 +244,7 @@ extension IdentityAliases {
 struct SyncPayloadBuilder {
     /// Builds a complete sync payload for the trainer-trainee pair.
     /// Both sides send everything relevant to their relationship.
-    static func build(
+    @MainActor static func build(
         localIdentity: IdentityEntity,
         pairedIdentity: IdentityEntity,
         context: ModelContext

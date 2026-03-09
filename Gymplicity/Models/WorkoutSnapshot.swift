@@ -34,13 +34,13 @@ struct WorkoutSnapshot {
     }
 
     /// Load a single workout snapshot.
-    static func load(_ workout: WorkoutEntity, in context: ModelContext) -> WorkoutSnapshot {
+    @MainActor static func load(_ workout: WorkoutEntity, in context: ModelContext) -> WorkoutSnapshot {
         let subgraph = BatchTraversal.workoutSubgraph(workoutIds: [workout.id], in: context)
         return build(workout: workout, subgraph: subgraph)
     }
 
     /// Load snapshots for multiple workouts in a single batch.
-    static func loadAll(_ workouts: [WorkoutEntity], in context: ModelContext) -> [WorkoutSnapshot] {
+    @MainActor static func loadAll(_ workouts: [WorkoutEntity], in context: ModelContext) -> [WorkoutSnapshot] {
         guard !workouts.isEmpty else { return [] }
         let subgraph = BatchTraversal.workoutSubgraph(workoutIds: workouts.map(\.id), in: context)
         return workouts.map { build(workout: $0, subgraph: subgraph) }

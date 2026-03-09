@@ -2,7 +2,7 @@ import XCTest
 import SwiftData
 @testable import Gymplicity
 
-final class LevenshteinTests: XCTestCase {
+@MainActor final class LevenshteinTests: XCTestCase {
     func testIdenticalStrings() {
         XCTAssertEqual(Levenshtein.distance("squat", "squat", limit: 3), 0)
     }
@@ -76,7 +76,7 @@ final class LevenshteinTests: XCTestCase {
     }
 }
 
-final class ParsedQueryTests: XCTestCase {
+@MainActor final class ParsedQueryTests: XCTestCase {
     func testSimpleTerms() {
         let q = ParsedQuery("bench press")
         XCTAssertEqual(q.positiveTerms, ["bench", "press"])
@@ -119,7 +119,7 @@ final class ParsedQueryTests: XCTestCase {
     }
 }
 
-final class MatchReasonTests: XCTestCase {
+@MainActor final class MatchReasonTests: XCTestCase {
     func testScoreOrdering() {
         XCTAssertLessThan(MatchReason.exactName.score, MatchReason.alias("x").score)
         XCTAssertLessThan(MatchReason.alias("x").score, MatchReason.primaryMuscle("x").score)
@@ -134,7 +134,7 @@ final class MatchReasonTests: XCTestCase {
     }
 }
 
-final class ExerciseSearchEngineTests: XCTestCase {
+@MainActor final class ExerciseSearchEngineTests: XCTestCase {
     func testCatalogLoads() {
         let engine = ExerciseSearchEngine.shared
         let results = engine.search(query: "squat", userExercises: [])

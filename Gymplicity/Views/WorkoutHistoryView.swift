@@ -51,10 +51,13 @@ struct WorkoutHistoryView: View {
                     ForEach(group.sortedSets(in: modelContext)) { set in
                         let exercise = set.exercise(in: modelContext)
                         HStack {
-                            Text(exercise?.name ?? "Exercise")
-                                .font(GymFont.label)
-                                .foregroundStyle(GymColors.secondaryText)
-                                .frame(minWidth: 60, alignment: .leading)
+                            VStack(alignment: .leading, spacing: GymMetrics.space4) {
+                                Text(exercise?.name ?? "Exercise")
+                                    .font(GymFont.label)
+                                    .foregroundStyle(GymColors.secondaryText)
+                                ExerciseAttributePills(exercise: exercise)
+                            }
+                            .frame(minWidth: 60, alignment: .leading)
                             Text(Weight.formatted(set.weight))
                                 .font(GymFont.bodyMono)
                             Text("x")

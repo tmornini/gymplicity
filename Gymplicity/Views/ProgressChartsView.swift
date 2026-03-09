@@ -25,6 +25,11 @@ struct ProgressChartsView: View {
         }
         .navigationTitle(exercise.name)
         .navigationBarTitleDisplayMode(.inline)
+        .safeAreaInset(edge: .top) {
+            ExerciseAttributePills(exercise: exercise)
+                .padding(.horizontal)
+                .padding(.bottom, GymMetrics.space8)
+        }
     }
 
     // MARK: - Empty State

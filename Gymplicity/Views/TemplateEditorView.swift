@@ -140,10 +140,13 @@ private struct TemplateSetRow: View {
         } label: {
             HStack {
                 let exercise = set.exercise(in: modelContext)
-                Text(exercise?.name ?? "Exercise")
-                    .font(GymFont.label)
-                    .foregroundStyle(GymColors.secondaryText)
-                    .frame(minWidth: 60, alignment: .leading)
+                VStack(alignment: .leading, spacing: GymMetrics.space4) {
+                    Text(exercise?.name ?? "Exercise")
+                        .font(GymFont.label)
+                        .foregroundStyle(GymColors.secondaryText)
+                    ExerciseAttributePills(exercise: exercise)
+                }
+                .frame(minWidth: 60, alignment: .leading)
 
                 if set.weight > 0 || set.reps > 0 {
                     Text(Weight.formatted(set.weight))
@@ -188,8 +191,11 @@ private struct TemplateSetEntryView: View {
     var body: some View {
         NavigationStack {
             VStack(spacing: 24) {
-                Text(exercise?.name ?? "Exercise")
-                    .font(GymFont.heading2)
+                VStack(spacing: GymMetrics.space4) {
+                    Text(exercise?.name ?? "Exercise")
+                        .font(GymFont.heading2)
+                    ExerciseAttributePills(exercise: exercise)
+                }
 
                 Text("Target")
                     .font(GymFont.label)

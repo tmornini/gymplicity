@@ -147,15 +147,22 @@ final class ExerciseSearchEngine: @unchecked Sendable {
     static let shared = ExerciseSearchEngine()
 
     private let indexedCatalog: [IndexedCatalogExercise]
+    private let catalogById: [String: CatalogExercise]
 
     private init() {
         guard let url = Bundle.main.url(forResource: "exercises", withExtension: "json"),
               let data = try? Data(contentsOf: url),
               let exercises = try? JSONDecoder().decode([CatalogExercise].self, from: data) else {
             indexedCatalog = []
+            catalogById = [:]
             return
         }
         indexedCatalog = exercises.map { IndexedCatalogExercise($0) }
+        catalogById = Dictionary(uniqueKeysWithValues: exercises.map { ($0.id, $0) })
+    }
+
+    func catalogExercise(forCatalogId id: String) -> CatalogExercise? {
+        catalogById[id]
     }
 
     func search(

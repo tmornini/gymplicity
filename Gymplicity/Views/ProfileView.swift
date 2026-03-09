@@ -146,14 +146,17 @@ struct ProfileView: View {
                         NavigationLink {
                             ProgressChartsView(identity: identity, exercise: exercise)
                         } label: {
-                            HStack {
-                                Text(exercise.name)
-                                Spacer()
-                                if let lastSet = lastSets[exercise.id] {
-                                    Text("\(Weight.formatted(lastSet.weight)) x \(lastSet.reps)")
-                                        .font(GymFont.bodyMono)
-                                        .foregroundStyle(GymColors.secondaryText)
+                            VStack(alignment: .leading, spacing: GymMetrics.space4) {
+                                HStack {
+                                    Text(exercise.name)
+                                    Spacer()
+                                    if let lastSet = lastSets[exercise.id] {
+                                        Text("\(Weight.formatted(lastSet.weight)) x \(lastSet.reps)")
+                                            .font(GymFont.bodyMono)
+                                            .foregroundStyle(GymColors.secondaryText)
+                                    }
                                 }
+                                ExerciseAttributePills(exercise: exercise)
                             }
                         }
                     }

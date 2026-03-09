@@ -49,7 +49,7 @@ struct AddExerciseView: View {
                                         VStack(alignment: .leading, spacing: GymMetrics.space4) {
                                             Text(result.exercise.name)
                                                 .foregroundStyle(.primary)
-                                            MatchReasonPillRow(reasons: result.reasons)
+                                            ExerciseAttributePills(exercise: result.exercise)
                                         }
                                     }
                                 }
@@ -149,17 +149,3 @@ struct AddExerciseView: View {
     }
 }
 
-// MARK: - Match Reason Pills
-
-private struct MatchReasonPillRow: View {
-    let reasons: [MatchReason]
-
-    var body: some View {
-        HStack(spacing: GymMetrics.space4) {
-            ForEach(Array(reasons.prefix(3).enumerated()), id: \.offset) { _, reason in
-                Text(reason.displayLabel)
-                    .gymPill(reason.pillColor)
-            }
-        }
-    }
-}

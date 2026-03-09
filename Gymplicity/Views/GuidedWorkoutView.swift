@@ -124,8 +124,11 @@ struct GuidedWorkoutView: View {
             HStack(spacing: GymMetrics.space8) {
                 MascotView(pose: .curling, color: GymColors.energy)
                     .frame(height: GymMetrics.mascotTiny)
-                Text(exercise?.name ?? "Exercise")
-                    .font(GymFont.heading1)
+                VStack(alignment: .leading, spacing: GymMetrics.space4) {
+                    Text(exercise?.name ?? "Exercise")
+                        .font(GymFont.heading1)
+                    ExerciseAttributePills(exercise: exercise)
+                }
             }
 
             Text("Group \(groupIndex + 1) of \(groups.count) \u{00B7} Set \(setIndex + 1) of \(setsInGroupCount)")

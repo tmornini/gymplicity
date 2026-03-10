@@ -57,6 +57,7 @@ struct AddExerciseView: View {
                         }
                     }
                     .listStyle(.plain)
+                    .scrollDismissesKeyboard(.immediately)
                 } else if !searchText.isEmpty {
                     VStack(spacing: GymMetrics.space8) {
                         Spacer()
@@ -119,11 +120,13 @@ struct AddExerciseView: View {
     }
 
     private func addExisting(_ exercise: ExerciseEntity) {
+        nameFieldFocused = false
         createSet(for: exercise)
         dismiss()
     }
 
     private func addFromCatalog(_ catalogExercise: CatalogExercise) {
+        nameFieldFocused = false
         guard let trainer else { return }
         let exercise = trainer.findOrCreateExercise(named: catalogExercise.name, in: modelContext)
         if exercise.catalogId == nil {
@@ -135,6 +138,7 @@ struct AddExerciseView: View {
     }
 
     private func addExercise() {
+        nameFieldFocused = false
         let trimmed = searchText.trimmingCharacters(in: .whitespaces)
         guard !trimmed.isEmpty, let trainer else { return }
         let exercise = trainer.findOrCreateExercise(named: trimmed, in: modelContext)

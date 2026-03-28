@@ -1,0 +1,38 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(build/test:*)",
+      "Bash(build/simulate:*)",
+      "Bash(xcrun simctl:*)",
+      "Bash(xcodebuild test:*)",
+      "Bash(git reset:*)",
+      "Skill(commit-commands:commit)",
+      "Bash(git merge:*)",
+      "Bash(git branch:*)",
+      "Bash(git worktree:*)",
+      "Bash(git cherry-pick:*)",
+      "Bash(pip3 install:*)",
+      "Bash(grep:*)",
+      "Bash(ruby:*)",
+      "Bash(git revert:*)",
+      "Bash(chmod +x:*)",
+      "Bash(build/icon:*)",
+      "Bash(do echo:*)",
+      "Bash(swift:*)",
+      "Bash(build/generate-icon:*)",
+      "Bash(git status:*)",
+      "Bash(claude plugins:*)",
+      "Bash(/usr/libexec/PlistBuddy:*)",
+      "Bash(xargs basename:*)",
+      "mcp__XcodeBuildMCP__session_show_defaults",
+      "mcp__XcodeBuildMCP__discover_projs",
+      "mcp__XcodeBuildMCP__list_sims",
+      "mcp__XcodeBuildMCP__session_set_defaults",
+      "mcp__XcodeBuildMCP__build_sim",
+      "mcp__XcodeBuildMCP__build_run_sim",
+      "mcp__XcodeBuildMCP__screenshot",
+      "mcp__XcodeBuildMCP__snapshot_ui",
+      "Bash(claude mcp:*)"
+    ]
+  }
+}

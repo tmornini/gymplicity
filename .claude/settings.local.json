@@ -34,7 +34,11 @@
       "mcp__XcodeBuildMCP__snapshot_ui",
       "Bash(claude mcp:*)",
       "Bash(done)",
-      "Bash(git rm:*)"
+      "Bash(git rm:*)",
+      "Bash(for file:*)",
+      "Bash(xxd Gymplicity/Models/Entities.swift)",
+      "Bash(awk:*)",
+      "Bash(xcodebuild build:*)"
     ]
   }
 }

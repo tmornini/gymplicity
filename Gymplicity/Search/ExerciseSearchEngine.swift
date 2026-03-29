@@ -10,10 +10,15 @@ struct ParsedQuery: Sendable {
     init(_ input: String) {
         var positive: [String] = []
         var negative: [String] = []
-        for word in input.lowercased().split(separator: " ").map(String.init) {
+        let words = input.lowercased()
+            .split(separator: " ")
+            .map(String.init)
+        for word in words {
             if word.hasPrefix("-") {
                 let stripped = String(word.dropFirst())
-                if !stripped.isEmpty { negative.append(stripped) }
+                if !stripped.isEmpty {
+                    negative.append(stripped)
+                }
             } else {
                 positive.append(word)
             }
@@ -22,7 +27,9 @@ struct ParsedQuery: Sendable {
         self.negativeTerms = negative
     }
 
-    var isEmpty: Bool { positiveTerms.isEmpty && negativeTerms.isEmpty }
+    var isEmpty: Bool {
+        positiveTerms.isEmpty && negativeTerms.isEmpty
+    }
 }
 
 // MARK: - Levenshtein
@@ -36,7 +43,11 @@ enum Levenshtein {
         }
     }
 
-    static func distance(_ a: String, _ b: String, limit: Int) -> Int {
+    static func distance(
+        _ a: String,
+        _ b: String,
+        limit: Int
+    ) -> Int {
         let a = Array(a)
         let b = Array(b)
         let m = a.count
@@ -53,7 +64,11 @@ enum Levenshtein {
             var rowMin = curr[0]
             for j in 1...n {
                 let cost = a[i - 1] == b[j - 1] ? 0 : 1
-                curr[j] = min(prev[j] + 1, curr[j - 1] + 1, prev[j - 1] + cost)
+                curr[j] = min(
+                    prev[j] + 1,
+                    curr[j - 1] + 1,
+                    prev[j - 1] + cost
+                )
                 rowMin = min(rowMin, curr[j])
             }
             if rowMin > limit { return limit + 1 }
@@ -62,18 +77,27 @@ enum Levenshtein {
         return prev[n]
     }
 
-    static func matches(_ query: String, against candidate: String) -> Bool {
+    static func matches(
+        _ query: String,
+        against candidate: String
+    ) -> Bool {
         let t = threshold(for: query.count)
         if t == 0 {
             return candidate.contains(query)
         }
-        let candidateWords = candidate.split(separator: " ").map(String.init)
+        let candidateWords = candidate
+            .split(separator: " ")
+            .map(String.init)
         for word in candidateWords {
-            if distance(query, word, limit: t) <= t { return true }
+            if distance(query, word, limit: t) <= t {
+                return true
+            }
         }
         if candidate.contains(query) { return true }
         let joined = candidateWords.joined()
-        return distance(query, joined, limit: t) <= t
+        return distance(
+            query, joined, limit: t
+        ) <= t
     }
 }
 
@@ -146,22 +170,37 @@ struct ExerciseSearchResults {
 final class ExerciseSearchEngine: @unchecked Sendable {
     static let shared = ExerciseSearchEngine()
 
-    private let indexedCatalog: [IndexedCatalogExercise]
-    private let catalogById: [String: CatalogExercise]
+    private let indexedCatalog:
+        [IndexedCatalogExercise]
+    private let catalogById:
+        [String: CatalogExercise]
 
     private init() {
-        guard let url = Bundle.main.url(forResource: "exercises", withExtension: "json"),
+        guard let url = Bundle.main.url(
+            forResource: "exercises",
+            withExtension: "json"
+        ),
               let data = try? Data(contentsOf: url),
-              let exercises = try? JSONDecoder().decode([CatalogExercise].self, from: data) else {
+              let exercises = try? JSONDecoder()
+            .decode(
+                [CatalogExercise].self,
+                from: data
+            ) else {
             indexedCatalog = []
             catalogById = [:]
             return
         }
-        indexedCatalog = exercises.map { IndexedCatalogExercise($0) }
-        catalogById = Dictionary(uniqueKeysWithValues: exercises.map { ($0.id, $0) })
+        indexedCatalog = exercises
+            .map { IndexedCatalogExercise($0) }
+        catalogById = Dictionary(
+            uniqueKeysWithValues: exercises
+                .map { ($0.id, $0) }
+        )
     }
 
-    func catalogExercise(forCatalogId id: String) -> CatalogExercise? {
+    func catalogExercise(
+        forCatalogId id: String
+    ) -> CatalogExercise? {
         catalogById[id]
     }
 
@@ -172,15 +211,31 @@ final class ExerciseSearchEngine: @unchecked Sendable {
     ) -> ExerciseSearchResults {
         let parsed = ParsedQuery(query)
 
-        let userResults = searchUserExercises(parsed, exercises: userExercises, recentlyUsedIDs: recentlyUsedIDs)
+        let userResults = searchUserExercises(
+            parsed,
+            exercises: userExercises,
+            recentlyUsedIDs: recentlyUsedIDs
+        )
 
         if parsed.isEmpty {
-            return ExerciseSearchResults(userExercises: userResults, catalogExercises: [])
+            return ExerciseSearchResults(
+            userExercises: userResults,
+            catalogExercises: []
+        )
         }
 
-        let catalogResults = searchCatalog(parsed, excludingNames: Set(userExercises.map { $0.name.lowercased() }))
+        let catalogResults = searchCatalog(
+            parsed,
+            excludingNames: Set(
+                userExercises
+                    .map { $0.name.lowercased() }
+            )
+        )
 
-        return ExerciseSearchResults(userExercises: userResults, catalogExercises: catalogResults)
+        return ExerciseSearchResults(
+            userExercises: userResults,
+            catalogExercises: catalogResults
+        )
     }
 
     private func searchUserExercises(
@@ -196,24 +251,48 @@ final class ExerciseSearchEngine: @unchecked Sendable {
                     if aRecent != bRecent { return aRecent }
                     return a.name < b.name
                 }
-                .map { UserExerciseResult(exercise: $0, score: recentlyUsedIDs.contains($0.id) ? 0 : 1) }
+                .map {
+                    UserExerciseResult(
+                        exercise: $0,
+                        score: recentlyUsedIDs
+                            .contains($0.id) ? 0 : 1
+                    )
+                }
         }
 
         return exercises.compactMap { exercise in
             let name = exercise.name.lowercased()
 
             for neg in query.negativeTerms {
-                if Levenshtein.matches(neg, against: name) { return nil }
+                if Levenshtein.matches(
+                    neg, against: name
+                ) {
+                    return nil
+                }
             }
 
             for pos in query.positiveTerms {
-                if !Levenshtein.matches(pos, against: name) { return nil }
+                if !Levenshtein.matches(
+                    pos, against: name
+                ) {
+                    return nil
+                }
             }
 
-            let exactBonus = name == query.positiveTerms.joined(separator: " ") ? 0 : 1
-            return UserExerciseResult(exercise: exercise, score: exactBonus)
+            let isExact = name == query.positiveTerms
+                .joined(separator: " ")
+            let exactBonus = isExact ? 0 : 1
+            return UserExerciseResult(
+                exercise: exercise,
+                score: exactBonus
+            )
         }
-        .sorted { $0.score < $1.score || ($0.score == $1.score && $0.exercise.name < $1.exercise.name) }
+        .sorted {
+            $0.score < $1.score
+                || ($0.score == $1.score
+                    && $0.exercise.name
+                        < $1.exercise.name)
+        }
     }
 
     private func searchCatalog(
@@ -221,56 +300,95 @@ final class ExerciseSearchEngine: @unchecked Sendable {
         excludingNames: Set<String>
     ) -> [CatalogSearchResult] {
         return indexedCatalog.compactMap { indexed in
-            if excludingNames.contains(indexed.exercise.name.lowercased()) { return nil }
+            let name = indexed.exercise.name
+                .lowercased()
+            if excludingNames.contains(name) {
+                return nil
+            }
 
             for neg in query.negativeTerms {
-                if indexed.searchBlob.contains(neg) { return nil }
+                if indexed.searchBlob.contains(neg) {
+                    return nil
+                }
             }
 
             var allReasons: [MatchReason] = []
 
             for term in query.positiveTerms {
-                let reasons = matchTerm(term, against: indexed)
-                if reasons.isEmpty { return nil }
-                allReasons.append(contentsOf: reasons)
+                let reasons = matchTerm(
+                    term, against: indexed
+                )
+                if reasons.isEmpty {
+                    return nil
+                }
+                allReasons.append(
+                    contentsOf: reasons
+                )
             }
 
-            let uniqueReasons = Array(Set(allReasons)).sorted { $0.score < $1.score }
-            let bestScore = uniqueReasons.map(\.score).min() ?? 50
-            return CatalogSearchResult(exercise: indexed.exercise, reasons: uniqueReasons, score: bestScore)
+            let uniqueReasons = Array(Set(allReasons))
+                .sorted { $0.score < $1.score }
+            let bestScore = uniqueReasons
+                .map(\.score).min() ?? 50
+            return CatalogSearchResult(
+                exercise: indexed.exercise,
+                reasons: uniqueReasons,
+                score: bestScore
+            )
         }
-        .sorted { $0.score < $1.score || ($0.score == $1.score && $0.exercise.name < $1.exercise.name) }
+        .sorted {
+            $0.score < $1.score
+                || ($0.score == $1.score
+                    && $0.exercise.name
+                        < $1.exercise.name)
+        }
     }
 
-    private func matchTerm(_ term: String, against indexed: IndexedCatalogExercise) -> [MatchReason] {
+    private func matchTerm(
+        _ term: String,
+        against indexed: IndexedCatalogExercise
+    ) -> [MatchReason] {
         var reasons: [MatchReason] = []
 
-        if indexed.nameWords.contains(where: { Levenshtein.matches(term, against: $0) }) {
+        if indexed.nameWords.contains(where: {
+            Levenshtein.matches(term, against: $0)
+        }) {
             reasons.append(.exactName)
         }
 
-        if indexed.aliasWords.contains(where: { Levenshtein.matches(term, against: $0) }) {
-            let matchedAlias = indexed.exercise.aliases.first {
-                Levenshtein.matches(term, against: $0.lowercased())
+        if indexed.aliasWords.contains(where: {
+            Levenshtein.matches(term, against: $0)
+        }) {
+            let matchedAlias = indexed.exercise
+                .aliases.first {
+                Levenshtein.matches(
+                    term, against: $0.lowercased()
+                )
             }
             reasons.append(.alias(matchedAlias ?? term))
         }
 
         for word in indexed.primaryMuscleWords {
             if Levenshtein.matches(term, against: word) {
-                let displayName = indexed.exercise.primaryMuscles.first {
+                let displayName = indexed.exercise
+                    .primaryMuscles.first {
                     $0.lowercased().contains(word)
                 } ?? word
-                reasons.append(.primaryMuscle(displayName))
+                reasons.append(
+                    .primaryMuscle(displayName)
+                )
             }
         }
 
         for word in indexed.secondaryMuscleWords {
             if Levenshtein.matches(term, against: word) {
-                let displayName = indexed.exercise.secondaryMuscles.first {
+                let displayName = indexed.exercise
+                    .secondaryMuscles.first {
                     $0.lowercased().contains(word)
                 } ?? word
-                reasons.append(.secondaryMuscle(displayName))
+                reasons.append(
+                    .secondaryMuscle(displayName)
+                )
             }
         }
 
@@ -285,10 +403,13 @@ final class ExerciseSearchEngine: @unchecked Sendable {
 
         for word in indexed.regionWords {
             if Levenshtein.matches(term, against: word) {
-                let displayName = indexed.exercise.bodyRegions.first {
+                let displayName = indexed.exercise
+                    .bodyRegions.first {
                     $0.lowercased().contains(word)
                 } ?? word
-                reasons.append(.bodyRegion(displayName))
+                reasons.append(
+                    .bodyRegion(displayName)
+                )
             }
         }
 

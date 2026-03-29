@@ -3,7 +3,11 @@ import SwiftData
 
 @main
 struct GymplicityApp: App {
-    @StateObject private var syncManager = SyncSessionManager(name: "Gymplicity", role: "unknown")
+    @StateObject private var syncManager =
+        SyncSessionManager(
+            name: "Gymplicity",
+            role: "unknown"
+        )
 
     var body: some Scene {
         WindowGroup {

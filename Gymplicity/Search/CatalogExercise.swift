@@ -1,6 +1,8 @@
 import Foundation
 
-struct CatalogExercise: Codable, Identifiable, Sendable {
+struct CatalogExercise:
+    Codable, Identifiable, Sendable
+{
     let id: String
     let name: String
     let aliases: [String]
@@ -23,12 +25,40 @@ struct IndexedCatalogExercise: Sendable {
 
     init(_ exercise: CatalogExercise) {
         self.exercise = exercise
-        self.nameWords = exercise.name.lowercased().split(separator: " ").map(String.init)
-        self.aliasWords = exercise.aliases.flatMap { $0.lowercased().split(separator: " ").map(String.init) }
-        self.primaryMuscleWords = exercise.primaryMuscles.flatMap { $0.lowercased().split(separator: " ").map(String.init) }
-        self.secondaryMuscleWords = exercise.secondaryMuscles.flatMap { $0.lowercased().split(separator: " ").map(String.init) }
-        self.jointWords = exercise.joints.flatMap { $0.lowercased().split(separator: " ").map(String.init) }
-        self.regionWords = exercise.bodyRegions.flatMap { $0.lowercased().split(separator: " ").map(String.init) }
+        self.nameWords = exercise.name
+            .lowercased()
+            .split(separator: " ")
+            .map(String.init)
+        self.aliasWords = exercise.aliases
+            .flatMap {
+                $0.lowercased()
+                    .split(separator: " ")
+                    .map(String.init)
+            }
+        self.primaryMuscleWords = exercise
+            .primaryMuscles.flatMap {
+                $0.lowercased()
+                    .split(separator: " ")
+                    .map(String.init)
+            }
+        self.secondaryMuscleWords = exercise
+            .secondaryMuscles.flatMap {
+                $0.lowercased()
+                    .split(separator: " ")
+                    .map(String.init)
+            }
+        self.jointWords = exercise.joints
+            .flatMap {
+                $0.lowercased()
+                    .split(separator: " ")
+                    .map(String.init)
+            }
+        self.regionWords = exercise.bodyRegions
+            .flatMap {
+                $0.lowercased()
+                    .split(separator: " ")
+                    .map(String.init)
+            }
         self.searchBlob = (
             [exercise.name.lowercased()] +
             exercise.aliases.map { $0.lowercased() } +

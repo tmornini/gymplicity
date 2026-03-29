@@ -9,8 +9,14 @@ enum SyncEntityType: String, Sendable {
 }
 
 enum SyncTrigger {
-    static let entityUpdatedNotification = Notification.Name("SyncTriggerEntityUpdated")
-    static let structureChangedNotification = Notification.Name("SyncTriggerStructureChanged")
+    static let entityUpdatedNotification =
+        Notification.Name(
+            "SyncTriggerEntityUpdated"
+        )
+    static let structureChangedNotification =
+        Notification.Name(
+            "SyncTriggerStructureChanged"
+        )
 
     static func entityUpdated(_ type: SyncEntityType, id: UUID) {
         NotificationCenter.default.post(

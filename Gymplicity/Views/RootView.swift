@@ -23,7 +23,11 @@ struct RootView: View {
                 }
             }
             .navigationTitle("Gymplicity")
-            .task { await Task.detached { _ = ExerciseSearchEngine.shared }.value }
+            .task {
+                await Task.detached {
+                    _ = ExerciseSearchEngine.shared
+                }.value
+            }
             .alert(
             "Set Up Your Profile",
             isPresented: $showingSetup
@@ -53,7 +57,11 @@ struct RootView: View {
     private var welcomeView: some View {
         VStack(spacing: GymMetrics.space24) {
             Spacer()
-            AnimatedMascotView(pose: .waving, animation: .wave, color: GymColors.energy)
+            AnimatedMascotView(
+                pose: .waving,
+                animation: .wave,
+                color: GymColors.energy
+            )
                 .frame(height: GymMetrics.mascotLarge)
             Text("Welcome to Gymplicity")
                 .font(GymFont.heading1)

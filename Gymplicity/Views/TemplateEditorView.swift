@@ -30,9 +30,18 @@ struct TemplateEditorView: View {
             ForEach(template.sortedGroups(in: modelContext)) { group in
                 Section {
                     ForEach(group.sortedSets(in: modelContext)) { set in
-                        TemplateSetRow(set: set, group: group, template: template)
+                        TemplateSetRow(
+                            set: set,
+                            group: group,
+                            template: template
+                        )
                     }
-                    .onDelete { offsets in deleteSets(from: group, at: offsets) }
+                    .onDelete { offsets in
+                        deleteSets(
+                            from: group,
+                            at: offsets
+                        )
+                    }
 
                     Button {
                         targetGroup = group
@@ -46,7 +55,12 @@ struct TemplateEditorView: View {
                     Button(role: .destructive) {
                         groupToDelete = group
                     } label: {
-                        Label(group.isSuperset ? "Remove Superset" : "Remove Group", systemImage: "trash")
+                        Label(
+                            group.isSuperset
+                                ? "Remove Superset"
+                                : "Remove Group",
+                            systemImage: "trash"
+                        )
                             .font(GymFont.label)
                     }
                 } header: {
@@ -76,7 +90,9 @@ struct TemplateEditorView: View {
             }
         }
         .confirmationDialog(
-            groupToDelete?.isSuperset == true ? "Remove Superset?" : "Remove Group?",
+            groupToDelete?.isSuperset == true
+                ? "Remove Superset?"
+                : "Remove Group?",
             isPresented: Binding(
                 get: { groupToDelete != nil },
                 set: { if !$0 { groupToDelete = nil } }
@@ -90,9 +106,15 @@ struct TemplateEditorView: View {
             }
             Button("Cancel", role: .cancel) { groupToDelete = nil }
         } message: { group in
-            let setCount = group.sets(in: modelContext).count
-            let label = group.isSuperset ? "superset" : "group"
-            Text("This \(label) has \(setCount) set\(setCount == 1 ? "" : "s") that will be deleted.")
+            let count = group.sets(in: modelContext).count
+            let kind = group.isSuperset
+                ? "superset" : "group"
+            let suffix = count == 1 ? "" : "s"
+            Text(
+                "This \(kind) has \(count)"
+                + " set\(suffix)"
+                + " that will be deleted."
+            )
         }
         .alert("Rename Template", isPresented: $editingName) {
             TextField("Template Name", text: $nameText)
@@ -113,15 +135,26 @@ struct TemplateEditorView: View {
     }
 
     private func addGroup() {
-        let group = WorkoutGroupEntity(order: template.nextGroupOrder(in: modelContext))
+        let group = WorkoutGroupEntity(
+            order: template
+                .nextGroupOrder(in: modelContext)
+        )
         modelContext.insert(group)
-        modelContext.insert(WorkoutGroups(workoutId: template.id, groupId: group.id))
+        modelContext.insert(
+            WorkoutGroups(
+                workoutId: template.id,
+                groupId: group.id
+            )
+        )
         targetGroup = group
         showingAddExercise = true
         SyncTrigger.structureChanged()
     }
 
-    private func deleteSets(from group: WorkoutGroupEntity, at offsets: IndexSet) {
+    private func deleteSets(
+        from group: WorkoutGroupEntity,
+        at offsets: IndexSet
+    ) {
         modelContext.deleteSets(from: group, at: offsets)
         SyncTrigger.structureChanged()
     }
@@ -174,7 +207,12 @@ private struct TemplateSetRow: View {
         }
         .buttonStyle(.plain)
         .sheet(isPresented: $showingEditor) {
-            TemplateSetEntryView(set: set, exercise: set.exercise(in: modelContext))
+            TemplateSetEntryView(
+                set: set,
+                exercise: set.exercise(
+                    in: modelContext
+                )
+            )
         }
     }
 }

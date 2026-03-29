@@ -7,7 +7,10 @@ struct AddExerciseView: View {
     let group: WorkoutGroupEntity
     let trainer: IdentityEntity?
     @State private var searchText = ""
-    @State private var results = ExerciseSearchResults(userExercises: [], catalogExercises: [])
+    @State private var results = ExerciseSearchResults(
+        userExercises: [],
+        catalogExercises: []
+    )
     @State private var userExercises: [ExerciseEntity] = []
     @State private var recentlyUsedIDs: Set<UUID> = []
     @FocusState private var nameFieldFocused: Bool
@@ -25,7 +28,9 @@ struct AddExerciseView: View {
 
                 Divider()
 
-                if !results.userExercises.isEmpty || !results.catalogExercises.isEmpty {
+                if !results.userExercises.isEmpty
+                    || !results.catalogExercises.isEmpty
+                {
                     List {
                         if !results.userExercises.isEmpty {
                             Section("Your Exercises") {
@@ -46,10 +51,15 @@ struct AddExerciseView: View {
                                     Button {
                                         addFromCatalog(result.exercise)
                                     } label: {
-                                        VStack(alignment: .leading, spacing: GymMetrics.space4) {
+                                        VStack(
+                                        alignment: .leading,
+                                        spacing: GymMetrics.space4
+                                    ) {
                                             Text(result.exercise.name)
                                                 .foregroundStyle(.primary)
-                                            ExerciseAttributePills(exercise: result.exercise)
+                                            ExerciseAttributePills(
+                                                exercise: result.exercise
+                                            )
                                         }
                                     }
                                 }
@@ -57,15 +67,22 @@ struct AddExerciseView: View {
                         }
                     }
                     .listStyle(.plain)
-                    .scrollDismissesKeyboard(.immediately)
+                    .scrollDismissesKeyboard(
+                        .immediately
+                    )
                 } else if !searchText.isEmpty {
                     VStack(spacing: GymMetrics.space8) {
                         Spacer()
-                        MascotView(pose: .thinking, color: GymColors.secondaryText)
+                        MascotView(
+                            pose: .thinking,
+                            color: GymColors.secondaryText
+                        )
                             .frame(height: GymMetrics.mascotSmall)
                         Text("No matches — tap Add to create")
                             .font(GymFont.body)
-                            .foregroundStyle(GymColors.secondaryText)
+                            .foregroundStyle(
+                                GymColors.secondaryText
+                            )
                         Text("\"\(searchText)\"")
                             .font(GymFont.bodyStrong)
                         Spacer()
@@ -73,11 +90,17 @@ struct AddExerciseView: View {
                 } else {
                     VStack(spacing: GymMetrics.space8) {
                         Spacer()
-                        AnimatedMascotView(pose: .thinking, animation: .pulse, color: GymColors.secondaryText)
+                        AnimatedMascotView(
+                        pose: .thinking,
+                        animation: .pulse,
+                        color: GymColors.secondaryText
+                    )
                             .frame(height: GymMetrics.mascotSmall)
                         Text("Type an exercise name")
                             .font(GymFont.body)
-                            .foregroundStyle(GymColors.secondaryText)
+                            .foregroundStyle(
+                            GymColors.secondaryText
+                        )
                         Spacer()
                     }
                 }
@@ -92,14 +115,24 @@ struct AddExerciseView: View {
                     Button("Add") { addExercise() }
                         .fontWeight(.semibold)
                         .foregroundStyle(GymColors.energy)
-                        .disabled(searchText.trimmingCharacters(in: .whitespaces).isEmpty)
+                        .disabled(
+                            searchText
+                                .trimmingCharacters(
+                                    in: .whitespaces
+                                ).isEmpty
+                        )
                 }
             }
             .onAppear {
                 nameFieldFocused = true
                 guard let trainer else { return }
-                userExercises = trainer.exerciseCatalog(in: modelContext)
-                recentlyUsedIDs = BatchTraversal.exerciseIdsUsed(for: trainer, in: modelContext)
+                userExercises = trainer
+                    .exerciseCatalog(in: modelContext)
+                recentlyUsedIDs = BatchTraversal
+                    .exerciseIdsUsed(
+                        for: trainer,
+                        in: modelContext
+                    )
                 results = ExerciseSearchEngine.shared.search(
                     query: "",
                     userExercises: userExercises,
@@ -125,10 +158,15 @@ struct AddExerciseView: View {
         dismiss()
     }
 
-    private func addFromCatalog(_ catalogExercise: CatalogExercise) {
+    private func addFromCatalog(
+        _ catalogExercise: CatalogExercise
+    ) {
         nameFieldFocused = false
         guard let trainer else { return }
-        let exercise = trainer.findOrCreateExercise(named: catalogExercise.name, in: modelContext)
+        let exercise = trainer.findOrCreateExercise(
+            named: catalogExercise.name,
+            in: modelContext
+        )
         if exercise.catalogId == nil {
             exercise.catalogId = catalogExercise.id
         }
@@ -139,9 +177,14 @@ struct AddExerciseView: View {
 
     private func addExercise() {
         nameFieldFocused = false
-        let trimmed = searchText.trimmingCharacters(in: .whitespaces)
-        guard !trimmed.isEmpty, let trainer else { return }
-        let exercise = trainer.findOrCreateExercise(named: trimmed, in: modelContext)
+        let trimmed = searchText
+            .trimmingCharacters(in: .whitespaces)
+        guard !trimmed.isEmpty, let trainer
+        else { return }
+        let exercise = trainer.findOrCreateExercise(
+            named: trimmed,
+            in: modelContext
+        )
         createSet(for: exercise)
         SyncTrigger.structureChanged()
         dismiss()

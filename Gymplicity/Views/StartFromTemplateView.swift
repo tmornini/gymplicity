@@ -12,15 +12,26 @@ struct StartFromTemplateView: View {
         NavigationStack {
             let templates = trainer.templates(in: modelContext)
             VStack(spacing: 0) {
-                AnimatedMascotView(pose: .lifting, animation: .bounce, color: GymColors.energy)
+                AnimatedMascotView(
+                    pose: .lifting,
+                    animation: .bounce,
+                    color: GymColors.energy
+                )
                     .frame(height: GymMetrics.mascotSmall)
                     .padding(.top, GymMetrics.space16)
 
                 List {
                     ForEach(templates) { template in
                         Button {
-                            guard trainee.activeWorkouts(in: modelContext).isEmpty else { return }
-                            let workout = modelContext.instantiateTemplate(template, for: trainee)
+                            guard trainee
+                                .activeWorkouts(in: modelContext)
+                                .isEmpty
+                            else { return }
+                            let workout = modelContext
+                                .instantiateTemplate(
+                                    template,
+                                    for: trainee
+                                )
                             SyncTrigger.structureChanged()
                             onStart(workout)
                             dismiss()
@@ -32,9 +43,16 @@ struct StartFromTemplateView: View {
                     if templates.isEmpty {
                         Section {
                             VStack(spacing: GymMetrics.space16) {
-                                MascotView(pose: .thinking, color: GymColors.secondaryText)
+                                MascotView(
+                                    pose: .thinking,
+                                    color: GymColors.secondaryText
+                                )
                                     .frame(height: GymMetrics.mascotSmall)
-                                Text("Create templates from the Templates screen first")
+                                Text(
+                                    "Create templates from"
+                                    + " the Templates"
+                                    + " screen first"
+                                )
                                     .font(GymFont.body)
                                     .foregroundStyle(GymColors.secondaryText)
                                     .multilineTextAlignment(.center)
@@ -73,11 +91,17 @@ private struct StartTemplateRow: View {
                     .foregroundStyle(.primary)
 
                 let groups = template.groups(in: modelContext)
-                let setCount = groups.flatMap { $0.sets(in: modelContext) }.count
+                let setCount = groups
+                    .flatMap { $0.sets(in: modelContext) }
+                    .count
                 let exerciseCount = template.exerciseCount(in: modelContext)
 
                 HStack(spacing: 8) {
-                    Text("\(exerciseCount) exercise\(exerciseCount == 1 ? "" : "s")")
+                    Text(
+                        "\(exerciseCount)"
+                        + " exercise"
+                        + "\(exerciseCount == 1 ? "" : "s")"
+                    )
                     Text("\(setCount) set\(setCount == 1 ? "" : "s")")
                 }
                 .font(GymFont.caption)

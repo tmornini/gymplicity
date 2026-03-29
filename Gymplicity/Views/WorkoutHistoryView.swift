@@ -24,7 +24,10 @@ struct WorkoutHistoryView: View {
                     Text("\(workout.exerciseCount(in: modelContext))")
                         .font(GymFont.bodyMono)
                 }
-                let totalSets = workout.groups(in: modelContext).flatMap { $0.sets(in: modelContext) }.count
+                let totalSets = workout
+                    .groups(in: modelContext)
+                    .flatMap { $0.sets(in: modelContext) }
+                    .count
                 LabeledContent("Sets") {
                     Text("\(totalSets)")
                         .font(GymFont.bodyMono)
@@ -51,7 +54,10 @@ struct WorkoutHistoryView: View {
                     ForEach(group.sortedSets(in: modelContext)) { set in
                         let exercise = set.exercise(in: modelContext)
                         HStack {
-                            VStack(alignment: .leading, spacing: GymMetrics.space4) {
+                            VStack(
+                                alignment: .leading,
+                                spacing: GymMetrics.space4
+                            ) {
                                 Text(exercise?.name ?? "Exercise")
                                     .font(GymFont.label)
                                     .foregroundStyle(GymColors.secondaryText)
@@ -79,7 +85,9 @@ struct WorkoutHistoryView: View {
 
                     HStack {
                         Spacer()
-                        Text("Volume: \(Int(group.totalVolume(in: modelContext))) lb")
+                        let vol = group
+                            .totalVolume(in: modelContext)
+                        Text("Volume: \(Int(vol)) lb")
                             .font(GymFont.caption)
                             .foregroundStyle(GymColors.secondaryText)
                     }
@@ -96,7 +104,10 @@ struct WorkoutHistoryView: View {
                 }
             }
         }
-        .confirmationDialog("Delete Workout?", isPresented: $showingDeleteConfirmation) {
+        .confirmationDialog(
+            "Delete Workout?",
+            isPresented: $showingDeleteConfirmation
+        ) {
             Button("Delete Workout", role: .destructive) {
                 modelContext.deleteWorkout(workout)
                 SyncTrigger.structureChanged()
@@ -104,9 +115,19 @@ struct WorkoutHistoryView: View {
             }
             Button("Cancel", role: .cancel) { }
         } message: {
-            let groups = workout.groups(in: modelContext)
-            let setCount = groups.flatMap { $0.sets(in: modelContext) }.count
-            Text("This workout has \(groups.count) group\(groups.count == 1 ? "" : "s") and \(setCount) set\(setCount == 1 ? "" : "s"). This cannot be undone.")
+            let groups = workout
+                .groups(in: modelContext)
+            let setCount = groups
+                .flatMap { $0.sets(in: modelContext) }
+                .count
+            let gs = groups.count == 1 ? "" : "s"
+            let ss = setCount == 1 ? "" : "s"
+            Text(
+                "This workout has"
+                + " \(groups.count) group\(gs)"
+                + " and \(setCount) set\(ss)."
+                + " This cannot be undone."
+            )
         }
     }
 
@@ -114,7 +135,11 @@ struct WorkoutHistoryView: View {
         if group.isSuperset {
             return "Superset \(group.order + 1)"
         }
-        return group.sortedSets(in: modelContext).first?.exercise(in: modelContext)?.name ?? "Exercise"
+        return group
+            .sortedSets(in: modelContext)
+            .first?
+            .exercise(in: modelContext)?
+            .name ?? "Exercise"
     }
 
 }

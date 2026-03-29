@@ -13,11 +13,21 @@ struct ActiveWorkoutsContainerView: View {
 
     enum ViewMode { case list, guided }
 
-    private var sortedPairs: [(identity: IdentityEntity, workout: WorkoutEntity)] {
+    private var sortedPairs: [(
+        identity: IdentityEntity,
+        workout: WorkoutEntity
+    )] {
         let traineeList = trainer.trainees(in: modelContext)
         let traineeIds = traineeList.map(\.id)
-        let workoutsByID = BatchTraversal.workoutsByIdentity(identityIds: traineeIds, in: modelContext)
-        let traineeMap = Dictionary(traineeList.map { ($0.id, $0) }, uniquingKeysWith: { a, _ in a })
+        let workoutsByID = BatchTraversal
+            .workoutsByIdentity(
+                identityIds: traineeIds,
+                in: modelContext
+            )
+        let traineeMap = Dictionary(
+            traineeList.map { ($0.id, $0) },
+            uniquingKeysWith: { a, _ in a }
+        )
 
         return workoutsByID.flatMap {
             (identityId, workouts)
@@ -49,8 +59,13 @@ struct ActiveWorkoutsContainerView: View {
 
     var body: some View {
         let pairs = sortedPairs
-        let currentPair: (identity: IdentityEntity, workout: WorkoutEntity)? = {
-            guard currentIndex >= 0, currentIndex < pairs.count else { return nil }
+        let currentPair: (
+            identity: IdentityEntity,
+            workout: WorkoutEntity
+        )? = {
+            guard currentIndex >= 0,
+                currentIndex < pairs.count
+            else { return nil }
             return pairs[currentIndex]
         }()
 
@@ -131,7 +146,11 @@ struct ActiveWorkoutsContainerView: View {
         .onAppear {
             guard !hasInitialized else { return }
             hasInitialized = true
-            if let index = pairs.firstIndex(where: { $0.workout.id == initialWorkoutId }) {
+            if let index = pairs.firstIndex(
+                where: {
+                    $0.workout.id == initialWorkoutId
+                }
+            ) {
                 currentIndex = index
             }
         }
@@ -168,7 +187,13 @@ struct ActiveWorkoutsContainerView: View {
                 }
             }
         }
-        .animation(.spring(response: 0.3, dampingFraction: 0.7), value: currentIndex)
+        .animation(
+            .spring(
+                response: 0.3,
+                dampingFraction: 0.7
+            ),
+            value: currentIndex
+        )
     }
 
     // MARK: - Edge Gestures

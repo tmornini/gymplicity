@@ -37,7 +37,11 @@ struct ProgressChartsView: View {
     private var emptyState: some View {
         VStack(spacing: GymMetrics.space16) {
             Spacer()
-            AnimatedMascotView(pose: .deadlifting, animation: .rep, color: GymColors.secondaryText)
+            AnimatedMascotView(
+                pose: .deadlifting,
+                animation: .rep,
+                color: GymColors.secondaryText
+            )
                 .frame(height: GymMetrics.mascotMedium)
             Text("Complete workouts to track your progress")
                 .font(GymFont.body)
@@ -66,7 +70,12 @@ struct ProgressChartsView: View {
 
             let dataPoints = weightPerRepData
             let repCounts = Swift.Set(dataPoints.map(\.reps)).sorted()
-            let colors: [Color] = [GymColors.energy, GymColors.power, GymColors.focus, GymColors.warning]
+            let colors: [Color] = [
+                GymColors.energy,
+                GymColors.power,
+                GymColors.focus,
+                GymColors.warning,
+            ]
 
             Chart(dataPoints) { point in
                 LineMark(
@@ -83,7 +92,11 @@ struct ProgressChartsView: View {
                 .foregroundStyle(by: .value("Reps", "\(point.reps)-rep"))
                 .symbol(by: .value("Reps", "\(point.reps)-rep"))
             }
-            .chartForegroundStyleScale(range: colors.prefix(max(repCounts.count, 1)).map { $0 })
+            .chartForegroundStyleScale(
+                range: colors
+                    .prefix(max(repCounts.count, 1))
+                    .map { $0 }
+            )
             .chartYAxisLabel("lb")
             .chartLegend(position: .bottom, alignment: .leading)
             .frame(height: 240)
@@ -97,12 +110,23 @@ struct ProgressChartsView: View {
     }
 
     private var weightPerRepData: [WeightPerRepPoint] {
-        let byDate = Dictionary(grouping: history.filter { $0.set.reps > 0 && $0.set.weight > 0 }, by: { $0.date })
+        let byDate = Dictionary(
+            grouping: history.filter {
+                $0.set.reps > 0 && $0.set.weight > 0
+            },
+            by: { $0.date }
+        )
         return byDate.flatMap { (date, items) in
             let byReps = Dictionary(grouping: items, by: { $0.set.reps })
             return byReps.compactMap { (reps, sets) -> WeightPerRepPoint? in
-                guard let maxWeight = sets.map(\.set.weight).max() else { return nil }
-                return WeightPerRepPoint(date: date, reps: reps, weight: maxWeight)
+                guard let maxWeight = sets
+                    .map(\.set.weight).max()
+                else { return nil }
+                return WeightPerRepPoint(
+                    date: date,
+                    reps: reps,
+                    weight: maxWeight
+                )
             }
         }
     }
@@ -147,7 +171,12 @@ struct ProgressChartsView: View {
     private var volumeData: [VolumePoint] {
         let byDate = Dictionary(grouping: history, by: { $0.date })
         return byDate.map { (date, items) in
-            VolumePoint(date: date, volume: items.reduce(0) { $0 + $1.set.volume })
+            VolumePoint(
+                date: date,
+                volume: items.reduce(0) {
+                    $0 + $1.set.volume
+                }
+            )
         }
         .sorted { $0.date < $1.date }
     }

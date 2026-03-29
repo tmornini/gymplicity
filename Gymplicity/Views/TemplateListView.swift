@@ -25,7 +25,11 @@ struct TemplateListView: View {
             if templates.isEmpty {
                 Section {
                     VStack(spacing: GymMetrics.space16) {
-                        AnimatedMascotView(pose: .thinking, animation: .pulse, color: GymColors.secondaryText)
+                        AnimatedMascotView(
+                            pose: .thinking,
+                            animation: .pulse,
+                            color: GymColors.secondaryText
+                        )
                             .frame(height: GymMetrics.mascotMedium)
                         Text("Create your first workout template")
                             .font(GymFont.body)
@@ -49,9 +53,17 @@ struct TemplateListView: View {
     }
 
     private func createTemplate() {
-        let template = WorkoutEntity(isTemplate: true, templateName: "New Template")
+        let template = WorkoutEntity(
+            isTemplate: true,
+            templateName: "New Template"
+        )
         modelContext.insert(template)
-        modelContext.insert(IdentityWorkouts(identityId: trainer.id, workoutId: template.id))
+        modelContext.insert(
+            IdentityWorkouts(
+                identityId: trainer.id,
+                workoutId: template.id
+            )
+        )
         SyncTrigger.structureChanged()
     }
 }
@@ -72,11 +84,17 @@ private struct TemplateRow: View {
                     .font(GymFont.heading3)
 
                 let groups = template.groups(in: modelContext)
-                let setCount = groups.flatMap { $0.sets(in: modelContext) }.count
+                let setCount = groups
+                    .flatMap { $0.sets(in: modelContext) }
+                    .count
                 let exerciseNames = exerciseNamesList()
 
                 HStack(spacing: 8) {
-                    Text("\(groups.count) group\(groups.count == 1 ? "" : "s")")
+                    Text(
+                        "\(groups.count)"
+                        + " group"
+                        + "\(groups.count == 1 ? "" : "s")"
+                    )
                     Text("\(setCount) set\(setCount == 1 ? "" : "s")")
                 }
                 .font(GymFont.caption)

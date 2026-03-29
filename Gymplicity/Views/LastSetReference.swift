@@ -9,7 +9,8 @@ struct LastSetReference: View {
             HStack(spacing: 4) {
                 Image(systemName: "clock.arrow.circlepath")
                     .font(GymFont.caption)
-                Text("Last time: \(Weight.formatted(set.weight)) x \(set.reps)")
+                let w = Weight.formatted(set.weight)
+                Text("Last time: \(w) x \(set.reps)")
                     .font(GymFont.caption)
             }
             .gymPill(color)

@@ -11,7 +11,11 @@ struct AddTraineeView: View {
     var body: some View {
         NavigationStack {
             VStack(spacing: GymMetrics.space24) {
-                AnimatedMascotView(pose: .waving, animation: .bounce, color: GymColors.energy)
+                AnimatedMascotView(
+                    pose: .waving,
+                    animation: .bounce,
+                    color: GymColors.energy
+                )
                     .frame(height: 80)
                 Text("Who's training today?")
                     .font(GymFont.heading2)
@@ -38,7 +42,12 @@ struct AddTraineeView: View {
                     Button("Add") { save() }
                         .fontWeight(.semibold)
                         .foregroundStyle(GymColors.energy)
-                        .disabled(name.trimmingCharacters(in: .whitespaces).isEmpty)
+                        .disabled(
+                            name
+                                .trimmingCharacters(
+                                    in: .whitespaces
+                                ).isEmpty
+                        )
                 }
             }
             .onAppear { nameFieldFocused = true }
@@ -50,7 +59,10 @@ struct AddTraineeView: View {
         guard !trimmed.isEmpty else { return }
         let trainee = IdentityEntity(name: trimmed, isTrainer: false)
         modelContext.insert(trainee)
-        let join = TrainerTrainees(trainerId: trainer.id, traineeId: trainee.id)
+        let join = TrainerTrainees(
+            trainerId: trainer.id,
+            traineeId: trainee.id
+        )
         modelContext.insert(join)
         SyncTrigger.structureChanged()
         dismiss()

@@ -9,7 +9,11 @@ struct ExerciseAttributePills: View {
 
     init(exercise: ExerciseEntity?) {
         if let catalogId = exercise?.catalogId {
-            self.catalogExercise = ExerciseSearchEngine.shared.catalogExercise(forCatalogId: catalogId)
+            self.catalogExercise = ExerciseSearchEngine
+                .shared
+                .catalogExercise(
+                    forCatalogId: catalogId
+                )
         } else {
             self.catalogExercise = nil
         }
@@ -18,7 +22,10 @@ struct ExerciseAttributePills: View {
     var body: some View {
         if let exercise = catalogExercise {
             HStack(alignment: .top, spacing: GymMetrics.space8) {
-                pillColumn(exercise.bodyRegions, color: GymColors.secondaryText)
+                pillColumn(
+                    exercise.bodyRegions,
+                    color: GymColors.secondaryText
+                )
                 pillColumn(exercise.primaryMuscles, color: GymColors.power)
                 pillColumn(exercise.joints, color: GymColors.warning)
             }

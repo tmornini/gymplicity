@@ -510,11 +510,13 @@ struct SyncView: View {
         with peer: DiscoveredPeer
     ) -> Bool {
         let localId = identity.id
-        let pairings = (try? modelContext.fetch(
+        let pairings = modelContext.fetchOrEmpty(
             FetchDescriptor<PairedDevices>(
-                predicate: #Predicate { $0.localIdentityId == localId }
+                predicate: #Predicate {
+                    $0.localIdentityId == localId
+                }
             )
-        )) ?? []
+        )
         return pairings.contains {
             $0.remoteName == peer.name
         }

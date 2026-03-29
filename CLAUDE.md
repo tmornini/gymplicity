@@ -11,6 +11,9 @@ build/distribute   # archive for distribution (Release)
 build/test         # run tests on iOS Simulator
 ```
 
+Tests are part of the build flow. Code must build, function properly,
+and pass tests at each commit. Run `build/test` before pushing.
+
 ### Device Setup
 
 ```bash

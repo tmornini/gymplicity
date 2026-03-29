@@ -40,5 +40,22 @@
       "Bash(awk:*)",
       "Bash(xcodebuild build:*)"
     ]
+  },
+  "sandbox": {
+    "enabled": true,
+    "autoAllowBashIfSandboxed": true,
+    "allowUnsandboxedCommands": false,
+    "network": {
+      "allowUnixSockets": [
+        "/tmp/claude/tsx-501"
+      ],
+      "allowLocalBinding": true
+    },
+    "filesystem": {
+      "allowWrite": [
+        "/Users/tmornini/.npm-cache",
+        "/Users/tmornini/Desktop"
+      ]
+    }
   }
 }

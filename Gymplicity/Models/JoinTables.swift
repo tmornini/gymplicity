@@ -96,12 +96,58 @@ final class PairedDevices {
     var localIdentityId: UUID
     var remoteIdentityId: UUID
     var remoteName: String
-    var lastSyncDate: Date?
 
-    init(localIdentityId: UUID, remoteIdentityId: UUID, remoteName: String) {
+    init(
+        localIdentityId: UUID,
+        remoteIdentityId: UUID,
+        remoteName: String
+    ) {
         self.localIdentityId = localIdentityId
         self.remoteIdentityId = remoteIdentityId
         self.remoteName = remoteName
-        self.lastSyncDate = nil
+    }
+}
+
+// MARK: - Event Tables
+
+@Model
+final class SetCompletions {
+    var setId: UUID
+    var completedAt: Date
+
+    init(setId: UUID, completedAt: Date) {
+        self.setId = setId
+        self.completedAt = completedAt
+    }
+}
+
+@Model
+final class WorkoutCompletions {
+    var workoutId: UUID
+    var completedAt: Date
+
+    init(
+        workoutId: UUID,
+        completedAt: Date
+    ) {
+        self.workoutId = workoutId
+        self.completedAt = completedAt
+    }
+}
+
+@Model
+final class DeviceSyncEvents {
+    var localIdentityId: UUID
+    var remoteIdentityId: UUID
+    var syncedAt: Date
+
+    init(
+        localIdentityId: UUID,
+        remoteIdentityId: UUID,
+        syncedAt: Date
+    ) {
+        self.localIdentityId = localIdentityId
+        self.remoteIdentityId = remoteIdentityId
+        self.syncedAt = syncedAt
     }
 }

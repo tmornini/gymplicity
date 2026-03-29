@@ -4,17 +4,26 @@ import SwiftData
 // MARK: - Domain Operations
 
 extension ModelContext {
-    /// Adds a set to a group, seeding weight/reps from the owner's last set for this exercise.
+    /// Adds a set to a group, seeding weight/reps from
+    /// the owner's last set for this exercise.
     /// Data operation — does NOT trigger sync; caller owns sync timing.
     @MainActor @discardableResult
-    func addSet(to group: WorkoutGroupEntity, exercise: ExerciseEntity, seedingFrom owner: IdentityEntity?) -> SetEntity {
+    func addSet(
+        to group: WorkoutGroupEntity,
+        exercise: ExerciseEntity,
+        seedingFrom owner: IdentityEntity?
+    ) -> SetEntity {
         var weight: Double = 0
         var reps: Int = 0
         if let owner, let lastSet = owner.lastSet(for: exercise, in: self) {
             weight = lastSet.weight
             reps = lastSet.reps
         }
-        let set = SetEntity(order: group.nextSetOrder(in: self), weight: weight, reps: reps)
+        let set = SetEntity(
+            order: group.nextSetOrder(in: self),
+            weight: weight,
+            reps: reps
+        )
         insert(set)
         insert(GroupSets(groupId: group.id, setId: set.id))
         insert(ExerciseSets(exerciseId: exercise.id, setId: set.id))
@@ -23,7 +32,10 @@ extension ModelContext {
 
     /// Deletes sets from a group at the given offsets.
     /// Data operation — does NOT trigger sync; caller owns sync timing.
-    @MainActor func deleteSets(from group: WorkoutGroupEntity, at offsets: IndexSet) {
+    @MainActor func deleteSets(
+        from group: WorkoutGroupEntity,
+        at offsets: IndexSet
+    ) {
         let sorted = group.sortedSets(in: self)
         for index in offsets {
             deleteSet(sorted[index])
@@ -35,9 +47,12 @@ extension ModelContext {
     @MainActor @discardableResult
     func startWorkout(for identity: IdentityEntity) -> WorkoutEntity? {
         guard identity.activeWorkouts(in: self).isEmpty else { return nil }
-        let workout = WorkoutEntity()
+        let workout = WorkoutEntity(isTemplate: false)
         insert(workout)
-        insert(IdentityWorkouts(identityId: identity.id, workoutId: workout.id))
+        insert(IdentityWorkouts(
+            identityId: identity.id,
+            workoutId: workout.id
+        ))
         SyncTrigger.structureChanged()
         return workout
     }
@@ -47,23 +62,42 @@ extension ModelContext {
 
 extension ModelContext {
     @MainActor @discardableResult
-    func instantiateTemplate(_ template: WorkoutEntity, for identity: IdentityEntity) -> WorkoutEntity {
-        let workout = WorkoutEntity()
+    func instantiateTemplate(
+        _ template: WorkoutEntity,
+        for identity: IdentityEntity
+    ) -> WorkoutEntity {
+        let workout = WorkoutEntity(isTemplate: false)
         insert(workout)
-        insert(IdentityWorkouts(identityId: identity.id, workoutId: workout.id))
-        insert(TemplateInstances(templateId: template.id, workoutId: workout.id))
+        insert(IdentityWorkouts(
+            identityId: identity.id,
+            workoutId: workout.id
+        ))
+        insert(TemplateInstances(
+            templateId: template.id,
+            workoutId: workout.id
+        ))
 
         for templateGroup in template.sortedGroups(in: self) {
-            let group = WorkoutGroupEntity(order: templateGroup.order, isSuperset: templateGroup.isSuperset)
+            let group = WorkoutGroupEntity(
+                order: templateGroup.order,
+                isSuperset: templateGroup.isSuperset
+            )
             insert(group)
             insert(WorkoutGroups(workoutId: workout.id, groupId: group.id))
 
             for templateSet in templateGroup.sortedSets(in: self) {
-                let set = SetEntity(order: templateSet.order, weight: templateSet.weight, reps: templateSet.reps)
+                let set = SetEntity(
+                    order: templateSet.order,
+                    weight: templateSet.weight,
+                    reps: templateSet.reps
+                )
                 insert(set)
                 insert(GroupSets(groupId: group.id, setId: set.id))
                 if let exercise = templateSet.exercise(in: self) {
-                    insert(ExerciseSets(exerciseId: exercise.id, setId: set.id))
+                    insert(ExerciseSets(
+                        exerciseId: exercise.id,
+                        setId: set.id
+                    ))
                 }
             }
         }
@@ -89,24 +123,26 @@ extension ModelContext {
         }
         // Delete join rows referencing this identity
         let id = identity.id
-        if let joins = try? fetch(FetchDescriptor<TrainerTrainees>(
-            predicate: #Predicate { $0.trainerId == id || $0.traineeId == id }
-        )) { joins.forEach { delete($0) } }
-        if let joins = try? fetch(FetchDescriptor<IdentityWorkouts>(
+        fetchOrEmpty(FetchDescriptor<TrainerTrainees>(
+            predicate: #Predicate {
+                $0.trainerId == id || $0.traineeId == id
+            }
+        )).forEach { delete($0) }
+        fetchOrEmpty(FetchDescriptor<IdentityWorkouts>(
             predicate: #Predicate { $0.identityId == id }
-        )) { joins.forEach { delete($0) } }
+        )).forEach { delete($0) }
         delete(identity)
     }
 
     @MainActor func deleteExercise(_ exercise: ExerciseEntity) {
         let id = exercise.id
         // Nullify: remove ExerciseSets join rows but leave sets
-        if let joins = try? fetch(FetchDescriptor<ExerciseSets>(
+        fetchOrEmpty(FetchDescriptor<ExerciseSets>(
             predicate: #Predicate { $0.exerciseId == id }
-        )) { joins.forEach { delete($0) } }
-        if let joins = try? fetch(FetchDescriptor<TrainerExercises>(
+        )).forEach { delete($0) }
+        fetchOrEmpty(FetchDescriptor<TrainerExercises>(
             predicate: #Predicate { $0.exerciseId == id }
-        )) { joins.forEach { delete($0) } }
+        )).forEach { delete($0) }
         delete(exercise)
     }
 
@@ -115,15 +151,17 @@ extension ModelContext {
             deleteGroup(group)
         }
         let id = workout.id
-        if let joins = try? fetch(FetchDescriptor<IdentityWorkouts>(
+        fetchOrEmpty(FetchDescriptor<IdentityWorkouts>(
             predicate: #Predicate { $0.workoutId == id }
-        )) { joins.forEach { delete($0) } }
-        if let joins = try? fetch(FetchDescriptor<WorkoutGroups>(
+        )).forEach { delete($0) }
+        fetchOrEmpty(FetchDescriptor<WorkoutGroups>(
             predicate: #Predicate { $0.workoutId == id }
-        )) { joins.forEach { delete($0) } }
-        if let joins = try? fetch(FetchDescriptor<TemplateInstances>(
-            predicate: #Predicate { $0.templateId == id || $0.workoutId == id }
-        )) { joins.forEach { delete($0) } }
+        )).forEach { delete($0) }
+        fetchOrEmpty(FetchDescriptor<TemplateInstances>(
+            predicate: #Predicate {
+                $0.templateId == id || $0.workoutId == id
+            }
+        )).forEach { delete($0) }
         delete(workout)
     }
 
@@ -132,23 +170,23 @@ extension ModelContext {
             deleteSet(set)
         }
         let id = group.id
-        if let joins = try? fetch(FetchDescriptor<WorkoutGroups>(
+        fetchOrEmpty(FetchDescriptor<WorkoutGroups>(
             predicate: #Predicate { $0.groupId == id }
-        )) { joins.forEach { delete($0) } }
-        if let joins = try? fetch(FetchDescriptor<GroupSets>(
+        )).forEach { delete($0) }
+        fetchOrEmpty(FetchDescriptor<GroupSets>(
             predicate: #Predicate { $0.groupId == id }
-        )) { joins.forEach { delete($0) } }
+        )).forEach { delete($0) }
         delete(group)
     }
 
     @MainActor func deleteSet(_ set: SetEntity) {
         let id = set.id
-        if let joins = try? fetch(FetchDescriptor<GroupSets>(
+        fetchOrEmpty(FetchDescriptor<GroupSets>(
             predicate: #Predicate { $0.setId == id }
-        )) { joins.forEach { delete($0) } }
-        if let joins = try? fetch(FetchDescriptor<ExerciseSets>(
+        )).forEach { delete($0) }
+        fetchOrEmpty(FetchDescriptor<ExerciseSets>(
             predicate: #Predicate { $0.setId == id }
-        )) { joins.forEach { delete($0) } }
+        )).forEach { delete($0) }
         delete(set)
     }
 }

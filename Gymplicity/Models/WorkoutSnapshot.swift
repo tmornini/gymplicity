@@ -54,7 +54,7 @@ struct WorkoutSnapshot {
             return GroupSnapshot(
                 group: group,
                 sets: setSnapshots,
-                exerciseName: subgraph.exerciseName(for: group.id)
+                exerciseName: subgraph.exerciseName(for: group.id) ?? "Exercise"
             )
         }
         return WorkoutSnapshot(workout: workout, groups: groupSnapshots, subgraph: subgraph)

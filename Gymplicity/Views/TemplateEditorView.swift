@@ -50,7 +50,9 @@ struct TemplateEditorView: View {
                             .font(GymFont.label)
                     }
                 } header: {
-                    Text(group.isSuperset ? "Superset \(group.order + 1)" : group.exerciseName(in: modelContext))
+                    Text(group.isSuperset
+                        ? "Superset \(group.order + 1)"
+                        : group.exerciseName(in: modelContext) ?? "Exercise")
                         .font(GymFont.heading3)
                         .textCase(nil)
                 }

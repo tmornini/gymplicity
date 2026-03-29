@@ -25,6 +25,9 @@ struct GymplicityApp: App {
             TemplateInstances.self,
             IdentityAliases.self,
             PairedDevices.self,
+            SetCompletions.self,
+            WorkoutCompletions.self,
+            DeviceSyncEvents.self,
         ])
     }
 }

@@ -148,8 +148,14 @@ struct AddExerciseView: View {
     }
 
     private func createSet(for exercise: ExerciseEntity) {
-        let owner = group.workout(in: modelContext)?.owner(in: modelContext)
-        modelContext.addSet(to: group, exercise: exercise, seedingFrom: owner)
+        let owner = group
+            .workout(in: modelContext)
+            .owner(in: modelContext)
+        modelContext.addSet(
+            to: group,
+            exercise: exercise,
+            seedingFrom: owner
+        )
     }
 }
 

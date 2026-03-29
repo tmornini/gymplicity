@@ -23,7 +23,11 @@ struct GuidedWorkoutView: View {
 
         // Batch-fetch lastSets for all exercises
         let exerciseIds = Array(Set(snapshot.groups.flatMap { g in g.sets.compactMap { $0.exercise?.id } }))
-        let lastSets = owner.map { BatchTraversal.lastSets(for: $0, exerciseIds: exerciseIds, in: modelContext) } ?? [:]
+        let lastSets = BatchTraversal.lastSets(
+            for: owner,
+            exerciseIds: exerciseIds,
+            in: modelContext
+        )
 
         let currentPair: (group: WorkoutGroupEntity, set: SetEntity)? = {
             guard currentIndex >= 0, currentIndex < flatSets.count else { return nil }
@@ -174,14 +178,29 @@ struct GuidedWorkoutView: View {
 
     // MARK: - Progress Bar
 
-    private func progressBar(snapshot: WorkoutSnapshot, flatSets: [(group: WorkoutGroupEntity, set: SetEntity)]) -> some View {
+    private func progressBar(
+        snapshot: WorkoutSnapshot,
+        flatSets: [(
+            group: WorkoutGroupEntity,
+            set: SetEntity
+        )]
+    ) -> some View {
         let progress = snapshot.completionProgress
-        let completed = flatSets.filter { $0.set.isCompleted }.count
+        let completed = flatSets.filter {
+            snapshot.subgraph
+                .isSetCompleted($0.set.id)
+        }.count
         return VStack(spacing: GymMetrics.space4) {
             GymProgressBar(progress: progress)
-            Text("\(completed)/\(flatSets.count) sets \u{00B7} \(Int(progress * 100))%")
-                .font(GymFont.caption)
-                .foregroundStyle(GymColors.secondaryText)
+            Text(
+                "\(completed)/\(flatSets.count)"
+                    + " sets \u{00B7}"
+                    + " \(Int(progress * 100))%"
+            )
+            .font(GymFont.caption)
+            .foregroundStyle(
+                GymColors.secondaryText
+            )
         }
         .padding(.horizontal)
     }
@@ -210,7 +229,7 @@ struct GuidedWorkoutView: View {
     // MARK: - Actions
 
     private func endWorkout() {
-        workout.markCompleted()
+        workout.markCompleted(in: modelContext)
         if onSwitchToList == nil { dismiss() }
     }
 
@@ -225,11 +244,19 @@ struct GuidedWorkoutView: View {
         guard currentIndex >= 0, currentIndex < flatSets.count else { return }
         let pair = flatSets[currentIndex]
 
-        pair.set.weight = Double(weightText) ?? 0
+        pair.set.weight =
+            Double(weightText) ?? 0
         pair.set.reps = Int(repsText) ?? 0
-        pair.set.isCompleted = true
-        pair.set.completedAt = .now
-        SyncTrigger.entityUpdated(.set, id: pair.set.id)
+        modelContext.insert(
+            SetCompletions(
+                setId: pair.set.id,
+                completedAt: .now
+            )
+        )
+        SyncTrigger.entityUpdated(
+            .set,
+            id: pair.set.id
+        )
 
         if let next = workout.nextIncompleteSetIndex(after: currentIndex, in: modelContext) {
             // Brief walking transition

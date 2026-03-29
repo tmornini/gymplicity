@@ -1,6 +1,9 @@
 import SwiftUI
+import SwiftData
 
 struct SetEntryView: View {
+    @Environment(\.modelContext)
+    private var modelContext
     @Environment(\.dismiss) private var dismiss
     @Bindable var set: SetEntity
     let exercise: ExerciseEntity?
@@ -57,9 +60,16 @@ struct SetEntryView: View {
     private func save() {
         set.weight = Double(weightText) ?? 0
         set.reps = Int(repsText) ?? 0
-        set.isCompleted = true
-        set.completedAt = .now
-        SyncTrigger.entityUpdated(.set, id: set.id)
+        modelContext.insert(
+            SetCompletions(
+                setId: set.id,
+                completedAt: .now
+            )
+        )
+        SyncTrigger.entityUpdated(
+            .set,
+            id: set.id
+        )
         dismiss()
     }
 }

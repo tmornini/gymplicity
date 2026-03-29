@@ -17,9 +17,12 @@ struct ActiveWorkoutView: View {
         let snapshot = WorkoutSnapshot.load(workout, in: modelContext)
         let owner = workout.owner(in: modelContext)
 
-        // Batch-fetch lastSets for all exercises in this workout
-        let exerciseIds = Array(Set(snapshot.groups.flatMap { g in g.sets.compactMap { $0.exercise?.id } }))
-        let lastSets = owner.map { BatchTraversal.lastSets(for: $0, exerciseIds: exerciseIds, in: modelContext) } ?? [:]
+        let exerciseIds = exerciseIdsFrom(snapshot)
+        let lastSets = BatchTraversal.lastSets(
+            for: owner,
+            exerciseIds: exerciseIds,
+            in: modelContext
+        )
 
         List {
             ForEach(snapshot.groups) { groupSnap in
@@ -111,7 +114,7 @@ struct ActiveWorkoutView: View {
             if onSwitchToGuided == nil {
                 ToolbarItem(placement: .principal) {
                     VStack(spacing: 0) {
-                        Text(owner?.name ?? "Workout")
+                        Text(owner.name)
                             .font(GymFont.heading3)
                         Text(workout.date, style: .date)
                             .font(GymFont.caption)
@@ -218,8 +221,10 @@ struct ActiveWorkoutView: View {
     }
 
     private func endWorkout() {
-        workout.markCompleted()
-        if onSwitchToGuided == nil { dismiss() }
+        workout.markCompleted(in: modelContext)
+        if onSwitchToGuided == nil {
+            dismiss()
+        }
     }
 
     private func deleteWorkout() {
@@ -228,64 +233,116 @@ struct ActiveWorkoutView: View {
         if onSwitchToGuided == nil { dismiss() }
     }
 
-    private func resolveTrainer() -> IdentityEntity? {
-        guard let owner = workout.owner(in: modelContext) else { return nil }
-        return owner.isTrainer ? owner : owner.trainer(in: modelContext)
+    private func resolveTrainer(
+    ) -> IdentityEntity? {
+        let owner = workout.owner(in: modelContext)
+        return owner.isTrainer
+            ? owner
+            : owner.trainer(in: modelContext)
+    }
+
+    private func exerciseIdsFrom(
+        _ snapshot: WorkoutSnapshot
+    ) -> [UUID] {
+        Array(Set(
+            snapshot.groups.flatMap { g in
+                g.sets.compactMap {
+                    $0.exercise?.id
+                }
+            }
+        ))
     }
 }
 
 // MARK: - Set Row
 
 struct SetRow: View {
+    @Environment(\.modelContext)
+    private var modelContext
     @Bindable var set: SetEntity
     let exercise: ExerciseEntity?
     let previousSet: SetEntity?
     @State private var showingEditor = false
 
     var body: some View {
+        let completed =
+            set.isCompleted(in: modelContext)
         Button {
             showingEditor = true
         } label: {
             HStack {
-                VStack(alignment: .leading, spacing: GymMetrics.space4) {
-                    Text(exercise?.name ?? "Exercise")
-                        .font(GymFont.label)
-                        .foregroundStyle(GymColors.secondaryText)
-                    ExerciseAttributePills(exercise: exercise)
+                VStack(
+                    alignment: .leading,
+                    spacing: GymMetrics.space4
+                ) {
+                    Text(
+                        exercise?.name
+                            ?? "Exercise"
+                    )
+                    .font(GymFont.label)
+                    .foregroundStyle(
+                        GymColors.secondaryText
+                    )
+                    ExerciseAttributePills(
+                        exercise: exercise
+                    )
                 }
-                .frame(minWidth: 60, alignment: .leading)
+                .frame(
+                    minWidth: 60,
+                    alignment: .leading
+                )
 
-                if set.weight > 0 || set.reps > 0 {
-                    Text(Weight.formatted(set.weight))
-                        .font(GymFont.bodyMono)
+                if set.weight > 0
+                    || set.reps > 0
+                {
+                    Text(
+                        Weight.formatted(
+                            set.weight
+                        )
+                    )
+                    .font(GymFont.bodyMono)
                     Text("x")
                         .font(GymFont.caption)
-                        .foregroundStyle(GymColors.secondaryText)
+                        .foregroundStyle(
+                            GymColors
+                                .secondaryText
+                        )
                     Text("\(set.reps)")
                         .font(GymFont.bodyMono)
                 } else {
                     Text("Tap to enter")
                         .font(GymFont.body)
-                        .foregroundStyle(GymColors.tertiaryText)
+                        .foregroundStyle(
+                            GymColors.tertiaryText
+                        )
                 }
 
                 Spacer()
 
                 Button {
                     withAnimation {
-                        set.isCompleted.toggle()
-                        set.completedAt = set.isCompleted ? .now : nil
-                        SyncTrigger.entityUpdated(.set, id: set.id)
+                        toggleSetCompletion()
                     }
                 } label: {
-                    Image(systemName: set.isCompleted ? "checkmark.circle.fill" : "circle")
-                        .font(.title3)
-                        .foregroundStyle(set.isCompleted ? GymColors.completedSet : GymColors.secondaryText)
-                        .symbolEffect(.bounce, value: set.isCompleted)
+                    Image(
+                        systemName: completed
+                            ? "checkmark.circle.fill"
+                            : "circle"
+                    )
+                    .font(.title3)
+                    .foregroundStyle(
+                        completed
+                            ? GymColors.completedSet
+                            : GymColors.secondaryText
+                    )
+                    .symbolEffect(
+                        .bounce,
+                        value: completed
+                    )
                 }
                 .buttonStyle(.plain)
             }
-            .setCompletion(set.isCompleted)
+            .setCompletion(completed)
             .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
@@ -296,5 +353,35 @@ struct SetRow: View {
                 previousSet: previousSet
             )
         }
+    }
+
+    private func toggleSetCompletion() {
+        let id = set.id
+        if set.isCompleted(in: modelContext) {
+            let completions =
+                modelContext.fetchOrEmpty(
+                    FetchDescriptor<
+                        SetCompletions
+                    >(
+                        predicate: #Predicate {
+                            $0.setId == id
+                        }
+                    )
+                )
+            completions.forEach {
+                modelContext.delete($0)
+            }
+        } else {
+            modelContext.insert(
+                SetCompletions(
+                    setId: id,
+                    completedAt: .now
+                )
+            )
+        }
+        SyncTrigger.entityUpdated(
+            .set,
+            id: id
+        )
     }
 }

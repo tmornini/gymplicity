@@ -11,10 +11,17 @@ struct ProfileView: View {
     @State private var newWorkout: WorkoutEntity?
 
     var body: some View {
-        let allWorkouts = identity.workouts(in: modelContext)
-        let active = allWorkouts.filter { !$0.isCompleted && !$0.isTemplate }
+        let allWorkouts =
+            identity.workouts(in: modelContext)
+        let active = allWorkouts.filter {
+            !$0.isCompleted(in: modelContext)
+                && !$0.isTemplate
+        }
         let completed = allWorkouts
-            .filter { $0.isCompleted && !$0.isTemplate }
+            .filter {
+                $0.isCompleted(in: modelContext)
+                    && !$0.isTemplate
+            }
             .sorted { $0.date > $1.date }
 
         // Batch-fetch subgraph for all workouts to derive exercisesUsed

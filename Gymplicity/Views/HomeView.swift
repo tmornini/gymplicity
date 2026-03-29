@@ -19,14 +19,31 @@ struct HomeView: View {
 
         let active = trainees.flatMap { trainee in
             (workoutsByIdentity[trainee.id] ?? [])
-                .filter { !$0.isCompleted && !$0.isTemplate }
-                .map { (identity: trainee, workout: $0) }
-        }.sorted { $0.workout.date < $1.workout.date }
+                .filter {
+                    !$0.isCompleted(
+                        in: modelContext
+                    ) && !$0.isTemplate
+                }
+                .map {
+                    (
+                        identity: trainee,
+                        workout: $0
+                    )
+                }
+        }.sorted {
+            $0.workout.date < $1.workout.date
+        }
 
         let subgraph: WorkoutSubgraph = {
             let activeWorkoutIds = active.map(\.workout.id)
             guard !activeWorkoutIds.isEmpty else {
-                return WorkoutSubgraph(groupsByWorkout: [:], setsByGroup: [:], exerciseBySet: [:])
+                return WorkoutSubgraph(
+                    groupsByWorkout: [:],
+                    setsByGroup: [:],
+                    exerciseBySet: [:],
+                    completedSetIds: [],
+                    completedWorkoutIds: []
+                )
             }
             return BatchTraversal.workoutSubgraph(workoutIds: activeWorkoutIds, in: modelContext)
         }()
@@ -72,9 +89,22 @@ struct HomeView: View {
             Section("Trainees") {
                 let sortedTrainees = trainees.sorted(by: { $0.name < $1.name })
                 ForEach(sortedTrainees) { trainee in
-                    let traineeWorkouts = workoutsByIdentity[trainee.id] ?? []
-                    let completed = traineeWorkouts.filter { $0.isCompleted && !$0.isTemplate }
-                    let hasActive = traineeWorkouts.contains { !$0.isCompleted && !$0.isTemplate }
+                    let traineeWorkouts =
+                        workoutsByIdentity[
+                            trainee.id
+                        ] ?? []
+                    let completed =
+                        traineeWorkouts.filter {
+                            $0.isCompleted(
+                                in: modelContext
+                            ) && !$0.isTemplate
+                        }
+                    let hasActive =
+                        traineeWorkouts.contains {
+                            !$0.isCompleted(
+                                in: modelContext
+                            ) && !$0.isTemplate
+                        }
                     NavigationLink {
                         ProfileView(identity: trainee)
                     } label: {

@@ -24,12 +24,27 @@ struct RootView: View {
             }
             .navigationTitle("Gymplicity")
             .task { await Task.detached { _ = ExerciseSearchEngine.shared }.value }
-            .alert("Set Up Your Profile", isPresented: $showingSetup) {
-                TextField("Your Name", text: $setupName)
-                Button("I'm a Trainer") { createIdentity(isTrainer: true) }
-                Button("I'm a Trainee") { createIdentity(isTrainer: false) }
-                Button("Cancel", role: .cancel) { }
+            .alert(
+            "Set Up Your Profile",
+            isPresented: $showingSetup
+        ) {
+            TextField("Your Name", text: $setupName)
+            Button("I'm a Trainer") {
+                createIdentity(isTrainer: true)
             }
+            .disabled(setupName
+                .trimmingCharacters(
+                    in: .whitespaces
+                ).isEmpty)
+            Button("I'm a Trainee") {
+                createIdentity(isTrainer: false)
+            }
+            .disabled(setupName
+                .trimmingCharacters(
+                    in: .whitespaces
+                ).isEmpty)
+            Button("Cancel", role: .cancel) { }
+        }
         }
     }
 
@@ -55,10 +70,15 @@ struct RootView: View {
 
     // MARK: - Actions
 
-    private func createIdentity(isTrainer: Bool) {
-        let trimmed = setupName.trimmingCharacters(in: .whitespaces)
-        let name = trimmed.isEmpty ? (isTrainer ? "Trainer" : "Trainee") : trimmed
-        let identity = IdentityEntity(name: name, isTrainer: isTrainer)
+    private func createIdentity(
+        isTrainer: Bool
+    ) {
+        let name = setupName
+            .trimmingCharacters(in: .whitespaces)
+        let identity = IdentityEntity(
+            name: name,
+            isTrainer: isTrainer
+        )
         modelContext.insert(identity)
         SyncTrigger.structureChanged()
     }

@@ -70,7 +70,11 @@ struct WorkoutHistoryView: View {
                                 .font(GymFont.caption)
                                 .foregroundStyle(GymColors.secondaryText)
                         }
-                        .setCompletion(set.isCompleted)
+                        .setCompletion(
+                            set.isCompleted(
+                                in: modelContext
+                            )
+                        )
                     }
 
                     HStack {

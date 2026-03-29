@@ -19,13 +19,32 @@ struct ActiveWorkoutsContainerView: View {
         let workoutsByID = BatchTraversal.workoutsByIdentity(identityIds: traineeIds, in: modelContext)
         let traineeMap = Dictionary(traineeList.map { ($0.id, $0) }, uniquingKeysWith: { a, _ in a })
 
-        return workoutsByID.flatMap { (identityId, workouts) -> [(identity: IdentityEntity, workout: WorkoutEntity)] in
-            guard let trainee = traineeMap[identityId] else { return [] }
+        return workoutsByID.flatMap {
+            (identityId, workouts)
+                -> [(
+                    identity: IdentityEntity,
+                    workout: WorkoutEntity
+                )]
+            in
+            guard let trainee =
+                traineeMap[identityId]
+            else { return [] }
             return workouts
-                .filter { !$0.isCompleted && !$0.isTemplate }
-                .map { (identity: trainee, workout: $0) }
+                .filter {
+                    !$0.isCompleted(
+                        in: modelContext
+                    ) && !$0.isTemplate
+                }
+                .map {
+                    (
+                        identity: trainee,
+                        workout: $0
+                    )
+                }
         }
-        .sorted { $0.workout.date < $1.workout.date }
+        .sorted {
+            $0.workout.date < $1.workout.date
+        }
     }
 
     var body: some View {

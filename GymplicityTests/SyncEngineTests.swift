@@ -127,12 +127,13 @@ import SwiftData
             senderIdentityId: trainee.id,
             identities: [IdentityDTO(id: trainee.id, name: "Trainee", isTrainer: false)],
             workouts: [WorkoutDTO(id: workout.id, date: workout.date, notes: "Great session",
-                                  isCompleted: true, isTemplate: false, templateName: nil)]
+                                  isTemplate: false, templateName: nil)],
+            workoutCompletions: [WorkoutCompletionDTO(workoutId: workout.id, completedAt: .now)]
         )
         let result = SyncEngine.merge(payload, into: ctx)
 
         XCTAssertEqual(workout.notes, "Great session")
-        XCTAssertTrue(workout.isCompleted)
+        XCTAssertTrue(workout.isCompleted(in: ctx))
         XCTAssertEqual(result.workoutsUpdated, 1)
     }
 
@@ -145,7 +146,7 @@ import SwiftData
             senderIdentityId: trainer.id,
             identities: [IdentityDTO(id: trainer.id, name: "Trainer", isTrainer: true)],
             workouts: [WorkoutDTO(id: template.id, date: template.date, notes: nil,
-                                  isCompleted: false, isTemplate: true, templateName: "Push A")]
+                                  isTemplate: true, templateName: "Push A")]
         )
         let result = SyncEngine.merge(payload, into: ctx)
 
@@ -163,7 +164,7 @@ import SwiftData
             senderIdentityId: trainee.id,
             identities: [IdentityDTO(id: trainee.id, name: "Trainee", isTrainer: false)],
             workouts: [WorkoutDTO(id: template.id, date: template.date, notes: nil,
-                                  isCompleted: false, isTemplate: true, templateName: "Hacked")]
+                                  isTemplate: true, templateName: "Hacked")]
         )
         let result = SyncEngine.merge(payload, into: ctx)
 
@@ -180,7 +181,7 @@ import SwiftData
             senderIdentityId: trainee.id,
             identities: [IdentityDTO(id: trainee.id, name: "T", isTrainer: false)],
             workouts: [WorkoutDTO(id: newId, date: .now, notes: "New workout",
-                                  isCompleted: false, isTemplate: false, templateName: nil)]
+                                  isTemplate: false, templateName: nil)]
         )
         let result = SyncEngine.merge(payload, into: ctx)
 
@@ -247,13 +248,14 @@ import SwiftData
         let payload = makePayload(
             senderIdentityId: trainer.id,
             identities: [IdentityDTO(id: trainer.id, name: "Trainer", isTrainer: true)],
-            sets: [SetDTO(id: set.id, order: 0, weight: 135, reps: 10, isCompleted: true, completedAt: now)]
+            sets: [SetDTO(id: set.id, order: 0, weight: 135, reps: 10)],
+            setCompletions: [SetCompletionDTO(setId: set.id, completedAt: now)]
         )
         let result = SyncEngine.merge(payload, into: ctx)
 
         XCTAssertEqual(set.weight, 135)
         XCTAssertEqual(set.reps, 10)
-        XCTAssertTrue(set.isCompleted)
+        XCTAssertTrue(set.isCompleted(in: ctx))
         XCTAssertEqual(result.setsUpdated, 1)
     }
 

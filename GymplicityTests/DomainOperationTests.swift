@@ -14,7 +14,7 @@ import SwiftData
         let workout = ctx.startWorkout(for: trainee)
 
         XCTAssertNotNil(workout)
-        XCTAssertFalse(workout!.isCompleted)
+        XCTAssertFalse(workout!.isCompleted(in: ctx))
         XCTAssertFalse(workout!.isTemplate)
     }
 
@@ -41,7 +41,7 @@ import SwiftData
         XCTAssertEqual(active.first?.id, workout?.id)
     }
 
-    // MARK: - markCompleted()
+    // MARK: - markCompleted(in:)
 
     func testMarkCompletedSetsIsCompleted() throws {
         let ctx = try makeTestContext()
@@ -49,9 +49,9 @@ import SwiftData
         let trainee = ctx.makeTrainee(trainer: trainer)
         let workout = ctx.makeWorkout(for: trainee)
 
-        workout.markCompleted()
+        workout.markCompleted(in: ctx)
 
-        XCTAssertTrue(workout.isCompleted)
+        XCTAssertTrue(workout.isCompleted(in: ctx))
     }
 
     func testCompletedWorkoutMovesToCompletedWorkouts() throws {
@@ -63,7 +63,7 @@ import SwiftData
         XCTAssertEqual(trainee.activeWorkouts(in: ctx).count, 1)
         XCTAssertEqual(trainee.completedWorkouts(in: ctx).count, 0)
 
-        workout.markCompleted()
+        workout.markCompleted(in: ctx)
 
         XCTAssertEqual(trainee.activeWorkouts(in: ctx).count, 0)
         XCTAssertEqual(trainee.completedWorkouts(in: ctx).count, 1)
@@ -270,7 +270,7 @@ import SwiftData
         let workout = ctx.makeWorkout(for: trainee)
         let group = ctx.makeGroup(in: workout, order: 0)
 
-        XCTAssertEqual(group.exerciseName(in: ctx), "Exercise")
+        XCTAssertNil(group.exerciseName(in: ctx))
     }
 
     // MARK: - template(in:) on WorkoutEntity

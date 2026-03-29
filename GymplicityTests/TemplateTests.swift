@@ -11,7 +11,7 @@ import SwiftData
 
         XCTAssertTrue(template.isTemplate)
         XCTAssertEqual(template.templateName, "Push Day")
-        XCTAssertFalse(template.isCompleted)
+        XCTAssertFalse(template.isCompleted(in: ctx))
     }
 
     func testTemplatesFilteredFromActiveWorkouts() throws {
@@ -30,7 +30,7 @@ import SwiftData
         let trainer = ctx.makeTrainer()
         ctx.makeTemplate(name: "Push Day", for: trainer)
         let workout = ctx.makeWorkout(for: trainer)
-        workout.isCompleted = true
+        ctx.insert(WorkoutCompletions(workoutId: workout.id, completedAt: .now))
 
         XCTAssertEqual(trainer.completedWorkouts(in: ctx).count, 1)
         XCTAssertTrue(trainer.completedWorkouts(in: ctx).allSatisfy { !$0.isTemplate })
@@ -62,7 +62,7 @@ import SwiftData
         let workout = ctx.instantiateTemplate(template, for: trainee)
 
         XCTAssertFalse(workout.isTemplate)
-        XCTAssertFalse(workout.isCompleted)
+        XCTAssertFalse(workout.isCompleted(in: ctx))
         let groups = workout.sortedGroups(in: ctx)
         XCTAssertEqual(groups.count, 1)
         let sets = groups[0].sortedSets(in: ctx)
@@ -91,8 +91,8 @@ import SwiftData
         XCTAssertNotEqual(clonedGroup.id, group.id)
         let clonedSet = clonedGroup.sets(in: ctx).first!
         XCTAssertNotEqual(clonedSet.id, templateSet.id)
-        XCTAssertFalse(clonedSet.isCompleted)
-        XCTAssertNil(clonedSet.completedAt)
+        XCTAssertFalse(clonedSet.isCompleted(in: ctx))
+        XCTAssertNil(clonedSet.completedAt(in: ctx))
     }
 
     func testClonedWorkoutLinkedViaJoinTable() throws {
@@ -166,10 +166,9 @@ import SwiftData
 
         // Complete a set in workout1 — workout2 unaffected
         let set1 = workout1.groups(in: ctx).first!.sets(in: ctx).first!
-        set1.isCompleted = true
-        set1.completedAt = .now
+        ctx.insert(SetCompletions(setId: set1.id, completedAt: .now))
 
         let set2 = workout2.groups(in: ctx).first!.sets(in: ctx).first!
-        XCTAssertFalse(set2.isCompleted)
+        XCTAssertFalse(set2.isCompleted(in: ctx))
     }
 }

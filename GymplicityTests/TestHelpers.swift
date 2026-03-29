@@ -9,7 +9,10 @@ import XCTest
         for: IdentityEntity.self, ExerciseEntity.self, WorkoutEntity.self,
         WorkoutGroupEntity.self, SetEntity.self, TrainerTrainees.self,
         TrainerExercises.self, IdentityWorkouts.self, WorkoutGroups.self,
-        GroupSets.self, ExerciseSets.self, TemplateInstances.self, IdentityAliases.self, PairedDevices.self,
+        GroupSets.self, ExerciseSets.self, TemplateInstances.self,
+        IdentityAliases.self, PairedDevices.self,
+        SetCompletions.self, WorkoutCompletions.self,
+        DeviceSyncEvents.self,
         configurations: config
     )
     return ModelContext(container)
@@ -43,10 +46,12 @@ extension ModelContext {
 
     @MainActor @discardableResult
     func makeWorkout(for identity: IdentityEntity, date: Date = .now, isCompleted: Bool = false) -> WorkoutEntity {
-        let workout = WorkoutEntity(date: date)
-        workout.isCompleted = isCompleted
+        let workout = WorkoutEntity(date: date, isTemplate: false)
         insert(workout)
         insert(IdentityWorkouts(identityId: identity.id, workoutId: workout.id))
+        if isCompleted {
+            insert(WorkoutCompletions(workoutId: workout.id, completedAt: .now))
+        }
         return workout
     }
 
@@ -77,11 +82,12 @@ extension ModelContext {
         completedAt: Date? = nil
     ) -> SetEntity {
         let set = SetEntity(order: order, weight: weight, reps: reps)
-        set.isCompleted = isCompleted
-        set.completedAt = completedAt
         insert(set)
         insert(GroupSets(groupId: group.id, setId: set.id))
         insert(ExerciseSets(exerciseId: exercise.id, setId: set.id))
+        if isCompleted {
+            insert(SetCompletions(setId: set.id, completedAt: completedAt ?? .now))
+        }
         return set
     }
 }
@@ -102,7 +108,10 @@ extension ModelContext {
     groupSetJoins: [GroupSetsDTO] = [],
     exerciseSetJoins: [ExerciseSetsDTO] = [],
     templateInstanceJoins: [TemplateInstancesDTO] = [],
-    identityAliases: [IdentityAliasesDTO] = []
+    identityAliases: [IdentityAliasesDTO] = [],
+    setCompletions: [SetCompletionDTO] = [],
+    workoutCompletions: [WorkoutCompletionDTO] = [],
+    deviceSyncEvents: [DeviceSyncEventDTO] = []
 ) -> SyncPayload {
     SyncPayload(
         version: 1,
@@ -119,6 +128,9 @@ extension ModelContext {
         groupSetJoins: groupSetJoins,
         exerciseSetJoins: exerciseSetJoins,
         templateInstanceJoins: templateInstanceJoins,
-        identityAliases: identityAliases
+        identityAliases: identityAliases,
+        setCompletions: setCompletions,
+        workoutCompletions: workoutCompletions,
+        deviceSyncEvents: deviceSyncEvents
     )
 }

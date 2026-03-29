@@ -100,11 +100,11 @@ import SwiftData
 
         // Complete one of two → 50%
         let flat = workout.allSetsFlattened(in: ctx)
-        flat[0].set.isCompleted = true
+        ctx.insert(SetCompletions(setId: flat[0].set.id, completedAt: .now))
         XCTAssertEqual(workout.completionProgress(in: ctx), 0.5)
 
         // Complete both → 100%
-        flat[1].set.isCompleted = true
+        ctx.insert(SetCompletions(setId: flat[1].set.id, completedAt: .now))
         XCTAssertEqual(workout.completionProgress(in: ctx), 1.0)
     }
 

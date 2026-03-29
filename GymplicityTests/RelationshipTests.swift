@@ -95,7 +95,10 @@ import SwiftData
         let trainee = ctx.makeTrainee(trainer: trainer)
         let workout = ctx.makeWorkout(for: trainee)
 
-        XCTAssertEqual(workout.owner(in: ctx)?.id, trainee.id)
+        XCTAssertEqual(
+            workout.owner(in: ctx).id,
+            trainee.id
+        )
     }
 
     // MARK: - Workout / Groups / Sets ordering
@@ -141,7 +144,13 @@ import SwiftData
         let group = ctx.makeGroup(in: workout, order: 0)
         let set = ctx.makeSet(in: group, exercise: bench, order: 0, weight: 135, reps: 10)
 
-        XCTAssertEqual(set.exercise(in: ctx)?.id, bench.id)
-        XCTAssertEqual(set.group(in: ctx)?.id, group.id)
+        XCTAssertEqual(
+            set.exercise(in: ctx)?.id,
+            bench.id
+        )
+        XCTAssertEqual(
+            set.group(in: ctx).id,
+            group.id
+        )
     }
 }

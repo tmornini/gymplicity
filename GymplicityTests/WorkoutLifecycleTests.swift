@@ -10,7 +10,7 @@ import SwiftData
         let trainee = ctx.makeTrainee(trainer: trainer)
         let workout = ctx.makeWorkout(for: trainee)
 
-        XCTAssertFalse(workout.isCompleted)
+        XCTAssertFalse(workout.isCompleted(in: ctx))
         XCTAssertEqual(trainee.activeWorkouts(in: ctx).count, 1)
         XCTAssert(trainee.completedWorkouts(in: ctx).isEmpty)
     }
@@ -57,22 +57,24 @@ import SwiftData
         let group = ctx.makeGroup(in: workout, order: 0)
         let set = ctx.makeSet(in: group, exercise: bench, order: 0, weight: 135, reps: 10)
 
-        XCTAssertFalse(set.isCompleted)
-        XCTAssertNil(set.completedAt)
+        XCTAssertFalse(set.isCompleted(in: ctx))
+        XCTAssertNil(set.completedAt(in: ctx))
 
         // Complete it
-        set.isCompleted = true
-        set.completedAt = .now
+        ctx.insert(SetCompletions(setId: set.id, completedAt: .now))
 
-        XCTAssertTrue(set.isCompleted)
-        XCTAssertNotNil(set.completedAt)
+        XCTAssertTrue(set.isCompleted(in: ctx))
+        XCTAssertNotNil(set.completedAt(in: ctx))
 
         // Uncomplete it
-        set.isCompleted = false
-        set.completedAt = nil
+        let setId = set.id
+        let completions = try ctx.fetch(FetchDescriptor<SetCompletions>(
+            predicate: #Predicate { $0.setId == setId }
+        ))
+        for completion in completions { ctx.delete(completion) }
 
-        XCTAssertFalse(set.isCompleted)
-        XCTAssertNil(set.completedAt)
+        XCTAssertFalse(set.isCompleted(in: ctx))
+        XCTAssertNil(set.completedAt(in: ctx))
     }
 
     func testEndWorkout() throws {
@@ -83,7 +85,7 @@ import SwiftData
 
         XCTAssertEqual(trainee.activeWorkouts(in: ctx).count, 1)
 
-        workout.isCompleted = true
+        ctx.insert(WorkoutCompletions(workoutId: workout.id, completedAt: .now))
 
         XCTAssert(trainee.activeWorkouts(in: ctx).isEmpty)
         XCTAssertEqual(trainee.completedWorkouts(in: ctx).count, 1)

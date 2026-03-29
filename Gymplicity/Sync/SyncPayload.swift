@@ -19,7 +19,6 @@ struct WorkoutDTO: Codable, Sendable {
     let id: UUID
     let date: Date
     let notes: String?
-    let isCompleted: Bool
     let isTemplate: Bool
     let templateName: String?
 }
@@ -35,8 +34,6 @@ struct SetDTO: Codable, Sendable {
     let order: Int
     let weight: Double
     let reps: Int
-    let isCompleted: Bool
-    let completedAt: Date?
 }
 
 struct TrainerTraineesDTO: Codable, Sendable {
@@ -79,6 +76,26 @@ struct IdentityAliasesDTO: Codable, Sendable {
     let identityId2: UUID
 }
 
+struct SetCompletionDTO: Codable, Sendable {
+    let setId: UUID
+    let completedAt: Date
+}
+
+struct WorkoutCompletionDTO:
+    Codable, Sendable
+{
+    let workoutId: UUID
+    let completedAt: Date
+}
+
+struct DeviceSyncEventDTO:
+    Codable, Sendable
+{
+    let localIdentityId: UUID
+    let remoteIdentityId: UUID
+    let syncedAt: Date
+}
+
 // MARK: - Payload Envelope
 
 struct SyncPayload: Codable, Sendable {
@@ -99,18 +116,33 @@ struct SyncPayload: Codable, Sendable {
     let workoutGroupJoins: [WorkoutGroupsDTO]
     let groupSetJoins: [GroupSetsDTO]
     let exerciseSetJoins: [ExerciseSetsDTO]
-    let templateInstanceJoins: [TemplateInstancesDTO]
+    let templateInstanceJoins:
+        [TemplateInstancesDTO]
     let identityAliases: [IdentityAliasesDTO]
 
-    /// Creates a delta payload containing only the specified changed entities.
-    /// Empty arrays default for entity types not included in this delta.
+    // Event tables
+    let setCompletions: [SetCompletionDTO]
+    let workoutCompletions:
+        [WorkoutCompletionDTO]
+    let deviceSyncEvents:
+        [DeviceSyncEventDTO]
+
+    /// Creates a delta payload containing
+    /// only the specified changed entities.
+    /// Empty arrays default for entity types
+    /// not included in this delta.
     static func delta(
         senderIdentityId: UUID,
         identities: [IdentityDTO] = [],
         exercises: [ExerciseDTO] = [],
         workouts: [WorkoutDTO] = [],
         workoutGroups: [WorkoutGroupDTO] = [],
-        sets: [SetDTO] = []
+        sets: [SetDTO] = [],
+        setCompletions: [SetCompletionDTO] = [],
+        workoutCompletions:
+            [WorkoutCompletionDTO] = [],
+        deviceSyncEvents:
+            [DeviceSyncEventDTO] = []
     ) -> SyncPayload {
         SyncPayload(
             version: 1,
@@ -127,7 +159,11 @@ struct SyncPayload: Codable, Sendable {
             groupSetJoins: [],
             exerciseSetJoins: [],
             templateInstanceJoins: [],
-            identityAliases: []
+            identityAliases: [],
+            setCompletions: setCompletions,
+            workoutCompletions:
+                workoutCompletions,
+            deviceSyncEvents: deviceSyncEvents
         )
     }
 }
@@ -170,8 +206,11 @@ extension ExerciseEntity {
 extension WorkoutEntity {
     @MainActor func toDTO() -> WorkoutDTO {
         WorkoutDTO(
-            id: id, date: date, notes: notes, isCompleted: isCompleted,
-            isTemplate: isTemplate, templateName: templateName
+            id: id,
+            date: date,
+            notes: notes,
+            isTemplate: isTemplate,
+            templateName: templateName
         )
     }
 }
@@ -185,8 +224,10 @@ extension WorkoutGroupEntity {
 extension SetEntity {
     @MainActor func toDTO() -> SetDTO {
         SetDTO(
-            id: id, order: order, weight: weight, reps: reps,
-            isCompleted: isCompleted, completedAt: completedAt
+            id: id,
+            order: order,
+            weight: weight,
+            reps: reps
         )
     }
 }
@@ -234,8 +275,47 @@ extension TemplateInstances {
 }
 
 extension IdentityAliases {
-    @MainActor func toDTO() -> IdentityAliasesDTO {
-        IdentityAliasesDTO(identityId1: identityId1, identityId2: identityId2)
+    @MainActor func toDTO()
+        -> IdentityAliasesDTO
+    {
+        IdentityAliasesDTO(
+            identityId1: identityId1,
+            identityId2: identityId2
+        )
+    }
+}
+
+extension SetCompletions {
+    @MainActor func toDTO()
+        -> SetCompletionDTO
+    {
+        SetCompletionDTO(
+            setId: setId,
+            completedAt: completedAt
+        )
+    }
+}
+
+extension WorkoutCompletions {
+    @MainActor func toDTO()
+        -> WorkoutCompletionDTO
+    {
+        WorkoutCompletionDTO(
+            workoutId: workoutId,
+            completedAt: completedAt
+        )
+    }
+}
+
+extension DeviceSyncEvents {
+    @MainActor func toDTO()
+        -> DeviceSyncEventDTO
+    {
+        DeviceSyncEventDTO(
+            localIdentityId: localIdentityId,
+            remoteIdentityId: remoteIdentityId,
+            syncedAt: syncedAt
+        )
     }
 }
 
@@ -265,32 +345,58 @@ struct SyncPayloadBuilder {
         // 2. TrainerTrainees join
         let trainerId = trainer.id
         let traineeId = trainee.id
-        let ttJoins = (try? context.fetch(FetchDescriptor<TrainerTrainees>(
-            predicate: #Predicate { $0.trainerId == trainerId && $0.traineeId == traineeId }
-        ))) ?? []
+        let ttJoins = context.fetchOrEmpty(
+            FetchDescriptor<TrainerTrainees>(
+                predicate: #Predicate {
+                    $0.trainerId == trainerId
+                        && $0.traineeId == traineeId
+                }
+            )
+        )
 
         // 3. All exercises via TrainerExercises for the trainer
-        let teJoins = (try? context.fetch(FetchDescriptor<TrainerExercises>(
-            predicate: #Predicate { $0.trainerId == trainerId }
-        ))) ?? []
+        let teJoins = context.fetchOrEmpty(
+            FetchDescriptor<TrainerExercises>(
+                predicate: #Predicate {
+                    $0.trainerId == trainerId
+                }
+            )
+        )
         let exerciseIds = teJoins.map(\.exerciseId)
-        let exercises = (try? context.fetch(FetchDescriptor<ExerciseEntity>(
-            predicate: #Predicate { exerciseIds.contains($0.id) }
-        ))) ?? []
+        let exercises = context.fetchOrEmpty(
+            FetchDescriptor<ExerciseEntity>(
+                predicate: #Predicate {
+                    exerciseIds.contains($0.id)
+                }
+            )
+        )
 
         // 4. Resolve alias group for the trainee to get full workout history
-        let traineeAliasGroup = IdentityReconciliation.aliasGroup(for: traineeId, in: context)
+        let traineeAliasGroup =
+            IdentityReconciliation.aliasGroup(
+                for: traineeId,
+                in: context
+            )
         let traineeAliasIds = Array(traineeAliasGroup)
 
-        // 5. Trainee's workouts (all aliases — completed, active, templates)
-        let iwJoinsTrainee = (try? context.fetch(FetchDescriptor<IdentityWorkouts>(
-            predicate: #Predicate { traineeAliasIds.contains($0.identityId) }
-        ))) ?? []
+        // 5. Trainee's workouts
+        //    (all aliases -- completed, active, templates)
+        let iwJoinsTrainee = context.fetchOrEmpty(
+            FetchDescriptor<IdentityWorkouts>(
+                predicate: #Predicate {
+                    traineeAliasIds.contains($0.identityId)
+                }
+            )
+        )
 
         // 6. Trainer's templates
-        let iwJoinsTrainer = (try? context.fetch(FetchDescriptor<IdentityWorkouts>(
-            predicate: #Predicate { $0.identityId == trainerId }
-        ))) ?? []
+        let iwJoinsTrainer = context.fetchOrEmpty(
+            FetchDescriptor<IdentityWorkouts>(
+                predicate: #Predicate {
+                    $0.identityId == trainerId
+                }
+            )
+        )
 
         // Collect all workout IDs
         var allWorkoutIds = Set(iwJoinsTrainee.map(\.workoutId))
@@ -298,74 +404,172 @@ struct SyncPayloadBuilder {
 
         // Fetch all trainer workouts to filter templates
         let trainerWIds = Array(trainerWorkoutIds)
-        let trainerWorkouts = (try? context.fetch(FetchDescriptor<WorkoutEntity>(
-            predicate: #Predicate { trainerWIds.contains($0.id) }
-        ))) ?? []
+        let trainerWorkouts = context.fetchOrEmpty(
+            FetchDescriptor<WorkoutEntity>(
+                predicate: #Predicate {
+                    trainerWIds.contains($0.id)
+                }
+            )
+        )
         let templateIds = Set(trainerWorkouts.filter(\.isTemplate).map(\.id))
         allWorkoutIds.formUnion(templateIds)
 
         // Fetch all workouts
         let allWIds = Array(allWorkoutIds)
-        let workouts = (try? context.fetch(FetchDescriptor<WorkoutEntity>(
-            predicate: #Predicate { allWIds.contains($0.id) }
-        ))) ?? []
+        let workouts = context.fetchOrEmpty(
+            FetchDescriptor<WorkoutEntity>(
+                predicate: #Predicate {
+                    allWIds.contains($0.id)
+                }
+            )
+        )
 
         // IdentityWorkouts joins to include (trainee's + trainer's templates)
         var iwJoins = iwJoinsTrainee
-        iwJoins.append(contentsOf: iwJoinsTrainer.filter { templateIds.contains($0.workoutId) })
+        iwJoins.append(
+            contentsOf: iwJoinsTrainer.filter {
+                templateIds.contains($0.workoutId)
+            }
+        )
 
         // 7. TemplateInstances for workouts in scope
         let allWIdsForTI = Array(allWorkoutIds)
-        let tiJoins = (try? context.fetch(FetchDescriptor<TemplateInstances>(
-            predicate: #Predicate { allWIdsForTI.contains($0.workoutId) || allWIdsForTI.contains($0.templateId) }
-        ))) ?? []
+        let tiJoins = context.fetchOrEmpty(
+            FetchDescriptor<TemplateInstances>(
+                predicate: #Predicate {
+                    allWIdsForTI.contains($0.workoutId)
+                        || allWIdsForTI.contains(
+                            $0.templateId
+                        )
+                }
+            )
+        )
 
-        // 8. Batch fetch groups, sets, exercise links (O(5) queries instead of O(w*g*s))
-        let wgJoins = (try? context.fetch(FetchDescriptor<WorkoutGroups>(
-            predicate: #Predicate { allWIds.contains($0.workoutId) }
-        ))) ?? []
+        // 8. Batch fetch groups, sets, exercise links
+        //    O(5) queries instead of O(w*g*s)
+        let wgJoins = context.fetchOrEmpty(
+            FetchDescriptor<WorkoutGroups>(
+                predicate: #Predicate {
+                    allWIds.contains($0.workoutId)
+                }
+            )
+        )
         let groupIds = wgJoins.map(\.groupId)
-        let allGroups = (try? context.fetch(FetchDescriptor<WorkoutGroupEntity>(
-            predicate: #Predicate { groupIds.contains($0.id) }
-        ))) ?? []
+        let allGroups = context.fetchOrEmpty(
+            FetchDescriptor<WorkoutGroupEntity>(
+                predicate: #Predicate {
+                    groupIds.contains($0.id)
+                }
+            )
+        )
 
-        let gsJoins = (try? context.fetch(FetchDescriptor<GroupSets>(
-            predicate: #Predicate { groupIds.contains($0.groupId) }
-        ))) ?? []
+        let gsJoins = context.fetchOrEmpty(
+            FetchDescriptor<GroupSets>(
+                predicate: #Predicate {
+                    groupIds.contains($0.groupId)
+                }
+            )
+        )
         let setIds = gsJoins.map(\.setId)
-        let allSets = (try? context.fetch(FetchDescriptor<SetEntity>(
-            predicate: #Predicate { setIds.contains($0.id) }
-        ))) ?? []
+        let allSets = context.fetchOrEmpty(
+            FetchDescriptor<SetEntity>(
+                predicate: #Predicate {
+                    setIds.contains($0.id)
+                }
+            )
+        )
 
-        let esJoins = (try? context.fetch(FetchDescriptor<ExerciseSets>(
-            predicate: #Predicate { setIds.contains($0.setId) }
-        ))) ?? []
+        let esJoins = context.fetchOrEmpty(
+            FetchDescriptor<ExerciseSets>(
+                predicate: #Predicate {
+                    setIds.contains($0.setId)
+                }
+            )
+        )
 
         // 9. IdentityAliases for identities in scope
         let allIdentityIds = Array(traineeAliasGroup.union([trainerId]))
-        let aliasRows = (try? context.fetch(FetchDescriptor<IdentityAliases>(
-            predicate: #Predicate {
-                allIdentityIds.contains($0.identityId1) || allIdentityIds.contains($0.identityId2)
-            }
-        ))) ?? []
+        let aliasRows = context.fetchOrEmpty(
+            FetchDescriptor<IdentityAliases>(
+                predicate: #Predicate {
+                    allIdentityIds.contains(
+                        $0.identityId1
+                    )
+                        || allIdentityIds.contains(
+                            $0.identityId2
+                        )
+                }
+            )
+        )
 
-        // 10. Package into SyncPayload
+        // 10. SetCompletions for sets in scope
+        let scRows = context.fetchOrEmpty(
+            FetchDescriptor<SetCompletions>(
+                predicate: #Predicate {
+                    setIds.contains($0.setId)
+                }
+            )
+        )
+
+        // 11. WorkoutCompletions for workouts
+        //     in scope
+        let wcRows = context.fetchOrEmpty(
+            FetchDescriptor<WorkoutCompletions>(
+                predicate: #Predicate {
+                    allWIds.contains(
+                        $0.workoutId
+                    )
+                }
+            )
+        )
+
+        // 12. DeviceSyncEvents for identities
+        //     in scope
+        let dseRows = context.fetchOrEmpty(
+            FetchDescriptor<DeviceSyncEvents>(
+                predicate: #Predicate {
+                    allIdentityIds.contains(
+                        $0.localIdentityId
+                    )
+                }
+            )
+        )
+
+        // 13. Package into SyncPayload
         return SyncPayload(
             version: 1,
             senderIdentityId: localIdentity.id,
             identities: identities,
-            exercises: exercises.map { $0.toDTO() },
-            workouts: workouts.map { $0.toDTO() },
-            workoutGroups: allGroups.map { $0.toDTO() },
-            sets: allSets.map { $0.toDTO() },
-            trainerTrainees: ttJoins.map { $0.toDTO() },
-            trainerExercises: teJoins.map { $0.toDTO() },
-            identityWorkouts: iwJoins.map { $0.toDTO() },
-            workoutGroupJoins: wgJoins.map { $0.toDTO() },
-            groupSetJoins: gsJoins.map { $0.toDTO() },
-            exerciseSetJoins: esJoins.map { $0.toDTO() },
-            templateInstanceJoins: tiJoins.map { $0.toDTO() },
-            identityAliases: aliasRows.map { $0.toDTO() }
+            exercises:
+                exercises.map { $0.toDTO() },
+            workouts:
+                workouts.map { $0.toDTO() },
+            workoutGroups:
+                allGroups.map { $0.toDTO() },
+            sets:
+                allSets.map { $0.toDTO() },
+            trainerTrainees:
+                ttJoins.map { $0.toDTO() },
+            trainerExercises:
+                teJoins.map { $0.toDTO() },
+            identityWorkouts:
+                iwJoins.map { $0.toDTO() },
+            workoutGroupJoins:
+                wgJoins.map { $0.toDTO() },
+            groupSetJoins:
+                gsJoins.map { $0.toDTO() },
+            exerciseSetJoins:
+                esJoins.map { $0.toDTO() },
+            templateInstanceJoins:
+                tiJoins.map { $0.toDTO() },
+            identityAliases:
+                aliasRows.map { $0.toDTO() },
+            setCompletions:
+                scRows.map { $0.toDTO() },
+            workoutCompletions:
+                wcRows.map { $0.toDTO() },
+            deviceSyncEvents:
+                dseRows.map { $0.toDTO() }
         )
     }
 }

@@ -103,9 +103,20 @@ import SwiftData
         let trainee = ctx.makeTrainee(trainer: trainer)
 
         // Create a completed workout with a bench set
-        let past = ctx.makeWorkout(for: trainee, date: .now.addingTimeInterval(-86400), isCompleted: true)
+        let past = ctx.makeWorkout(
+            for: trainee,
+            date: .now.addingTimeInterval(-86400),
+            isCompleted: true
+        )
         let pastGroup = ctx.makeGroup(in: past, order: 0)
-        ctx.makeSet(in: pastGroup, exercise: bench, order: 0, weight: 185, reps: 5, isCompleted: true)
+        ctx.makeSet(
+            in: pastGroup,
+            exercise: bench,
+            order: 0,
+            weight: 185,
+            reps: 5,
+            isCompleted: true
+        )
 
         // New workout
         let workout = ctx.makeWorkout(for: trainee)
@@ -171,11 +182,33 @@ import SwiftData
         let trainee = ctx.makeTrainee(trainer: trainer)
         let workout = ctx.makeWorkout(for: trainee)
         let group = ctx.makeGroup(in: workout, order: 0)
-        ctx.makeSet(in: group, exercise: bench, order: 0, weight: 100, reps: 10)
-        let set1 = ctx.makeSet(in: group, exercise: bench, order: 1, weight: 110, reps: 8)
-        ctx.makeSet(in: group, exercise: bench, order: 2, weight: 120, reps: 6)
+        ctx.makeSet(
+            in: group,
+            exercise: bench,
+            order: 0,
+            weight: 100,
+            reps: 10
+        )
+        let set1 = ctx.makeSet(
+            in: group,
+            exercise: bench,
+            order: 1,
+            weight: 110,
+            reps: 8
+        )
+        ctx.makeSet(
+            in: group,
+            exercise: bench,
+            order: 2,
+            weight: 120,
+            reps: 6
+        )
 
-        ctx.deleteSets(from: group, at: IndexSet(integer: 1)) // delete middle set
+        // delete middle set
+        ctx.deleteSets(
+            from: group,
+            at: IndexSet(integer: 1)
+        )
 
         let remaining = group.sortedSets(in: ctx)
         XCTAssertEqual(remaining.count, 2)
@@ -189,10 +222,19 @@ import SwiftData
         let trainee = ctx.makeTrainee(trainer: trainer)
         let workout = ctx.makeWorkout(for: trainee)
         let group = ctx.makeGroup(in: workout, order: 0)
-        let set = ctx.makeSet(in: group, exercise: bench, order: 0, weight: 100, reps: 10)
+        let set = ctx.makeSet(
+            in: group,
+            exercise: bench,
+            order: 0,
+            weight: 100,
+            reps: 10
+        )
         let setId = set.id
 
-        ctx.deleteSets(from: group, at: IndexSet(integer: 0))
+        ctx.deleteSets(
+            from: group,
+            at: IndexSet(integer: 0)
+        )
 
         let gsJoins = try ctx.fetch(FetchDescriptor<GroupSets>(
             predicate: #Predicate { $0.setId == setId }
@@ -214,9 +256,21 @@ import SwiftData
         let trainee = ctx.makeTrainee(trainer: trainer)
         let workout = ctx.makeWorkout(for: trainee)
         let g1 = ctx.makeGroup(in: workout, order: 0)
-        ctx.makeSet(in: g1, exercise: bench, order: 0, weight: 135, reps: 10)
+        ctx.makeSet(
+            in: g1,
+            exercise: bench,
+            order: 0,
+            weight: 135,
+            reps: 10
+        )
         let g2 = ctx.makeGroup(in: workout, order: 1)
-        ctx.makeSet(in: g2, exercise: squat, order: 0, weight: 225, reps: 5)
+        ctx.makeSet(
+            in: g2,
+            exercise: squat,
+            order: 0,
+            weight: 225,
+            reps: 5
+        )
 
         let names = workout.exerciseNames(in: ctx)
 
@@ -258,7 +312,13 @@ import SwiftData
         let trainee = ctx.makeTrainee(trainer: trainer)
         let workout = ctx.makeWorkout(for: trainee)
         let group = ctx.makeGroup(in: workout, order: 0)
-        ctx.makeSet(in: group, exercise: bench, order: 0, weight: 135, reps: 10)
+        ctx.makeSet(
+            in: group,
+            exercise: bench,
+            order: 0,
+            weight: 135,
+            reps: 10
+        )
 
         XCTAssertEqual(group.exerciseName(in: ctx), "Bench")
     }

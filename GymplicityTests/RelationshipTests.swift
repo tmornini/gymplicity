@@ -124,9 +124,27 @@ import SwiftData
         let trainee = ctx.makeTrainee(trainer: trainer)
         let workout = ctx.makeWorkout(for: trainee)
         let group = ctx.makeGroup(in: workout, order: 0)
-        ctx.makeSet(in: group, exercise: bench, order: 2, weight: 155, reps: 6)
-        ctx.makeSet(in: group, exercise: bench, order: 0, weight: 135, reps: 10)
-        ctx.makeSet(in: group, exercise: bench, order: 1, weight: 145, reps: 8)
+        ctx.makeSet(
+            in: group,
+            exercise: bench,
+            order: 2,
+            weight: 155,
+            reps: 6
+        )
+        ctx.makeSet(
+            in: group,
+            exercise: bench,
+            order: 0,
+            weight: 135,
+            reps: 10
+        )
+        ctx.makeSet(
+            in: group,
+            exercise: bench,
+            order: 1,
+            weight: 145,
+            reps: 8
+        )
 
         let sorted = group.sortedSets(in: ctx)
         XCTAssertEqual(sorted.count, 3)
@@ -142,7 +160,13 @@ import SwiftData
         let trainee = ctx.makeTrainee(trainer: trainer)
         let workout = ctx.makeWorkout(for: trainee)
         let group = ctx.makeGroup(in: workout, order: 0)
-        let set = ctx.makeSet(in: group, exercise: bench, order: 0, weight: 135, reps: 10)
+        let set = ctx.makeSet(
+            in: group,
+            exercise: bench,
+            order: 0,
+            weight: 135,
+            reps: 10
+        )
 
         XCTAssertEqual(
             set.exercise(in: ctx)?.id,

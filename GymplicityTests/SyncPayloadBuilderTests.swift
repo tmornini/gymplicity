@@ -9,7 +9,11 @@ import SwiftData
         let trainer = ctx.makeTrainer(name: "Coach")
         let trainee = ctx.makeTrainee(name: "Alex", trainer: trainer)
 
-        let payload = SyncPayloadBuilder.build(localIdentity: trainer, pairedIdentity: trainee, context: ctx)
+        let payload = SyncPayloadBuilder.build(
+            localIdentity: trainer,
+            pairedIdentity: trainee,
+            context: ctx
+        )
 
         XCTAssertEqual(payload.identities.count, 2)
         let ids = Set(payload.identities.map(\.id))
@@ -24,7 +28,11 @@ import SwiftData
         ctx.makeExercise(name: "Bench", trainer: trainer)
         ctx.makeExercise(name: "Squat", trainer: trainer)
 
-        let payload = SyncPayloadBuilder.build(localIdentity: trainer, pairedIdentity: trainee, context: ctx)
+        let payload = SyncPayloadBuilder.build(
+            localIdentity: trainer,
+            pairedIdentity: trainee,
+            context: ctx
+        )
 
         XCTAssertEqual(payload.exercises.count, 2)
         let names = Set(payload.exercises.map(\.name))
@@ -39,7 +47,11 @@ import SwiftData
         ctx.makeWorkout(for: trainee)                           // active
         ctx.makeWorkout(for: trainee, isCompleted: true)        // completed
 
-        let payload = SyncPayloadBuilder.build(localIdentity: trainee, pairedIdentity: trainer, context: ctx)
+        let payload = SyncPayloadBuilder.build(
+            localIdentity: trainee,
+            pairedIdentity: trainer,
+            context: ctx
+        )
 
         XCTAssertEqual(payload.workouts.count, 2)
     }
@@ -49,9 +61,14 @@ import SwiftData
         let trainer = ctx.makeTrainer()
         let trainee = ctx.makeTrainee(trainer: trainer)
         ctx.makeTemplate(name: "Push Day", for: trainer)
-        ctx.makeWorkout(for: trainer) // trainer's personal workout — should be excluded
+        // trainer's personal workout -- should be excluded
+        ctx.makeWorkout(for: trainer)
 
-        let payload = SyncPayloadBuilder.build(localIdentity: trainer, pairedIdentity: trainee, context: ctx)
+        let payload = SyncPayloadBuilder.build(
+            localIdentity: trainer,
+            pairedIdentity: trainee,
+            context: ctx
+        )
 
         // Only trainee's 0 workouts + trainer's 1 template
         let templateWorkouts = payload.workouts.filter(\.isTemplate)
@@ -67,7 +84,11 @@ import SwiftData
         let template = ctx.makeTemplate(name: "Push", for: trainer)
         let workout = ctx.instantiateTemplate(template, for: trainee)
 
-        let payload = SyncPayloadBuilder.build(localIdentity: trainer, pairedIdentity: trainee, context: ctx)
+        let payload = SyncPayloadBuilder.build(
+            localIdentity: trainer,
+            pairedIdentity: trainee,
+            context: ctx
+        )
 
         XCTAssertFalse(payload.templateInstanceJoins.isEmpty)
         let tiJoin = payload.templateInstanceJoins.first {
@@ -83,9 +104,19 @@ import SwiftData
         let bench = ctx.makeExercise(name: "Bench", trainer: trainer)
         let workout = ctx.makeWorkout(for: trainee)
         let group = ctx.makeGroup(in: workout, order: 0)
-        ctx.makeSet(in: group, exercise: bench, order: 0, weight: 135, reps: 10)
+        ctx.makeSet(
+            in: group,
+            exercise: bench,
+            order: 0,
+            weight: 135,
+            reps: 10
+        )
 
-        let payload = SyncPayloadBuilder.build(localIdentity: trainer, pairedIdentity: trainee, context: ctx)
+        let payload = SyncPayloadBuilder.build(
+            localIdentity: trainer,
+            pairedIdentity: trainee,
+            context: ctx
+        )
 
         XCTAssertEqual(payload.workoutGroups.count, 1)
         XCTAssertEqual(payload.sets.count, 1)
@@ -100,9 +131,14 @@ import SwiftData
         let trainee = ctx.makeTrainee(trainer: trainer)
         ctx.makeWorkout(for: trainee)
         ctx.makeTemplate(name: "Pull Day", for: trainer)
-        ctx.makeWorkout(for: trainer) // trainer's personal — its IW join excluded
+        // trainer's personal -- its IW join excluded
+        ctx.makeWorkout(for: trainer)
 
-        let payload = SyncPayloadBuilder.build(localIdentity: trainer, pairedIdentity: trainee, context: ctx)
+        let payload = SyncPayloadBuilder.build(
+            localIdentity: trainer,
+            pairedIdentity: trainee,
+            context: ctx
+        )
 
         // 1 trainee workout join + 1 trainer template join = 2
         XCTAssertEqual(payload.identityWorkouts.count, 2)
@@ -120,9 +156,17 @@ import SwiftData
         ctx.makeWorkout(for: traineeB, isCompleted: true)
 
         // Create alias
-        IdentityReconciliation.createAlias(id1: traineeA.id, id2: traineeB.id, in: ctx)
+        IdentityReconciliation.createAlias(
+            id1: traineeA.id,
+            id2: traineeB.id,
+            in: ctx
+        )
 
-        let payload = SyncPayloadBuilder.build(localIdentity: trainer, pairedIdentity: traineeA, context: ctx)
+        let payload = SyncPayloadBuilder.build(
+            localIdentity: trainer,
+            pairedIdentity: traineeA,
+            context: ctx
+        )
 
         // Should include workouts from both aliased identities
         XCTAssertEqual(payload.workouts.count, 2)
@@ -135,14 +179,23 @@ import SwiftData
         let trainee = ctx.makeTrainee(trainer: trainer)
         let aliasId = UUID()
 
-        IdentityReconciliation.createAlias(id1: trainee.id, id2: aliasId, in: ctx)
+        IdentityReconciliation.createAlias(
+            id1: trainee.id,
+            id2: aliasId,
+            in: ctx
+        )
 
-        let payload = SyncPayloadBuilder.build(localIdentity: trainer, pairedIdentity: trainee, context: ctx)
+        let payload = SyncPayloadBuilder.build(
+            localIdentity: trainer,
+            pairedIdentity: trainee,
+            context: ctx
+        )
 
         XCTAssertEqual(payload.identityAliases.count, 1)
         let alias = payload.identityAliases.first!
         XCTAssert(
-            (alias.identityId1 == trainee.id && alias.identityId2 == aliasId) ||
+            (alias.identityId1 == trainee.id
+                && alias.identityId2 == aliasId) ||
             (alias.identityId1 == aliasId && alias.identityId2 == trainee.id)
         )
     }
@@ -151,7 +204,13 @@ import SwiftData
         let senderId = UUID()
         let payload = SyncPayload.delta(
             senderIdentityId: senderId,
-            identities: [IdentityDTO(id: senderId, name: "Test", isTrainer: true)]
+            identities: [
+                IdentityDTO(
+                    id: senderId,
+                    name: "Test",
+                    isTrainer: true
+                )
+            ]
         )
 
         XCTAssertEqual(payload.identities.count, 1)

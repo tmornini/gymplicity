@@ -20,14 +20,36 @@ import SwiftData
         let trainee = ctx.makeTrainee(trainer: trainer)
 
         // Older workout
-        let w1 = ctx.makeWorkout(for: trainee, date: .now.addingTimeInterval(-86400 * 2), isCompleted: true)
+        let w1 = ctx.makeWorkout(
+            for: trainee,
+            date: .now.addingTimeInterval(-86400 * 2),
+            isCompleted: true
+        )
         let g1 = ctx.makeGroup(in: w1, order: 0)
-        ctx.makeSet(in: g1, exercise: bench, order: 0, weight: 135, reps: 10, isCompleted: true)
+        ctx.makeSet(
+            in: g1,
+            exercise: bench,
+            order: 0,
+            weight: 135,
+            reps: 10,
+            isCompleted: true
+        )
 
         // Newer workout
-        let w2 = ctx.makeWorkout(for: trainee, date: .now.addingTimeInterval(-86400), isCompleted: true)
+        let w2 = ctx.makeWorkout(
+            for: trainee,
+            date: .now.addingTimeInterval(-86400),
+            isCompleted: true
+        )
         let g2 = ctx.makeGroup(in: w2, order: 0)
-        ctx.makeSet(in: g2, exercise: bench, order: 0, weight: 155, reps: 8, isCompleted: true)
+        ctx.makeSet(
+            in: g2,
+            exercise: bench,
+            order: 0,
+            weight: 155,
+            reps: 8,
+            isCompleted: true
+        )
 
         let last = trainee.lastSet(for: bench, in: ctx)
         XCTAssertNotNil(last)
@@ -72,7 +94,11 @@ import SwiftData
         let trainee = ctx.makeTrainee(trainer: trainer)
 
         // Completed workout
-        let completed = ctx.makeWorkout(for: trainee, date: .now.addingTimeInterval(-86400), isCompleted: true)
+        let completed = ctx.makeWorkout(
+            for: trainee,
+            date: .now.addingTimeInterval(-86400),
+            isCompleted: true
+        )
         let g1 = ctx.makeGroup(in: completed, order: 0)
         ctx.makeSet(in: g1, exercise: bench, order: 0, weight: 135, reps: 10)
 

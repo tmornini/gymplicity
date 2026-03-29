@@ -11,7 +11,13 @@ import SwiftData
         let trainee = ctx.makeTrainee(trainer: trainer)
         let workout = ctx.makeWorkout(for: trainee)
         let group = ctx.makeGroup(in: workout, order: 0)
-        let set = ctx.makeSet(in: group, exercise: bench, order: 0, weight: 135, reps: 10)
+        let set = ctx.makeSet(
+            in: group,
+            exercise: bench,
+            order: 0,
+            weight: 135,
+            reps: 10
+        )
         let setId = set.id
 
         ctx.deleteSet(set)
@@ -47,8 +53,20 @@ import SwiftData
         let trainee = ctx.makeTrainee(trainer: trainer)
         let workout = ctx.makeWorkout(for: trainee)
         let group = ctx.makeGroup(in: workout, order: 0)
-        ctx.makeSet(in: group, exercise: bench, order: 0, weight: 135, reps: 10)
-        ctx.makeSet(in: group, exercise: bench, order: 1, weight: 155, reps: 8)
+        ctx.makeSet(
+            in: group,
+            exercise: bench,
+            order: 0,
+            weight: 135,
+            reps: 10
+        )
+        ctx.makeSet(
+            in: group,
+            exercise: bench,
+            order: 1,
+            weight: 155,
+            reps: 8
+        )
         let groupId = group.id
 
         ctx.deleteGroup(group)
@@ -85,7 +103,11 @@ import SwiftData
             predicate: #Predicate { $0.id == workoutId }
         ))
         XCTAssert(workouts.isEmpty)
-        XCTAssert(try ctx.fetch(FetchDescriptor<WorkoutGroupEntity>()).isEmpty)
+        XCTAssert(
+            try ctx.fetch(
+                FetchDescriptor<WorkoutGroupEntity>()
+            ).isEmpty
+        )
         XCTAssert(try ctx.fetch(FetchDescriptor<SetEntity>()).isEmpty)
 
         // Identity and exercise survive
@@ -100,8 +122,20 @@ import SwiftData
         let trainee = ctx.makeTrainee(trainer: trainer)
         let workout = ctx.makeWorkout(for: trainee)
         let group = ctx.makeGroup(in: workout, order: 0)
-        let set1 = ctx.makeSet(in: group, exercise: bench, order: 0, weight: 135, reps: 10)
-        let set2 = ctx.makeSet(in: group, exercise: bench, order: 1, weight: 155, reps: 8)
+        let set1 = ctx.makeSet(
+            in: group,
+            exercise: bench,
+            order: 0,
+            weight: 135,
+            reps: 10
+        )
+        let set2 = ctx.makeSet(
+            in: group,
+            exercise: bench,
+            order: 1,
+            weight: 155,
+            reps: 8
+        )
 
         ctx.deleteExercise(bench)
 
@@ -126,7 +160,13 @@ import SwiftData
         let trainee = ctx.makeTrainee(trainer: trainer)
         let workout = ctx.makeWorkout(for: trainee)
         let group = ctx.makeGroup(in: workout, order: 0)
-        ctx.makeSet(in: group, exercise: bench, order: 0, weight: 135, reps: 10)
+        ctx.makeSet(
+            in: group,
+            exercise: bench,
+            order: 0,
+            weight: 135,
+            reps: 10
+        )
 
         ctx.deleteIdentity(trainer)
 
@@ -134,7 +174,11 @@ import SwiftData
         XCTAssert(try ctx.fetch(FetchDescriptor<IdentityEntity>()).isEmpty)
         XCTAssert(try ctx.fetch(FetchDescriptor<ExerciseEntity>()).isEmpty)
         XCTAssert(try ctx.fetch(FetchDescriptor<WorkoutEntity>()).isEmpty)
-        XCTAssert(try ctx.fetch(FetchDescriptor<WorkoutGroupEntity>()).isEmpty)
+        XCTAssert(
+            try ctx.fetch(
+                FetchDescriptor<WorkoutGroupEntity>()
+            ).isEmpty
+        )
         XCTAssert(try ctx.fetch(FetchDescriptor<SetEntity>()).isEmpty)
         XCTAssert(try ctx.fetch(FetchDescriptor<TrainerTrainees>()).isEmpty)
         XCTAssert(try ctx.fetch(FetchDescriptor<TrainerExercises>()).isEmpty)

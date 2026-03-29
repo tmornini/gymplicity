@@ -124,7 +124,11 @@ import SwiftData
         XCTAssertEqual(traineeB.workouts(in: ctx).count, 1)
 
         // Create alias
-        IdentityReconciliation.createAlias(id1: traineeA.id, id2: traineeB.id, in: ctx)
+        IdentityReconciliation.createAlias(
+            id1: traineeA.id,
+            id2: traineeB.id,
+            in: ctx
+        )
 
         // After alias: both see both workouts
         XCTAssertEqual(traineeA.workouts(in: ctx).count, 2)
@@ -141,7 +145,11 @@ import SwiftData
         ctx.makeWorkout(for: traineeB, isCompleted: true)
         ctx.makeWorkout(for: traineeB) // active, should not appear
 
-        IdentityReconciliation.createAlias(id1: traineeA.id, id2: traineeB.id, in: ctx)
+        IdentityReconciliation.createAlias(
+            id1: traineeA.id,
+            id2: traineeB.id,
+            in: ctx
+        )
 
         XCTAssertEqual(traineeA.completedWorkouts(in: ctx).count, 2)
     }

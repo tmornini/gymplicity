@@ -59,7 +59,9 @@ import SwiftData
     }
 
     func testMatchesFuzzy() {
-        XCTAssertTrue(Levenshtein.matches("benchpres", against: "bench press"))
+        XCTAssertTrue(
+            Levenshtein.matches("benchpres", against: "bench press")
+        )
     }
 
     func testShortQueryRequiresExact() {
@@ -121,16 +123,34 @@ import SwiftData
 
 @MainActor final class MatchReasonTests: XCTestCase {
     func testScoreOrdering() {
-        XCTAssertLessThan(MatchReason.exactName.score, MatchReason.alias("x").score)
-        XCTAssertLessThan(MatchReason.alias("x").score, MatchReason.primaryMuscle("x").score)
-        XCTAssertLessThan(MatchReason.primaryMuscle("x").score, MatchReason.secondaryMuscle("x").score)
-        XCTAssertLessThan(MatchReason.secondaryMuscle("x").score, MatchReason.joint("x").score)
-        XCTAssertLessThan(MatchReason.joint("x").score, MatchReason.bodyRegion("x").score)
+        XCTAssertLessThan(
+            MatchReason.exactName.score,
+            MatchReason.alias("x").score
+        )
+        XCTAssertLessThan(
+            MatchReason.alias("x").score,
+            MatchReason.primaryMuscle("x").score
+        )
+        XCTAssertLessThan(
+            MatchReason.primaryMuscle("x").score,
+            MatchReason.secondaryMuscle("x").score
+        )
+        XCTAssertLessThan(
+            MatchReason.secondaryMuscle("x").score,
+            MatchReason.joint("x").score
+        )
+        XCTAssertLessThan(
+            MatchReason.joint("x").score,
+            MatchReason.bodyRegion("x").score
+        )
     }
 
     func testDisplayLabels() {
         XCTAssertEqual(MatchReason.exactName.displayLabel, "Name")
-        XCTAssertEqual(MatchReason.primaryMuscle("biceps").displayLabel, "biceps")
+        XCTAssertEqual(
+            MatchReason.primaryMuscle("biceps").displayLabel,
+            "biceps"
+        )
     }
 }
 
@@ -138,7 +158,10 @@ import SwiftData
     func testCatalogLoads() {
         let engine = ExerciseSearchEngine.shared
         let results = engine.search(query: "squat", userExercises: [])
-        XCTAssertFalse(results.catalogExercises.isEmpty, "Catalog should have squat exercises")
+        XCTAssertFalse(
+            results.catalogExercises.isEmpty,
+            "Catalog should have squat exercises"
+        )
     }
 
     func testEmptyQueryReturnsNoCalatog() {
@@ -152,15 +175,24 @@ import SwiftData
         // "squatt" is 6 chars (threshold=1), distance to "squat" = 1
         let results = engine.search(query: "squatt", userExercises: [])
         let names = results.catalogExercises.map(\.exercise.name)
-        XCTAssertTrue(names.contains(where: { $0.lowercased().contains("squat") }),
-                       "Typo 'squatt' should fuzzy-match squat exercises")
+        XCTAssertTrue(
+            names.contains(where: {
+                $0.lowercased().contains("squat")
+            }),
+            "Typo 'squatt' should fuzzy-match squat exercises"
+        )
     }
 
     func testMuscleSearch() {
         let engine = ExerciseSearchEngine.shared
         let results = engine.search(query: "biceps", userExercises: [])
-        XCTAssertFalse(results.catalogExercises.isEmpty, "Should find exercises targeting biceps")
-        let hasBicepsReason = results.catalogExercises.first?.reasons.contains(where: {
+        XCTAssertFalse(
+            results.catalogExercises.isEmpty,
+            "Should find exercises targeting biceps"
+        )
+        let hasBicepsReason = results
+            .catalogExercises.first?
+            .reasons.contains(where: {
             if case .primaryMuscle = $0 { return true }
             if case .secondaryMuscle = $0 { return true }
             return false
@@ -171,15 +203,21 @@ import SwiftData
     func testBodyRegionSearch() {
         let engine = ExerciseSearchEngine.shared
         let results = engine.search(query: "legs", userExercises: [])
-        XCTAssertFalse(results.catalogExercises.isEmpty, "Should find leg exercises")
+        XCTAssertFalse(
+            results.catalogExercises.isEmpty,
+            "Should find leg exercises"
+        )
     }
 
     func testNegationExcludes() {
         let engine = ExerciseSearchEngine.shared
         let all = engine.search(query: "back", userExercises: [])
         let filtered = engine.search(query: "back -legs", userExercises: [])
-        XCTAssertLessThan(filtered.catalogExercises.count, all.catalogExercises.count,
-                          "Negation should reduce results")
+        XCTAssertLessThan(
+            filtered.catalogExercises.count,
+            all.catalogExercises.count,
+            "Negation should reduce results"
+        )
     }
 
     func testNameMatchRanksHigherThanMuscle() {
@@ -188,7 +226,10 @@ import SwiftData
         guard results.catalogExercises.count >= 2 else { return }
         let first = results.catalogExercises[0]
         let hasNameMatch = first.reasons.contains(.exactName)
-        XCTAssertTrue(hasNameMatch, "Top result for 'squat' should have a name match")
+        XCTAssertTrue(
+            hasNameMatch,
+            "Top result for 'squat' should have a name match"
+        )
     }
 
     func testMultiTokenANDLogic() {
@@ -201,8 +242,11 @@ import SwiftData
                 result.exercise.secondaryMuscles.joined(separator: " ")
             let hasBiceps = blob.contains("bicep")
             let hasCurl = blob.contains("curl")
-            XCTAssertTrue(hasBiceps && hasCurl,
-                          "\(result.exercise.name) should match both 'biceps' and 'curl'")
+            XCTAssertTrue(
+                hasBiceps && hasCurl,
+                "\(result.exercise.name) should match"
+                    + " both 'biceps' and 'curl'"
+            )
         }
     }
 
@@ -214,11 +258,17 @@ import SwiftData
 
         let userExercises = trainer.exerciseCatalog(in: ctx)
         let engine = ExerciseSearchEngine.shared
-        let results = engine.search(query: "squat", userExercises: userExercises)
+        let results = engine.search(
+            query: "squat",
+            userExercises: userExercises
+        )
 
-        let catalogNames = results.catalogExercises.map(\.exercise.name)
-        XCTAssertFalse(catalogNames.contains("Barbell Back Squat"),
-                       "Catalog should not include exercises that exist in user's list")
+        let catalogNames = results.catalogExercises
+            .map(\.exercise.name)
+        XCTAssertFalse(
+            catalogNames.contains("Barbell Back Squat"),
+            "Catalog should not include exercises that exist in user's list"
+        )
         XCTAssertEqual(results.userExercises.count, 1)
     }
 
@@ -231,10 +281,16 @@ import SwiftData
 
         let userExercises = trainer.exerciseCatalog(in: ctx)
         let engine = ExerciseSearchEngine.shared
-        let results = engine.search(query: "bench", userExercises: userExercises)
+        let results = engine.search(
+            query: "bench",
+            userExercises: userExercises
+        )
 
         XCTAssertEqual(results.userExercises.count, 1)
-        XCTAssertEqual(results.userExercises.first?.exercise.name, "Bench Press")
+        XCTAssertEqual(
+            results.userExercises.first?.exercise.name,
+            "Bench Press"
+        )
     }
 
     func testEmptyQueryReturnsAllUserExercises() throws {

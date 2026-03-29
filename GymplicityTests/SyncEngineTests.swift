@@ -12,7 +12,13 @@ import SwiftData
 
         let payload = makePayload(
             senderIdentityId: trainer.id,
-            identities: [IdentityDTO(id: trainer.id, name: "New Name", isTrainer: true)]
+            identities: [
+                IdentityDTO(
+                    id: trainer.id,
+                    name: "New Name",
+                    isTrainer: true
+                )
+            ]
         )
         let result = SyncEngine.merge(payload, into: ctx)
 
@@ -69,8 +75,20 @@ import SwiftData
 
         let payload = makePayload(
             senderIdentityId: trainer.id,
-            identities: [IdentityDTO(id: trainer.id, name: "Trainer", isTrainer: true)],
-            exercises: [ExerciseDTO(id: bench.id, name: "Bench", catalogId: nil)]
+            identities: [
+                IdentityDTO(
+                    id: trainer.id,
+                    name: "Trainer",
+                    isTrainer: true
+                )
+            ],
+            exercises: [
+                ExerciseDTO(
+                    id: bench.id,
+                    name: "Bench",
+                    catalogId: nil
+                )
+            ]
         )
         let result = SyncEngine.merge(payload, into: ctx)
 
@@ -86,8 +104,20 @@ import SwiftData
 
         let payload = makePayload(
             senderIdentityId: trainee.id,
-            identities: [IdentityDTO(id: trainee.id, name: "Trainee", isTrainer: false)],
-            exercises: [ExerciseDTO(id: bench.id, name: "Renamed", catalogId: nil)]
+            identities: [
+                IdentityDTO(
+                    id: trainee.id,
+                    name: "Trainee",
+                    isTrainer: false
+                )
+            ],
+            exercises: [
+                ExerciseDTO(
+                    id: bench.id,
+                    name: "Renamed",
+                    catalogId: nil
+                )
+            ]
         )
         let result = SyncEngine.merge(payload, into: ctx)
 
@@ -97,13 +127,29 @@ import SwiftData
 
     func testNewExerciseInsertedRegardlessOfSenderRole() throws {
         let ctx = try makeTestContext()
-        let trainee = ctx.makeTrainee(name: "T", trainer: ctx.makeTrainer())
+        let trainer = ctx.makeTrainer()
+        let trainee = ctx.makeTrainee(
+            name: "T",
+            trainer: trainer
+        )
         let newId = UUID()
 
         let payload = makePayload(
             senderIdentityId: trainee.id,
-            identities: [IdentityDTO(id: trainee.id, name: "T", isTrainer: false)],
-            exercises: [ExerciseDTO(id: newId, name: "New Exercise", catalogId: nil)]
+            identities: [
+                IdentityDTO(
+                    id: trainee.id,
+                    name: "T",
+                    isTrainer: false
+                )
+            ],
+            exercises: [
+                ExerciseDTO(
+                    id: newId,
+                    name: "New Exercise",
+                    catalogId: nil
+                )
+            ]
         )
         let result = SyncEngine.merge(payload, into: ctx)
 
@@ -125,10 +171,28 @@ import SwiftData
         // Trainee sends update
         let payload = makePayload(
             senderIdentityId: trainee.id,
-            identities: [IdentityDTO(id: trainee.id, name: "Trainee", isTrainer: false)],
-            workouts: [WorkoutDTO(id: workout.id, date: workout.date, notes: "Great session",
-                                  isTemplate: false, templateName: nil)],
-            workoutCompletions: [WorkoutCompletionDTO(workoutId: workout.id, completedAt: .now)]
+            identities: [
+                IdentityDTO(
+                    id: trainee.id,
+                    name: "Trainee",
+                    isTrainer: false
+                )
+            ],
+            workouts: [
+                WorkoutDTO(
+                    id: workout.id,
+                    date: workout.date,
+                    notes: "Great session",
+                    isTemplate: false,
+                    templateName: nil
+                )
+            ],
+            workoutCompletions: [
+                WorkoutCompletionDTO(
+                    workoutId: workout.id,
+                    completedAt: .now
+                )
+            ]
         )
         let result = SyncEngine.merge(payload, into: ctx)
 
@@ -144,9 +208,22 @@ import SwiftData
 
         let payload = makePayload(
             senderIdentityId: trainer.id,
-            identities: [IdentityDTO(id: trainer.id, name: "Trainer", isTrainer: true)],
-            workouts: [WorkoutDTO(id: template.id, date: template.date, notes: nil,
-                                  isTemplate: true, templateName: "Push A")]
+            identities: [
+                IdentityDTO(
+                    id: trainer.id,
+                    name: "Trainer",
+                    isTrainer: true
+                )
+            ],
+            workouts: [
+                WorkoutDTO(
+                    id: template.id,
+                    date: template.date,
+                    notes: nil,
+                    isTemplate: true,
+                    templateName: "Push A"
+                )
+            ]
         )
         let result = SyncEngine.merge(payload, into: ctx)
 
@@ -162,9 +239,22 @@ import SwiftData
 
         let payload = makePayload(
             senderIdentityId: trainee.id,
-            identities: [IdentityDTO(id: trainee.id, name: "Trainee", isTrainer: false)],
-            workouts: [WorkoutDTO(id: template.id, date: template.date, notes: nil,
-                                  isTemplate: true, templateName: "Hacked")]
+            identities: [
+                IdentityDTO(
+                    id: trainee.id,
+                    name: "Trainee",
+                    isTrainer: false
+                )
+            ],
+            workouts: [
+                WorkoutDTO(
+                    id: template.id,
+                    date: template.date,
+                    notes: nil,
+                    isTemplate: true,
+                    templateName: "Hacked"
+                )
+            ]
         )
         let result = SyncEngine.merge(payload, into: ctx)
 
@@ -174,14 +264,31 @@ import SwiftData
 
     func testNewWorkoutInsertedFromPayload() throws {
         let ctx = try makeTestContext()
-        let trainee = ctx.makeTrainee(name: "T", trainer: ctx.makeTrainer())
+        let trainer = ctx.makeTrainer()
+        let trainee = ctx.makeTrainee(
+            name: "T",
+            trainer: trainer
+        )
         let newId = UUID()
 
         let payload = makePayload(
             senderIdentityId: trainee.id,
-            identities: [IdentityDTO(id: trainee.id, name: "T", isTrainer: false)],
-            workouts: [WorkoutDTO(id: newId, date: .now, notes: "New workout",
-                                  isTemplate: false, templateName: nil)]
+            identities: [
+                IdentityDTO(
+                    id: trainee.id,
+                    name: "T",
+                    isTrainer: false
+                )
+            ],
+            workouts: [
+                WorkoutDTO(
+                    id: newId,
+                    date: .now,
+                    notes: "New workout",
+                    isTemplate: false,
+                    templateName: nil
+                )
+            ]
         )
         let result = SyncEngine.merge(payload, into: ctx)
 
@@ -203,8 +310,20 @@ import SwiftData
 
         let payload = makePayload(
             senderIdentityId: trainer.id,
-            identities: [IdentityDTO(id: trainer.id, name: "Trainer", isTrainer: true)],
-            workoutGroups: [WorkoutGroupDTO(id: group.id, order: 2, isSuperset: true)]
+            identities: [
+                IdentityDTO(
+                    id: trainer.id,
+                    name: "Trainer",
+                    isTrainer: true
+                )
+            ],
+            workoutGroups: [
+                WorkoutGroupDTO(
+                    id: group.id,
+                    order: 2,
+                    isSuperset: true
+                )
+            ]
         )
         let result = SyncEngine.merge(payload, into: ctx)
 
@@ -222,8 +341,20 @@ import SwiftData
 
         let payload = makePayload(
             senderIdentityId: trainee.id,
-            identities: [IdentityDTO(id: trainee.id, name: "Trainee", isTrainer: false)],
-            workoutGroups: [WorkoutGroupDTO(id: group.id, order: 5, isSuperset: true)]
+            identities: [
+                IdentityDTO(
+                    id: trainee.id,
+                    name: "Trainee",
+                    isTrainer: false
+                )
+            ],
+            workoutGroups: [
+                WorkoutGroupDTO(
+                    id: group.id,
+                    order: 5,
+                    isSuperset: true
+                )
+            ]
         )
         let result = SyncEngine.merge(payload, into: ctx)
 
@@ -241,15 +372,39 @@ import SwiftData
         let bench = ctx.makeExercise(name: "Bench", trainer: trainer)
         let workout = ctx.makeWorkout(for: trainee)
         let group = ctx.makeGroup(in: workout, order: 0)
-        let set = ctx.makeSet(in: group, exercise: bench, order: 0, weight: 100, reps: 8)
+        let set = ctx.makeSet(
+            in: group,
+            exercise: bench,
+            order: 0,
+            weight: 100,
+            reps: 8
+        )
         let now = Date.now
 
         // Trainer sends set update
         let payload = makePayload(
             senderIdentityId: trainer.id,
-            identities: [IdentityDTO(id: trainer.id, name: "Trainer", isTrainer: true)],
-            sets: [SetDTO(id: set.id, order: 0, weight: 135, reps: 10)],
-            setCompletions: [SetCompletionDTO(setId: set.id, completedAt: now)]
+            identities: [
+                IdentityDTO(
+                    id: trainer.id,
+                    name: "Trainer",
+                    isTrainer: true
+                )
+            ],
+            sets: [
+                SetDTO(
+                    id: set.id,
+                    order: 0,
+                    weight: 135,
+                    reps: 10
+                )
+            ],
+            setCompletions: [
+                SetCompletionDTO(
+                    setId: set.id,
+                    completedAt: now
+                )
+            ]
         )
         let result = SyncEngine.merge(payload, into: ctx)
 
@@ -269,8 +424,19 @@ import SwiftData
 
         let payload = makePayload(
             senderIdentityId: trainer.id,
-            identities: [IdentityDTO(id: trainer.id, name: "Trainer", isTrainer: true)],
-            identityWorkouts: [IdentityWorkoutsDTO(identityId: trainee.id, workoutId: newWorkoutId)]
+            identities: [
+                IdentityDTO(
+                    id: trainer.id,
+                    name: "Trainer",
+                    isTrainer: true
+                )
+            ],
+            identityWorkouts: [
+                IdentityWorkoutsDTO(
+                    identityId: trainee.id,
+                    workoutId: newWorkoutId
+                )
+            ]
         )
         let result = SyncEngine.merge(payload, into: ctx)
 
@@ -285,8 +451,19 @@ import SwiftData
         // TrainerTrainees join already exists from makeTrainee
         let payload = makePayload(
             senderIdentityId: trainer.id,
-            identities: [IdentityDTO(id: trainer.id, name: "Trainer", isTrainer: true)],
-            trainerTrainees: [TrainerTraineesDTO(trainerId: trainer.id, traineeId: trainee.id)]
+            identities: [
+                IdentityDTO(
+                    id: trainer.id,
+                    name: "Trainer",
+                    isTrainer: true
+                )
+            ],
+            trainerTrainees: [
+                TrainerTraineesDTO(
+                    trainerId: trainer.id,
+                    traineeId: trainee.id
+                )
+            ]
         )
         let result = SyncEngine.merge(payload, into: ctx)
 
@@ -301,10 +478,23 @@ import SwiftData
 
         let payload = makePayload(
             senderIdentityId: trainer.id,
-            identities: [IdentityDTO(id: trainer.id, name: "Trainer", isTrainer: true)],
+            identities: [
+                IdentityDTO(
+                    id: trainer.id,
+                    name: "Trainer",
+                    isTrainer: true
+                )
+            ],
             templateInstanceJoins: [
-                TemplateInstancesDTO(templateId: template.id, workoutId: workoutId),
-                TemplateInstancesDTO(templateId: template.id, workoutId: workoutId) // duplicate
+                TemplateInstancesDTO(
+                    templateId: template.id,
+                    workoutId: workoutId
+                ),
+                // duplicate
+                TemplateInstancesDTO(
+                    templateId: template.id,
+                    workoutId: workoutId
+                )
             ]
         )
         let result = SyncEngine.merge(payload, into: ctx)
@@ -337,7 +527,12 @@ import SwiftData
 
         let payload = makePayload(
             senderIdentityId: senderId,
-            identityAliases: [IdentityAliasesDTO(identityId1: id1, identityId2: id2)]
+            identityAliases: [
+                IdentityAliasesDTO(
+                    identityId1: id1,
+                    identityId2: id2
+                )
+            ]
         )
         let result = SyncEngine.merge(payload, into: ctx)
 
@@ -357,7 +552,12 @@ import SwiftData
 
         let payload = makePayload(
             senderIdentityId: senderId,
-            identityAliases: [IdentityAliasesDTO(identityId1: id1, identityId2: id2)]
+            identityAliases: [
+                IdentityAliasesDTO(
+                    identityId1: id1,
+                    identityId2: id2
+                )
+            ]
         )
         let result = SyncEngine.merge(payload, into: ctx)
 
@@ -376,7 +576,12 @@ import SwiftData
         // Payload has reverse order
         let payload = makePayload(
             senderIdentityId: senderId,
-            identityAliases: [IdentityAliasesDTO(identityId1: id2, identityId2: id1)]
+            identityAliases: [
+                IdentityAliasesDTO(
+                    identityId1: id2,
+                    identityId2: id1
+                )
+            ]
         )
         let result = SyncEngine.merge(payload, into: ctx)
 
@@ -395,10 +600,26 @@ import SwiftData
 
         let payload = makePayload(
             senderIdentityId: trainer.id,
-            identities: [IdentityDTO(id: trainer.id, name: "Trainer", isTrainer: true)],
+            identities: [
+                IdentityDTO(
+                    id: trainer.id,
+                    name: "Trainer",
+                    isTrainer: true
+                )
+            ],
             exercises: [
-                ExerciseDTO(id: bench.id, name: "Bench", catalogId: nil),        // update
-                ExerciseDTO(id: newExerciseId, name: "Squat", catalogId: nil)    // insert
+                // update
+                ExerciseDTO(
+                    id: bench.id,
+                    name: "Bench",
+                    catalogId: nil
+                ),
+                // insert
+                ExerciseDTO(
+                    id: newExerciseId,
+                    name: "Squat",
+                    catalogId: nil
+                )
             ]
         )
         let result = SyncEngine.merge(payload, into: ctx)
@@ -406,7 +627,8 @@ import SwiftData
         XCTAssertEqual(result.exercisesUpdated, 1)
         XCTAssertEqual(result.exercisesInserted, 1)
         XCTAssertEqual(result.totalInserted, 1)
-        XCTAssertEqual(result.totalUpdated, 2) // 1 identity update + 1 exercise update
+        // 1 identity update + 1 exercise update
+        XCTAssertEqual(result.totalUpdated, 2)
         XCTAssert(result.summary.contains("2 exercises"))
     }
 }

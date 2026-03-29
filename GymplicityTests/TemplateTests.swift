@@ -22,7 +22,10 @@ import SwiftData
         ctx.makeWorkout(for: trainee)
 
         XCTAssertEqual(trainee.activeWorkouts(in: ctx).count, 1)
-        XCTAssertTrue(trainee.activeWorkouts(in: ctx).allSatisfy { !$0.isTemplate })
+        XCTAssertTrue(
+            trainee.activeWorkouts(in: ctx)
+                .allSatisfy { !$0.isTemplate }
+        )
     }
 
     func testTemplatesFilteredFromCompletedWorkouts() throws {
@@ -30,10 +33,16 @@ import SwiftData
         let trainer = ctx.makeTrainer()
         ctx.makeTemplate(name: "Push Day", for: trainer)
         let workout = ctx.makeWorkout(for: trainer)
-        ctx.insert(WorkoutCompletions(workoutId: workout.id, completedAt: .now))
+        ctx.insert(WorkoutCompletions(
+            workoutId: workout.id,
+            completedAt: .now
+        ))
 
         XCTAssertEqual(trainer.completedWorkouts(in: ctx).count, 1)
-        XCTAssertTrue(trainer.completedWorkouts(in: ctx).allSatisfy { !$0.isTemplate })
+        XCTAssertTrue(
+            trainer.completedWorkouts(in: ctx)
+                .allSatisfy { !$0.isTemplate }
+        )
     }
 
     func testTemplatesReturnsOnlyTemplates() throws {
@@ -56,8 +65,20 @@ import SwiftData
 
         let template = ctx.makeTemplate(name: "Push Day", for: trainer)
         let group = ctx.makeGroup(in: template, order: 0)
-        ctx.makeSet(in: group, exercise: bench, order: 0, weight: 135, reps: 10)
-        ctx.makeSet(in: group, exercise: bench, order: 1, weight: 155, reps: 8)
+        ctx.makeSet(
+            in: group,
+            exercise: bench,
+            order: 0,
+            weight: 135,
+            reps: 10
+        )
+        ctx.makeSet(
+            in: group,
+            exercise: bench,
+            order: 1,
+            weight: 155,
+            reps: 8
+        )
 
         let workout = ctx.instantiateTemplate(template, for: trainee)
 
@@ -82,7 +103,13 @@ import SwiftData
 
         let template = ctx.makeTemplate(name: "Push Day", for: trainer)
         let group = ctx.makeGroup(in: template, order: 0)
-        let templateSet = ctx.makeSet(in: group, exercise: bench, order: 0, weight: 135, reps: 10)
+        let templateSet = ctx.makeSet(
+            in: group,
+            exercise: bench,
+            order: 0,
+            weight: 135,
+            reps: 10
+        )
 
         let workout = ctx.instantiateTemplate(template, for: trainee)
 
@@ -114,12 +141,24 @@ import SwiftData
 
         let template = ctx.makeTemplate(name: "Push Day", for: trainer)
         let group = ctx.makeGroup(in: template, order: 0)
-        ctx.makeSet(in: group, exercise: bench, order: 0, weight: 135, reps: 10)
+        ctx.makeSet(
+            in: group,
+            exercise: bench,
+            order: 0,
+            weight: 135,
+            reps: 10
+        )
 
         let workout = ctx.instantiateTemplate(template, for: trainee)
 
         // Modify template after clone
-        ctx.makeSet(in: group, exercise: bench, order: 1, weight: 185, reps: 5)
+        ctx.makeSet(
+            in: group,
+            exercise: bench,
+            order: 1,
+            weight: 185,
+            reps: 5
+        )
 
         // Clone should be unchanged
         let clonedSets = workout.groups(in: ctx).first!.sets(in: ctx)
@@ -135,7 +174,13 @@ import SwiftData
 
         let template = ctx.makeTemplate(name: "Push Day", for: trainer)
         let group = ctx.makeGroup(in: template, order: 0)
-        ctx.makeSet(in: group, exercise: bench, order: 0, weight: 135, reps: 10)
+        ctx.makeSet(
+            in: group,
+            exercise: bench,
+            order: 0,
+            weight: 135,
+            reps: 10
+        )
 
         let workout = ctx.instantiateTemplate(template, for: trainee)
         let workoutId = workout.id
@@ -157,7 +202,13 @@ import SwiftData
 
         let template = ctx.makeTemplate(name: "Push Day", for: trainer)
         let group = ctx.makeGroup(in: template, order: 0)
-        ctx.makeSet(in: group, exercise: bench, order: 0, weight: 135, reps: 10)
+        ctx.makeSet(
+            in: group,
+            exercise: bench,
+            order: 0,
+            weight: 135,
+            reps: 10
+        )
 
         let workout1 = ctx.instantiateTemplate(template, for: trainee1)
         let workout2 = ctx.instantiateTemplate(template, for: trainee2)

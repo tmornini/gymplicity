@@ -42,7 +42,13 @@ import SwiftData
 
         XCTAssertEqual(group.nextSetOrder(in: ctx), 0)
 
-        let set = ctx.makeSet(in: group, exercise: bench, order: 0, weight: 135, reps: 10)
+        let set = ctx.makeSet(
+            in: group,
+            exercise: bench,
+            order: 0,
+            weight: 135,
+            reps: 10
+        )
         XCTAssertEqual(group.sets(in: ctx).count, 1)
         XCTAssertEqual(group.nextSetOrder(in: ctx), 1)
         XCTAssertEqual(set.exercise(in: ctx)?.id, bench.id)
@@ -55,7 +61,13 @@ import SwiftData
         let trainee = ctx.makeTrainee(trainer: trainer)
         let workout = ctx.makeWorkout(for: trainee)
         let group = ctx.makeGroup(in: workout, order: 0)
-        let set = ctx.makeSet(in: group, exercise: bench, order: 0, weight: 135, reps: 10)
+        let set = ctx.makeSet(
+            in: group,
+            exercise: bench,
+            order: 0,
+            weight: 135,
+            reps: 10
+        )
 
         XCTAssertFalse(set.isCompleted(in: ctx))
         XCTAssertNil(set.completedAt(in: ctx))
@@ -85,7 +97,10 @@ import SwiftData
 
         XCTAssertEqual(trainee.activeWorkouts(in: ctx).count, 1)
 
-        ctx.insert(WorkoutCompletions(workoutId: workout.id, completedAt: .now))
+        ctx.insert(WorkoutCompletions(
+            workoutId: workout.id,
+            completedAt: .now
+        ))
 
         XCTAssert(trainee.activeWorkouts(in: ctx).isEmpty)
         XCTAssertEqual(trainee.completedWorkouts(in: ctx).count, 1)
@@ -98,7 +113,13 @@ import SwiftData
         let trainee = ctx.makeTrainee(trainer: trainer)
         let workout = ctx.makeWorkout(for: trainee)
         let group = ctx.makeGroup(in: workout, order: 0)
-        let set = ctx.makeSet(in: group, exercise: bench, order: 0, weight: 135, reps: 10)
+        let set = ctx.makeSet(
+            in: group,
+            exercise: bench,
+            order: 0,
+            weight: 135,
+            reps: 10
+        )
 
         XCTAssertEqual(set.volume, 1350)
     }
@@ -112,11 +133,29 @@ import SwiftData
         let workout = ctx.makeWorkout(for: trainee)
 
         let g1 = ctx.makeGroup(in: workout, order: 0)
-        ctx.makeSet(in: g1, exercise: bench, order: 0, weight: 135, reps: 10) // 1350
-        ctx.makeSet(in: g1, exercise: bench, order: 1, weight: 155, reps: 8)  // 1240
+        ctx.makeSet( // 1350
+            in: g1,
+            exercise: bench,
+            order: 0,
+            weight: 135,
+            reps: 10
+        )
+        ctx.makeSet( // 1240
+            in: g1,
+            exercise: bench,
+            order: 1,
+            weight: 155,
+            reps: 8
+        )
 
         let g2 = ctx.makeGroup(in: workout, order: 1)
-        ctx.makeSet(in: g2, exercise: squat, order: 0, weight: 225, reps: 5)  // 1125
+        ctx.makeSet( // 1125
+            in: g2,
+            exercise: squat,
+            order: 0,
+            weight: 225,
+            reps: 5
+        )
 
         XCTAssertEqual(g1.totalVolume(in: ctx), 2590)
         XCTAssertEqual(g2.totalVolume(in: ctx), 1125)

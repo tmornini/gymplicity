@@ -29,7 +29,10 @@ extension ModelContext {
     }
 
     @MainActor @discardableResult
-    func makeTrainee(name: String = "Trainee", trainer: IdentityEntity) -> IdentityEntity {
+    func makeTrainee(
+        name: String = "Trainee",
+        trainer: IdentityEntity
+    ) -> IdentityEntity {
         let trainee = IdentityEntity(name: name, isTrainer: false)
         insert(trainee)
         insert(TrainerTrainees(trainerId: trainer.id, traineeId: trainee.id))
@@ -37,26 +40,46 @@ extension ModelContext {
     }
 
     @MainActor @discardableResult
-    func makeExercise(name: String, trainer: IdentityEntity) -> ExerciseEntity {
+    func makeExercise(
+        name: String,
+        trainer: IdentityEntity
+    ) -> ExerciseEntity {
         let exercise = ExerciseEntity(name: name)
         insert(exercise)
-        insert(TrainerExercises(trainerId: trainer.id, exerciseId: exercise.id))
+        insert(TrainerExercises(
+            trainerId: trainer.id,
+            exerciseId: exercise.id
+        ))
         return exercise
     }
 
     @MainActor @discardableResult
-    func makeWorkout(for identity: IdentityEntity, date: Date = .now, isCompleted: Bool = false) -> WorkoutEntity {
+    func makeWorkout(
+        for identity: IdentityEntity,
+        date: Date = .now,
+        isCompleted: Bool = false
+    ) -> WorkoutEntity {
         let workout = WorkoutEntity(date: date, isTemplate: false)
         insert(workout)
-        insert(IdentityWorkouts(identityId: identity.id, workoutId: workout.id))
+        insert(IdentityWorkouts(
+            identityId: identity.id,
+            workoutId: workout.id
+        ))
         if isCompleted {
-            insert(WorkoutCompletions(workoutId: workout.id, completedAt: .now))
+            insert(WorkoutCompletions(
+                workoutId: workout.id,
+                completedAt: .now
+            ))
         }
         return workout
     }
 
     @MainActor @discardableResult
-    func makeGroup(in workout: WorkoutEntity, order: Int, isSuperset: Bool = false) -> WorkoutGroupEntity {
+    func makeGroup(
+        in workout: WorkoutEntity,
+        order: Int,
+        isSuperset: Bool = false
+    ) -> WorkoutGroupEntity {
         let group = WorkoutGroupEntity(order: order, isSuperset: isSuperset)
         insert(group)
         insert(WorkoutGroups(workoutId: workout.id, groupId: group.id))
@@ -64,10 +87,16 @@ extension ModelContext {
     }
 
     @MainActor @discardableResult
-    func makeTemplate(name: String, for trainer: IdentityEntity) -> WorkoutEntity {
+    func makeTemplate(
+        name: String,
+        for trainer: IdentityEntity
+    ) -> WorkoutEntity {
         let template = WorkoutEntity(isTemplate: true, templateName: name)
         insert(template)
-        insert(IdentityWorkouts(identityId: trainer.id, workoutId: template.id))
+        insert(IdentityWorkouts(
+            identityId: trainer.id,
+            workoutId: template.id
+        ))
         return template
     }
 
@@ -86,7 +115,10 @@ extension ModelContext {
         insert(GroupSets(groupId: group.id, setId: set.id))
         insert(ExerciseSets(exerciseId: exercise.id, setId: set.id))
         if isCompleted {
-            insert(SetCompletions(setId: set.id, completedAt: completedAt ?? .now))
+            insert(SetCompletions(
+                setId: set.id,
+                completedAt: completedAt ?? .now
+            ))
         }
         return set
     }

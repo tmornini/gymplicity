@@ -10,7 +10,10 @@ import SwiftData
 
         XCTAssert(trainer.exercises(in: ctx).isEmpty)
 
-        let bench = trainer.findOrCreateExercise(named: "Bench Press", in: ctx)
+        let bench = trainer.findOrCreateExercise(
+            named: "Bench Press",
+            in: ctx
+        )
 
         XCTAssertEqual(bench.name, "Bench Press")
         XCTAssertEqual(trainer.exercises(in: ctx).count, 1)
@@ -21,7 +24,10 @@ import SwiftData
         let trainer = ctx.makeTrainer()
         let original = ctx.makeExercise(name: "Bench Press", trainer: trainer)
 
-        let found = trainer.findOrCreateExercise(named: "Bench Press", in: ctx)
+        let found = trainer.findOrCreateExercise(
+            named: "Bench Press",
+            in: ctx
+        )
 
         XCTAssertEqual(found.id, original.id)
         XCTAssertEqual(trainer.exercises(in: ctx).count, 1)
@@ -32,8 +38,14 @@ import SwiftData
         let trainer = ctx.makeTrainer()
         let original = ctx.makeExercise(name: "Bench Press", trainer: trainer)
 
-        let lower = trainer.findOrCreateExercise(named: "bench press", in: ctx)
-        let upper = trainer.findOrCreateExercise(named: "BENCH PRESS", in: ctx)
+        let lower = trainer.findOrCreateExercise(
+            named: "bench press",
+            in: ctx
+        )
+        let upper = trainer.findOrCreateExercise(
+            named: "BENCH PRESS",
+            in: ctx
+        )
 
         XCTAssertEqual(lower.id, original.id)
         XCTAssertEqual(upper.id, original.id)
@@ -48,7 +60,10 @@ import SwiftData
         ctx.makeExercise(name: "Deadlift", trainer: trainer)
 
         let catalog = trainer.exerciseCatalog(in: ctx)
-        XCTAssertEqual(catalog.map(\.name), ["Bench Press", "Deadlift", "Squat"])
+        XCTAssertEqual(
+            catalog.map(\.name),
+            ["Bench Press", "Deadlift", "Squat"]
+        )
     }
 
     func testTraineeExerciseCatalogReturnsTrainerExercises() throws {
@@ -78,7 +93,11 @@ import SwiftData
         let trainee = ctx.makeTrainee(trainer: trainer)
 
         // Two workouts both using Bench
-        let w1 = ctx.makeWorkout(for: trainee, date: .now.addingTimeInterval(-86400), isCompleted: true)
+        let w1 = ctx.makeWorkout(
+            for: trainee,
+            date: .now.addingTimeInterval(-86400),
+            isCompleted: true
+        )
         let g1 = ctx.makeGroup(in: w1, order: 0)
         ctx.makeSet(in: g1, exercise: bench, order: 0, weight: 135, reps: 10)
 
@@ -99,7 +118,11 @@ import SwiftData
         let squat = ctx.makeExercise(name: "Squat", trainer: trainer)
         let trainee = ctx.makeTrainee(trainer: trainer)
 
-        let w1 = ctx.makeWorkout(for: trainee, date: .now.addingTimeInterval(-86400), isCompleted: true)
+        let w1 = ctx.makeWorkout(
+            for: trainee,
+            date: .now.addingTimeInterval(-86400),
+            isCompleted: true
+        )
         let g1 = ctx.makeGroup(in: w1, order: 0)
         ctx.makeSet(in: g1, exercise: bench, order: 0, weight: 135, reps: 10)
 

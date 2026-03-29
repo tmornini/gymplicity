@@ -9,9 +9,19 @@ struct GymPrimaryButtonStyle: ButtonStyle {
             .foregroundStyle(GymColors.chalk)
             .frame(maxWidth: .infinity)
             .padding(.vertical, GymMetrics.space16)
-            .background(GymColors.energy, in: RoundedRectangle(cornerRadius: GymMetrics.radiusMedium))
-            .scaleEffect(configuration.isPressed ? 0.97 : 1.0)
-            .animation(.easeInOut(duration: 0.15), value: configuration.isPressed)
+            .background(
+                GymColors.energy,
+                in: RoundedRectangle(
+                    cornerRadius: GymMetrics.radiusMedium
+                )
+            )
+            .scaleEffect(
+                configuration.isPressed ? 0.97 : 1.0
+            )
+            .animation(
+                .easeInOut(duration: 0.15),
+                value: configuration.isPressed
+            )
     }
 }
 
@@ -25,7 +35,12 @@ struct GymCardModifier: ViewModifier {
     func body(content: Content) -> some View {
         content
             .padding(GymMetrics.space16)
-            .background(GymColors.steel, in: RoundedRectangle(cornerRadius: GymMetrics.radiusMedium))
+            .background(
+                GymColors.steel,
+                in: RoundedRectangle(
+                    cornerRadius: GymMetrics.radiusMedium
+                )
+            )
     }
 }
 
@@ -43,7 +58,11 @@ struct SetCompletionModifier: ViewModifier {
     func body(content: Content) -> some View {
         HStack(spacing: 0) {
             RoundedRectangle(cornerRadius: 1.5)
-                .fill(isCompleted ? GymColors.completedSet : GymColors.incompleteSet)
+                .fill(
+                    isCompleted
+                        ? GymColors.completedSet
+                        : GymColors.incompleteSet
+                )
                 .frame(width: GymMetrics.setBarWidth)
 
             content

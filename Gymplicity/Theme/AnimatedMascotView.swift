@@ -23,9 +23,18 @@ struct AnimatedMascotView: View {
 
     var body: some View {
         MascotView(pose: pose, color: color)
-            .modifier(AnimationModifier(animation: animation, isAnimating: isAnimating))
-            .opacity(animation == .enterFromBottom ? (hasAppeared ? 1 : 0) : 1)
-            .offset(y: animation == .enterFromBottom ? (hasAppeared ? 0 : 20) : 0)
+            .modifier(AnimationModifier(
+                animation: animation,
+                isAnimating: isAnimating
+            ))
+            .opacity(
+                animation == .enterFromBottom
+                    ? (hasAppeared ? 1 : 0) : 1
+            )
+            .offset(
+                y: animation == .enterFromBottom
+                    ? (hasAppeared ? 0 : 20) : 0
+            )
             .onAppear {
                 withAnimation(timingFor(animation)) {
                     isAnimating = true
@@ -69,7 +78,10 @@ private struct AnimationModifier: ViewModifier {
         case .rep:
             content.offset(y: isAnimating ? -8 : 0)
         case .wave:
-            content.rotationEffect(.degrees(isAnimating ? 5 : -5), anchor: .bottom)
+            content.rotationEffect(
+                .degrees(isAnimating ? 5 : -5),
+                anchor: .bottom
+            )
         case .enterFromBottom:
             content
         }

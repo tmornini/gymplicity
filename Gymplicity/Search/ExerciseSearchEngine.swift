@@ -179,16 +179,32 @@ final class ExerciseSearchEngine: @unchecked Sendable {
         guard let url = Bundle.main.url(
             forResource: "exercises",
             withExtension: "json"
-        ),
-              let data = try? Data(contentsOf: url),
-              let exercises = try? JSONDecoder()
-            .decode(
-                [CatalogExercise].self,
-                from: data
-            ) else {
-            indexedCatalog = []
-            catalogById = [:]
-            return
+        ) else {
+            fatalError(
+                "exercises.json missing from bundle"
+            )
+        }
+        let data: Data
+        do {
+            data = try Data(contentsOf: url)
+        } catch {
+            fatalError(
+                "exercises.json unreadable:"
+                    + " \(error)"
+            )
+        }
+        let exercises: [CatalogExercise]
+        do {
+            exercises = try JSONDecoder()
+                .decode(
+                    [CatalogExercise].self,
+                    from: data
+                )
+        } catch {
+            fatalError(
+                "exercises.json malformed:"
+                    + " \(error)"
+            )
         }
         indexedCatalog = exercises
             .map { IndexedCatalogExercise($0) }

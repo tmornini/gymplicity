@@ -10,7 +10,7 @@ extension ModelContext {
         do {
             return try fetch(descriptor)
         } catch {
-            print(
+            assertionFailure(
                 "[FetchError] \(error)"
                     + " at \(file):\(line)"
             )

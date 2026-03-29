@@ -32,7 +32,8 @@
       "mcp__XcodeBuildMCP__build_run_sim",
       "mcp__XcodeBuildMCP__screenshot",
       "mcp__XcodeBuildMCP__snapshot_ui",
-      "Bash(claude mcp:*)"
+      "Bash(claude mcp:*)",
+      "Bash(done)"
     ]
   }
 }

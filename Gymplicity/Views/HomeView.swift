@@ -15,7 +15,11 @@ struct HomeView: View {
         let hasTemplates = !identity.templates(in: modelContext).isEmpty
         let trainees = identity.trainees(in: modelContext)
         let traineeIds = trainees.map(\.id)
-        let workoutsByIdentity = BatchTraversal.workoutsByIdentity(identityIds: traineeIds, in: modelContext)
+        let workoutsByIdentity =
+            BatchTraversal.workoutsByIdentity(
+                identityIds: traineeIds,
+                in: modelContext
+            )
 
         let active = trainees.flatMap { trainee in
             (workoutsByIdentity[trainee.id] ?? [])
@@ -45,7 +49,10 @@ struct HomeView: View {
                     completedWorkoutIds: []
                 )
             }
-            return BatchTraversal.workoutSubgraph(workoutIds: activeWorkoutIds, in: modelContext)
+            return BatchTraversal.workoutSubgraph(
+                workoutIds: activeWorkoutIds,
+                in: modelContext
+            )
         }()
 
         List {
@@ -53,12 +60,19 @@ struct HomeView: View {
                 Section {
                     ForEach(active, id: \.workout.id) { pair in
                         NavigationLink {
-                            ActiveWorkoutsContainerView(trainer: identity, initialWorkoutId: pair.workout.id)
+                            ActiveWorkoutsContainerView(
+                                trainer: identity,
+                                initialWorkoutId:
+                                    pair.workout.id
+                            )
                         } label: {
                             ActiveWorkoutRow(
                                 identity: pair.identity,
                                 workout: pair.workout,
-                                exerciseCount: subgraph.exerciseCount(for: pair.workout.id)
+                                exerciseCount: subgraph
+                                    .exerciseCount(
+                                        for: pair.workout.id
+                                    )
                             )
                         }
                     }
@@ -77,7 +91,10 @@ struct HomeView: View {
                 } label: {
                     let count = identity.templates(in: modelContext).count
                     HStack(spacing: GymMetrics.space4) {
-                        MascotView(pose: .thinking, color: GymColors.secondaryText)
+                        MascotView(
+                            pose: .thinking,
+                            color: GymColors.secondaryText
+                        )
                             .frame(height: GymMetrics.mascotInline)
                         Text("\(count) Template\(count == 1 ? "" : "s")")
                     }
@@ -87,7 +104,8 @@ struct HomeView: View {
             }
 
             Section("Trainees") {
-                let sortedTrainees = trainees.sorted(by: { $0.name < $1.name })
+                let sortedTrainees = trainees
+                    .sorted(by: { $0.name < $1.name })
                 ForEach(sortedTrainees) { trainee in
                     let traineeWorkouts =
                         workoutsByIdentity[
@@ -108,7 +126,11 @@ struct HomeView: View {
                     NavigationLink {
                         ProfileView(identity: trainee)
                     } label: {
-                        TraineeRow(identity: trainee, completedCount: completed.count, hasActiveWorkout: hasActive)
+                        TraineeRow(
+                            identity: trainee,
+                            completedCount: completed.count,
+                            hasActiveWorkout: hasActive
+                        )
                     }
                     .swipeActions(edge: .trailing, allowsFullSwipe: false) {
                         if !hasActive {
@@ -132,7 +154,11 @@ struct HomeView: View {
             if trainees.isEmpty {
                 Section {
                     VStack(spacing: GymMetrics.space16) {
-                        AnimatedMascotView(pose: .waving, animation: .pulse, color: GymColors.secondaryText)
+                        AnimatedMascotView(
+                            pose: .waving,
+                            animation: .pulse,
+                            color: GymColors.secondaryText
+                        )
                             .frame(height: GymMetrics.mascotMedium)
                         Text("Add your first trainee")
                             .font(GymFont.body)
@@ -170,7 +196,10 @@ struct HomeView: View {
             }
         }
         .navigationDestination(item: $newWorkout) { workout in
-            ActiveWorkoutsContainerView(trainer: identity, initialWorkoutId: workout.id)
+            ActiveWorkoutsContainerView(
+                trainer: identity,
+                initialWorkoutId: workout.id
+            )
         }
     }
 
@@ -183,7 +212,10 @@ struct HomeView: View {
         }
     }
 
-    private func deleteTrainees(from sorted: [IdentityEntity], at offsets: IndexSet) {
+    private func deleteTrainees(
+        from sorted: [IdentityEntity],
+        at offsets: IndexSet
+    ) {
         for index in offsets {
             modelContext.deleteIdentity(sorted[index])
         }
@@ -203,7 +235,10 @@ private struct ActiveWorkoutRow: View {
             HStack {
                 Circle()
                     .fill(GymColors.activeIndicator)
-                    .frame(width: GymMetrics.completionDotSize, height: GymMetrics.completionDotSize)
+                    .frame(
+                        width: GymMetrics.completionDotSize,
+                        height: GymMetrics.completionDotSize
+                    )
                 Text(identity.name)
                     .font(GymFont.heading3)
             }
@@ -211,7 +246,10 @@ private struct ActiveWorkoutRow: View {
                 .font(GymFont.caption)
                 .foregroundStyle(GymColors.secondaryText)
             if exerciseCount > 0 {
-                Text("\(exerciseCount) exercise\(exerciseCount == 1 ? "" : "s")")
+                Text(
+                    "\(exerciseCount)"
+                        + " exercise\(exerciseCount == 1 ? "" : "s")"
+                )
                     .font(GymFont.caption)
                     .foregroundStyle(GymColors.secondaryText)
             }
@@ -238,7 +276,10 @@ private struct TraineeRow: View {
             ZStack {
                 Circle()
                     .fill(GymColors.steel)
-                    .frame(width: GymMetrics.avatarSize, height: GymMetrics.avatarSize)
+                    .frame(
+                        width: GymMetrics.avatarSize,
+                        height: GymMetrics.avatarSize
+                    )
                 Text(String(identity.name.prefix(1)).uppercased())
                     .font(GymFont.bodyStrong)
                     .foregroundStyle(GymColors.chalk)
@@ -247,7 +288,10 @@ private struct TraineeRow: View {
                 Text(identity.name)
                     .font(GymFont.body)
                 if completedCount > 0 {
-                    Text("\(completedCount) workout\(completedCount == 1 ? "" : "s")")
+                    Text(
+                        "\(completedCount)"
+                            + " workout\(completedCount == 1 ? "" : "s")"
+                    )
                         .font(GymFont.caption)
                         .foregroundStyle(GymColors.secondaryText)
                 }

@@ -22,7 +22,11 @@ struct GuidedWorkoutView: View {
         let owner = workout.owner(in: modelContext)
 
         // Batch-fetch lastSets for all exercises
-        let exerciseIds = Array(Set(snapshot.groups.flatMap { g in g.sets.compactMap { $0.exercise?.id } }))
+        let exerciseIds = Array(Set(
+            snapshot.groups.flatMap { g in
+                g.sets.compactMap { $0.exercise?.id }
+            }
+        ))
         let lastSets = BatchTraversal.lastSets(
             for: owner,
             exerciseIds: exerciseIds,
@@ -30,13 +34,20 @@ struct GuidedWorkoutView: View {
         )
 
         let currentPair: (group: WorkoutGroupEntity, set: SetEntity)? = {
-            guard currentIndex >= 0, currentIndex < flatSets.count else { return nil }
+            guard currentIndex >= 0,
+                  currentIndex < flatSets.count
+            else { return nil }
             return flatSets[currentIndex]
         }()
 
         Group {
             if let pair = currentPair {
-                guidedContent(pair: pair, snapshot: snapshot, flatSets: flatSets, lastSets: lastSets)
+                guidedContent(
+                    pair: pair,
+                    snapshot: snapshot,
+                    flatSets: flatSets,
+                    lastSets: lastSets
+                )
             } else if flatSets.isEmpty {
                 emptyState
             } else {
@@ -66,26 +77,44 @@ struct GuidedWorkoutView: View {
                 }
             }
         }
-        .confirmationDialog("End Workout?", isPresented: $showingEndConfirmation) {
+        .confirmationDialog(
+            "End Workout?",
+            isPresented: $showingEndConfirmation
+        ) {
             Button("End Workout", role: .destructive) {
                 endWorkout()
             }
             Button("Cancel", role: .cancel) { }
         }
-        .confirmationDialog("Delete Workout?", isPresented: $showingDeleteWorkout) {
-            Button("Delete Workout", role: .destructive) {
+        .confirmationDialog(
+            "Delete Workout?",
+            isPresented: $showingDeleteWorkout
+        ) {
+            Button(
+                "Delete Workout",
+                role: .destructive
+            ) {
                 deleteWorkout()
             }
             Button("Cancel", role: .cancel) { }
         } message: {
             let groups = snapshot.groups
-            let setCount = groups.flatMap(\.sets).count
-            Text("This workout has \(groups.count) group\(groups.count == 1 ? "" : "s") and \(setCount) set\(setCount == 1 ? "" : "s"). This cannot be undone.")
+            let setCount = groups
+                .flatMap(\.sets).count
+            Text(
+                "This workout has"
+                    + " \(groups.count)"
+                    + " group\(groups.count == 1 ? "" : "s")"
+                    + " and \(setCount)"
+                    + " set\(setCount == 1 ? "" : "s")."
+                    + " This cannot be undone."
+            )
         }
         .onAppear {
             if let saved = initialSetIndex {
                 currentIndex = saved
-            } else if let first = workout.firstIncompleteSetIndex(in: modelContext) {
+            } else if let first = workout
+                .firstIncompleteSetIndex(in: modelContext) {
                 currentIndex = first
             }
             loadCurrentSet()
@@ -96,7 +125,11 @@ struct GuidedWorkoutView: View {
 
     private var emptyState: some View {
         VStack(spacing: GymMetrics.space16) {
-            AnimatedMascotView(pose: .stretching, animation: .wobble, color: GymColors.secondaryText)
+            AnimatedMascotView(
+                pose: .stretching,
+                animation: .wobble,
+                color: GymColors.secondaryText
+            )
                 .frame(height: GymMetrics.mascotMedium)
             Text("No Sets")
                 .font(GymFont.heading2)
@@ -117,9 +150,16 @@ struct GuidedWorkoutView: View {
     ) -> some View {
         let exercise = snapshot.subgraph.exercise(for: pair.set.id)
         let groups = snapshot.groups
-        let groupIndex = groups.firstIndex(where: { $0.group.id == pair.group.id }) ?? 0
-        let groupSnap = groups.indices.contains(groupIndex) ? groups[groupIndex] : nil
-        let setIndex = groupSnap?.sets.firstIndex(where: { $0.set.id == pair.set.id }) ?? 0
+        let groupIndex = groups.firstIndex(
+            where: { $0.group.id == pair.group.id }
+        ) ?? 0
+        let groupSnap = groups.indices
+            .contains(groupIndex)
+            ? groups[groupIndex]
+            : nil
+        let setIndex = groupSnap?.sets.firstIndex(
+            where: { $0.set.id == pair.set.id }
+        ) ?? 0
         let setsInGroupCount = groupSnap?.sets.count ?? 0
 
         VStack(spacing: 20) {
@@ -135,7 +175,12 @@ struct GuidedWorkoutView: View {
                 }
             }
 
-            Text("Group \(groupIndex + 1) of \(groups.count) \u{00B7} Set \(setIndex + 1) of \(setsInGroupCount)")
+            Text(
+                "Group \(groupIndex + 1)"
+                    + " of \(groups.count)"
+                    + " \u{00B7} Set \(setIndex + 1)"
+                    + " of \(setsInGroupCount)"
+            )
                 .font(GymFont.label)
                 .foregroundStyle(GymColors.secondaryText)
 
@@ -166,12 +211,18 @@ struct GuidedWorkoutView: View {
         .padding()
         .overlay {
             if showWalkingTransition {
-                MascotView(pose: .walking, color: GymColors.energy.opacity(0.5))
-                    .frame(height: GymMetrics.mascotTiny)
-                    .transition(.asymmetric(
-                        insertion: .move(edge: .leading).combined(with: .opacity),
-                        removal: .move(edge: .trailing).combined(with: .opacity)
-                    ))
+                MascotView(
+                    pose: .walking,
+                    color: GymColors.energy
+                        .opacity(0.5)
+                )
+                .frame(height: GymMetrics.mascotTiny)
+                .transition(.asymmetric(
+                    insertion: .move(edge: .leading)
+                        .combined(with: .opacity),
+                    removal: .move(edge: .trailing)
+                        .combined(with: .opacity)
+                ))
             }
         }
     }
@@ -209,7 +260,11 @@ struct GuidedWorkoutView: View {
 
     private func completionView(setCount: Int) -> some View {
         VStack(spacing: GymMetrics.space16) {
-            AnimatedMascotView(pose: .celebrating, animation: .bounce, color: GymColors.power)
+            AnimatedMascotView(
+                pose: .celebrating,
+                animation: .bounce,
+                color: GymColors.power
+            )
                 .frame(height: GymMetrics.mascotLarge)
             Text("All Sets Complete!")
                 .font(GymFont.heading1)
@@ -258,7 +313,10 @@ struct GuidedWorkoutView: View {
             id: pair.set.id
         )
 
-        if let next = workout.nextIncompleteSetIndex(after: currentIndex, in: modelContext) {
+        if let next = workout.nextIncompleteSetIndex(
+            after: currentIndex,
+            in: modelContext
+        ) {
             // Brief walking transition
             withAnimation(.easeInOut(duration: 0.3)) {
                 showWalkingTransition = true
@@ -282,7 +340,9 @@ struct GuidedWorkoutView: View {
         let flatSets = workout.allSetsFlattened(in: modelContext)
         guard currentIndex >= 0, currentIndex < flatSets.count else { return }
         let pair = flatSets[currentIndex]
-        weightText = pair.set.weight > 0 ? Weight.rawValue(pair.set.weight) : ""
+        weightText = pair.set.weight > 0
+            ? Weight.rawValue(pair.set.weight)
+            : ""
         repsText = pair.set.reps > 0 ? "\(pair.set.reps)" : ""
         focusedField = .weight
         onSetIndexChange?(currentIndex)

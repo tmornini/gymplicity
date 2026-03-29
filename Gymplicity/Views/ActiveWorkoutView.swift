@@ -33,10 +33,16 @@ struct ActiveWorkoutView: View {
                             SetRow(
                                 set: setSnap.set,
                                 exercise: setSnap.exercise,
-                                previousSet: setSnap.exercise.flatMap { lastSets[$0.id] }
+                                previousSet: setSnap.exercise
+                                    .flatMap { lastSets[$0.id] }
                             )
                         }
-                        .onDelete { offsets in deleteSets(from: group, at: offsets) }
+                        .onDelete { offsets in
+                            deleteSets(
+                                from: group,
+                                at: offsets
+                            )
+                        }
 
                         Button {
                             targetGroup = group
@@ -64,10 +70,16 @@ struct ActiveWorkoutView: View {
                             SetRow(
                                 set: setSnap.set,
                                 exercise: setSnap.exercise,
-                                previousSet: setSnap.exercise.flatMap { lastSets[$0.id] }
+                                previousSet: setSnap.exercise
+                                    .flatMap { lastSets[$0.id] }
                             )
                         }
-                        .onDelete { offsets in deleteSets(from: group, at: offsets) }
+                        .onDelete { offsets in
+                            deleteSets(
+                                from: group,
+                                at: offsets
+                            )
+                        }
 
                         Button {
                             addSetToGroup(group)
@@ -137,7 +149,10 @@ struct ActiveWorkoutView: View {
                 if let switchToGuided = onSwitchToGuided {
                     Button { switchToGuided() } label: {
                         HStack(spacing: GymMetrics.space4) {
-                            MascotView(pose: .lifting, color: GymColors.energy)
+                            MascotView(
+                                pose: .lifting,
+                                color: GymColors.energy
+                            )
                                 .frame(height: GymMetrics.mascotInlineSmall)
                             Text("Guided Mode")
                                 .font(GymFont.label)
@@ -148,7 +163,10 @@ struct ActiveWorkoutView: View {
                         GuidedWorkoutView(workout: workout)
                     } label: {
                         HStack(spacing: GymMetrics.space4) {
-                            MascotView(pose: .lifting, color: GymColors.energy)
+                            MascotView(
+                                pose: .lifting,
+                                color: GymColors.energy
+                            )
                                 .frame(height: GymMetrics.mascotInlineSmall)
                             Text("Guided Mode")
                                 .font(GymFont.label)
@@ -157,16 +175,31 @@ struct ActiveWorkoutView: View {
                 }
             }
         }
-        .confirmationDialog("End Workout?", isPresented: $showingEndConfirmation) {
-            Button("End Workout", role: .destructive) { endWorkout() }
+        .confirmationDialog(
+            "End Workout?",
+            isPresented: $showingEndConfirmation
+        ) {
+            Button(
+                "End Workout",
+                role: .destructive
+            ) { endWorkout() }
             Button("Cancel", role: .cancel) { }
         } message: {
             let groups = snapshot.groups
-            let setCount = groups.flatMap(\.sets).count
-            Text("This workout has \(groups.count) group\(groups.count == 1 ? "" : "s") and \(setCount) set\(setCount == 1 ? "" : "s").")
+            let setCount = groups
+                .flatMap(\.sets).count
+            Text(
+                "This workout has"
+                    + " \(groups.count)"
+                    + " group\(groups.count == 1 ? "" : "s")"
+                    + " and \(setCount)"
+                    + " set\(setCount == 1 ? "" : "s")."
+            )
         }
         .confirmationDialog(
-            groupToDelete?.isSuperset == true ? "Remove Superset?" : "Remove Group?",
+            groupToDelete?.isSuperset == true
+                ? "Remove Superset?"
+                : "Remove Group?",
             isPresented: Binding(
                 get: { groupToDelete != nil },
                 set: { if !$0 { groupToDelete = nil } }
@@ -182,25 +215,52 @@ struct ActiveWorkoutView: View {
         } message: { group in
             let setCount = group.sets(in: modelContext).count
             let label = group.isSuperset ? "superset" : "group"
-            Text("This \(label) has \(setCount) set\(setCount == 1 ? "" : "s") that will be deleted.")
+            Text(
+                "This \(label) has \(setCount)"
+                    + " set\(setCount == 1 ? "" : "s")"
+                    + " that will be deleted."
+            )
         }
-        .confirmationDialog("Delete Workout?", isPresented: $showingDeleteWorkout) {
-            Button("Delete Workout", role: .destructive) { deleteWorkout() }
+        .confirmationDialog(
+            "Delete Workout?",
+            isPresented: $showingDeleteWorkout
+        ) {
+            Button(
+                "Delete Workout",
+                role: .destructive
+            ) { deleteWorkout() }
             Button("Cancel", role: .cancel) { }
         } message: {
             let groups = snapshot.groups
-            let setCount = groups.flatMap(\.sets).count
-            Text("This workout has \(groups.count) group\(groups.count == 1 ? "" : "s") and \(setCount) set\(setCount == 1 ? "" : "s"). This cannot be undone.")
+            let setCount = groups
+                .flatMap(\.sets).count
+            Text(
+                "This workout has"
+                    + " \(groups.count)"
+                    + " group\(groups.count == 1 ? "" : "s")"
+                    + " and \(setCount)"
+                    + " set\(setCount == 1 ? "" : "s")."
+                    + " This cannot be undone."
+            )
         }
         .sheet(isPresented: $showingAddExercise) {
             if let group = targetGroup {
-                AddExerciseView(group: group, trainer: trainer ?? resolveTrainer())
+                AddExerciseView(
+                    group: group,
+                    trainer: trainer
+                        ?? resolveTrainer()
+                )
             }
         }
     }
 
     private func addGroup(isSuperset: Bool) {
-        let group = WorkoutGroupEntity(order: workout.nextGroupOrder(in: modelContext), isSuperset: isSuperset)
+        let group = WorkoutGroupEntity(
+            order: workout.nextGroupOrder(
+                in: modelContext
+            ),
+            isSuperset: isSuperset
+        )
         modelContext.insert(group)
         let join = WorkoutGroups(workoutId: workout.id, groupId: group.id)
         modelContext.insert(join)
@@ -210,12 +270,24 @@ struct ActiveWorkoutView: View {
     }
 
     private func addSetToGroup(_ group: WorkoutGroupEntity) {
-        guard let exercise = group.sortedSets(in: modelContext).first?.exercise(in: modelContext) else { return }
-        modelContext.addSet(to: group, exercise: exercise, seedingFrom: workout.owner(in: modelContext))
+        guard let exercise = group
+            .sortedSets(in: modelContext)
+            .first?.exercise(in: modelContext)
+        else { return }
+        modelContext.addSet(
+            to: group,
+            exercise: exercise,
+            seedingFrom: workout.owner(
+                in: modelContext
+            )
+        )
         SyncTrigger.structureChanged()
     }
 
-    private func deleteSets(from group: WorkoutGroupEntity, at offsets: IndexSet) {
+    private func deleteSets(
+        from group: WorkoutGroupEntity,
+        at offsets: IndexSet
+    ) {
         modelContext.deleteSets(from: group, at: offsets)
         SyncTrigger.structureChanged()
     }

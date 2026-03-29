@@ -4,7 +4,8 @@ import SwiftData
 struct SyncView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
-    @EnvironmentObject private var syncManager: SyncSessionManager
+    @EnvironmentObject
+    private var syncManager: SyncSessionManager
     let identity: IdentityEntity
     @State private var showingMatchPicker = false
     @State private var showingOfferVerification = false
@@ -43,7 +44,10 @@ struct SyncView: View {
                 }
             }
             .onAppear {
-                syncManager.configure(identity: identity, context: modelContext)
+                syncManager.configure(
+                    identity: identity,
+                    context: modelContext
+                )
                 syncManager.startSearching()
             }
             .onDisappear {
@@ -57,15 +61,25 @@ struct SyncView: View {
     private var idleView: some View {
         VStack(spacing: GymMetrics.space16) {
             Spacer()
-            AnimatedMascotView(pose: .waving, animation: .wave, color: GymColors.energy)
-                .frame(height: GymMetrics.mascotMedium)
+            AnimatedMascotView(
+                pose: .waving,
+                animation: .wave,
+                color: GymColors.energy
+            )
+            .frame(height: GymMetrics.mascotMedium)
             Text("Hey, want to find a friend?")
                 .font(GymFont.heading2)
-            Text("Tap to start searching for nearby devices")
-                .font(GymFont.body)
-                .foregroundStyle(GymColors.secondaryText)
+            Text(
+                "Tap to start searching"
+                    + " for nearby devices"
+            )
+            .font(GymFont.body)
+            .foregroundStyle(GymColors.secondaryText)
             Button("Start Searching") {
-                syncManager.configure(identity: identity, context: modelContext)
+                syncManager.configure(
+                    identity: identity,
+                    context: modelContext
+                )
                 syncManager.startSearching()
             }
             .buttonStyle(.gymPrimary)
@@ -78,20 +92,29 @@ struct SyncView: View {
         VStack(spacing: 20) {
             if syncManager.discoveredPeers.isEmpty {
                 Spacer()
-                AnimatedMascotView(pose: .stretching, animation: .wobble, color: GymColors.secondaryText)
-                    .frame(height: GymMetrics.mascotMedium)
+                AnimatedMascotView(
+                    pose: .stretching,
+                    animation: .wobble,
+                    color: GymColors.secondaryText
+                )
+                .frame(height: GymMetrics.mascotMedium)
                 Text("Looking for nearby devices...")
                     .font(GymFont.body)
                     .foregroundStyle(GymColors.secondaryText)
-                Text("Make sure both devices have the sync screen open")
-                    .font(GymFont.caption)
-                    .foregroundStyle(GymColors.tertiaryText)
+                Text(
+                    "Make sure both devices"
+                        + " have the sync screen open"
+                )
+                .font(GymFont.caption)
+                .foregroundStyle(GymColors.tertiaryText)
                     .multilineTextAlignment(.center)
                 Spacer()
             } else {
                 List {
                     Section {
-                        ForEach(syncManager.discoveredPeers) { peer in
+                        ForEach(
+                            syncManager.discoveredPeers
+                        ) { peer in
                             Button {
                                 handlePeerTap(peer)
                             } label: {
@@ -101,27 +124,46 @@ struct SyncView: View {
                                             .font(GymFont.body)
                                         Text(peer.role.capitalized)
                                             .font(GymFont.caption)
-                                            .foregroundStyle(GymColors.secondaryText)
+                                            .foregroundStyle(
+                                                GymColors.secondaryText
+                                            )
                                     }
                                     Spacer()
                                     if isPaired(with: peer) {
                                         Text("Paired")
-                                            .gymPill(GymColors.power)
+                                            .gymPill(
+                                                GymColors.power
+                                            )
                                     } else {
                                         Text("New")
-                                            .gymPill(GymColors.focus)
+                                            .gymPill(
+                                                GymColors.focus
+                                            )
                                     }
-                                    Image(systemName: "chevron.right")
-                                        .font(GymFont.caption)
-                                        .foregroundStyle(GymColors.secondaryText)
+                                    Image(
+                                        systemName: "chevron.right"
+                                    )
+                                    .font(GymFont.caption)
+                                    .foregroundStyle(
+                                        GymColors.secondaryText
+                                    )
                                 }
                             }
                             .foregroundStyle(.primary)
                         }
                     } header: {
-                        HStack(spacing: GymMetrics.space4) {
-                            MascotView(pose: .waving, color: GymColors.secondaryText)
-                                .frame(height: GymMetrics.mascotInline)
+                        HStack(
+                            spacing: GymMetrics.space4
+                        ) {
+                            MascotView(
+                                pose: .waving,
+                                color: GymColors
+                                    .secondaryText
+                            )
+                            .frame(
+                                height: GymMetrics
+                                    .mascotInline
+                            )
                             Text("Nearby Devices")
                         }
                     }
@@ -129,7 +171,10 @@ struct SyncView: View {
                 .listStyle(.insetGrouped)
             }
         }
-        .confirmationDialog("Match Identity", isPresented: $showingMatchPicker) {
+        .confirmationDialog(
+            "Match Identity",
+            isPresented: $showingMatchPicker
+        ) {
             matchPickerButtons
         } message: {
             Text(matchPickerMessage)
@@ -139,19 +184,33 @@ struct SyncView: View {
     private var connectingView: some View {
         VStack(spacing: GymMetrics.space16) {
             Spacer()
-            AnimatedMascotView(pose: .walking, animation: .pulse, color: GymColors.energy)
+            AnimatedMascotView(
+                pose: .walking,
+                animation: .pulse,
+                color: GymColors.energy
+            )
                 .frame(height: 80)
             Text("Connecting...")
                 .font(GymFont.body)
-                .foregroundStyle(GymColors.secondaryText)
+                .foregroundStyle(
+                    GymColors.secondaryText
+                )
             Spacer()
         }
     }
 
     @ViewBuilder
-    private func pairingView(peerName: String) -> some View {
+    private func pairingView(
+        peerName: String
+    ) -> some View {
         if let offer = syncManager.pendingOffer,
-           case .pairingOffer(_, let senderName, let senderIsTrainer, _, let linkedName) = offer {
+           case .pairingOffer(
+               _,
+               let senderName,
+               let senderIsTrainer,
+               _,
+               let linkedName
+           ) = offer {
             if let linkedName {
                 // Verification step: sender linked us to a specific identity
                 verificationView(
@@ -161,41 +220,68 @@ struct SyncView: View {
                     linkedName: linkedName
                 )
             } else {
-                // No linked identity — go straight to match-or-new
-                matchOrNewView(peerName: peerName, senderName: senderName, senderIsTrainer: senderIsTrainer)
+                // No linked identity -- go straight to match-or-new
+                matchOrNewView(
+                    peerName: peerName,
+                    senderName: senderName,
+                    senderIsTrainer: senderIsTrainer
+                )
             }
         } else {
             // Fallback
             VStack(spacing: GymMetrics.space16) {
                 Spacer()
-                AnimatedMascotView(pose: .stretching, animation: .wobble, color: GymColors.energy)
-                    .frame(height: 80)
-                Text("Pairing with \(peerName)...")
-                    .font(GymFont.body)
-                    .foregroundStyle(GymColors.secondaryText)
+                AnimatedMascotView(
+                    pose: .stretching,
+                    animation: .wobble,
+                    color: GymColors.energy
+                )
+                .frame(height: 80)
+                Text(
+                    "Pairing with \(peerName)..."
+                )
+                .font(GymFont.body)
+                .foregroundStyle(
+                    GymColors.secondaryText
+                )
                 Spacer()
             }
         }
     }
 
-    private func verificationView(peerName: String, senderName: String, senderIsTrainer: Bool, linkedName: String) -> some View {
+    private func verificationView(
+        peerName: String,
+        senderName: String,
+        senderIsTrainer: Bool,
+        linkedName: String
+    ) -> some View {
         VStack(spacing: GymMetrics.space16) {
             Spacer()
-            MascotView(pose: .waving, color: GymColors.focus)
-                .frame(height: GymMetrics.mascotMedium)
-            Text("\(senderName) (\(senderIsTrainer ? "trainer" : "trainee")) wants to pair with you as \"\(linkedName)\"")
-                .font(GymFont.heading2)
-                .multilineTextAlignment(.center)
+            MascotView(
+                pose: .waving,
+                color: GymColors.focus
+            )
+            .frame(height: GymMetrics.mascotMedium)
+            Text(
+                "\(senderName)"
+                    + " (\(senderIsTrainer ? "trainer" : "trainee"))"
+                    + " wants to pair with you"
+                    + " as \"\(linkedName)\""
+            )
+            .font(GymFont.heading2)
+            .multilineTextAlignment(.center)
             Text("Is this you?")
                 .font(GymFont.body)
-                .foregroundStyle(GymColors.secondaryText)
+                .foregroundStyle(
+                    GymColors.secondaryText
+                )
             HStack(spacing: GymMetrics.space16) {
                 Button("That's not me") {
                     syncManager.declinePairing()
                 }
                 .buttonStyle(.bordered)
                 Button("Yes, that's me") {
-                    // Proceed to match-or-new (do they also have a profile for the sender?)
+                    // Proceed to match-or-new
                     showingMatchPicker = true
                 }
                 .buttonStyle(.gymPrimary)
@@ -205,42 +291,82 @@ struct SyncView: View {
         }
     }
 
-    private func matchOrNewView(peerName: String, senderName: String, senderIsTrainer: Bool) -> some View {
+    private func matchOrNewView(
+        peerName: String,
+        senderName: String,
+        senderIsTrainer: Bool
+    ) -> some View {
         VStack(spacing: GymMetrics.space16) {
             Spacer()
-            MascotView(pose: .waving, color: GymColors.focus)
-                .frame(height: GymMetrics.mascotMedium)
-            Text("\(senderName) (\(senderIsTrainer ? "trainer" : "trainee")) wants to pair")
-                .font(GymFont.heading2)
-                .multilineTextAlignment(.center)
-            Text("Do you already have a profile for them?")
+            MascotView(
+                pose: .waving,
+                color: GymColors.focus
+            )
+            .frame(height: GymMetrics.mascotMedium)
+            Text(
+                "\(senderName)"
+                    + " (\(senderIsTrainer ? "trainer" : "trainee"))"
+                    + " wants to pair"
+            )
+            .font(GymFont.heading2)
+            .multilineTextAlignment(.center)
+            Text(
+                "Do you already have a"
+                    + " profile for them?"
+            )
                 .font(GymFont.body)
-                .foregroundStyle(GymColors.secondaryText)
+                .foregroundStyle(
+                    GymColors.secondaryText
+                )
                 .multilineTextAlignment(.center)
 
             VStack(spacing: GymMetrics.space8) {
                 // Show existing profiles to match
-                let candidates = matchCandidates(forTrainer: senderIsTrainer)
+                let candidates = matchCandidates(
+                    forTrainer: senderIsTrainer
+                )
                 ForEach(candidates) { candidate in
                     Button {
-                        syncManager.acceptPairing(linkedIdentityUUID: candidate.id, linkedIdentityName: candidate.name)
+                        syncManager.acceptPairing(
+                            linkedIdentityUUID: candidate.id,
+                            linkedIdentityName: candidate.name
+                        )
                     } label: {
                         HStack {
                             Text(candidate.name)
                                 .font(GymFont.body)
                             Spacer()
-                            Image(systemName: "checkmark.circle")
+                            Image(
+                                systemName:
+                                    "checkmark.circle"
+                            )
                         }
-                        .padding(.horizontal, GymMetrics.space16)
-                        .padding(.vertical, GymMetrics.space12)
-                        .background(GymColors.steel.opacity(0.2))
-                        .cornerRadius(GymMetrics.radiusMedium)
+                        .padding(
+                            .horizontal,
+                            GymMetrics.space16
+                        )
+                        .padding(
+                            .vertical,
+                            GymMetrics.space12
+                        )
+                        .background(
+                            GymColors.steel
+                                .opacity(0.2)
+                        )
+                        .cornerRadius(
+                            GymMetrics.radiusMedium
+                        )
                     }
                     .foregroundStyle(.primary)
                 }
 
-                Button("New — first time connecting") {
-                    syncManager.acceptPairing(linkedIdentityUUID: nil, linkedIdentityName: nil)
+                Button(
+                    "New -- first time connecting"
+                ) {
+                    syncManager.acceptPairing(
+                        linkedIdentityUUID: nil,
+                        linkedIdentityName: nil
+                    )
                 }
                 .buttonStyle(.gymPrimary)
             }
@@ -249,21 +375,34 @@ struct SyncView: View {
             Button("Decline") {
                 syncManager.declinePairing()
             }
-            .foregroundStyle(GymColors.secondaryText)
+            .foregroundStyle(
+                GymColors.secondaryText
+            )
             .padding(.top, GymMetrics.space8)
 
             Spacer()
         }
     }
 
-    private func waitingView(peerName: String) -> some View {
+    private func waitingView(
+        peerName: String
+    ) -> some View {
         VStack(spacing: GymMetrics.space16) {
             Spacer()
-            AnimatedMascotView(pose: .stretching, animation: .wobble, color: GymColors.energy)
-                .frame(height: 80)
-            Text("Waiting for \(peerName) to respond...")
-                .font(GymFont.body)
-                .foregroundStyle(GymColors.secondaryText)
+            AnimatedMascotView(
+                pose: .stretching,
+                animation: .wobble,
+                color: GymColors.energy
+            )
+            .frame(height: 80)
+            Text(
+                "Waiting for \(peerName)"
+                    + " to respond..."
+            )
+            .font(GymFont.body)
+            .foregroundStyle(
+                GymColors.secondaryText
+            )
             Button("Cancel") {
                 syncManager.declinePairing()
             }
@@ -272,35 +411,53 @@ struct SyncView: View {
         }
     }
 
-    private func syncingView(peerName: String) -> some View {
+    private func syncingView(
+        peerName: String
+    ) -> some View {
         VStack(spacing: GymMetrics.space16) {
             Spacer()
-            AnimatedMascotView(pose: .curling, animation: .rep, color: GymColors.energy)
-                .frame(height: 80)
+            AnimatedMascotView(
+                pose: .curling,
+                animation: .rep,
+                color: GymColors.energy
+            )
+            .frame(height: 80)
             Text("Syncing with \(peerName)...")
                 .font(GymFont.body)
-                .foregroundStyle(GymColors.secondaryText)
+                .foregroundStyle(
+                    GymColors.secondaryText
+                )
             Spacer()
         }
     }
 
-    private func connectedView(peerName: String) -> some View {
+    private func connectedView(
+        peerName: String
+    ) -> some View {
         VStack(spacing: GymMetrics.space16) {
             Spacer()
-            AnimatedMascotView(pose: .celebrating, animation: .bounce, color: GymColors.power)
-                .frame(height: GymMetrics.mascotMedium)
+            AnimatedMascotView(
+                pose: .celebrating,
+                animation: .bounce,
+                color: GymColors.power
+            )
+            .frame(height: GymMetrics.mascotMedium)
             Text("Connected to \(peerName)")
                 .font(GymFont.heading2)
 
             if let result = syncManager.lastSyncResult {
                 Text(result.summary)
                     .font(GymFont.body)
-                    .foregroundStyle(GymColors.secondaryText)
+                    .foregroundStyle(
+                        GymColors.secondaryText
+                    )
             }
 
             Text("Background sync active")
                 .font(GymFont.caption)
-                .foregroundStyle(GymColors.tertiaryText)
+                .foregroundStyle(
+                    GymColors.tertiaryText
+                )
 
             Button("Sync Now") {
                 syncManager.performSync()
@@ -310,16 +467,23 @@ struct SyncView: View {
         }
     }
 
-    private func errorView(message: String) -> some View {
+    private func errorView(
+        message: String
+    ) -> some View {
         VStack(spacing: GymMetrics.space16) {
             Spacer()
-            MascotView(pose: .resting, color: GymColors.warning)
+            MascotView(
+                pose: .resting,
+                color: GymColors.warning
+            )
                 .frame(height: 80)
             Text("Sync Error")
                 .font(GymFont.heading2)
             Text(message)
                 .font(GymFont.body)
-                .foregroundStyle(GymColors.secondaryText)
+                .foregroundStyle(
+                    GymColors.secondaryText
+                )
                 .multilineTextAlignment(.center)
             Button("Try Again") {
                 syncManager.startSearching()
@@ -332,7 +496,9 @@ struct SyncView: View {
 
     // MARK: - Helpers
 
-    private func handlePeerTap(_ peer: DiscoveredPeer) {
+    private func handlePeerTap(
+        _ peer: DiscoveredPeer
+    ) {
         syncManager.connectToPeer(peer)
         if !isPaired(with: peer) {
             // Show match picker after connection is established
@@ -340,31 +506,44 @@ struct SyncView: View {
         }
     }
 
-    private func isPaired(with peer: DiscoveredPeer) -> Bool {
+    private func isPaired(
+        with peer: DiscoveredPeer
+    ) -> Bool {
         let localId = identity.id
-        let pairings = (try? modelContext.fetch(FetchDescriptor<PairedDevices>(
-            predicate: #Predicate { $0.localIdentityId == localId }
-        ))) ?? []
-        return pairings.contains { $0.remoteName == peer.name }
+        let pairings = (try? modelContext.fetch(
+            FetchDescriptor<PairedDevices>(
+                predicate: #Predicate { $0.localIdentityId == localId }
+            )
+        )) ?? []
+        return pairings.contains {
+            $0.remoteName == peer.name
+        }
     }
 
     /// Returns candidates the user might match the peer to
-    private func matchCandidates(forTrainer senderIsTrainer: Bool) -> [IdentityEntity] {
+    private func matchCandidates(
+        forTrainer senderIsTrainer: Bool
+    ) -> [IdentityEntity] {
         if senderIsTrainer {
-            // Sender is a trainer — show our trainers (if we're a trainee with multiple trainers)
-            if let trainer = identity.trainer(in: modelContext) {
+            // Sender is a trainer -- show our trainers
+            if let trainer = identity.trainer(
+                in: modelContext
+            ) {
                 return [trainer]
             }
             return []
         } else {
-            // Sender is a trainee — show our trainees
-            return identity.trainees(in: modelContext)
+            // Sender is a trainee -- show our trainees
+            return identity.trainees(
+                in: modelContext
+            )
         }
     }
 
     private var matchPickerMessage: String {
         if identity.isTrainer {
-            "Which of your trainees is this device?"
+            "Which of your trainees"
+                + " is this device?"
         } else {
             "Is this one of your trainers?"
         }
@@ -373,12 +552,16 @@ struct SyncView: View {
     @ViewBuilder
     private var matchPickerButtons: some View {
         if identity.isTrainer {
-            let trainees = identity.trainees(in: modelContext)
+            let trainees = identity.trainees(
+                in: modelContext
+            )
             ForEach(trainees) { trainee in
                 Button(trainee.name) {
                     syncManager.sendPairingOffer(
-                        linkedIdentityUUID: trainee.id,
-                        linkedIdentityName: trainee.name
+                        linkedIdentityUUID:
+                            trainee.id,
+                        linkedIdentityName:
+                            trainee.name
                     )
                 }
             }
@@ -389,12 +572,16 @@ struct SyncView: View {
                 )
             }
         } else {
-            // Trainee initiating — show known trainers
-            if let trainer = identity.trainer(in: modelContext) {
+            // Trainee initiating -- show known trainers
+            if let trainer = identity.trainer(
+                in: modelContext
+            ) {
                 Button(trainer.name) {
                     syncManager.sendPairingOffer(
-                        linkedIdentityUUID: trainer.id,
-                        linkedIdentityName: trainer.name
+                        linkedIdentityUUID:
+                            trainer.id,
+                        linkedIdentityName:
+                            trainer.name
                     )
                 }
             }

@@ -26,7 +26,10 @@ struct ProfileView: View {
 
         // Batch-fetch subgraph for all workouts to derive exercisesUsed
         let allNonTemplate = allWorkouts.filter { !$0.isTemplate }
-        let subgraph = BatchTraversal.workoutSubgraph(workoutIds: allNonTemplate.map(\.id), in: modelContext)
+        let subgraph = BatchTraversal.workoutSubgraph(
+            workoutIds: allNonTemplate.map(\.id),
+            in: modelContext
+        )
 
         // Derive exercisesUsed from the subgraph
         let exercisesUsed: [ExerciseEntity] = {
@@ -35,7 +38,8 @@ struct ProfileView: View {
             for workout in allNonTemplate {
                 for group in subgraph.sortedGroups(for: workout.id) {
                     for set in subgraph.sortedSets(for: group.id) {
-                        if let ex = subgraph.exerciseBySet[set.id], seen.insert(ex.id).inserted {
+                        if let ex = subgraph.exerciseBySet[set.id],
+                           seen.insert(ex.id).inserted {
                             exercises.append(ex)
                         }
                     }
@@ -44,7 +48,8 @@ struct ProfileView: View {
             return exercises.sorted { $0.name < $1.name }
         }()
 
-        // Compute lastSets inline from existing subgraph (avoids redundant queries)
+        // Compute lastSets inline from existing subgraph
+        // (avoids redundant queries)
         let lastSets: [UUID: SetEntity] = {
             var result: [UUID: SetEntity] = [:]
             let targetIds = Set(exercisesUsed.map(\.id))
@@ -64,10 +69,17 @@ struct ProfileView: View {
             return result
         }()
 
-        // Pre-compute trainerWithTemplates to avoid re-evaluation in view tree
+        // Pre-compute trainerWithTemplates to avoid
+        // re-evaluation in view tree
         let trainerForTemplates: IdentityEntity? = {
-            let trainer = identity.isTrainer ? identity : identity.trainer(in: modelContext)
-            guard let trainer, !trainer.templates(in: modelContext).isEmpty else { return nil }
+            let trainer = identity.isTrainer
+                ? identity
+                : identity.trainer(in: modelContext)
+            guard let trainer,
+                  !trainer.templates(
+                      in: modelContext
+                  ).isEmpty
+            else { return nil }
             return trainer
         }()
 
@@ -81,16 +93,25 @@ struct ProfileView: View {
                             HStack {
                                 Circle()
                                     .fill(GymColors.activeIndicator)
-                                    .frame(width: GymMetrics.completionDotSize, height: GymMetrics.completionDotSize)
+                                    .frame(
+                                        width: GymMetrics.completionDotSize,
+                                        height: GymMetrics.completionDotSize
+                                    )
                                 Text(workout.date, style: .date)
                                 Spacer()
-                                let count = subgraph.exerciseCount(for: workout.id)
+                                let count = subgraph
+                                    .exerciseCount(for: workout.id)
                                 Text("\(count) ex")
                                     .foregroundStyle(GymColors.secondaryText)
                             }
                         }
                     }
-                    .onDelete { offsets in deleteWorkouts(from: active, at: offsets) }
+                    .onDelete { offsets in
+                        deleteWorkouts(
+                            from: active,
+                            at: offsets
+                        )
+                    }
                 }
             }
 
@@ -99,7 +120,10 @@ struct ProfileView: View {
                     Button {
                         startWorkout()
                     } label: {
-                        Label("Start New Workout", systemImage: "plus.circle.fill")
+                        Label(
+                            "Start New Workout",
+                            systemImage: "plus.circle.fill"
+                        )
                             .font(GymFont.bodyStrong)
                             .foregroundStyle(GymColors.energy)
                     }
@@ -111,7 +135,10 @@ struct ProfileView: View {
                         Label("Start from Template", systemImage: "doc.text")
                     }
                     .sheet(isPresented: $showingTemplateStart) {
-                        StartFromTemplateView(trainer: trainer, trainee: identity)
+                        StartFromTemplateView(
+                            trainer: trainer,
+                            trainee: identity
+                        )
                     }
                 }
             }
@@ -125,18 +152,30 @@ struct ProfileView: View {
                         } label: {
                             WorkoutRow(
                                 workout: workout,
-                                exerciseCount: subgraph.exerciseCount(for: workout.id),
-                                totalVolume: subgraph.totalVolume(for: workout.id),
-                                exerciseNames: subgraph.exerciseNames(for: workout.id)
+                                exerciseCount: subgraph
+                                    .exerciseCount(for: workout.id),
+                                totalVolume: subgraph
+                                    .totalVolume(for: workout.id),
+                                exerciseNames: subgraph
+                                    .exerciseNames(for: workout.id)
                             )
                         }
                     }
-                    .onDelete { offsets in deleteWorkouts(from: recentCompleted, at: offsets) }
+                    .onDelete { offsets in
+                        deleteWorkouts(
+                            from: recentCompleted,
+                            at: offsets
+                        )
+                    }
                 }
             } else {
                 Section {
                     VStack(spacing: GymMetrics.space16) {
-                        AnimatedMascotView(pose: .lifting, animation: .rep, color: GymColors.secondaryText)
+                        AnimatedMascotView(
+                            pose: .lifting,
+                            animation: .rep,
+                            color: GymColors.secondaryText
+                        )
                             .frame(height: GymMetrics.mascotMedium)
                         Text("Let's get your first workout in!")
                             .font(GymFont.body)
@@ -151,16 +190,29 @@ struct ProfileView: View {
                 Section("Progress by Exercise") {
                     ForEach(exercisesUsed) { exercise in
                         NavigationLink {
-                            ProgressChartsView(identity: identity, exercise: exercise)
+                            ProgressChartsView(
+                                identity: identity,
+                                exercise: exercise
+                            )
                         } label: {
-                            VStack(alignment: .leading, spacing: GymMetrics.space4) {
+                            VStack(
+                                alignment: .leading,
+                                spacing: GymMetrics.space4
+                            ) {
                                 HStack {
                                     Text(exercise.name)
                                     Spacer()
                                     if let lastSet = lastSets[exercise.id] {
-                                        Text("\(Weight.formatted(lastSet.weight)) x \(lastSet.reps)")
-                                            .font(GymFont.bodyMono)
-                                            .foregroundStyle(GymColors.secondaryText)
+                                        let w = Weight.formatted(
+                                            lastSet.weight
+                                        )
+                                        Text(
+                                            "\(w) x \(lastSet.reps)"
+                                        )
+                                        .font(GymFont.bodyMono)
+                                        .foregroundStyle(
+                                            GymColors.secondaryText
+                                        )
                                     }
                                 }
                                 ExerciseAttributePills(exercise: exercise)
@@ -207,7 +259,10 @@ struct ProfileView: View {
         newWorkout = modelContext.startWorkout(for: identity)
     }
 
-    private func deleteWorkouts(from workouts: [WorkoutEntity], at offsets: IndexSet) {
+    private func deleteWorkouts(
+        from workouts: [WorkoutEntity],
+        at offsets: IndexSet
+    ) {
         for index in offsets {
             modelContext.deleteWorkout(workouts[index])
         }
@@ -228,7 +283,10 @@ private struct WorkoutRow: View {
                 Text(workout.date, style: .date)
                     .font(GymFont.body)
                 Spacer()
-                Text("\(exerciseCount) exercise\(exerciseCount == 1 ? "" : "s")")
+                Text(
+                    "\(exerciseCount)"
+                        + " exercise\(exerciseCount == 1 ? "" : "s")"
+                )
                     .font(GymFont.caption)
                     .foregroundStyle(GymColors.secondaryText)
             }

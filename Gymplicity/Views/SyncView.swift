@@ -122,11 +122,13 @@ struct SyncView: View {
                                     VStack(alignment: .leading, spacing: GymMetrics.space2) {
                                         Text(peer.name)
                                             .font(GymFont.body)
-                                        Text(peer.role.capitalized)
-                                            .font(GymFont.caption)
-                                            .foregroundStyle(
-                                                GymColors.secondaryText
-                                            )
+                                        if let role = peer.role {
+                                            Text(role.capitalized)
+                                                .font(GymFont.caption)
+                                                .foregroundStyle(
+                                                    GymColors.secondaryText
+                                                )
+                                        }
                                     }
                                     Spacer()
                                     if isPaired(with: peer) {

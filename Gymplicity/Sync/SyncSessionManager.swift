@@ -23,7 +23,7 @@ struct DiscoveredPeer:
 {
     let peerID: MCPeerID
     let name: String
-    let role: String
+    let role: String?
     let identityId: UUID?
     var id: MCPeerID { peerID }
 }
@@ -979,7 +979,7 @@ extension SyncSessionManager:
     ) {
         let name = info?["name"]
             ?? peerID.displayName
-        let role = info?["role"] ?? "unknown"
+        let role = info?["role"]
         let identityId = info?["id"]
             .flatMap { UUID(uuidString: $0) }
         let peer = DiscoveredPeer(

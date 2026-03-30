@@ -88,7 +88,12 @@ struct GymPillModifier: ViewModifier {
             .font(GymFont.caption)
             .padding(.horizontal, GymMetrics.space8)
             .padding(.vertical, GymMetrics.space4)
-            .background(color.opacity(GymMetrics.opacitySubtle), in: Capsule())
+            .background(
+                color.opacity(
+                    GymMetrics.opacitySubtle
+                ),
+                in: Capsule()
+            )
             .foregroundStyle(color)
     }
 }

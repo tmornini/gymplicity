@@ -18,7 +18,9 @@ struct GymProgressBar: View {
                         .animation(
                             .spring(
                                 response: GymMetrics.progressSpringResponse,
-                                dampingFraction: GymMetrics.progressSpringDamping
+                                dampingFraction:
+                                    GymMetrics
+                                    .progressSpringDamping
                             ),
                             value: progress
                         )

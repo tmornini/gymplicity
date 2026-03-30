@@ -86,9 +86,13 @@ private struct StartTemplateRow: View {
                 .padding(.trailing, GymMetrics.space8)
 
             VStack(alignment: .leading, spacing: GymMetrics.space4) {
-                Text(template.templateName(in: modelContext))
-                    .font(GymFont.heading3)
-                    .foregroundStyle(.primary)
+                if let name = template.templateName(
+                    in: modelContext
+                ) {
+                    Text(name)
+                        .font(GymFont.heading3)
+                        .foregroundStyle(.primary)
+                }
 
                 let groups = template.groups(in: modelContext)
                 let setCount = groups

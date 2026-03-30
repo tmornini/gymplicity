@@ -15,11 +15,13 @@ struct TemplateEditorView: View {
         List {
             Section {
                 HStack {
-                    Text(template.templateName(in: modelContext))
-                        .font(GymFont.heading3)
+                    if let name = template.templateName(in: modelContext) {
+                        Text(name)
+                            .font(GymFont.heading3)
+                    }
                     Spacer()
                     Button("Rename") {
-                        nameText = template.templateName(in: modelContext)
+                        nameText = template.templateName(in: modelContext) ?? ""
                         editingName = true
                     }
                     .font(GymFont.label)
@@ -64,11 +66,17 @@ struct TemplateEditorView: View {
                             .font(GymFont.label)
                     }
                 } header: {
-                    Text(group.isSuperset
-                        ? "Superset \(group.order + 1)"
-                        : group.exerciseName(in: modelContext) ?? "Exercise")
-                        .font(GymFont.heading3)
-                        .textCase(nil)
+                    if group.isSuperset {
+                        Text("Superset \(group.order + 1)")
+                            .font(GymFont.heading3)
+                            .textCase(nil)
+                    } else if let name = group.exerciseName(
+                        in: modelContext
+                    ) {
+                        Text(name)
+                            .font(GymFont.heading3)
+                            .textCase(nil)
+                    }
                 }
             }
 
@@ -85,8 +93,12 @@ struct TemplateEditorView: View {
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .principal) {
-                Text(template.templateName(in: modelContext))
-                    .font(GymFont.heading3)
+                if let name = template.templateName(
+                    in: modelContext
+                ) {
+                    Text(name)
+                        .font(GymFont.heading3)
+                }
             }
         }
         .confirmationDialog(
@@ -204,9 +216,11 @@ private struct TemplateSetRow: View {
             HStack {
                 let exercise = set.exercise(in: modelContext)
                 VStack(alignment: .leading, spacing: GymMetrics.space4) {
-                    Text(exercise?.name ?? "Exercise")
-                        .font(GymFont.label)
-                        .foregroundStyle(GymColors.secondaryText)
+                    if let name = exercise?.name {
+                        Text(name)
+                            .font(GymFont.label)
+                            .foregroundStyle(GymColors.secondaryText)
+                    }
                     ExerciseAttributePills(exercise: exercise)
                 }
                 .frame(minWidth: GymMetrics.minExerciseNameWidth, alignment: .leading)
@@ -260,8 +274,10 @@ private struct TemplateSetEntryView: View {
         NavigationStack {
             VStack(spacing: GymMetrics.space24) {
                 VStack(spacing: GymMetrics.space4) {
-                    Text(exercise?.name ?? "Exercise")
-                        .font(GymFont.heading2)
+                    if let name = exercise?.name {
+                        Text(name)
+                            .font(GymFont.heading2)
+                    }
                     ExerciseAttributePills(exercise: exercise)
                 }
 

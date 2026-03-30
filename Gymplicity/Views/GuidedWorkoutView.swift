@@ -152,15 +152,12 @@ struct GuidedWorkoutView: View {
         let groups = snapshot.groups
         let groupIndex = groups.firstIndex(
             where: { $0.group.id == pair.group.id }
-        ) ?? 0
-        let groupSnap = groups.indices
-            .contains(groupIndex)
-            ? groups[groupIndex]
-            : nil
-        let setIndex = groupSnap?.sets.firstIndex(
+        )!
+        let groupSnap = groups[groupIndex]
+        let setIndex = groupSnap.sets.firstIndex(
             where: { $0.set.id == pair.set.id }
-        ) ?? 0
-        let setsInGroupCount = groupSnap?.sets.count ?? 0
+        )!
+        let setsInGroupCount = groupSnap.sets.count
 
         VStack(spacing: GymMetrics.space20) {
             Spacer()
@@ -169,8 +166,10 @@ struct GuidedWorkoutView: View {
                 MascotView(pose: .curling, color: GymColors.energy)
                     .frame(height: GymMetrics.mascotTiny)
                 VStack(alignment: .leading, spacing: GymMetrics.space4) {
-                    Text(exercise?.name ?? "Exercise")
-                        .font(GymFont.heading1)
+                    if let name = exercise?.name {
+                        Text(name)
+                            .font(GymFont.heading1)
+                    }
                     ExerciseAttributePills(exercise: exercise)
                 }
             }

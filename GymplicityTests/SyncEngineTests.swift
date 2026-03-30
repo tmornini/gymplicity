@@ -548,6 +548,13 @@ import SwiftData
 
         let payload = makePayload(
             senderIdentityId: senderId,
+            identities: [
+                IdentityDTO(
+                    id: senderId,
+                    name: "Sender",
+                    isTrainer: false
+                )
+            ],
             identityAliases: [
                 IdentityAliasesDTO(
                     identityId1: id1,
@@ -573,6 +580,13 @@ import SwiftData
 
         let payload = makePayload(
             senderIdentityId: senderId,
+            identities: [
+                IdentityDTO(
+                    id: senderId,
+                    name: "Sender",
+                    isTrainer: false
+                )
+            ],
             identityAliases: [
                 IdentityAliasesDTO(
                     identityId1: id1,
@@ -597,6 +611,13 @@ import SwiftData
         // Payload has reverse order
         let payload = makePayload(
             senderIdentityId: senderId,
+            identities: [
+                IdentityDTO(
+                    id: senderId,
+                    name: "Sender",
+                    isTrainer: false
+                )
+            ],
             identityAliases: [
                 IdentityAliasesDTO(
                     identityId1: id2,

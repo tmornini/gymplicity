@@ -124,10 +124,12 @@ struct SyncEngine {
         )
 
         // Determine sender role from payload identities
-        let senderIsTrainer = payload.identities
+        guard let sender = payload.identities
             .first(where: {
                 $0.id == payload.senderIdentityId
-            })?.isTrainer ?? false
+            })
+        else { return result }
+        let senderIsTrainer = sender.isTrainer
 
         // 1. Identities — sender can only update their own identity
         for dto in payload.identities {

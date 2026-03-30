@@ -96,9 +96,11 @@ struct ActiveWorkoutView: View {
                                 .font(GymFont.label)
                         }
                     } header: {
-                        Text(groupSnap.exerciseName)
-                            .font(GymFont.heading3)
-                            .textCase(nil)
+                        if let name = groupSnap.exerciseName {
+                            Text(name)
+                                .font(GymFont.heading3)
+                                .textCase(nil)
+                        }
                     }
                 }
             }
@@ -352,14 +354,13 @@ struct SetRow: View {
                     alignment: .leading,
                     spacing: GymMetrics.space4
                 ) {
-                    Text(
-                        exercise?.name
-                            ?? "Exercise"
-                    )
-                    .font(GymFont.label)
-                    .foregroundStyle(
-                        GymColors.secondaryText
-                    )
+                    if let name = exercise?.name {
+                        Text(name)
+                            .font(GymFont.label)
+                            .foregroundStyle(
+                                GymColors.secondaryText
+                            )
+                    }
                     ExerciseAttributePills(
                         exercise: exercise
                     )

@@ -37,7 +37,7 @@ struct WorkoutSnapshot {
     struct GroupSnapshot: Identifiable {
         let group: WorkoutGroupEntity
         let sets: [SetSnapshot]
-        let exerciseName: String
+        let exerciseName: String?
         var id: UUID { group.id }
     }
 
@@ -101,7 +101,6 @@ struct WorkoutSnapshot {
                 sets: setSnapshots,
                 exerciseName: subgraph
                     .exerciseName(for: group.id)
-                    ?? "Exercise"
             )
         }
         return WorkoutSnapshot(

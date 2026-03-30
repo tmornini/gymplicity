@@ -20,8 +20,10 @@ struct SetEntryView: View {
                     MascotView(pose: .curling, color: GymColors.energy)
                         .frame(height: GymMetrics.mascotTiny)
                     VStack(alignment: .leading, spacing: GymMetrics.space4) {
-                        Text(exercise?.name ?? "Exercise")
-                            .font(GymFont.heading2)
+                        if let name = exercise?.name {
+                            Text(name)
+                                .font(GymFont.heading2)
+                        }
                         ExerciseAttributePills(exercise: exercise)
                     }
                 }

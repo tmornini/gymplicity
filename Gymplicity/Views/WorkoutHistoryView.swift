@@ -50,17 +50,21 @@ struct WorkoutHistoryView: View {
             }
 
             ForEach(workout.sortedGroups(in: modelContext)) { group in
-                Section(groupHeader(group)) {
-                    ForEach(group.sortedSets(in: modelContext)) { set in
+                Section(header: groupHeaderView(group)) {
+                    ForEach(
+                        group.sortedSets(in: modelContext)
+                    ) { set in
                         let exercise = set.exercise(in: modelContext)
                         HStack {
                             VStack(
                                 alignment: .leading,
                                 spacing: GymMetrics.space4
                             ) {
-                                Text(exercise?.name ?? "Exercise")
-                                    .font(GymFont.label)
-                                    .foregroundStyle(GymColors.secondaryText)
+                                if let name = exercise?.name {
+                                    Text(name)
+                                        .font(GymFont.label)
+                                        .foregroundStyle(GymColors.secondaryText)
+                                }
                                 ExerciseAttributePills(exercise: exercise)
                             }
                             .frame(minWidth: GymMetrics.minExerciseNameWidth, alignment: .leading)
@@ -131,15 +135,20 @@ struct WorkoutHistoryView: View {
         }
     }
 
-    private func groupHeader(_ group: WorkoutGroupEntity) -> String {
+    @ViewBuilder
+    private func groupHeaderView(
+        _ group: WorkoutGroupEntity
+    ) -> some View {
         if group.isSuperset {
-            return "Superset \(group.order + 1)"
-        }
-        return group
+            Text("Superset \(group.order + 1)")
+        } else if let name = group
             .sortedSets(in: modelContext)
             .first?
             .exercise(in: modelContext)?
-            .name ?? "Exercise"
+            .name
+        {
+            Text(name)
+        }
     }
 
 }

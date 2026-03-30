@@ -132,8 +132,16 @@ extension IdentityEntity {
         workouts(in: context)
             .filter { $0.isTemplate }
             .sorted {
-                $0.templateName(in: context)
-                    < $1.templateName(in: context)
+                switch (
+                    $0.templateName(in: context),
+                    $1.templateName(in: context)
+                ) {
+                case let (.some(a), .some(b)):
+                    a < b
+                case (.some, .none): true
+                case (.none, .some): false
+                case (.none, .none): false
+                }
             }
     }
 
@@ -221,16 +229,15 @@ extension IdentityEntity {
 extension WorkoutEntity {
     @MainActor func templateName(
         in context: ModelContext
-    ) -> String {
+    ) -> String? {
         let id = self.id
-        let template = context.fetchFirst(
+        return context.fetchFirst(
             FetchDescriptor<WorkoutTemplate>(
                 predicate: #Predicate {
                     $0.workoutId == id
                 }
             )
-        )
-        return template?.name ?? "Untitled"
+        )?.name
     }
 
     @MainActor func notes(
@@ -297,8 +304,9 @@ extension WorkoutEntity {
     @MainActor func nextGroupOrder(
         in context: ModelContext
     ) -> Int {
-        (groups(in: context)
-            .map(\.order).max() ?? -1) + 1
+        let orders = groups(in: context).map(\.order)
+        if orders.isEmpty { return 0 }
+        return orders.max()! + 1
     }
 
     @MainActor func totalVolume(
@@ -502,8 +510,9 @@ extension WorkoutGroupEntity {
     @MainActor func nextSetOrder(
         in context: ModelContext
     ) -> Int {
-        (sets(in: context)
-            .map(\.order).max() ?? -1) + 1
+        let orders = sets(in: context).map(\.order)
+        if orders.isEmpty { return 0 }
+        return orders.max()! + 1
     }
 
     @MainActor func totalVolume(

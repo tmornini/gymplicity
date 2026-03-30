@@ -255,9 +255,17 @@ class SyncSessionManager:
         via session: MCSession,
         to peer: MCPeerID
     ) {
+        let data: Data
         do {
-            let data = try JSONEncoder()
+            data = try JSONEncoder()
                 .encode(message)
+        } catch {
+            connectionState = .error(
+                "Encode failed: \(error)"
+            )
+            return
+        }
+        do {
             try session.send(
                 data,
                 toPeers: [peer],

@@ -714,7 +714,8 @@ class SyncSessionManager:
         senderIdentityId: UUID
     ) {
         guard let context = modelContext,
-              let identity = localIdentity
+              let identity = localIdentity,
+              let peer = connectedPeer
         else { return }
         let localId = identity.id
         let remoteId = senderIdentityId
@@ -732,9 +733,7 @@ class SyncSessionManager:
             context.insert(PairedDevices(
                 localIdentityId: localId,
                 remoteIdentityId: remoteId,
-                remoteName:
-                    connectedPeer?.displayName
-                        ?? "Unknown"
+                remoteName: peer.displayName
             ))
         }
         context.insert(DeviceSyncEvents(

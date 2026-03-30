@@ -15,7 +15,7 @@ struct SetEntryView: View {
 
     var body: some View {
         NavigationStack {
-            VStack(spacing: 24) {
+            VStack(spacing: GymMetrics.space24) {
                 HStack(spacing: GymMetrics.space8) {
                     MascotView(pose: .curling, color: GymColors.energy)
                         .frame(height: GymMetrics.mascotTiny)
@@ -41,7 +41,7 @@ struct SetEntryView: View {
 
                 Spacer()
             }
-            .padding(.top, 24)
+            .padding(.top, GymMetrics.space24)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {

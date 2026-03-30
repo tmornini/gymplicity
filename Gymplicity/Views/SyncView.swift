@@ -12,7 +12,7 @@ struct SyncView: View {
 
     var body: some View {
         NavigationStack {
-            VStack(spacing: 24) {
+            VStack(spacing: GymMetrics.space24) {
                 switch syncManager.connectionState {
                 case .idle:
                     idleView
@@ -83,13 +83,13 @@ struct SyncView: View {
                 syncManager.startSearching()
             }
             .buttonStyle(.gymPrimary)
-            .padding(.horizontal, 40)
+            .padding(.horizontal, GymMetrics.actionPadding)
             Spacer()
         }
     }
 
     private var searchingView: some View {
-        VStack(spacing: 20) {
+        VStack(spacing: GymMetrics.space20) {
             if syncManager.discoveredPeers.isEmpty {
                 Spacer()
                 AnimatedMascotView(
@@ -119,7 +119,7 @@ struct SyncView: View {
                                 handlePeerTap(peer)
                             } label: {
                                 HStack {
-                                    VStack(alignment: .leading, spacing: 2) {
+                                    VStack(alignment: .leading, spacing: GymMetrics.space2) {
                                         Text(peer.name)
                                             .font(GymFont.body)
                                         Text(peer.role.capitalized)
@@ -189,7 +189,7 @@ struct SyncView: View {
                 animation: .pulse,
                 color: GymColors.energy
             )
-                .frame(height: 80)
+                .frame(height: GymMetrics.mascotCard)
             Text("Connecting...")
                 .font(GymFont.body)
                 .foregroundStyle(
@@ -236,7 +236,7 @@ struct SyncView: View {
                     animation: .wobble,
                     color: GymColors.energy
                 )
-                .frame(height: 80)
+                .frame(height: GymMetrics.mascotCard)
                 Text(
                     "Pairing with \(peerName)..."
                 )
@@ -286,7 +286,7 @@ struct SyncView: View {
                 }
                 .buttonStyle(.gymPrimary)
             }
-            .padding(.horizontal, 40)
+            .padding(.horizontal, GymMetrics.actionPadding)
             Spacer()
         }
     }
@@ -351,7 +351,7 @@ struct SyncView: View {
                         )
                         .background(
                             GymColors.steel
-                                .opacity(0.2)
+                                .opacity(GymMetrics.opacityLight)
                         )
                         .cornerRadius(
                             GymMetrics.radiusMedium
@@ -370,7 +370,7 @@ struct SyncView: View {
                 }
                 .buttonStyle(.gymPrimary)
             }
-            .padding(.horizontal, 20)
+            .padding(.horizontal, GymMetrics.space20)
 
             Button("Decline") {
                 syncManager.declinePairing()
@@ -394,7 +394,7 @@ struct SyncView: View {
                 animation: .wobble,
                 color: GymColors.energy
             )
-            .frame(height: 80)
+            .frame(height: GymMetrics.mascotCard)
             Text(
                 "Waiting for \(peerName)"
                     + " to respond..."
@@ -421,7 +421,7 @@ struct SyncView: View {
                 animation: .rep,
                 color: GymColors.energy
             )
-            .frame(height: 80)
+            .frame(height: GymMetrics.mascotCard)
             Text("Syncing with \(peerName)...")
                 .font(GymFont.body)
                 .foregroundStyle(
@@ -476,7 +476,7 @@ struct SyncView: View {
                 pose: .resting,
                 color: GymColors.warning
             )
-                .frame(height: 80)
+                .frame(height: GymMetrics.mascotCard)
             Text("Sync Error")
                 .font(GymFont.heading2)
             Text(message)
@@ -489,7 +489,7 @@ struct SyncView: View {
                 syncManager.startSearching()
             }
             .buttonStyle(.gymPrimary)
-            .padding(.horizontal, 40)
+            .padding(.horizontal, GymMetrics.actionPadding)
             Spacer()
         }
     }

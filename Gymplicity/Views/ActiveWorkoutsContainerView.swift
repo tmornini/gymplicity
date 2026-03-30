@@ -118,7 +118,7 @@ struct ActiveWorkoutsContainerView: View {
                         Button {
                             dismiss()
                         } label: {
-                            HStack(spacing: 4) {
+                            HStack(spacing: GymMetrics.space4) {
                                 Image(systemName: "chevron.left")
                                     .fontWeight(.semibold)
                                 Text("Back")
@@ -129,7 +129,7 @@ struct ActiveWorkoutsContainerView: View {
             }
             ToolbarItem(placement: .principal) {
                 if let pair = currentPair {
-                    VStack(spacing: 2) {
+                    VStack(spacing: GymMetrics.space2) {
                         Text(pair.identity.name)
                             .font(GymFont.heading3)
                         if pairs.count > 1 {
@@ -174,23 +174,23 @@ struct ActiveWorkoutsContainerView: View {
     // MARK: - Page Dots
 
     private func pageDots(count: Int) -> some View {
-        HStack(spacing: 6) {
+        HStack(spacing: GymMetrics.space6) {
             ForEach(0..<count, id: \.self) { index in
                 if index == currentIndex {
                     Capsule()
                         .fill(GymColors.energy)
-                        .frame(width: 16, height: 8)
+                        .frame(width: GymMetrics.activeDotWidth, height: GymMetrics.activeDotHeight)
                 } else {
                     Circle()
                         .fill(GymColors.steel)
-                        .frame(width: 8, height: 8)
+                        .frame(width: GymMetrics.inactiveDotSize, height: GymMetrics.inactiveDotSize)
                 }
             }
         }
         .animation(
             .spring(
-                response: 0.3,
-                dampingFraction: 0.7
+                response: GymMetrics.pageSpringResponse,
+                dampingFraction: GymMetrics.pageSpringDamping
             ),
             value: currentIndex
         )
@@ -201,12 +201,12 @@ struct ActiveWorkoutsContainerView: View {
     private var edgeGestures: some View {
         HStack(spacing: 0) {
             Color.clear
-                .frame(width: 24)
+                .frame(width: GymMetrics.edgeGestureWidth)
                 .contentShape(Rectangle())
                 .gesture(
-                    DragGesture(minimumDistance: 30)
+                    DragGesture(minimumDistance: GymMetrics.dragMinDistance)
                         .onEnded { value in
-                            if value.translation.width > 50 {
+                            if value.translation.width > GymMetrics.dragThreshold {
                                 goToPrevious(count: sortedPairs.count)
                             }
                         }
@@ -215,12 +215,12 @@ struct ActiveWorkoutsContainerView: View {
             Spacer()
 
             Color.clear
-                .frame(width: 24)
+                .frame(width: GymMetrics.edgeGestureWidth)
                 .contentShape(Rectangle())
                 .gesture(
-                    DragGesture(minimumDistance: 30)
+                    DragGesture(minimumDistance: GymMetrics.dragMinDistance)
                         .onEnded { value in
-                            if value.translation.width < -50 {
+                            if value.translation.width < -GymMetrics.dragThreshold {
                                 goToNext(count: sortedPairs.count)
                             }
                         }
@@ -233,14 +233,14 @@ struct ActiveWorkoutsContainerView: View {
 
     private func goToPrevious(count: Int) {
         guard count > 1 else { return }
-        withAnimation(.easeInOut(duration: 0.25)) {
+        withAnimation(.easeInOut(duration: GymMetrics.animationQuick)) {
             currentIndex = (currentIndex - 1 + count) % count
         }
     }
 
     private func goToNext(count: Int) {
         guard count > 1 else { return }
-        withAnimation(.easeInOut(duration: 0.25)) {
+        withAnimation(.easeInOut(duration: GymMetrics.animationQuick)) {
             currentIndex = (currentIndex + 1) % count
         }
     }

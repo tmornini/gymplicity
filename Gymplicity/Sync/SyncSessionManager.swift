@@ -149,7 +149,7 @@ class SyncSessionManager:
             peer.peerID,
             to: session,
             withContext: nil,
-            timeout: 30
+            timeout: GymMetrics.connectionTimeout
         )
     }
 
@@ -561,7 +561,7 @@ class SyncSessionManager:
             )
             .collect(.byTime(
                 DispatchQueue.main,
-                .milliseconds(500)
+                .milliseconds(GymMetrics.deltaCollectMs)
             ))
             .sink { [weak self] notifications in
                 self?.sendEntityDelta(
@@ -576,7 +576,7 @@ class SyncSessionManager:
                     .structureChangedNotification
             )
             .debounce(
-                for: .seconds(1),
+                for: .seconds(Int(GymMetrics.deltaDebounce)),
                 scheduler: DispatchQueue.main
             )
             .sink { [weak self] _ in

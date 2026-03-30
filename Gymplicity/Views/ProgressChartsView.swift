@@ -13,7 +13,7 @@ struct ProgressChartsView: View {
 
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: 32) {
+            VStack(alignment: .leading, spacing: GymMetrics.space32) {
                 if history.isEmpty {
                     emptyState
                 } else {
@@ -57,7 +57,7 @@ struct ProgressChartsView: View {
 
     @ViewBuilder
     private var weightPerRepChart: some View {
-        VStack(alignment: .leading, spacing: 8) {
+        VStack(alignment: .leading, spacing: GymMetrics.space8) {
             HStack(spacing: GymMetrics.space8) {
                 MascotView(pose: .deadlifting, color: GymColors.energy)
                     .frame(height: GymMetrics.mascotTiny)
@@ -99,7 +99,7 @@ struct ProgressChartsView: View {
             )
             .chartYAxisLabel("lb")
             .chartLegend(position: .bottom, alignment: .leading)
-            .frame(height: 240)
+            .frame(height: GymMetrics.chartHeight)
 
             if repCounts.isEmpty {
                 Text("No data")
@@ -135,7 +135,7 @@ struct ProgressChartsView: View {
 
     @ViewBuilder
     private var totalVolumeChart: some View {
-        VStack(alignment: .leading, spacing: 8) {
+        VStack(alignment: .leading, spacing: GymMetrics.space8) {
             Text("Total Volume Over Time")
                 .font(GymFont.heading3)
             Text("Sum of weight x reps across all sets per workout")
@@ -149,7 +149,7 @@ struct ProgressChartsView: View {
                     x: .value("Date", point.date),
                     y: .value("Volume", point.volume)
                 )
-                .foregroundStyle(GymColors.focus.opacity(0.15))
+                .foregroundStyle(GymColors.focus.opacity(GymMetrics.opacitySubtle))
 
                 LineMark(
                     x: .value("Date", point.date),
@@ -164,7 +164,7 @@ struct ProgressChartsView: View {
                 .foregroundStyle(GymColors.focus)
             }
             .chartYAxisLabel("lb")
-            .frame(height: 240)
+            .frame(height: GymMetrics.chartHeight)
         }
     }
 

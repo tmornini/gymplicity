@@ -16,7 +16,7 @@ struct AddTraineeView: View {
                     animation: .bounce,
                     color: GymColors.energy
                 )
-                    .frame(height: 80)
+                    .frame(height: GymMetrics.mascotCard)
                 Text("Who's training today?")
                     .font(GymFont.heading2)
                     .foregroundStyle(GymColors.secondaryText)

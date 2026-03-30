@@ -13,8 +13,8 @@ struct WeightRepsField: View {
     enum Field: Hashable { case weight, reps }
 
     var body: some View {
-        HStack(spacing: 24) {
-            VStack(spacing: 8) {
+        HStack(spacing: GymMetrics.space24) {
+            VStack(spacing: GymMetrics.space8) {
                 if showLabels {
                     Text("Weight")
                         .font(GymFont.caption)
@@ -39,7 +39,7 @@ struct WeightRepsField: View {
                 .font(GymFont.heading2)
                 .foregroundStyle(GymColors.secondaryText)
 
-            VStack(spacing: 8) {
+            VStack(spacing: GymMetrics.space8) {
                 if showLabels {
                     Text("Reps")
                         .font(GymFont.caption)

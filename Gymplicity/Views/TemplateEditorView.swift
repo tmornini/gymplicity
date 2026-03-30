@@ -209,7 +209,7 @@ private struct TemplateSetRow: View {
                         .foregroundStyle(GymColors.secondaryText)
                     ExerciseAttributePills(exercise: exercise)
                 }
-                .frame(minWidth: 60, alignment: .leading)
+                .frame(minWidth: GymMetrics.minExerciseNameWidth, alignment: .leading)
 
                 if set.weight > 0 || set.reps > 0 {
                     Text(Weight.formatted(set.weight))
@@ -258,7 +258,7 @@ private struct TemplateSetEntryView: View {
 
     var body: some View {
         NavigationStack {
-            VStack(spacing: 24) {
+            VStack(spacing: GymMetrics.space24) {
                 VStack(spacing: GymMetrics.space4) {
                     Text(exercise?.name ?? "Exercise")
                         .font(GymFont.heading2)
@@ -282,7 +282,7 @@ private struct TemplateSetEntryView: View {
 
                 Spacer()
             }
-            .padding(.top, 24)
+            .padding(.top, GymMetrics.space24)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {

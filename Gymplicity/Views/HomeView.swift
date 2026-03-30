@@ -165,7 +165,7 @@ struct HomeView: View {
                             .foregroundStyle(GymColors.secondaryText)
                         Button("Add Trainee") { showingAddTrainee = true }
                             .buttonStyle(.gymPrimary)
-                            .padding(.horizontal, 40)
+                            .padding(.horizontal, GymMetrics.actionPadding)
                     }
                     .frame(maxWidth: .infinity)
                     .padding(.vertical, GymMetrics.space16)
@@ -235,7 +235,7 @@ private struct ActiveWorkoutRow: View {
     let exerciseCount: Int
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 4) {
+        VStack(alignment: .leading, spacing: GymMetrics.space4) {
             HStack {
                 Circle()
                     .fill(GymColors.activeIndicator)
@@ -258,7 +258,7 @@ private struct ActiveWorkoutRow: View {
                     .foregroundStyle(GymColors.secondaryText)
             }
         }
-        .padding(.vertical, 2)
+        .padding(.vertical, GymMetrics.space2)
     }
 
     private func timeAgo(_ date: Date) -> String {
@@ -288,7 +288,7 @@ private struct TraineeRow: View {
                     .font(GymFont.bodyStrong)
                     .foregroundStyle(GymColors.chalk)
             }
-            VStack(alignment: .leading, spacing: 2) {
+            VStack(alignment: .leading, spacing: GymMetrics.space2) {
                 Text(identity.name)
                     .font(GymFont.body)
                 if completedCount > 0 {

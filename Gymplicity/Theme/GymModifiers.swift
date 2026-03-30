@@ -16,10 +16,10 @@ struct GymPrimaryButtonStyle: ButtonStyle {
                 )
             )
             .scaleEffect(
-                configuration.isPressed ? 0.97 : 1.0
+                configuration.isPressed ? GymMetrics.buttonPressScale : 1.0
             )
             .animation(
-                .easeInOut(duration: 0.15),
+                .easeInOut(duration: GymMetrics.animationShort),
                 value: configuration.isPressed
             )
     }
@@ -57,7 +57,7 @@ struct SetCompletionModifier: ViewModifier {
 
     func body(content: Content) -> some View {
         HStack(spacing: 0) {
-            RoundedRectangle(cornerRadius: 1.5)
+            RoundedRectangle(cornerRadius: GymMetrics.radiusSetBar)
                 .fill(
                     isCompleted
                         ? GymColors.completedSet
@@ -68,7 +68,7 @@ struct SetCompletionModifier: ViewModifier {
             content
                 .padding(.leading, GymMetrics.space8)
         }
-        .opacity(isCompleted ? 0.8 : 1.0)
+        .opacity(isCompleted ? GymMetrics.opacityCompleted : 1.0)
     }
 }
 
@@ -88,7 +88,7 @@ struct GymPillModifier: ViewModifier {
             .font(GymFont.caption)
             .padding(.horizontal, GymMetrics.space8)
             .padding(.vertical, GymMetrics.space4)
-            .background(color.opacity(0.15), in: Capsule())
+            .background(color.opacity(GymMetrics.opacitySubtle), in: Capsule())
             .foregroundStyle(color)
     }
 }

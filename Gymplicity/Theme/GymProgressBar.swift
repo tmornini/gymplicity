@@ -17,13 +17,13 @@ struct GymProgressBar: View {
                         ))
                         .animation(
                             .spring(
-                                response: 0.4,
-                                dampingFraction: 0.8
+                                response: GymMetrics.progressSpringResponse,
+                                dampingFraction: GymMetrics.progressSpringDamping
                             ),
                             value: progress
                         )
                 }
         }
-        .frame(height: 8)
+        .frame(height: GymMetrics.progressBarHeight)
     }
 }

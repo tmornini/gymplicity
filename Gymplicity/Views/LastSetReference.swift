@@ -6,7 +6,7 @@ struct LastSetReference: View {
 
     var body: some View {
         if let set {
-            HStack(spacing: 4) {
+            HStack(spacing: GymMetrics.space4) {
                 Image(systemName: "clock.arrow.circlepath")
                     .font(GymFont.caption)
                 let w = Weight.formatted(set.weight)

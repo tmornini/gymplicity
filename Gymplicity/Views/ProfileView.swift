@@ -150,7 +150,7 @@ struct ProfileView: View {
 
             if !completed.isEmpty {
                 Section("Recent Workouts") {
-                    let recentCompleted = Array(completed.prefix(20))
+                    let recentCompleted = Array(completed.prefix(GymMetrics.recentWorkoutsLimit))
                     ForEach(recentCompleted) { workout in
                         NavigationLink {
                             WorkoutHistoryView(workout: workout)
@@ -287,7 +287,7 @@ private struct WorkoutRow: View {
     let exerciseNames: String
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 4) {
+        VStack(alignment: .leading, spacing: GymMetrics.space4) {
             HStack {
                 Text(workout.date, style: .date)
                     .font(GymFont.body)
@@ -311,7 +311,7 @@ private struct WorkoutRow: View {
                     .lineLimit(1)
             }
         }
-        .padding(.vertical, 2)
+        .padding(.vertical, GymMetrics.space2)
     }
 
     private func formatVolume(_ volume: Double) -> String {

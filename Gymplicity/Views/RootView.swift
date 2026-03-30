@@ -65,7 +65,7 @@ struct RootView: View {
                 .foregroundStyle(GymColors.secondaryText)
             Button("Get Started") { showingSetup = true }
                 .buttonStyle(.gymPrimary)
-                .padding(.horizontal, 40)
+                .padding(.horizontal, GymMetrics.actionPadding)
             Spacer()
         }
         .padding()

@@ -162,7 +162,7 @@ struct GuidedWorkoutView: View {
         ) ?? 0
         let setsInGroupCount = groupSnap?.sets.count ?? 0
 
-        VStack(spacing: 20) {
+        VStack(spacing: GymMetrics.space20) {
             Spacer()
 
             HStack(spacing: GymMetrics.space8) {
@@ -208,7 +208,7 @@ struct GuidedWorkoutView: View {
                 Text("Done")
             }
             .buttonStyle(.gymPrimary)
-            .padding(.horizontal, 40)
+            .padding(.horizontal, GymMetrics.actionPadding)
             .disabled(!isInputValid)
 
             Spacer()
@@ -281,7 +281,7 @@ struct GuidedWorkoutView: View {
                 endWorkout()
             }
             .buttonStyle(.gymPrimary)
-            .padding(.horizontal, 40)
+            .padding(.horizontal, GymMetrics.actionPadding)
             .padding(.top)
         }
     }
@@ -336,15 +336,15 @@ struct GuidedWorkoutView: View {
             in: modelContext
         ) {
             // Brief walking transition
-            withAnimation(.easeInOut(duration: 0.3)) {
+            withAnimation(.easeInOut(duration: GymMetrics.animationMedium)) {
                 showWalkingTransition = true
             }
             Task {
-                try? await Task.sleep(for: .milliseconds(300))
+                try? await Task.sleep(for: .milliseconds(GymMetrics.transitionDelayMs))
                 currentIndex = next
                 onSetIndexChange?(currentIndex)
                 loadCurrentSet()
-                withAnimation(.easeInOut(duration: 0.3)) {
+                withAnimation(.easeInOut(duration: GymMetrics.animationMedium)) {
                     showWalkingTransition = false
                 }
             }

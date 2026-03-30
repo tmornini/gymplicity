@@ -33,7 +33,7 @@ struct AnimatedMascotView: View {
             )
             .offset(
                 y: animation == .enterFromBottom
-                    ? (hasAppeared ? 0 : 20) : 0
+                    ? (hasAppeared ? 0 : GymMetrics.entryOffset) : 0
             )
             .onAppear {
                 withAnimation(timingFor(animation)) {
@@ -46,17 +46,17 @@ struct AnimatedMascotView: View {
     private func timingFor(_ animation: MascotAnimation) -> Animation {
         switch animation {
         case .bounce:
-            .easeInOut(duration: 0.6).repeatForever(autoreverses: true)
+            .easeInOut(duration: GymMetrics.bounceDuration).repeatForever(autoreverses: true)
         case .pulse:
-            .easeInOut(duration: 1.2).repeatForever(autoreverses: true)
+            .easeInOut(duration: GymMetrics.pulseDuration).repeatForever(autoreverses: true)
         case .wobble:
-            .easeInOut(duration: 0.8).repeatForever(autoreverses: true)
+            .easeInOut(duration: GymMetrics.wobbleDuration).repeatForever(autoreverses: true)
         case .rep:
-            .easeInOut(duration: 0.7).repeatForever(autoreverses: true)
+            .easeInOut(duration: GymMetrics.repDuration).repeatForever(autoreverses: true)
         case .wave:
-            .easeInOut(duration: 0.5).repeatForever(autoreverses: true)
+            .easeInOut(duration: GymMetrics.waveDuration).repeatForever(autoreverses: true)
         case .enterFromBottom:
-            .spring(response: 0.5, dampingFraction: 0.7)
+            .spring(response: GymMetrics.entrySpringResponse, dampingFraction: GymMetrics.entrySpringDamping)
         }
     }
 }
@@ -70,16 +70,16 @@ private struct AnimationModifier: ViewModifier {
     func body(content: Content) -> some View {
         switch animation {
         case .bounce:
-            content.offset(y: isAnimating ? -6 : 0)
+            content.offset(y: isAnimating ? GymMetrics.bounceOffset : 0)
         case .pulse:
-            content.scaleEffect(isAnimating ? 1.05 : 1.0)
+            content.scaleEffect(isAnimating ? GymMetrics.pulseScale : 1.0)
         case .wobble:
-            content.rotationEffect(.degrees(isAnimating ? 3 : -3))
+            content.rotationEffect(.degrees(isAnimating ? GymMetrics.wobbleAngle : -GymMetrics.wobbleAngle))
         case .rep:
-            content.offset(y: isAnimating ? -8 : 0)
+            content.offset(y: isAnimating ? GymMetrics.repOffset : 0)
         case .wave:
             content.rotationEffect(
-                .degrees(isAnimating ? 5 : -5),
+                .degrees(isAnimating ? GymMetrics.waveAngle : -GymMetrics.waveAngle),
                 anchor: .bottom
             )
         case .enterFromBottom:

@@ -80,12 +80,12 @@ private struct StartTemplateRow: View {
 
     var body: some View {
         HStack(spacing: 0) {
-            RoundedRectangle(cornerRadius: 1.5)
+            RoundedRectangle(cornerRadius: GymMetrics.radiusSetBar)
                 .fill(GymColors.focus)
                 .frame(width: GymMetrics.setBarWidth)
                 .padding(.trailing, GymMetrics.space8)
 
-            VStack(alignment: .leading, spacing: 4) {
+            VStack(alignment: .leading, spacing: GymMetrics.space4) {
                 Text(template.templateName(in: modelContext))
                     .font(GymFont.heading3)
                     .foregroundStyle(.primary)
@@ -96,7 +96,7 @@ private struct StartTemplateRow: View {
                     .count
                 let exerciseCount = template.exerciseCount(in: modelContext)
 
-                HStack(spacing: 8) {
+                HStack(spacing: GymMetrics.space8) {
                     Text(
                         "\(exerciseCount)"
                         + " exercise"
@@ -108,6 +108,6 @@ private struct StartTemplateRow: View {
                 .foregroundStyle(GymColors.secondaryText)
             }
         }
-        .padding(.vertical, 2)
+        .padding(.vertical, GymMetrics.space2)
     }
 }

@@ -150,7 +150,12 @@ struct ProfileView: View {
 
             if !completed.isEmpty {
                 Section("Recent Workouts") {
-                    let recentCompleted = Array(completed.prefix(GymMetrics.recentWorkoutsLimit))
+                    let recentCompleted = Array(
+                        completed.prefix(
+                            GymMetrics
+                                .recentWorkoutsLimit
+                        )
+                    )
                     ForEach(recentCompleted) { workout in
                         NavigationLink {
                             WorkoutHistoryView(workout: workout)

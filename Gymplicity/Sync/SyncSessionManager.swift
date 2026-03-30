@@ -370,6 +370,9 @@ class SyncSessionManager:
             toPeer: connectedPeer
         ) { [weak self] error in
             Task { @MainActor in
+                // Best-effort cleanup: temp file
+                // removal is non-critical and does
+                // not warrant surfacing to the user
                 do {
                     try FileManager.default
                         .removeItem(at: tempURL)
@@ -684,6 +687,9 @@ class SyncSessionManager:
             )
         }
 
+        // Best-effort cleanup: temp file removal
+        // is non-critical and does not warrant
+        // surfacing to the user
         do {
             try FileManager.default
                 .removeItem(at: url)

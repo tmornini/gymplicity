@@ -21,6 +21,8 @@ enum GymMetrics {
     static let progressBarHeight: CGFloat = 8
     static let fieldUnderlineHeight: CGFloat = 2
     static let minExerciseNameWidth: CGFloat = 60
+    static let fieldWidthCompact: CGFloat = 120
+    static let fieldWidthGuided: CGFloat = 130
 
     // MARK: - Corner Radii
 

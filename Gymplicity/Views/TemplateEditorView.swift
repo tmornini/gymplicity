@@ -290,7 +290,8 @@ private struct TemplateSetEntryView: View {
                     repsText: $repsText,
                     font: GymFont.numericEntrySmall,
                     accentColor: GymColors.focus,
-                    fieldWidth: 120,
+                    fieldWidth: GymMetrics
+                        .fieldWidthCompact,
                     showLabels: true,
                     repsUnit: " ",
                     focusedField: $focusedField

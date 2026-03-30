@@ -188,7 +188,8 @@ struct GuidedWorkoutView: View {
                 repsText: $repsText,
                 font: GymFont.numericEntry,
                 accentColor: GymColors.energy,
-                fieldWidth: 130,
+                fieldWidth: GymMetrics
+                    .fieldWidthGuided,
                 showLabels: false,
                 repsUnit: "reps",
                 focusedField: $focusedField

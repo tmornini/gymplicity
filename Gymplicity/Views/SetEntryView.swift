@@ -33,7 +33,8 @@ struct SetEntryView: View {
                     repsText: $repsText,
                     font: GymFont.numericEntrySmall,
                     accentColor: GymColors.energy,
-                    fieldWidth: 120,
+                    fieldWidth: GymMetrics
+                        .fieldWidthCompact,
                     showLabels: true,
                     repsUnit: " ",
                     focusedField: $focusedField

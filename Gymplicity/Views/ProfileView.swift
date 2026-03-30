@@ -48,8 +48,8 @@ struct ProfileView: View {
             return exercises.sorted { $0.name < $1.name }
         }()
 
-        // Compute lastSets inline from existing subgraph
-        // (avoids redundant queries)
+        // Derive from existing subgraph to avoid
+        // redundant queries
         let lastSets: [UUID: SetEntity] = {
             var result: [UUID: SetEntity] = [:]
             let targetIds = Set(exercisesUsed.map(\.id))

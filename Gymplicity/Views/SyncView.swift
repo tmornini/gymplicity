@@ -119,7 +119,11 @@ struct SyncView: View {
                                 handlePeerTap(peer)
                             } label: {
                                 HStack {
-                                    VStack(alignment: .leading, spacing: GymMetrics.space2) {
+                                    VStack(
+                                        alignment: .leading,
+                                        spacing: GymMetrics
+                                            .space2
+                                    ) {
                                         if let name = peer.name {
                                             Text(name)
                                                 .font(GymFont.body)

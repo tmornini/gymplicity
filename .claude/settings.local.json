@@ -38,7 +38,9 @@
       "Bash(for file:*)",
       "Bash(xxd Gymplicity/Models/Entities.swift)",
       "Bash(awk:*)",
-      "Bash(xcodebuild build:*)"
+      "Bash(xcodebuild build:*)",
+      "mcp__XcodeBuildMCP__boot_sim",
+      "mcp__XcodeBuildMCP__test_sim"
     ]
   },
   "sandbox": {

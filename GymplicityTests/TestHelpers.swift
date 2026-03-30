@@ -91,7 +91,11 @@ extension ModelContext {
         name: String,
         for trainer: IdentityEntity
     ) -> WorkoutEntity {
-        let template = WorkoutEntity(isTemplate: true, templateName: name)
+        let template = WorkoutEntity(
+            date: .now,
+            isTemplate: true,
+            templateName: name
+        )
         insert(template)
         insert(IdentityWorkouts(
             identityId: trainer.id,

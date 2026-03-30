@@ -47,7 +47,7 @@ final class WorkoutEntity {
     var templateName: String?
 
     init(
-        date: Date = .now,
+        date: Date,
         isTemplate: Bool,
         templateName: String? = nil
     ) {

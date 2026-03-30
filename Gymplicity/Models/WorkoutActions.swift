@@ -47,7 +47,7 @@ extension ModelContext {
     @MainActor @discardableResult
     func startWorkout(for identity: IdentityEntity) -> WorkoutEntity? {
         guard identity.activeWorkouts(in: self).isEmpty else { return nil }
-        let workout = WorkoutEntity(isTemplate: false)
+        let workout = WorkoutEntity(date: .now, isTemplate: false)
         insert(workout)
         insert(IdentityWorkouts(
             identityId: identity.id,
@@ -66,7 +66,7 @@ extension ModelContext {
         _ template: WorkoutEntity,
         for identity: IdentityEntity
     ) -> WorkoutEntity {
-        let workout = WorkoutEntity(isTemplate: false)
+        let workout = WorkoutEntity(date: .now, isTemplate: false)
         insert(workout)
         insert(IdentityWorkouts(
             identityId: identity.id,

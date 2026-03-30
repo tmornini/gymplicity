@@ -54,6 +54,7 @@ struct TemplateListView: View {
 
     private func createTemplate() {
         let template = WorkoutEntity(
+            date: .now,
             isTemplate: true,
             templateName: "New Template"
         )

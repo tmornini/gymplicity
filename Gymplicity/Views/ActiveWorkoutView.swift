@@ -252,10 +252,15 @@ struct ActiveWorkoutView: View {
         }
         .sheet(isPresented: $showingAddExercise) {
             if let group = targetGroup {
+                let resolved: IdentityEntity? =
+                    if let trainer {
+                        trainer
+                    } else {
+                        resolveTrainer()
+                    }
                 AddExerciseView(
                     group: group,
-                    trainer: trainer
-                        ?? resolveTrainer()
+                    trainer: resolved
                 )
             }
         }

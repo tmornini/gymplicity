@@ -542,9 +542,17 @@ class SyncSessionManager:
 
         let message =
             SyncMessage.entityUpdates(payload)
+        let data: Data
         do {
-            let data = try JSONEncoder()
+            data = try JSONEncoder()
                 .encode(message)
+        } catch {
+            connectionState = .error(
+                "Delta encode failed: \(error)"
+            )
+            return
+        }
+        do {
             try session.send(
                 data,
                 toPeers: [connectedPeer],

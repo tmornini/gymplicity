@@ -21,7 +21,10 @@ struct TemplateEditorView: View {
                     }
                     Spacer()
                     Button("Rename") {
-                        nameText = template.templateName(in: modelContext) ?? ""
+                        nameText = template
+                            .templateName(
+                                in: modelContext
+                            ) ?? ""
                         editingName = true
                     }
                     .font(GymFont.label)
@@ -223,7 +226,11 @@ private struct TemplateSetRow: View {
                     }
                     ExerciseAttributePills(exercise: exercise)
                 }
-                .frame(minWidth: GymMetrics.minExerciseNameWidth, alignment: .leading)
+                .frame(
+                    minWidth: GymMetrics
+                        .minExerciseNameWidth,
+                    alignment: .leading
+                )
 
                 if set.weight > 0 || set.reps > 0 {
                     Text(Weight.formatted(set.weight))

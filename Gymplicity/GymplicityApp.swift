@@ -8,6 +8,7 @@ struct GymplicityApp: App {
             name: "Gymplicity",
             role: "unknown"
         )
+    private let searchEngine = ExerciseSearchEngine()
 
     var body: some Scene {
         WindowGroup {
@@ -15,7 +16,7 @@ struct GymplicityApp: App {
                 .environmentObject(syncManager)
                 .environment(
                     \.exerciseSearchEngine,
-                    ExerciseSearchEngine()
+                    searchEngine
                 )
         }
         .modelContainer(for: [

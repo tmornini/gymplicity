@@ -14,6 +14,7 @@ struct AddExerciseView: View {
     )
     @State private var userExercises: [ExerciseEntity] = []
     @State private var recentlyUsedIDs: Set<UUID> = []
+    @State private var isLoaded = false
     @FocusState private var nameFieldFocused: Bool
 
     var body: some View {
@@ -97,7 +98,11 @@ struct AddExerciseView: View {
                         color: GymColors.secondaryText
                     )
                             .frame(height: GymMetrics.mascotSmall)
-                        Text("Type an exercise name")
+                        Text(
+                            isLoaded
+                                ? "Type an exercise name"
+                                : "Loading exercises..."
+                        )
                             .font(GymFont.body)
                             .foregroundStyle(
                             GymColors.secondaryText
@@ -124,25 +129,33 @@ struct AddExerciseView: View {
                         )
                 }
             }
-            .onAppear {
+            .task {
                 nameFieldFocused = true
                 guard let trainer else { return }
                 userExercises = trainer
                     .exerciseCatalog(in: modelContext)
+                results = searchEngine.search(
+                    query: "",
+                    userExercises: userExercises,
+                    recentlyUsedIDs: []
+                )
+                isLoaded = true
+                await Task.yield()
                 recentlyUsedIDs = BatchTraversal
                     .exerciseIdsUsed(
                         for: trainer,
                         in: modelContext
                     )
                 results = searchEngine.search(
-                    query: "",
+                    query: searchText,
                     userExercises: userExercises,
                     recentlyUsedIDs: recentlyUsedIDs
                 )
             }
             .task(id: searchText) {
                 try? await Task.sleep(for: .milliseconds(GymMetrics.searchDebounceMs))
-                guard !Task.isCancelled else { return }
+                guard !Task.isCancelled, isLoaded
+                else { return }
                 results = searchEngine.search(
                     query: searchText,
                     userExercises: userExercises,

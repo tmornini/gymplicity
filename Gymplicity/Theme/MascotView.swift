@@ -32,7 +32,7 @@ enum MascotPose {
 
 struct MascotView: View {
     let pose: MascotPose
-    var color: Color = GymColors.mascotGray
+    let color: Color
 
     var body: some View {
         Image(systemName: pose.symbolName)

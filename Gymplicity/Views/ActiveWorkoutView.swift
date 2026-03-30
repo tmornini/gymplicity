@@ -5,8 +5,8 @@ struct ActiveWorkoutView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
     @Bindable var workout: WorkoutEntity
-    var trainer: IdentityEntity? = nil
-    var onSwitchToGuided: (() -> Void)? = nil
+    let trainer: IdentityEntity?
+    let onSwitchToGuided: (() -> Void)?
     @State private var showingAddExercise = false
     @State private var showingEndConfirmation = false
     @State private var showingDeleteWorkout = false
@@ -160,7 +160,12 @@ struct ActiveWorkoutView: View {
                     }
                 } else {
                     NavigationLink {
-                        GuidedWorkoutView(workout: workout)
+                        GuidedWorkoutView(
+                            workout: workout,
+                            onSwitchToList: nil,
+                            initialSetIndex: nil,
+                            onSetIndexChange: nil
+                        )
                     } label: {
                         HStack(spacing: GymMetrics.space4) {
                             MascotView(

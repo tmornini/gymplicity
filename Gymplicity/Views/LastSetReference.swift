@@ -2,7 +2,7 @@ import SwiftUI
 
 struct LastSetReference: View {
     let set: SetEntity?
-    var color: Color = GymColors.steel
+    let color: Color
 
     var body: some View {
         if let set {

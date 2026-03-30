@@ -88,7 +88,11 @@ struct ProfileView: View {
                 Section("Active Workout") {
                     ForEach(active) { workout in
                         NavigationLink {
-                            ActiveWorkoutView(workout: workout)
+                            ActiveWorkoutView(
+                                workout: workout,
+                                trainer: nil,
+                                onSwitchToGuided: nil
+                            )
                         } label: {
                             HStack {
                                 Circle()
@@ -137,7 +141,8 @@ struct ProfileView: View {
                     .sheet(isPresented: $showingTemplateStart) {
                         StartFromTemplateView(
                             trainer: trainer,
-                            trainee: identity
+                            trainee: identity,
+                            onStart: { _ in }
                         )
                     }
                 }
@@ -240,7 +245,11 @@ struct ProfileView: View {
             SyncView(identity: identity)
         }
         .navigationDestination(item: $newWorkout) { workout in
-            ActiveWorkoutView(workout: workout)
+            ActiveWorkoutView(
+                workout: workout,
+                trainer: nil,
+                onSwitchToGuided: nil
+            )
         }
         .alert("Edit Name", isPresented: $showingEditName) {
             TextField("Name", text: $editedName)

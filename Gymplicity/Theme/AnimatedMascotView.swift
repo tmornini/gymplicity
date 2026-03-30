@@ -16,7 +16,7 @@ enum MascotAnimation {
 struct AnimatedMascotView: View {
     let pose: MascotPose
     let animation: MascotAnimation
-    var color: Color = GymColors.chalk
+    let color: Color
 
     @State private var isAnimating = false
     @State private var hasAppeared = false

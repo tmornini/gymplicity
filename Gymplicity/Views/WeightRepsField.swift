@@ -3,11 +3,11 @@ import SwiftUI
 struct WeightRepsField: View {
     @Binding var weightText: String
     @Binding var repsText: String
-    var font: Font = GymFont.numericEntrySmall
-    var accentColor: Color = GymColors.energy
-    var fieldWidth: CGFloat = 120
-    var showLabels: Bool = true
-    var repsUnit: String = " "
+    let font: Font
+    let accentColor: Color
+    let fieldWidth: CGFloat
+    let showLabels: Bool
+    let repsUnit: String
     var focusedField: FocusState<Field?>.Binding
 
     enum Field: Hashable { case weight, reps }

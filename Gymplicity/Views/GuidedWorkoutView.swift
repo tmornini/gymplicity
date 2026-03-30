@@ -5,9 +5,9 @@ struct GuidedWorkoutView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
     @Bindable var workout: WorkoutEntity
-    var onSwitchToList: (() -> Void)? = nil
-    var initialSetIndex: Int? = nil
-    var onSetIndexChange: ((Int) -> Void)? = nil
+    let onSwitchToList: (() -> Void)?
+    let initialSetIndex: Int?
+    let onSetIndexChange: ((Int) -> Void)?
     @State private var currentIndex: Int = 0
     @State private var weightText: String = ""
     @State private var repsText: String = ""
@@ -188,6 +188,7 @@ struct GuidedWorkoutView: View {
                 weightText: $weightText,
                 repsText: $repsText,
                 font: GymFont.numericEntry,
+                accentColor: GymColors.energy,
                 fieldWidth: 130,
                 showLabels: false,
                 repsUnit: "reps",
@@ -196,7 +197,10 @@ struct GuidedWorkoutView: View {
 
             progressBar(snapshot: snapshot, flatSets: flatSets)
 
-            LastSetReference(set: exercise.flatMap { lastSets[$0.id] })
+            LastSetReference(
+                set: exercise.flatMap { lastSets[$0.id] },
+                color: GymColors.steel
+            )
 
             Button {
                 completeCurrentSet()

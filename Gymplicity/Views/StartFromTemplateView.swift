@@ -6,7 +6,7 @@ struct StartFromTemplateView: View {
     @Environment(\.dismiss) private var dismiss
     let trainer: IdentityEntity
     let trainee: IdentityEntity
-    var onStart: (WorkoutEntity) -> Void = { _ in }
+    let onStart: (WorkoutEntity) -> Void
 
     var body: some View {
         NavigationStack {

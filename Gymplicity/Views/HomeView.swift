@@ -192,7 +192,11 @@ struct HomeView: View {
         }
         .sheet(isPresented: $showingTemplateStart) {
             if let trainee = selectedTrainee {
-                StartFromTemplateView(trainer: identity, trainee: trainee)
+                StartFromTemplateView(
+                    trainer: identity,
+                    trainee: trainee,
+                    onStart: { _ in }
+                )
             }
         }
         .navigationDestination(item: $newWorkout) { workout in

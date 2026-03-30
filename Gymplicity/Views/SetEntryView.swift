@@ -29,6 +29,11 @@ struct SetEntryView: View {
                 WeightRepsField(
                     weightText: $weightText,
                     repsText: $repsText,
+                    font: GymFont.numericEntrySmall,
+                    accentColor: GymColors.energy,
+                    fieldWidth: 120,
+                    showLabels: true,
+                    repsUnit: " ",
                     focusedField: $focusedField
                 )
 

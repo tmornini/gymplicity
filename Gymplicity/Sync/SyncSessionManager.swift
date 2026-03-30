@@ -752,7 +752,9 @@ class SyncSessionManager:
                     from: data
                 )
         } catch {
-            print("[SyncMessage] \(error)")
+            connectionState = .error(
+                "Decode failed: \(error)"
+            )
             return
         }
 

@@ -21,7 +21,7 @@ struct GuidedWorkoutView: View {
         let flatSets = snapshot.allSetsFlattened
         let owner = workout.owner(in: modelContext)
 
-        // Batch-fetch lastSets for all exercises
+        // Single fetch prevents N+1 queries
         let exerciseIds = Array(Set(
             snapshot.groups.flatMap { g in
                 g.sets.compactMap { $0.exercise?.id }
@@ -335,7 +335,7 @@ struct GuidedWorkoutView: View {
             after: currentIndex,
             in: modelContext
         ) {
-            // Brief walking transition
+            // Visual breathing room between exercises
             withAnimation(
                 .easeInOut(
                     duration: GymMetrics

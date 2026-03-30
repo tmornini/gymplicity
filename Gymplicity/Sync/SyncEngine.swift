@@ -4,27 +4,27 @@ import SwiftData
 // MARK: - Merge Result
 
 struct MergeResult: Sendable {
-    var identitiesInserted = 0
-    var identitiesUpdated = 0
-    var exercisesInserted = 0
-    var exercisesUpdated = 0
-    var workoutsInserted = 0
-    var workoutsUpdated = 0
-    var workoutGroupsInserted = 0
-    var workoutGroupsUpdated = 0
-    var setsInserted = 0
-    var setsUpdated = 0
-    var trainerTraineesInserted = 0
-    var trainerExercisesInserted = 0
-    var identityWorkoutsInserted = 0
-    var workoutGroupJoinsInserted = 0
-    var groupSetJoinsInserted = 0
-    var exerciseSetJoinsInserted = 0
-    var templateInstanceJoinsInserted = 0
-    var identityAliasesInserted = 0
-    var setCompletionsInserted = 0
-    var workoutCompletionsInserted = 0
-    var deviceSyncEventsInserted = 0
+    var identitiesInserted: Int
+    var identitiesUpdated: Int
+    var exercisesInserted: Int
+    var exercisesUpdated: Int
+    var workoutsInserted: Int
+    var workoutsUpdated: Int
+    var workoutGroupsInserted: Int
+    var workoutGroupsUpdated: Int
+    var setsInserted: Int
+    var setsUpdated: Int
+    var trainerTraineesInserted: Int
+    var trainerExercisesInserted: Int
+    var identityWorkoutsInserted: Int
+    var workoutGroupJoinsInserted: Int
+    var groupSetJoinsInserted: Int
+    var exerciseSetJoinsInserted: Int
+    var templateInstanceJoinsInserted: Int
+    var identityAliasesInserted: Int
+    var setCompletionsInserted: Int
+    var workoutCompletionsInserted: Int
+    var deviceSyncEventsInserted: Int
 
     var totalInserted: Int {
         identitiesInserted
@@ -99,7 +99,29 @@ struct SyncEngine {
         _ payload: SyncPayload,
         into context: ModelContext
     ) -> MergeResult {
-        var result = MergeResult()
+        var result = MergeResult(
+            identitiesInserted: 0,
+            identitiesUpdated: 0,
+            exercisesInserted: 0,
+            exercisesUpdated: 0,
+            workoutsInserted: 0,
+            workoutsUpdated: 0,
+            workoutGroupsInserted: 0,
+            workoutGroupsUpdated: 0,
+            setsInserted: 0,
+            setsUpdated: 0,
+            trainerTraineesInserted: 0,
+            trainerExercisesInserted: 0,
+            identityWorkoutsInserted: 0,
+            workoutGroupJoinsInserted: 0,
+            groupSetJoinsInserted: 0,
+            exerciseSetJoinsInserted: 0,
+            templateInstanceJoinsInserted: 0,
+            identityAliasesInserted: 0,
+            setCompletionsInserted: 0,
+            workoutCompletionsInserted: 0,
+            deviceSyncEventsInserted: 0
+        )
 
         // Determine sender role from payload identities
         let senderIsTrainer = payload.identities

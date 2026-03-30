@@ -157,7 +157,7 @@ import SwiftData
 @MainActor final class ExerciseSearchEngineTests: XCTestCase {
     func testCatalogLoads() {
         let engine = ExerciseSearchEngine.shared
-        let results = engine.search(query: "squat", userExercises: [])
+        let results = engine.search(query: "squat", userExercises: [], recentlyUsedIDs: [])
         XCTAssertFalse(
             results.catalogExercises.isEmpty,
             "Catalog should have squat exercises"
@@ -166,14 +166,14 @@ import SwiftData
 
     func testEmptyQueryReturnsNoCalatog() {
         let engine = ExerciseSearchEngine.shared
-        let results = engine.search(query: "", userExercises: [])
+        let results = engine.search(query: "", userExercises: [], recentlyUsedIDs: [])
         XCTAssertTrue(results.catalogExercises.isEmpty)
     }
 
     func testFuzzyTypoMatch() {
         let engine = ExerciseSearchEngine.shared
         // "squatt" is 6 chars (threshold=1), distance to "squat" = 1
-        let results = engine.search(query: "squatt", userExercises: [])
+        let results = engine.search(query: "squatt", userExercises: [], recentlyUsedIDs: [])
         let names = results.catalogExercises.map(\.exercise.name)
         XCTAssertTrue(
             names.contains(where: {
@@ -185,7 +185,7 @@ import SwiftData
 
     func testMuscleSearch() {
         let engine = ExerciseSearchEngine.shared
-        let results = engine.search(query: "biceps", userExercises: [])
+        let results = engine.search(query: "biceps", userExercises: [], recentlyUsedIDs: [])
         XCTAssertFalse(
             results.catalogExercises.isEmpty,
             "Should find exercises targeting biceps"
@@ -202,7 +202,7 @@ import SwiftData
 
     func testBodyRegionSearch() {
         let engine = ExerciseSearchEngine.shared
-        let results = engine.search(query: "legs", userExercises: [])
+        let results = engine.search(query: "legs", userExercises: [], recentlyUsedIDs: [])
         XCTAssertFalse(
             results.catalogExercises.isEmpty,
             "Should find leg exercises"
@@ -211,8 +211,8 @@ import SwiftData
 
     func testNegationExcludes() {
         let engine = ExerciseSearchEngine.shared
-        let all = engine.search(query: "back", userExercises: [])
-        let filtered = engine.search(query: "back -legs", userExercises: [])
+        let all = engine.search(query: "back", userExercises: [], recentlyUsedIDs: [])
+        let filtered = engine.search(query: "back -legs", userExercises: [], recentlyUsedIDs: [])
         XCTAssertLessThan(
             filtered.catalogExercises.count,
             all.catalogExercises.count,
@@ -222,7 +222,7 @@ import SwiftData
 
     func testNameMatchRanksHigherThanMuscle() {
         let engine = ExerciseSearchEngine.shared
-        let results = engine.search(query: "squat", userExercises: [])
+        let results = engine.search(query: "squat", userExercises: [], recentlyUsedIDs: [])
         guard results.catalogExercises.count >= 2 else { return }
         let first = results.catalogExercises[0]
         let hasNameMatch = first.reasons.contains(.exactName)
@@ -234,7 +234,7 @@ import SwiftData
 
     func testMultiTokenANDLogic() {
         let engine = ExerciseSearchEngine.shared
-        let results = engine.search(query: "biceps curl", userExercises: [])
+        let results = engine.search(query: "biceps curl", userExercises: [], recentlyUsedIDs: [])
         for result in results.catalogExercises {
             let blob = result.exercise.name.lowercased() +
                 result.exercise.aliases.joined(separator: " ") +
@@ -260,7 +260,8 @@ import SwiftData
         let engine = ExerciseSearchEngine.shared
         let results = engine.search(
             query: "squat",
-            userExercises: userExercises
+            userExercises: userExercises,
+            recentlyUsedIDs: []
         )
 
         let catalogNames = results.catalogExercises
@@ -283,7 +284,8 @@ import SwiftData
         let engine = ExerciseSearchEngine.shared
         let results = engine.search(
             query: "bench",
-            userExercises: userExercises
+            userExercises: userExercises,
+            recentlyUsedIDs: []
         )
 
         XCTAssertEqual(results.userExercises.count, 1)
@@ -302,7 +304,7 @@ import SwiftData
 
         let userExercises = trainer.exerciseCatalog(in: ctx)
         let engine = ExerciseSearchEngine.shared
-        let results = engine.search(query: "", userExercises: userExercises)
+        let results = engine.search(query: "", userExercises: userExercises, recentlyUsedIDs: [])
 
         XCTAssertEqual(results.userExercises.count, 2)
         XCTAssertTrue(results.catalogExercises.isEmpty)

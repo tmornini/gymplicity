@@ -526,7 +526,10 @@ class SyncSessionManager:
             exercises: exerciseDTOs,
             workouts: workoutDTOs,
             workoutGroups: groupDTOs,
-            sets: setDTOs
+            sets: setDTOs,
+            setCompletions: [],
+            workoutCompletions: [],
+            deviceSyncEvents: []
         )
 
         let message =

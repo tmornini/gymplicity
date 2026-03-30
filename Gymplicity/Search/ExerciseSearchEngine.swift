@@ -223,7 +223,7 @@ final class ExerciseSearchEngine: @unchecked Sendable {
     func search(
         query: String,
         userExercises: [ExerciseEntity],
-        recentlyUsedIDs: Set<UUID> = []
+        recentlyUsedIDs: Set<UUID>
     ) -> ExerciseSearchResults {
         let parsed = ParsedQuery(query)
 

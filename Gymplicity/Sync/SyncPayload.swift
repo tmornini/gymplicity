@@ -145,16 +145,16 @@ struct SyncPayload: Codable, Sendable {
     /// not included in this delta.
     static func delta(
         senderIdentityId: UUID,
-        identities: [IdentityDTO] = [],
-        exercises: [ExerciseDTO] = [],
-        workouts: [WorkoutDTO] = [],
-        workoutGroups: [WorkoutGroupDTO] = [],
-        sets: [SetDTO] = [],
-        setCompletions: [SetCompletionDTO] = [],
+        identities: [IdentityDTO],
+        exercises: [ExerciseDTO],
+        workouts: [WorkoutDTO],
+        workoutGroups: [WorkoutGroupDTO],
+        sets: [SetDTO],
+        setCompletions: [SetCompletionDTO],
         workoutCompletions:
-            [WorkoutCompletionDTO] = [],
+            [WorkoutCompletionDTO],
         deviceSyncEvents:
-            [DeviceSyncEventDTO] = []
+            [DeviceSyncEventDTO]
     ) -> SyncPayload {
         SyncPayload(
             version: 1,

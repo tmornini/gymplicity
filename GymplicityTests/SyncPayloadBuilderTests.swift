@@ -210,7 +210,14 @@ import SwiftData
                     name: "Test",
                     isTrainer: true
                 )
-            ]
+            ],
+            exercises: [],
+            workouts: [],
+            workoutGroups: [],
+            sets: [],
+            setCompletions: [],
+            workoutCompletions: [],
+            deviceSyncEvents: []
         )
 
         XCTAssertEqual(payload.identities.count, 1)

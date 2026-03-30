@@ -234,30 +234,20 @@ extension WorkoutEntity {
         in context: ModelContext
     ) -> IdentityEntity {
         let id = self.id
-        let join = context.fetchFirst(
+        let identityId = context.fetchFirst(
             FetchDescriptor<IdentityWorkouts>(
                 predicate: #Predicate {
                     $0.workoutId == id
                 }
             )
-        )
-        precondition(
-            join != nil,
-            "Workout \(id) has no owner join"
-        )
-        let identityId = join!.identityId
-        let owner = context.fetchFirst(
+        )!.identityId
+        return context.fetchFirst(
             FetchDescriptor<IdentityEntity>(
                 predicate: #Predicate {
                     $0.id == identityId
                 }
             )
-        )
-        precondition(
-            owner != nil,
-            "Workout owner \(identityId) missing"
-        )
-        return owner!
+        )!
     }
 
     @MainActor func groups(
@@ -449,30 +439,20 @@ extension WorkoutGroupEntity {
         in context: ModelContext
     ) -> WorkoutEntity {
         let id = self.id
-        let join = context.fetchFirst(
+        let workoutId = context.fetchFirst(
             FetchDescriptor<WorkoutGroups>(
                 predicate: #Predicate {
                     $0.groupId == id
                 }
             )
-        )
-        precondition(
-            join != nil,
-            "Group \(id) has no workout join"
-        )
-        let workoutId = join!.workoutId
-        let workout = context.fetchFirst(
+        )!.workoutId
+        return context.fetchFirst(
             FetchDescriptor<WorkoutEntity>(
                 predicate: #Predicate {
                     $0.id == workoutId
                 }
             )
-        )
-        precondition(
-            workout != nil,
-            "Group's workout \(workoutId) missing"
-        )
-        return workout!
+        )!
     }
 
     @MainActor func sets(
@@ -581,29 +561,19 @@ extension SetEntity {
         in context: ModelContext
     ) -> WorkoutGroupEntity {
         let id = self.id
-        let join = context.fetchFirst(
+        let groupId = context.fetchFirst(
             FetchDescriptor<GroupSets>(
                 predicate: #Predicate {
                     $0.setId == id
                 }
             )
-        )
-        precondition(
-            join != nil,
-            "Set \(id) has no group join"
-        )
-        let groupId = join!.groupId
-        let group = context.fetchFirst(
+        )!.groupId
+        return context.fetchFirst(
             FetchDescriptor<WorkoutGroupEntity>(
                 predicate: #Predicate {
                     $0.id == groupId
                 }
             )
-        )
-        precondition(
-            group != nil,
-            "Set's group \(groupId) missing"
-        )
-        return group!
+        )!
     }
 }

@@ -149,7 +149,11 @@ struct ProgressChartsView: View {
                     x: .value("Date", point.date),
                     y: .value("Volume", point.volume)
                 )
-                .foregroundStyle(GymColors.focus.opacity(GymMetrics.opacitySubtle))
+                .foregroundStyle(
+                    GymColors.focus.opacity(
+                        GymMetrics.opacitySubtle
+                    )
+                )
 
                 LineMark(
                     x: .value("Date", point.date),

@@ -342,8 +342,14 @@ final class ExerciseSearchEngine: @unchecked Sendable {
 
             let uniqueReasons = Array(Set(allReasons))
                 .sorted { $0.score < $1.score }
-            let bestScore = uniqueReasons
-                .map(\.score).min() ?? 50
+            guard let bestScore = uniqueReasons
+                .map(\.score).min()
+            else {
+                assertionFailure(
+                    "unreachable: empty reasons"
+                )
+                return nil
+            }
             return CatalogSearchResult(
                 exercise: indexed.exercise,
                 reasons: uniqueReasons,

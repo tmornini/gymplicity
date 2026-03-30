@@ -20,7 +20,11 @@ struct WorkoutDTO: Codable, Sendable {
     let date: Date
     let notes: String?
     let isTemplate: Bool
-    let templateName: String?
+}
+
+struct WorkoutTemplateDTO: Codable, Sendable {
+    let workoutId: UUID
+    let name: String
 }
 
 struct WorkoutGroupDTO: Codable, Sendable {
@@ -109,6 +113,9 @@ struct SyncPayload: Codable, Sendable {
     let workoutGroups: [WorkoutGroupDTO]
     let sets: [SetDTO]
 
+    // Relationship tables
+    let workoutTemplates: [WorkoutTemplateDTO]
+
     // Join tables
     let trainerTrainees: [TrainerTraineesDTO]
     let trainerExercises: [TrainerExercisesDTO]
@@ -152,6 +159,7 @@ struct SyncPayload: Codable, Sendable {
             workouts: workouts,
             workoutGroups: workoutGroups,
             sets: sets,
+            workoutTemplates: [],
             trainerTrainees: [],
             trainerExercises: [],
             identityWorkouts: [],
@@ -209,8 +217,18 @@ extension WorkoutEntity {
             id: id,
             date: date,
             notes: notes,
-            isTemplate: isTemplate,
-            templateName: templateName
+            isTemplate: isTemplate
+        )
+    }
+}
+
+extension WorkoutTemplate {
+    @MainActor func toDTO()
+        -> WorkoutTemplateDTO
+    {
+        WorkoutTemplateDTO(
+            workoutId: workoutId,
+            name: name
         )
     }
 }
@@ -432,7 +450,18 @@ struct SyncPayloadBuilder {
             }
         )
 
-        // 7. TemplateInstances for workouts in scope
+        // 7. WorkoutTemplates for template workouts
+        let wtRows = context.fetchOrEmpty(
+            FetchDescriptor<WorkoutTemplate>(
+                predicate: #Predicate {
+                    allWIds.contains(
+                        $0.workoutId
+                    )
+                }
+            )
+        )
+
+        // 8. TemplateInstances for workouts in scope
         let allWIdsForTI = Array(allWorkoutIds)
         let tiJoins = context.fetchOrEmpty(
             FetchDescriptor<TemplateInstances>(
@@ -445,7 +474,7 @@ struct SyncPayloadBuilder {
             )
         )
 
-        // 8. Batch fetch groups, sets, exercise links
+        // 9. Batch fetch groups, sets, exercise links
         //    O(5) queries instead of O(w*g*s)
         let wgJoins = context.fetchOrEmpty(
             FetchDescriptor<WorkoutGroups>(
@@ -487,7 +516,7 @@ struct SyncPayloadBuilder {
             )
         )
 
-        // 9. IdentityAliases for identities in scope
+        // 10. IdentityAliases for identities in scope
         let allIdentityIds = Array(traineeAliasGroup.union([trainerId]))
         let aliasRows = context.fetchOrEmpty(
             FetchDescriptor<IdentityAliases>(
@@ -502,7 +531,7 @@ struct SyncPayloadBuilder {
             )
         )
 
-        // 10. SetCompletions for sets in scope
+        // 11. SetCompletions for sets in scope
         let scRows = context.fetchOrEmpty(
             FetchDescriptor<SetCompletions>(
                 predicate: #Predicate {
@@ -511,7 +540,7 @@ struct SyncPayloadBuilder {
             )
         )
 
-        // 11. WorkoutCompletions for workouts
+        // 12. WorkoutCompletions for workouts
         //     in scope
         let wcRows = context.fetchOrEmpty(
             FetchDescriptor<WorkoutCompletions>(
@@ -523,7 +552,7 @@ struct SyncPayloadBuilder {
             )
         )
 
-        // 12. DeviceSyncEvents for identities
+        // 13. DeviceSyncEvents for identities
         //     in scope
         let dseRows = context.fetchOrEmpty(
             FetchDescriptor<DeviceSyncEvents>(
@@ -535,7 +564,7 @@ struct SyncPayloadBuilder {
             )
         )
 
-        // 13. Package into SyncPayload
+        // 14. Package into SyncPayload
         return SyncPayload(
             version: 1,
             senderIdentityId: localIdentity.id,
@@ -548,6 +577,8 @@ struct SyncPayloadBuilder {
                 allGroups.map { $0.toDTO() },
             sets:
                 allSets.map { $0.toDTO() },
+            workoutTemplates:
+                wtRows.map { $0.toDTO() },
             trainerTrainees:
                 ttJoins.map { $0.toDTO() },
             trainerExercises:

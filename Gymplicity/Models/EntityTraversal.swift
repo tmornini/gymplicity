@@ -132,8 +132,8 @@ extension IdentityEntity {
         workouts(in: context)
             .filter { $0.isTemplate }
             .sorted {
-                $0.templateName!
-                    < $1.templateName!
+                $0.templateName(in: context)
+                    < $1.templateName(in: context)
             }
     }
 
@@ -216,6 +216,20 @@ extension IdentityEntity {
 // MARK: - WorkoutEntity Traversal
 
 extension WorkoutEntity {
+    @MainActor func templateName(
+        in context: ModelContext
+    ) -> String {
+        let id = self.id
+        let template = context.fetchFirst(
+            FetchDescriptor<WorkoutTemplate>(
+                predicate: #Predicate {
+                    $0.workoutId == id
+                }
+            )
+        )
+        return template?.name ?? "Untitled"
+    }
+
     @MainActor func owner(
         in context: ModelContext
     ) -> IdentityEntity {

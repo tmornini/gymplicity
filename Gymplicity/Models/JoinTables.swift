@@ -108,6 +108,17 @@ final class PairedDevices {
     }
 }
 
+@Model
+final class WorkoutTemplate {
+    var workoutId: UUID
+    var name: String
+
+    init(workoutId: UUID, name: String) {
+        self.workoutId = workoutId
+        self.name = name
+    }
+}
+
 // MARK: - Event Tables
 
 @Model

@@ -183,8 +183,7 @@ import SwiftData
                     id: workout.id,
                     date: workout.date,
                     notes: "Great session",
-                    isTemplate: false,
-                    templateName: nil
+                    isTemplate: false
                 )
             ],
             workoutCompletions: [
@@ -215,19 +214,19 @@ import SwiftData
                     isTrainer: true
                 )
             ],
-            workouts: [
-                WorkoutDTO(
-                    id: template.id,
-                    date: template.date,
-                    notes: nil,
-                    isTemplate: true,
-                    templateName: "Push A"
+            workoutTemplates: [
+                WorkoutTemplateDTO(
+                    workoutId: template.id,
+                    name: "Push A"
                 )
             ]
         )
         let result = SyncEngine.merge(payload, into: ctx)
 
-        XCTAssertEqual(template.templateName, "Push A")
+        XCTAssertEqual(
+            template.templateName(in: ctx),
+            "Push A"
+        )
         XCTAssertEqual(result.workoutsUpdated, 1)
     }
 
@@ -235,7 +234,10 @@ import SwiftData
         let ctx = try makeTestContext()
         let trainer = ctx.makeTrainer()
         let trainee = ctx.makeTrainee(trainer: trainer)
-        let template = ctx.makeTemplate(name: "Push Day", for: trainer)
+        let template = ctx.makeTemplate(
+            name: "Push Day",
+            for: trainer
+        )
 
         let payload = makePayload(
             senderIdentityId: trainee.id,
@@ -246,19 +248,19 @@ import SwiftData
                     isTrainer: false
                 )
             ],
-            workouts: [
-                WorkoutDTO(
-                    id: template.id,
-                    date: template.date,
-                    notes: nil,
-                    isTemplate: true,
-                    templateName: "Hacked"
+            workoutTemplates: [
+                WorkoutTemplateDTO(
+                    workoutId: template.id,
+                    name: "Hacked"
                 )
             ]
         )
         let result = SyncEngine.merge(payload, into: ctx)
 
-        XCTAssertEqual(template.templateName, "Push Day")
+        XCTAssertEqual(
+            template.templateName(in: ctx),
+            "Push Day"
+        )
         XCTAssertEqual(result.workoutsUpdated, 0)
     }
 
@@ -285,8 +287,7 @@ import SwiftData
                     id: newId,
                     date: .now,
                     notes: "New workout",
-                    isTemplate: false,
-                    templateName: nil
+                    isTemplate: false
                 )
             ]
         )

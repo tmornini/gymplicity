@@ -44,22 +44,15 @@ final class WorkoutEntity {
     var date: Date
     var notes: String?
     var isTemplate: Bool
-    var templateName: String?
 
     init(
         date: Date,
-        isTemplate: Bool,
-        templateName: String? = nil
+        isTemplate: Bool
     ) {
-        precondition(
-            !isTemplate || templateName != nil,
-            "Templates must have a templateName"
-        )
         self.id = UUID()
         self.date = date
         self.notes = nil
         self.isTemplate = isTemplate
-        self.templateName = templateName
     }
 }
 

@@ -55,10 +55,15 @@ struct TemplateListView: View {
     private func createTemplate() {
         let template = WorkoutEntity(
             date: .now,
-            isTemplate: true,
-            templateName: "New Template"
+            isTemplate: true
         )
         modelContext.insert(template)
+        modelContext.insert(
+            WorkoutTemplate(
+                workoutId: template.id,
+                name: "New Template"
+            )
+        )
         modelContext.insert(
             IdentityWorkouts(
                 identityId: trainer.id,
@@ -81,7 +86,7 @@ private struct TemplateRow: View {
                 .padding(.trailing, GymMetrics.space8)
 
             VStack(alignment: .leading, spacing: 4) {
-                Text(template.templateName ?? "Untitled")
+                Text(template.templateName(in: modelContext))
                     .font(GymFont.heading3)
 
                 let groups = template.groups(in: modelContext)

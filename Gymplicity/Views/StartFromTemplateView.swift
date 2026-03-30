@@ -86,7 +86,7 @@ private struct StartTemplateRow: View {
                 .padding(.trailing, GymMetrics.space8)
 
             VStack(alignment: .leading, spacing: 4) {
-                Text(template.templateName ?? "Untitled")
+                Text(template.templateName(in: modelContext))
                     .font(GymFont.heading3)
                     .foregroundStyle(.primary)
 

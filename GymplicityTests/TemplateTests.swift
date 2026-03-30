@@ -10,7 +10,10 @@ import SwiftData
         let template = ctx.makeTemplate(name: "Push Day", for: trainer)
 
         XCTAssertTrue(template.isTemplate)
-        XCTAssertEqual(template.templateName, "Push Day")
+        XCTAssertEqual(
+            template.templateName(in: ctx),
+            "Push Day"
+        )
         XCTAssertFalse(template.isCompleted(in: ctx))
     }
 

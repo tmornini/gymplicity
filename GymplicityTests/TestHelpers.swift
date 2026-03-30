@@ -10,7 +10,8 @@ import XCTest
         WorkoutGroupEntity.self, SetEntity.self, TrainerTrainees.self,
         TrainerExercises.self, IdentityWorkouts.self, WorkoutGroups.self,
         GroupSets.self, ExerciseSets.self, TemplateInstances.self,
-        IdentityAliases.self, PairedDevices.self,
+        IdentityAliases.self, WorkoutTemplate.self,
+        PairedDevices.self,
         SetCompletions.self, WorkoutCompletions.self,
         DeviceSyncEvents.self,
         configurations: config
@@ -93,10 +94,13 @@ extension ModelContext {
     ) -> WorkoutEntity {
         let template = WorkoutEntity(
             date: .now,
-            isTemplate: true,
-            templateName: name
+            isTemplate: true
         )
         insert(template)
+        insert(WorkoutTemplate(
+            workoutId: template.id,
+            name: name
+        ))
         insert(IdentityWorkouts(
             identityId: trainer.id,
             workoutId: template.id
@@ -137,6 +141,7 @@ extension ModelContext {
     workouts: [WorkoutDTO] = [],
     workoutGroups: [WorkoutGroupDTO] = [],
     sets: [SetDTO] = [],
+    workoutTemplates: [WorkoutTemplateDTO] = [],
     trainerTrainees: [TrainerTraineesDTO] = [],
     trainerExercises: [TrainerExercisesDTO] = [],
     identityWorkouts: [IdentityWorkoutsDTO] = [],
@@ -157,6 +162,7 @@ extension ModelContext {
         workouts: workouts,
         workoutGroups: workoutGroups,
         sets: sets,
+        workoutTemplates: workoutTemplates,
         trainerTrainees: trainerTrainees,
         trainerExercises: trainerExercises,
         identityWorkouts: identityWorkouts,

@@ -15,11 +15,11 @@ struct TemplateEditorView: View {
         List {
             Section {
                 HStack {
-                    Text(template.templateName ?? "Untitled")
+                    Text(template.templateName(in: modelContext))
                         .font(GymFont.heading3)
                     Spacer()
                     Button("Rename") {
-                        nameText = template.templateName ?? ""
+                        nameText = template.templateName(in: modelContext)
                         editingName = true
                     }
                     .font(GymFont.label)
@@ -85,7 +85,7 @@ struct TemplateEditorView: View {
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .principal) {
-                Text(template.templateName ?? "Template")
+                Text(template.templateName(in: modelContext))
                     .font(GymFont.heading3)
             }
         }
@@ -119,10 +119,37 @@ struct TemplateEditorView: View {
         .alert("Rename Template", isPresented: $editingName) {
             TextField("Template Name", text: $nameText)
             Button("Save") {
-                let trimmed = nameText.trimmingCharacters(in: .whitespaces)
+                let trimmed = nameText
+                    .trimmingCharacters(
+                        in: .whitespaces
+                    )
                 if !trimmed.isEmpty {
-                    template.templateName = trimmed
-                    SyncTrigger.entityUpdated(.workout, id: template.id)
+                    let wId = template.id
+                    let existing =
+                        modelContext.fetchFirst(
+                            FetchDescriptor<
+                                WorkoutTemplate
+                            >(
+                                predicate: #Predicate {
+                                    $0.workoutId
+                                        == wId
+                                }
+                            )
+                        )
+                    if let existing {
+                        existing.name = trimmed
+                    } else {
+                        modelContext.insert(
+                            WorkoutTemplate(
+                                workoutId: wId,
+                                name: trimmed
+                            )
+                        )
+                    }
+                    SyncTrigger.entityUpdated(
+                        .workout,
+                        id: template.id
+                    )
                 }
             }
             Button("Cancel", role: .cancel) { }

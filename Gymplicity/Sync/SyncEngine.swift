@@ -179,15 +179,12 @@ struct SyncEngine {
                         ? senderIsTrainer : true
                 if senderHasAuthority {
                     existing.notes = dto.notes
-                    existing.templateName =
-                        dto.templateName
                     result.workoutsUpdated += 1
                 }
             } else {
                 let entity = WorkoutEntity(
                     date: dto.date,
-                    isTemplate: dto.isTemplate,
-                    templateName: dto.templateName
+                    isTemplate: dto.isTemplate
                 )
                 entity.id = dto.id
                 entity.notes = dto.notes
@@ -196,7 +193,34 @@ struct SyncEngine {
             }
         }
 
-        // 4. WorkoutGroups — trainer has authority
+        // 4. WorkoutTemplates — trainer has
+        //    authority (templates are trainer-owned)
+        for dto in payload.workoutTemplates {
+            let wId = dto.workoutId
+            let existing = context.fetchFirst(
+                FetchDescriptor<WorkoutTemplate>(
+                    predicate: #Predicate {
+                        $0.workoutId == wId
+                    }
+                )
+            )
+            if let existing {
+                if senderIsTrainer {
+                    existing.name = dto.name
+                    result.workoutsUpdated += 1
+                }
+            } else {
+                context.insert(
+                    WorkoutTemplate(
+                        workoutId: dto.workoutId,
+                        name: dto.name
+                    )
+                )
+                result.workoutsInserted += 1
+            }
+        }
+
+        // 5. WorkoutGroups — trainer has authority
         for dto in payload.workoutGroups {
             let id = dto.id
             let existing = context.fetchFirst(

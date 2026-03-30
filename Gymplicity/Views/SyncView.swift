@@ -120,8 +120,20 @@ struct SyncView: View {
                             } label: {
                                 HStack {
                                     VStack(alignment: .leading, spacing: GymMetrics.space2) {
-                                        Text(peer.name)
-                                            .font(GymFont.body)
+                                        if let name = peer.name {
+                                            Text(name)
+                                                .font(GymFont.body)
+                                        } else {
+                                            Text(
+                                                peer.peerID
+                                                    .displayName
+                                            )
+                                                .font(GymFont.body)
+                                                .foregroundStyle(
+                                                    GymColors
+                                                        .secondaryText
+                                                )
+                                        }
                                         if let role = peer.role {
                                             Text(role.capitalized)
                                                 .font(GymFont.caption)

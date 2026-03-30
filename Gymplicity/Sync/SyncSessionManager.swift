@@ -262,8 +262,8 @@ class SyncSessionManager:
                 with: .reliable
             )
         } catch {
-            print(
-                "[SyncSend] \(error)"
+            connectionState = .error(
+                "Send failed: \(error)"
             )
         }
     }
@@ -535,7 +535,9 @@ class SyncSessionManager:
                 with: .reliable
             )
         } catch {
-            print("[SyncDelta] \(error)")
+            connectionState = .error(
+                "Delta send failed: \(error)"
+            )
         }
     }
 

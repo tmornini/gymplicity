@@ -30,7 +30,7 @@ final class ExerciseEntity {
 
     init(
         name: String,
-        catalogId: String? = nil
+        catalogId: String?
     ) {
         self.id = UUID()
         self.name = name

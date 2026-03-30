@@ -45,7 +45,10 @@ extension ModelContext {
         name: String,
         trainer: IdentityEntity
     ) -> ExerciseEntity {
-        let exercise = ExerciseEntity(name: name)
+        let exercise = ExerciseEntity(
+            name: name,
+            catalogId: nil
+        )
         insert(exercise)
         insert(TrainerExercises(
             trainerId: trainer.id,

@@ -202,7 +202,10 @@ extension IdentityEntity {
         }) {
             return existing
         }
-        let exercise = ExerciseEntity(name: name)
+        let exercise = ExerciseEntity(
+            name: name,
+            catalogId: nil
+        )
         context.insert(exercise)
         let join = TrainerExercises(
             trainerId: self.id,

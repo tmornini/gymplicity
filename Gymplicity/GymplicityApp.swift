@@ -28,6 +28,7 @@ struct GymplicityApp: App {
             ExerciseSets.self,
             TemplateInstances.self,
             WorkoutTemplate.self,
+            WorkoutNotes.self,
             IdentityAliases.self,
             PairedDevices.self,
             SetCompletions.self,

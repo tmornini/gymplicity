@@ -173,12 +173,11 @@ struct SyncEngine {
                     }
                 )
             )
-            if let existing {
+            if existing != nil {
                 let senderHasAuthority =
                     dto.isTemplate
                         ? senderIsTrainer : true
                 if senderHasAuthority {
-                    existing.notes = dto.notes
                     result.workoutsUpdated += 1
                 }
             } else {
@@ -187,7 +186,6 @@ struct SyncEngine {
                     isTemplate: dto.isTemplate
                 )
                 entity.id = dto.id
-                entity.notes = dto.notes
                 context.insert(entity)
                 result.workoutsInserted += 1
             }
@@ -214,6 +212,30 @@ struct SyncEngine {
                     WorkoutTemplate(
                         workoutId: dto.workoutId,
                         name: dto.name
+                    )
+                )
+                result.workoutsInserted += 1
+            }
+        }
+
+        // 4b. WorkoutNotes — either side can update
+        for dto in payload.workoutNotes {
+            let wId = dto.workoutId
+            let existing = context.fetchFirst(
+                FetchDescriptor<WorkoutNotes>(
+                    predicate: #Predicate {
+                        $0.workoutId == wId
+                    }
+                )
+            )
+            if let existing {
+                existing.notes = dto.notes
+                result.workoutsUpdated += 1
+            } else {
+                context.insert(
+                    WorkoutNotes(
+                        workoutId: dto.workoutId,
+                        notes: dto.notes
                     )
                 )
                 result.workoutsInserted += 1

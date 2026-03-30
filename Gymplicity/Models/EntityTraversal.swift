@@ -230,6 +230,19 @@ extension WorkoutEntity {
         return template?.name ?? "Untitled"
     }
 
+    @MainActor func notes(
+        in context: ModelContext
+    ) -> String? {
+        let id = self.id
+        return context.fetchFirst(
+            FetchDescriptor<WorkoutNotes>(
+                predicate: #Predicate {
+                    $0.workoutId == id
+                }
+            )
+        )?.notes
+    }
+
     @MainActor func owner(
         in context: ModelContext
     ) -> IdentityEntity {

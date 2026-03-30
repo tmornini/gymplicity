@@ -116,6 +116,17 @@ final class WorkoutTemplate {
     }
 }
 
+@Model
+final class WorkoutNotes {
+    var workoutId: UUID
+    var notes: String
+
+    init(workoutId: UUID, notes: String) {
+        self.workoutId = workoutId
+        self.notes = notes
+    }
+}
+
 // MARK: - Event Tables
 
 @Model

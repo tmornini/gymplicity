@@ -162,6 +162,9 @@ extension ModelContext {
                 $0.templateId == id || $0.workoutId == id
             }
         )).forEach { delete($0) }
+        fetchOrEmpty(FetchDescriptor<WorkoutNotes>(
+            predicate: #Predicate { $0.workoutId == id }
+        )).forEach { delete($0) }
         delete(workout)
     }
 

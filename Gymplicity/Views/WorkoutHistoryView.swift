@@ -39,7 +39,7 @@ struct WorkoutHistoryView: View {
                             .font(GymFont.bodyMono)
                     }
                 }
-                if let notes = workout.notes, !notes.isEmpty {
+                if let notes = workout.notes(in: modelContext), !notes.isEmpty {
                     VStack(alignment: .leading, spacing: 4) {
                         Text("Notes")
                             .font(GymFont.caption)

@@ -18,13 +18,17 @@ struct ExerciseDTO: Codable, Sendable {
 struct WorkoutDTO: Codable, Sendable {
     let id: UUID
     let date: Date
-    let notes: String?
     let isTemplate: Bool
 }
 
 struct WorkoutTemplateDTO: Codable, Sendable {
     let workoutId: UUID
     let name: String
+}
+
+struct WorkoutNotesDTO: Codable, Sendable {
+    let workoutId: UUID
+    let notes: String
 }
 
 struct WorkoutGroupDTO: Codable, Sendable {
@@ -115,6 +119,7 @@ struct SyncPayload: Codable, Sendable {
 
     // Relationship tables
     let workoutTemplates: [WorkoutTemplateDTO]
+    let workoutNotes: [WorkoutNotesDTO]
 
     // Join tables
     let trainerTrainees: [TrainerTraineesDTO]
@@ -160,6 +165,7 @@ struct SyncPayload: Codable, Sendable {
             workoutGroups: workoutGroups,
             sets: sets,
             workoutTemplates: [],
+            workoutNotes: [],
             trainerTrainees: [],
             trainerExercises: [],
             identityWorkouts: [],
@@ -216,7 +222,6 @@ extension WorkoutEntity {
         WorkoutDTO(
             id: id,
             date: date,
-            notes: notes,
             isTemplate: isTemplate
         )
     }
@@ -229,6 +234,17 @@ extension WorkoutTemplate {
         WorkoutTemplateDTO(
             workoutId: workoutId,
             name: name
+        )
+    }
+}
+
+extension WorkoutNotes {
+    @MainActor func toDTO()
+        -> WorkoutNotesDTO
+    {
+        WorkoutNotesDTO(
+            workoutId: workoutId,
+            notes: notes
         )
     }
 }
@@ -461,6 +477,17 @@ struct SyncPayloadBuilder {
             )
         )
 
+        // 7b. WorkoutNotes for workouts in scope
+        let wnRows = context.fetchOrEmpty(
+            FetchDescriptor<WorkoutNotes>(
+                predicate: #Predicate {
+                    allWIds.contains(
+                        $0.workoutId
+                    )
+                }
+            )
+        )
+
         // 8. TemplateInstances for workouts in scope
         let allWIdsForTI = Array(allWorkoutIds)
         let tiJoins = context.fetchOrEmpty(
@@ -579,6 +606,8 @@ struct SyncPayloadBuilder {
                 allSets.map { $0.toDTO() },
             workoutTemplates:
                 wtRows.map { $0.toDTO() },
+            workoutNotes:
+                wnRows.map { $0.toDTO() },
             trainerTrainees:
                 ttJoins.map { $0.toDTO() },
             trainerExercises:

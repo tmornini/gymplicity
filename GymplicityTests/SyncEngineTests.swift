@@ -182,8 +182,13 @@ import SwiftData
                 WorkoutDTO(
                     id: workout.id,
                     date: workout.date,
-                    notes: "Great session",
                     isTemplate: false
+                )
+            ],
+            workoutNotes: [
+                WorkoutNotesDTO(
+                    workoutId: workout.id,
+                    notes: "Great session"
                 )
             ],
             workoutCompletions: [
@@ -195,7 +200,10 @@ import SwiftData
         )
         let result = SyncEngine.merge(payload, into: ctx)
 
-        XCTAssertEqual(workout.notes, "Great session")
+        XCTAssertEqual(
+            workout.notes(in: ctx),
+            "Great session"
+        )
         XCTAssertTrue(workout.isCompleted(in: ctx))
         XCTAssertEqual(result.workoutsUpdated, 1)
     }
@@ -286,18 +294,30 @@ import SwiftData
                 WorkoutDTO(
                     id: newId,
                     date: .now,
-                    notes: "New workout",
                     isTemplate: false
+                )
+            ],
+            workoutNotes: [
+                WorkoutNotesDTO(
+                    workoutId: newId,
+                    notes: "New workout"
                 )
             ]
         )
         let result = SyncEngine.merge(payload, into: ctx)
 
-        XCTAssertEqual(result.workoutsInserted, 1)
-        let fetched = try ctx.fetch(FetchDescriptor<WorkoutEntity>(
-            predicate: #Predicate { $0.id == newId }
-        ))
-        XCTAssertEqual(fetched.first?.notes, "New workout")
+        XCTAssertEqual(result.workoutsInserted, 2)
+        let fetched = try ctx.fetch(
+            FetchDescriptor<WorkoutEntity>(
+                predicate: #Predicate {
+                    $0.id == newId
+                }
+            )
+        )
+        XCTAssertEqual(
+            fetched.first?.notes(in: ctx),
+            "New workout"
+        )
     }
 
     // MARK: - WorkoutGroup Authority

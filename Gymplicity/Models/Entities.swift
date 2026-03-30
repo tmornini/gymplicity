@@ -42,7 +42,6 @@ final class ExerciseEntity {
 final class WorkoutEntity {
     var id: UUID
     var date: Date
-    var notes: String?
     var isTemplate: Bool
 
     init(
@@ -51,7 +50,6 @@ final class WorkoutEntity {
     ) {
         self.id = UUID()
         self.date = date
-        self.notes = nil
         self.isTemplate = isTemplate
     }
 }

@@ -379,13 +379,18 @@ final class ExerciseSearchEngine: @unchecked Sendable {
         if indexed.aliasWords.contains(where: {
             Levenshtein.matches(term, against: $0)
         }) {
-            let matchedAlias = indexed.exercise
-                .aliases.first {
-                Levenshtein.matches(
-                    term, against: $0.lowercased()
+            if let matchedAlias = indexed.exercise
+                .aliases.first(where: {
+                    Levenshtein.matches(
+                        term,
+                        against: $0.lowercased()
+                    )
+                })
+            {
+                reasons.append(
+                    .alias(matchedAlias)
                 )
             }
-            reasons.append(.alias(matchedAlias ?? term))
         }
 
         for word in indexed.primaryMuscleWords {

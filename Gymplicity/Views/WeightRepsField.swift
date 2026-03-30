@@ -29,7 +29,11 @@ struct WeightRepsField: View {
                     .focused(focusedField, equals: .weight)
                 Rectangle()
                     .fill(accentColor)
-                    .frame(width: fieldWidth, height: 2)
+                    .frame(
+                        width: fieldWidth,
+                        height: GymMetrics
+                            .fieldUnderlineHeight
+                    )
                 Text("lb")
                     .font(GymFont.caption)
                     .foregroundStyle(GymColors.secondaryText)
@@ -54,7 +58,11 @@ struct WeightRepsField: View {
                     .focused(focusedField, equals: .reps)
                 Rectangle()
                     .fill(accentColor)
-                    .frame(width: fieldWidth, height: 2)
+                    .frame(
+                        width: fieldWidth,
+                        height: GymMetrics
+                            .fieldUnderlineHeight
+                    )
                 Text(repsUnit)
                     .font(GymFont.caption)
                     .foregroundStyle(GymColors.secondaryText)

@@ -39,7 +39,9 @@ struct WorkoutHistoryView: View {
                             .font(GymFont.bodyMono)
                     }
                 }
-                if let notes = workout.notes(in: modelContext), !notes.isEmpty {
+                if let notes = workout.notes(
+                    in: modelContext
+                ), !notes.isEmpty {
                     VStack(alignment: .leading, spacing: GymMetrics.space4) {
                         Text("Notes")
                             .font(GymFont.caption)
@@ -63,11 +65,20 @@ struct WorkoutHistoryView: View {
                                 if let name = exercise?.name {
                                     Text(name)
                                         .font(GymFont.label)
-                                        .foregroundStyle(GymColors.secondaryText)
+                                        .foregroundStyle(
+                                            GymColors
+                                                .secondaryText
+                                        )
                                 }
-                                ExerciseAttributePills(exercise: exercise)
+                                ExerciseAttributePills(
+                                    exercise: exercise
+                                )
                             }
-                            .frame(minWidth: GymMetrics.minExerciseNameWidth, alignment: .leading)
+                            .frame(
+                                minWidth: GymMetrics
+                                    .minExerciseNameWidth,
+                                alignment: .leading
+                            )
                             Text(Weight.formatted(set.weight))
                                 .font(GymFont.bodyMono)
                             Text("x")

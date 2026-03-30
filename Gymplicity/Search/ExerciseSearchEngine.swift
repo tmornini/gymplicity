@@ -168,14 +168,12 @@ struct ExerciseSearchResults {
 // MARK: - ExerciseSearchEngine
 
 final class ExerciseSearchEngine: @unchecked Sendable {
-    static let shared = ExerciseSearchEngine()
-
     private let indexedCatalog:
         [IndexedCatalogExercise]
     private let catalogById:
         [String: CatalogExercise]
 
-    private init() {
+    init() {
         guard let url = Bundle.main.url(
             forResource: "exercises",
             withExtension: "json"
@@ -430,5 +428,24 @@ final class ExerciseSearchEngine: @unchecked Sendable {
         }
 
         return reasons
+    }
+}
+
+// MARK: - Environment Key
+
+import SwiftUI
+
+private struct ExerciseSearchEngineKey:
+    EnvironmentKey
+{
+    static let defaultValue = ExerciseSearchEngine()
+}
+
+extension EnvironmentValues {
+    var exerciseSearchEngine: ExerciseSearchEngine {
+        get { self[ExerciseSearchEngineKey.self] }
+        set {
+            self[ExerciseSearchEngineKey.self] = newValue
+        }
     }
 }

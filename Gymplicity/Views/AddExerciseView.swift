@@ -4,6 +4,7 @@ import SwiftData
 struct AddExerciseView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var modelContext
+    @Environment(\.exerciseSearchEngine) private var searchEngine
     let group: WorkoutGroupEntity
     let trainer: IdentityEntity?
     @State private var searchText = ""
@@ -133,7 +134,7 @@ struct AddExerciseView: View {
                         for: trainer,
                         in: modelContext
                     )
-                results = ExerciseSearchEngine.shared.search(
+                results = searchEngine.search(
                     query: "",
                     userExercises: userExercises,
                     recentlyUsedIDs: recentlyUsedIDs
@@ -142,7 +143,7 @@ struct AddExerciseView: View {
             .task(id: searchText) {
                 try? await Task.sleep(for: .milliseconds(200))
                 guard !Task.isCancelled else { return }
-                results = ExerciseSearchEngine.shared.search(
+                results = searchEngine.search(
                     query: searchText,
                     userExercises: userExercises,
                     recentlyUsedIDs: recentlyUsedIDs

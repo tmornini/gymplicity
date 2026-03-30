@@ -13,6 +13,10 @@ struct GymplicityApp: App {
         WindowGroup {
             RootView()
                 .environmentObject(syncManager)
+                .environment(
+                    \.exerciseSearchEngine,
+                    ExerciseSearchEngine()
+                )
         }
         .modelContainer(for: [
             IdentityEntity.self,

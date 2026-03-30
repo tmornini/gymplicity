@@ -23,11 +23,6 @@ struct RootView: View {
                 }
             }
             .navigationTitle("Gymplicity")
-            .task {
-                await Task.detached {
-                    _ = ExerciseSearchEngine.shared
-                }.value
-            }
             .alert(
             "Set Up Your Profile",
             isPresented: $showingSetup

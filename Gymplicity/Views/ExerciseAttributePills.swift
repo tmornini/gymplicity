@@ -1,26 +1,30 @@
 import SwiftUI
 
 struct ExerciseAttributePills: View {
+    @Environment(\.exerciseSearchEngine) private var searchEngine
     let catalogExercise: CatalogExercise?
+    let entityCatalogId: String?
 
     init(exercise: CatalogExercise) {
         self.catalogExercise = exercise
+        self.entityCatalogId = nil
     }
 
     init(exercise: ExerciseEntity?) {
-        if let catalogId = exercise?.catalogId {
-            self.catalogExercise = ExerciseSearchEngine
-                .shared
-                .catalogExercise(
-                    forCatalogId: catalogId
-                )
-        } else {
-            self.catalogExercise = nil
-        }
+        self.catalogExercise = nil
+        self.entityCatalogId = exercise?.catalogId
+    }
+
+    private var resolvedExercise: CatalogExercise? {
+        if let catalogExercise { return catalogExercise }
+        guard let entityCatalogId else { return nil }
+        return searchEngine.catalogExercise(
+            forCatalogId: entityCatalogId
+        )
     }
 
     var body: some View {
-        if let exercise = catalogExercise {
+        if let exercise = resolvedExercise {
             HStack(alignment: .top, spacing: GymMetrics.space8) {
                 pillColumn(
                     exercise.bodyRegions,

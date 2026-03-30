@@ -137,7 +137,8 @@ struct TemplateEditorView: View {
     private func addGroup() {
         let group = WorkoutGroupEntity(
             order: template
-                .nextGroupOrder(in: modelContext)
+                .nextGroupOrder(in: modelContext),
+            isSuperset: false
         )
         modelContext.insert(group)
         modelContext.insert(

@@ -69,7 +69,7 @@ final class WorkoutGroupEntity {
     var order: Int
     var isSuperset: Bool
 
-    init(order: Int, isSuperset: Bool = false) {
+    init(order: Int, isSuperset: Bool) {
         self.id = UUID()
         self.order = order
         self.isSuperset = isSuperset

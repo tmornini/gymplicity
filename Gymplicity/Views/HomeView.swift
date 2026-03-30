@@ -261,12 +261,23 @@ private struct ActiveWorkoutRow: View {
         .padding(.vertical, GymMetrics.space2)
     }
 
+    private let secondsPerMinute = 60.0
+    private let minutesPerHour = 60
+
     private func timeAgo(_ date: Date) -> String {
-        let minutes = Int(-date.timeIntervalSinceNow / 60)
-        if minutes < 1 { return "Just started" }
-        if minutes < 60 { return "Started \(minutes) min ago" }
-        let hours = minutes / 60
-        return "Started \(hours) hr \(minutes % 60) min ago"
+        let minutes = Int(
+            -date.timeIntervalSinceNow
+                / secondsPerMinute
+        )
+        if minutes < 1 {
+            return "Just started"
+        }
+        if minutes < minutesPerHour {
+            return "Started \(minutes) min ago"
+        }
+        let hours = minutes / minutesPerHour
+        let remaining = minutes % minutesPerHour
+        return "Started \(hours) hr \(remaining) min ago"
     }
 }
 

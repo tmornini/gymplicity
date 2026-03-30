@@ -371,7 +371,8 @@ struct SetRow: View {
                     )
                 }
                 .frame(
-                    minWidth: 60,
+                    minWidth: GymMetrics
+                        .minExerciseNameWidth,
                     alignment: .leading
                 )
 

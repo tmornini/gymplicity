@@ -509,17 +509,19 @@ struct SyncView: View {
     private func isPaired(
         with peer: DiscoveredPeer
     ) -> Bool {
+        guard let remoteId = peer.identityId
+        else { return false }
         let localId = identity.id
         let pairings = modelContext.fetchOrEmpty(
             FetchDescriptor<PairedDevices>(
                 predicate: #Predicate {
                     $0.localIdentityId == localId
+                        && $0.remoteIdentityId
+                            == remoteId
                 }
             )
         )
-        return pairings.contains {
-            $0.remoteName == peer.name
-        }
+        return !pairings.isEmpty
     }
 
     /// Returns candidates the user might match the peer to

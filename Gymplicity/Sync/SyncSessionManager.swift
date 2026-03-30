@@ -24,6 +24,7 @@ struct DiscoveredPeer:
     let peerID: MCPeerID
     let name: String
     let role: String
+    let identityId: UUID?
     var id: MCPeerID { peerID }
 }
 
@@ -97,7 +98,8 @@ class SyncSessionManager:
         let discoveryInfo: [String: String] = [
             "name": identity.name,
             "role": identity.isTrainer
-                ? "trainer" : "trainee"
+                ? "trainer" : "trainee",
+            "id": identity.id.uuidString
         ]
 
         let advertiser =
@@ -715,7 +717,7 @@ class SyncSessionManager:
     ) {
         guard let context = modelContext,
               let identity = localIdentity,
-              let peer = connectedPeer
+              connectedPeer != nil
         else { return }
         let localId = identity.id
         let remoteId = senderIdentityId
@@ -732,8 +734,7 @@ class SyncSessionManager:
         if existing == nil {
             context.insert(PairedDevices(
                 localIdentityId: localId,
-                remoteIdentityId: remoteId,
-                remoteName: peer.displayName
+                remoteIdentityId: remoteId
             ))
         }
         context.insert(DeviceSyncEvents(
@@ -960,10 +961,13 @@ extension SyncSessionManager:
         let name = info?["name"]
             ?? peerID.displayName
         let role = info?["role"] ?? "unknown"
+        let identityId = info?["id"]
+            .flatMap { UUID(uuidString: $0) }
         let peer = DiscoveredPeer(
             peerID: peerID,
             name: name,
-            role: role
+            role: role,
+            identityId: identityId
         )
         nonisolated(unsafe) let peerID = peerID
         Task { @MainActor in

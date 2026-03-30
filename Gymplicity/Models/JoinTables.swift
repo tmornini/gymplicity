@@ -95,16 +95,13 @@ final class IdentityAliases {
 final class PairedDevices {
     var localIdentityId: UUID
     var remoteIdentityId: UUID
-    var remoteName: String
 
     init(
         localIdentityId: UUID,
-        remoteIdentityId: UUID,
-        remoteName: String
+        remoteIdentityId: UUID
     ) {
         self.localIdentityId = localIdentityId
         self.remoteIdentityId = remoteIdentityId
-        self.remoteName = remoteName
     }
 }
 

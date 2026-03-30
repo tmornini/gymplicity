@@ -128,8 +128,8 @@ struct WorkoutSubgraph {
 // MARK: - BatchTraversal
 
 struct BatchTraversal {
-    /// Fetches the full subgraph for a set of workouts
-    /// in ~6 queries.
+    /// Avoids per-entity SwiftData queries by resolving
+    /// all relationships in ~6 batch fetches.
     @MainActor static func workoutSubgraph(
         workoutIds: [UUID],
         in context: ModelContext
@@ -214,7 +214,7 @@ struct BatchTraversal {
             uniquingKeysWith: { a, _ in a }
         )
 
-        // Build lookup structures
+        // O(1) lookups avoid repeated linear scans
         var groupsByWorkout:
             [UUID: [WorkoutGroupEntity]] = [:]
         for join in wgJoins {

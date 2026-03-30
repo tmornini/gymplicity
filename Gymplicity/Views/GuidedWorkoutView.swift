@@ -336,15 +336,29 @@ struct GuidedWorkoutView: View {
             in: modelContext
         ) {
             // Brief walking transition
-            withAnimation(.easeInOut(duration: GymMetrics.animationMedium)) {
+            withAnimation(
+                .easeInOut(
+                    duration: GymMetrics
+                        .animationMedium
+                )
+            ) {
                 showWalkingTransition = true
             }
             Task {
-                try? await Task.sleep(for: .milliseconds(GymMetrics.transitionDelayMs))
+                try? await Task.sleep(
+                    for: .milliseconds(
+                        GymMetrics.transitionDelayMs
+                    )
+                )
                 currentIndex = next
                 onSetIndexChange?(currentIndex)
                 loadCurrentSet()
-                withAnimation(.easeInOut(duration: GymMetrics.animationMedium)) {
+                withAnimation(
+                    .easeInOut(
+                        duration: GymMetrics
+                            .animationMedium
+                    )
+                ) {
                     showWalkingTransition = false
                 }
             }

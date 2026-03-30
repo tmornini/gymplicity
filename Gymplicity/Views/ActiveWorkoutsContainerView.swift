@@ -179,11 +179,21 @@ struct ActiveWorkoutsContainerView: View {
                 if index == currentIndex {
                     Capsule()
                         .fill(GymColors.energy)
-                        .frame(width: GymMetrics.activeDotWidth, height: GymMetrics.activeDotHeight)
+                        .frame(
+                            width: GymMetrics
+                                .activeDotWidth,
+                            height: GymMetrics
+                                .activeDotHeight
+                        )
                 } else {
                     Circle()
                         .fill(GymColors.steel)
-                        .frame(width: GymMetrics.inactiveDotSize, height: GymMetrics.inactiveDotSize)
+                        .frame(
+                            width: GymMetrics
+                                .inactiveDotSize,
+                            height: GymMetrics
+                                .inactiveDotSize
+                        )
                 }
             }
         }
@@ -206,8 +216,13 @@ struct ActiveWorkoutsContainerView: View {
                 .gesture(
                     DragGesture(minimumDistance: GymMetrics.dragMinDistance)
                         .onEnded { value in
-                            if value.translation.width > GymMetrics.dragThreshold {
-                                goToPrevious(count: sortedPairs.count)
+                            if value.translation.width
+                                > GymMetrics.dragThreshold
+                            {
+                                goToPrevious(
+                                    count: sortedPairs
+                                        .count
+                                )
                             }
                         }
                 )
@@ -220,8 +235,13 @@ struct ActiveWorkoutsContainerView: View {
                 .gesture(
                     DragGesture(minimumDistance: GymMetrics.dragMinDistance)
                         .onEnded { value in
-                            if value.translation.width < -GymMetrics.dragThreshold {
-                                goToNext(count: sortedPairs.count)
+                            if value.translation.width
+                                < -GymMetrics.dragThreshold
+                            {
+                                goToNext(
+                                    count: sortedPairs
+                                        .count
+                                )
                             }
                         }
                 )

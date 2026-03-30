@@ -394,47 +394,65 @@ final class ExerciseSearchEngine: @unchecked Sendable {
         }
 
         for word in indexed.primaryMuscleWords {
-            if Levenshtein.matches(term, against: word) {
-                let displayName = indexed.exercise
-                    .primaryMuscles.first {
-                    $0.lowercased().contains(word)
-                } ?? word
-                reasons.append(
-                    .primaryMuscle(displayName)
-                )
+            if Levenshtein.matches(
+                term, against: word
+            ) {
+                if let name = indexed.exercise
+                    .primaryMuscles.first(where: {
+                        $0.lowercased().contains(word)
+                    })
+                {
+                    reasons.append(
+                        .primaryMuscle(name)
+                    )
+                }
             }
         }
 
         for word in indexed.secondaryMuscleWords {
-            if Levenshtein.matches(term, against: word) {
-                let displayName = indexed.exercise
-                    .secondaryMuscles.first {
-                    $0.lowercased().contains(word)
-                } ?? word
-                reasons.append(
-                    .secondaryMuscle(displayName)
-                )
+            if Levenshtein.matches(
+                term, against: word
+            ) {
+                if let name = indexed.exercise
+                    .secondaryMuscles
+                    .first(where: {
+                        $0.lowercased().contains(word)
+                    })
+                {
+                    reasons.append(
+                        .secondaryMuscle(name)
+                    )
+                }
             }
         }
 
         for word in indexed.jointWords {
-            if Levenshtein.matches(term, against: word) {
-                let displayName = indexed.exercise.joints.first {
-                    $0.lowercased().contains(word)
-                } ?? word
-                reasons.append(.joint(displayName))
+            if Levenshtein.matches(
+                term, against: word
+            ) {
+                if let name = indexed.exercise
+                    .joints.first(where: {
+                        $0.lowercased().contains(word)
+                    })
+                {
+                    reasons.append(.joint(name))
+                }
             }
         }
 
         for word in indexed.regionWords {
-            if Levenshtein.matches(term, against: word) {
-                let displayName = indexed.exercise
-                    .bodyRegions.first {
-                    $0.lowercased().contains(word)
-                } ?? word
-                reasons.append(
-                    .bodyRegion(displayName)
-                )
+            if Levenshtein.matches(
+                term, against: word
+            ) {
+                if let name = indexed.exercise
+                    .bodyRegions.first(where: {
+                        $0.lowercased().contains(word)
+                    })
+                {
+                    reasons.append(
+                        .bodyRegion(name)
+                    )
+                }
             }
         }
 

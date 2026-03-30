@@ -46,6 +46,7 @@ struct SetEntryView: View {
                     Button("Done") { save() }
                         .fontWeight(.semibold)
                         .foregroundStyle(GymColors.energy)
+                        .disabled(!isInputValid)
                 }
             }
             .onAppear {
@@ -57,9 +58,19 @@ struct SetEntryView: View {
         .presentationDetents([.medium])
     }
 
+    private var isInputValid: Bool {
+        (weightText.isEmpty
+            || Double(weightText) != nil)
+            && (repsText.isEmpty
+                || Int(repsText) != nil)
+    }
+
     private func save() {
-        set.weight = Double(weightText) ?? 0
-        set.reps = Int(repsText) ?? 0
+        guard isInputValid else { return }
+        set.weight = weightText.isEmpty
+            ? 0 : Double(weightText)!
+        set.reps = repsText.isEmpty
+            ? 0 : Int(repsText)!
         modelContext.insert(
             SetCompletions(
                 setId: set.id,

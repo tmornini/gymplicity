@@ -261,20 +261,34 @@ private struct TemplateSetEntryView: View {
                     Button("Done") { save() }
                         .fontWeight(.semibold)
                         .foregroundStyle(GymColors.energy)
+                        .disabled(!isInputValid)
                 }
             }
             .onAppear {
-                weightText = set.weight > 0 ? Weight.rawValue(set.weight) : ""
-                repsText = set.reps > 0 ? "\(set.reps)" : ""
+                weightText = set.weight > 0
+                    ? Weight.rawValue(set.weight)
+                    : ""
+                repsText = set.reps > 0
+                    ? "\(set.reps)" : ""
                 focusedField = .weight
             }
         }
         .presentationDetents([.medium])
     }
 
+    private var isInputValid: Bool {
+        (weightText.isEmpty
+            || Double(weightText) != nil)
+            && (repsText.isEmpty
+                || Int(repsText) != nil)
+    }
+
     private func save() {
-        set.weight = Double(weightText) ?? 0
-        set.reps = Int(repsText) ?? 0
+        guard isInputValid else { return }
+        set.weight = weightText.isEmpty
+            ? 0 : Double(weightText)!
+        set.reps = repsText.isEmpty
+            ? 0 : Int(repsText)!
         SyncTrigger.entityUpdated(.set, id: set.id)
         dismiss()
     }

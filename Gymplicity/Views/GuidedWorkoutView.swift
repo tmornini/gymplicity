@@ -205,6 +205,7 @@ struct GuidedWorkoutView: View {
             }
             .buttonStyle(.gymPrimary)
             .padding(.horizontal, 40)
+            .disabled(!isInputValid)
 
             Spacer()
         }
@@ -294,14 +295,27 @@ struct GuidedWorkoutView: View {
         if onSwitchToList == nil { dismiss() }
     }
 
+    private var isInputValid: Bool {
+        (weightText.isEmpty
+            || Double(weightText) != nil)
+            && (repsText.isEmpty
+                || Int(repsText) != nil)
+    }
+
     private func completeCurrentSet() {
-        let flatSets = workout.allSetsFlattened(in: modelContext)
-        guard currentIndex >= 0, currentIndex < flatSets.count else { return }
+        let flatSets = workout.allSetsFlattened(
+            in: modelContext
+        )
+        guard isInputValid,
+              currentIndex >= 0,
+              currentIndex < flatSets.count
+        else { return }
         let pair = flatSets[currentIndex]
 
-        pair.set.weight =
-            Double(weightText) ?? 0
-        pair.set.reps = Int(repsText) ?? 0
+        pair.set.weight = weightText.isEmpty
+            ? 0 : Double(weightText)!
+        pair.set.reps = repsText.isEmpty
+            ? 0 : Int(repsText)!
         modelContext.insert(
             SetCompletions(
                 setId: pair.set.id,

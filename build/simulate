@@ -2,7 +2,7 @@
 set -euo pipefail
 
 SCHEME="Gymplicity"
-DESTINATION="platform=iOS Simulator,name=iPhone 16"
+DESTINATION="platform=iOS Simulator,name=${1:-iPhone 17 Pro}"
 
 xcodebuild build \
   -scheme "$SCHEME" \

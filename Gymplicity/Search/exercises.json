@@ -3707,7 +3707,8 @@
     ],
     "bodyRegions": [
       "arms",
-      "core"
+      "core",
+      "abs"
     ],
     "equipment": [
       "dumbbell"
@@ -3759,7 +3760,8 @@
       "shoulder"
     ],
     "bodyRegions": [
-      "core"
+      "core",
+      "abs"
     ],
     "equipment": [
       "bodyweight"
@@ -3784,7 +3786,8 @@
       "shoulder"
     ],
     "bodyRegions": [
-      "core"
+      "core",
+      "abs"
     ],
     "equipment": [
       "bodyweight"
@@ -3806,7 +3809,8 @@
     ],
     "joints": [],
     "bodyRegions": [
-      "core"
+      "core",
+      "abs"
     ],
     "equipment": [
       "bodyweight"
@@ -3830,7 +3834,8 @@
       "hip"
     ],
     "bodyRegions": [
-      "core"
+      "core",
+      "abs"
     ],
     "equipment": [
       "bodyweight"
@@ -3853,7 +3858,8 @@
       "hip"
     ],
     "bodyRegions": [
-      "core"
+      "core",
+      "abs"
     ],
     "equipment": [
       "bodyweight"
@@ -3874,7 +3880,8 @@
     ],
     "joints": [],
     "bodyRegions": [
-      "core"
+      "core",
+      "abs"
     ],
     "equipment": [
       "cable"
@@ -3898,7 +3905,8 @@
       "hip"
     ],
     "bodyRegions": [
-      "core"
+      "core",
+      "abs"
     ],
     "equipment": [
       "bodyweight"
@@ -3922,7 +3930,8 @@
       "hip"
     ],
     "bodyRegions": [
-      "core"
+      "core",
+      "abs"
     ],
     "equipment": [
       "bodyweight"
@@ -3948,7 +3957,8 @@
       "hip"
     ],
     "bodyRegions": [
-      "core"
+      "core",
+      "abs"
     ],
     "equipment": [
       "bodyweight"
@@ -3972,7 +3982,8 @@
       "hip"
     ],
     "bodyRegions": [
-      "core"
+      "core",
+      "abs"
     ],
     "equipment": [
       "bodyweight"
@@ -3996,7 +4007,8 @@
       "hip"
     ],
     "bodyRegions": [
-      "core"
+      "core",
+      "abs"
     ],
     "equipment": [
       "bodyweight"
@@ -4020,7 +4032,8 @@
       "hip"
     ],
     "bodyRegions": [
-      "core"
+      "core",
+      "abs"
     ],
     "equipment": [
       "bodyweight"
@@ -4044,7 +4057,8 @@
       "hip"
     ],
     "bodyRegions": [
-      "core"
+      "core",
+      "abs"
     ],
     "equipment": [
       "bodyweight"
@@ -4067,7 +4081,8 @@
       "hip"
     ],
     "bodyRegions": [
-      "core"
+      "core",
+      "abs"
     ],
     "equipment": [
       "plate"
@@ -4094,7 +4109,8 @@
       "shoulder"
     ],
     "bodyRegions": [
-      "core"
+      "core",
+      "abs"
     ],
     "equipment": [
       "cable"
@@ -4119,7 +4135,8 @@
       "elbow"
     ],
     "bodyRegions": [
-      "core"
+      "core",
+      "abs"
     ],
     "equipment": [
       "cable"
@@ -4147,7 +4164,8 @@
       "hip"
     ],
     "bodyRegions": [
-      "core"
+      "core",
+      "abs"
     ],
     "equipment": [
       "bodyweight"
@@ -4171,7 +4189,8 @@
       "hip"
     ],
     "bodyRegions": [
-      "core"
+      "core",
+      "abs"
     ],
     "equipment": [
       "bodyweight"
@@ -4196,7 +4215,8 @@
       "hip"
     ],
     "bodyRegions": [
-      "core"
+      "core",
+      "abs"
     ],
     "equipment": [
       "bodyweight"
@@ -4223,7 +4243,8 @@
       "shoulder"
     ],
     "bodyRegions": [
-      "core"
+      "core",
+      "abs"
     ],
     "equipment": [
       "bodyweight"
@@ -4248,7 +4269,8 @@
       "shoulder"
     ],
     "bodyRegions": [
-      "core"
+      "core",
+      "abs"
     ],
     "equipment": [
       "bodyweight"
@@ -4274,7 +4296,8 @@
       "shoulder"
     ],
     "bodyRegions": [
-      "core"
+      "core",
+      "abs"
     ],
     "equipment": [
       "bodyweight"
@@ -4299,7 +4322,8 @@
       "hip"
     ],
     "bodyRegions": [
-      "core"
+      "core",
+      "abs"
     ],
     "equipment": [
       "bodyweight"
@@ -4324,7 +4348,8 @@
       "shoulder"
     ],
     "bodyRegions": [
-      "core"
+      "core",
+      "abs"
     ],
     "equipment": [
       "bodyweight"
@@ -4351,7 +4376,8 @@
       "shoulder"
     ],
     "bodyRegions": [
-      "core"
+      "core",
+      "abs"
     ],
     "equipment": [
       "bodyweight"
@@ -4372,7 +4398,8 @@
     ],
     "joints": [],
     "bodyRegions": [
-      "core"
+      "core",
+      "abs"
     ],
     "equipment": [
       "machine"
@@ -4398,7 +4425,8 @@
       "shoulder"
     ],
     "bodyRegions": [
-      "core"
+      "core",
+      "abs"
     ],
     "equipment": [
       "barbell"
@@ -4426,6 +4454,7 @@
     ],
     "bodyRegions": [
       "core",
+      "abs",
       "arms"
     ],
     "equipment": [
@@ -4873,6 +4902,7 @@
     "bodyRegions": [
       "shoulders",
       "core",
+      "abs",
       "legs"
     ],
     "equipment": [
@@ -4901,6 +4931,7 @@
     ],
     "bodyRegions": [
       "core",
+      "abs",
       "shoulders"
     ],
     "equipment": [
@@ -4982,7 +5013,8 @@
     ],
     "bodyRegions": [
       "shoulders",
-      "core"
+      "core",
+      "abs"
     ],
     "equipment": [
       "kettlebell"
@@ -5076,7 +5108,8 @@
     "bodyRegions": [
       "legs",
       "chest",
-      "core"
+      "core",
+      "abs"
     ],
     "equipment": [
       "bodyweight"
@@ -5425,6 +5458,7 @@
     ],
     "bodyRegions": [
       "core",
+      "abs",
       "shoulders"
     ],
     "equipment": [
@@ -5450,7 +5484,8 @@
       "shoulder"
     ],
     "bodyRegions": [
-      "core"
+      "core",
+      "abs"
     ],
     "equipment": [
       "suspension"
@@ -6998,7 +7033,8 @@
       "hip"
     ],
     "bodyRegions": [
-      "core"
+      "core",
+      "abs"
     ],
     "equipment": [
       "bodyweight"
@@ -7022,7 +7058,8 @@
       "shoulder"
     ],
     "bodyRegions": [
-      "core"
+      "core",
+      "abs"
     ],
     "equipment": [
       "plate"
@@ -7047,6 +7084,7 @@
     ],
     "bodyRegions": [
       "core",
+      "abs",
       "legs"
     ],
     "equipment": [
@@ -7554,6 +7592,7 @@
     ],
     "bodyRegions": [
       "core",
+      "abs",
       "shoulders"
     ],
     "equipment": [
@@ -7580,7 +7619,8 @@
       "hip"
     ],
     "bodyRegions": [
-      "core"
+      "core",
+      "abs"
     ],
     "equipment": [
       "bodyweight"

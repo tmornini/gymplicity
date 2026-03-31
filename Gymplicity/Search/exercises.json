@@ -25,7 +25,8 @@
       "ankle"
     ],
     "bodyRegions": [
-      "legs"
+      "legs",
+      "quads"
     ],
     "equipment": [
       "barbell"
@@ -53,7 +54,8 @@
       "ankle"
     ],
     "bodyRegions": [
-      "legs"
+      "legs",
+      "quads"
     ],
     "equipment": [
       "barbell"
@@ -82,7 +84,8 @@
       "ankle"
     ],
     "bodyRegions": [
-      "legs"
+      "legs",
+      "quads"
     ],
     "equipment": [
       "dumbbell"
@@ -114,7 +117,8 @@
     ],
     "bodyRegions": [
       "legs",
-      "shoulders"
+      "shoulders",
+      "quads"
     ],
     "equipment": [
       "barbell"
@@ -143,7 +147,8 @@
       "ankle"
     ],
     "bodyRegions": [
-      "legs"
+      "legs",
+      "quads"
     ],
     "equipment": [
       "dumbbell"
@@ -172,7 +177,8 @@
       "ankle"
     ],
     "bodyRegions": [
-      "legs"
+      "legs",
+      "quads"
     ],
     "equipment": [
       "bodyweight"
@@ -199,7 +205,8 @@
       "ankle"
     ],
     "bodyRegions": [
-      "legs"
+      "legs",
+      "quads"
     ],
     "equipment": [
       "smith_machine"
@@ -225,7 +232,8 @@
       "hip"
     ],
     "bodyRegions": [
-      "legs"
+      "legs",
+      "quads"
     ],
     "equipment": [
       "machine"
@@ -253,7 +261,8 @@
       "hip"
     ],
     "bodyRegions": [
-      "legs"
+      "legs",
+      "quads"
     ],
     "equipment": [
       "machine"
@@ -279,7 +288,8 @@
       "hip"
     ],
     "bodyRegions": [
-      "legs"
+      "legs",
+      "quads"
     ],
     "equipment": [
       "machine"
@@ -307,7 +317,8 @@
       "ankle"
     ],
     "bodyRegions": [
-      "legs"
+      "legs",
+      "quads"
     ],
     "equipment": [
       "barbell"
@@ -336,7 +347,8 @@
       "ankle"
     ],
     "bodyRegions": [
-      "legs"
+      "legs",
+      "quads"
     ],
     "equipment": [
       "dumbbell"
@@ -364,7 +376,8 @@
       "ankle"
     ],
     "bodyRegions": [
-      "legs"
+      "legs",
+      "quads"
     ],
     "equipment": [
       "dumbbell"
@@ -391,7 +404,8 @@
       "ankle"
     ],
     "bodyRegions": [
-      "legs"
+      "legs",
+      "quads"
     ],
     "equipment": [
       "dumbbell"
@@ -419,7 +433,8 @@
       "ankle"
     ],
     "bodyRegions": [
-      "legs"
+      "legs",
+      "quads"
     ],
     "equipment": [
       "bodyweight"
@@ -448,7 +463,8 @@
       "ankle"
     ],
     "bodyRegions": [
-      "legs"
+      "legs",
+      "quads"
     ],
     "equipment": [
       "dumbbell"
@@ -470,7 +486,8 @@
       "knee"
     ],
     "bodyRegions": [
-      "legs"
+      "legs",
+      "quads"
     ],
     "equipment": [
       "machine"
@@ -890,7 +907,8 @@
       "ankle"
     ],
     "bodyRegions": [
-      "legs"
+      "legs",
+      "quads"
     ],
     "equipment": [
       "bodyweight"
@@ -912,7 +930,8 @@
       "knee"
     ],
     "bodyRegions": [
-      "legs"
+      "legs",
+      "quads"
     ],
     "equipment": [
       "bodyweight"
@@ -937,7 +956,8 @@
       "hip"
     ],
     "bodyRegions": [
-      "legs"
+      "legs",
+      "quads"
     ],
     "equipment": [
       "bodyweight"
@@ -962,7 +982,8 @@
       "hip"
     ],
     "bodyRegions": [
-      "legs"
+      "legs",
+      "quads"
     ],
     "equipment": [
       "barbell"
@@ -989,7 +1010,8 @@
       "elbow"
     ],
     "bodyRegions": [
-      "legs"
+      "legs",
+      "quads"
     ],
     "equipment": [
       "barbell"
@@ -1018,7 +1040,8 @@
       "elbow"
     ],
     "bodyRegions": [
-      "chest"
+      "chest",
+      "pecs"
     ],
     "equipment": [
       "barbell"
@@ -1045,7 +1068,9 @@
       "elbow"
     ],
     "bodyRegions": [
-      "chest"
+      "chest",
+      "pecs",
+      "delts"
     ],
     "equipment": [
       "barbell"
@@ -1071,7 +1096,8 @@
       "elbow"
     ],
     "bodyRegions": [
-      "chest"
+      "chest",
+      "pecs"
     ],
     "equipment": [
       "barbell"
@@ -1099,7 +1125,8 @@
       "elbow"
     ],
     "bodyRegions": [
-      "chest"
+      "chest",
+      "pecs"
     ],
     "equipment": [
       "dumbbell"
@@ -1126,7 +1153,9 @@
       "elbow"
     ],
     "bodyRegions": [
-      "chest"
+      "chest",
+      "pecs",
+      "delts"
     ],
     "equipment": [
       "dumbbell"
@@ -1151,7 +1180,8 @@
       "elbow"
     ],
     "bodyRegions": [
-      "chest"
+      "chest",
+      "pecs"
     ],
     "equipment": [
       "dumbbell"
@@ -1178,7 +1208,9 @@
     ],
     "bodyRegions": [
       "chest",
-      "arms"
+      "arms",
+      "pecs",
+      "tris"
     ],
     "equipment": [
       "barbell"
@@ -1203,7 +1235,8 @@
       "elbow"
     ],
     "bodyRegions": [
-      "chest"
+      "chest",
+      "pecs"
     ],
     "equipment": [
       "smith_machine"
@@ -1228,7 +1261,9 @@
       "elbow"
     ],
     "bodyRegions": [
-      "chest"
+      "chest",
+      "pecs",
+      "tris"
     ],
     "equipment": [
       "barbell"
@@ -1242,7 +1277,8 @@
       "db fly",
       "flat fly",
       "dumbbell fly",
-      "pec fly"
+      "pec fly",
+      "dumbbell flat flyes"
     ],
     "primaryMuscles": [
       "pectoralis major"
@@ -1255,7 +1291,8 @@
       "shoulder"
     ],
     "bodyRegions": [
-      "chest"
+      "chest",
+      "pecs"
     ],
     "equipment": [
       "dumbbell"
@@ -1267,7 +1304,8 @@
     "aliases": [
       "incline fly",
       "incline db fly",
-      "incline chest fly"
+      "incline chest fly",
+      "dumbbell incline flyes"
     ],
     "primaryMuscles": [
       "pectoralis major",
@@ -1280,7 +1318,9 @@
       "shoulder"
     ],
     "bodyRegions": [
-      "chest"
+      "chest",
+      "pecs",
+      "delts"
     ],
     "equipment": [
       "dumbbell"
@@ -1292,7 +1332,8 @@
     "aliases": [
       "cable chest fly",
       "cable crossover fly",
-      "standing cable fly"
+      "standing cable fly",
+      "cable flyes"
     ],
     "primaryMuscles": [
       "pectoralis major"
@@ -1305,7 +1346,8 @@
       "shoulder"
     ],
     "bodyRegions": [
-      "chest"
+      "chest",
+      "pecs"
     ],
     "equipment": [
       "cable"
@@ -1330,7 +1372,8 @@
       "shoulder"
     ],
     "bodyRegions": [
-      "chest"
+      "chest",
+      "pecs"
     ],
     "equipment": [
       "cable"
@@ -1341,7 +1384,8 @@
     "name": "Low Cable Fly",
     "aliases": [
       "low to high cable fly",
-      "low cable crossover"
+      "low cable crossover",
+      "low cable flyes"
     ],
     "primaryMuscles": [
       "pectoralis major",
@@ -1354,7 +1398,9 @@
       "shoulder"
     ],
     "bodyRegions": [
-      "chest"
+      "chest",
+      "pecs",
+      "delts"
     ],
     "equipment": [
       "cable"
@@ -1380,7 +1426,8 @@
       "elbow"
     ],
     "bodyRegions": [
-      "chest"
+      "chest",
+      "pecs"
     ],
     "equipment": [
       "machine"
@@ -1405,7 +1452,9 @@
       "elbow"
     ],
     "bodyRegions": [
-      "chest"
+      "chest",
+      "pecs",
+      "delts"
     ],
     "equipment": [
       "machine"
@@ -1430,7 +1479,8 @@
       "shoulder"
     ],
     "bodyRegions": [
-      "chest"
+      "chest",
+      "pecs"
     ],
     "equipment": [
       "machine"
@@ -1458,7 +1508,8 @@
       "elbow"
     ],
     "bodyRegions": [
-      "chest"
+      "chest",
+      "pecs"
     ],
     "equipment": [
       "bodyweight"
@@ -1483,7 +1534,8 @@
       "elbow"
     ],
     "bodyRegions": [
-      "chest"
+      "chest",
+      "pecs"
     ],
     "equipment": [
       "bodyweight"
@@ -1509,7 +1561,9 @@
       "elbow"
     ],
     "bodyRegions": [
-      "chest"
+      "chest",
+      "pecs",
+      "delts"
     ],
     "equipment": [
       "bodyweight"
@@ -1536,7 +1590,9 @@
     ],
     "bodyRegions": [
       "chest",
-      "arms"
+      "arms",
+      "pecs",
+      "tris"
     ],
     "equipment": [
       "bodyweight"
@@ -1561,7 +1617,8 @@
       "elbow"
     ],
     "bodyRegions": [
-      "chest"
+      "chest",
+      "pecs"
     ],
     "equipment": [
       "plate"
@@ -1590,7 +1647,9 @@
     ],
     "bodyRegions": [
       "chest",
-      "arms"
+      "arms",
+      "pecs",
+      "tris"
     ],
     "equipment": [
       "bodyweight"
@@ -1617,7 +1676,9 @@
     ],
     "bodyRegions": [
       "chest",
-      "back"
+      "back",
+      "pecs",
+      "lats"
     ],
     "equipment": [
       "dumbbell"
@@ -1640,7 +1701,8 @@
       "elbow"
     ],
     "bodyRegions": [
-      "chest"
+      "chest",
+      "pecs"
     ],
     "equipment": [
       "plate"
@@ -1702,7 +1764,8 @@
     ],
     "bodyRegions": [
       "back",
-      "legs"
+      "legs",
+      "quads"
     ],
     "equipment": [
       "barbell"
@@ -1731,7 +1794,8 @@
     ],
     "bodyRegions": [
       "back",
-      "legs"
+      "legs",
+      "quads"
     ],
     "equipment": [
       "trap_bar"
@@ -1788,7 +1852,8 @@
       "knee"
     ],
     "bodyRegions": [
-      "back"
+      "back",
+      "traps"
     ],
     "equipment": [
       "barbell"
@@ -1819,7 +1884,9 @@
       "elbow"
     ],
     "bodyRegions": [
-      "back"
+      "back",
+      "lats",
+      "traps"
     ],
     "equipment": [
       "barbell"
@@ -1849,7 +1916,8 @@
       "elbow"
     ],
     "bodyRegions": [
-      "back"
+      "back",
+      "lats"
     ],
     "equipment": [
       "dumbbell"
@@ -1877,7 +1945,8 @@
       "elbow"
     ],
     "bodyRegions": [
-      "back"
+      "back",
+      "lats"
     ],
     "equipment": [
       "dumbbell"
@@ -1905,7 +1974,9 @@
       "elbow"
     ],
     "bodyRegions": [
-      "back"
+      "back",
+      "lats",
+      "traps"
     ],
     "equipment": [
       "barbell"
@@ -1935,7 +2006,8 @@
       "elbow"
     ],
     "bodyRegions": [
-      "back"
+      "back",
+      "lats"
     ],
     "equipment": [
       "cable"
@@ -1962,7 +2034,8 @@
       "elbow"
     ],
     "bodyRegions": [
-      "back"
+      "back",
+      "lats"
     ],
     "equipment": [
       "machine"
@@ -1988,7 +2061,8 @@
       "elbow"
     ],
     "bodyRegions": [
-      "back"
+      "back",
+      "lats"
     ],
     "equipment": [
       "barbell"
@@ -2018,7 +2092,8 @@
       "elbow"
     ],
     "bodyRegions": [
-      "back"
+      "back",
+      "lats"
     ],
     "equipment": [
       "bodyweight"
@@ -2048,7 +2123,9 @@
     ],
     "bodyRegions": [
       "back",
-      "arms"
+      "arms",
+      "lats",
+      "bis"
     ],
     "equipment": [
       "bodyweight"
@@ -2075,7 +2152,8 @@
       "elbow"
     ],
     "bodyRegions": [
-      "back"
+      "back",
+      "lats"
     ],
     "equipment": [
       "bodyweight"
@@ -2103,7 +2181,8 @@
       "elbow"
     ],
     "bodyRegions": [
-      "back"
+      "back",
+      "lats"
     ],
     "equipment": [
       "bodyweight"
@@ -2131,7 +2210,8 @@
       "elbow"
     ],
     "bodyRegions": [
-      "back"
+      "back",
+      "lats"
     ],
     "equipment": [
       "cable"
@@ -2158,7 +2238,8 @@
       "elbow"
     ],
     "bodyRegions": [
-      "back"
+      "back",
+      "lats"
     ],
     "equipment": [
       "cable"
@@ -2184,7 +2265,8 @@
       "elbow"
     ],
     "bodyRegions": [
-      "back"
+      "back",
+      "lats"
     ],
     "equipment": [
       "cable"
@@ -2209,7 +2291,8 @@
       "shoulder"
     ],
     "bodyRegions": [
-      "back"
+      "back",
+      "lats"
     ],
     "equipment": [
       "cable"
@@ -2237,7 +2320,8 @@
       "elbow"
     ],
     "bodyRegions": [
-      "back"
+      "back",
+      "lats"
     ],
     "equipment": [
       "bodyweight"
@@ -2263,7 +2347,8 @@
     ],
     "bodyRegions": [
       "back",
-      "shoulders"
+      "shoulders",
+      "traps"
     ],
     "equipment": [
       "barbell"
@@ -2287,7 +2372,8 @@
     ],
     "bodyRegions": [
       "back",
-      "shoulders"
+      "shoulders",
+      "traps"
     ],
     "equipment": [
       "dumbbell"
@@ -2310,7 +2396,8 @@
     ],
     "bodyRegions": [
       "back",
-      "shoulders"
+      "shoulders",
+      "traps"
     ],
     "equipment": [
       "trap_bar"
@@ -2385,7 +2472,8 @@
     ],
     "bodyRegions": [
       "back",
-      "shoulders"
+      "shoulders",
+      "delts"
     ],
     "equipment": [
       "machine"
@@ -2411,7 +2499,8 @@
       "elbow"
     ],
     "bodyRegions": [
-      "back"
+      "back",
+      "lats"
     ],
     "equipment": [
       "cable"
@@ -2443,7 +2532,8 @@
       "elbow"
     ],
     "bodyRegions": [
-      "shoulders"
+      "shoulders",
+      "delts"
     ],
     "equipment": [
       "barbell"
@@ -2471,7 +2561,8 @@
       "elbow"
     ],
     "bodyRegions": [
-      "shoulders"
+      "shoulders",
+      "delts"
     ],
     "equipment": [
       "dumbbell"
@@ -2498,7 +2589,8 @@
       "elbow"
     ],
     "bodyRegions": [
-      "shoulders"
+      "shoulders",
+      "delts"
     ],
     "equipment": [
       "barbell"
@@ -2523,7 +2615,8 @@
       "elbow"
     ],
     "bodyRegions": [
-      "shoulders"
+      "shoulders",
+      "delts"
     ],
     "equipment": [
       "dumbbell"
@@ -2552,7 +2645,8 @@
       "knee"
     ],
     "bodyRegions": [
-      "shoulders"
+      "shoulders",
+      "delts"
     ],
     "equipment": [
       "barbell"
@@ -2578,7 +2672,8 @@
       "elbow"
     ],
     "bodyRegions": [
-      "shoulders"
+      "shoulders",
+      "delts"
     ],
     "equipment": [
       "smith_machine"
@@ -2604,7 +2699,8 @@
       "elbow"
     ],
     "bodyRegions": [
-      "shoulders"
+      "shoulders",
+      "delts"
     ],
     "equipment": [
       "machine"
@@ -2630,7 +2726,8 @@
       "shoulder"
     ],
     "bodyRegions": [
-      "shoulders"
+      "shoulders",
+      "delts"
     ],
     "equipment": [
       "dumbbell"
@@ -2653,7 +2750,8 @@
       "shoulder"
     ],
     "bodyRegions": [
-      "shoulders"
+      "shoulders",
+      "delts"
     ],
     "equipment": [
       "cable"
@@ -2676,7 +2774,8 @@
       "shoulder"
     ],
     "bodyRegions": [
-      "shoulders"
+      "shoulders",
+      "delts"
     ],
     "equipment": [
       "machine"
@@ -2700,7 +2799,8 @@
       "shoulder"
     ],
     "bodyRegions": [
-      "shoulders"
+      "shoulders",
+      "delts"
     ],
     "equipment": [
       "dumbbell"
@@ -2722,7 +2822,8 @@
       "shoulder"
     ],
     "bodyRegions": [
-      "shoulders"
+      "shoulders",
+      "delts"
     ],
     "equipment": [
       "cable"
@@ -2745,7 +2846,8 @@
       "shoulder"
     ],
     "bodyRegions": [
-      "shoulders"
+      "shoulders",
+      "delts"
     ],
     "equipment": [
       "plate"
@@ -2758,7 +2860,8 @@
       "reverse fly",
       "rear delt fly",
       "bent over reverse fly",
-      "db reverse fly"
+      "db reverse fly",
+      "dumbbell reverse flyes"
     ],
     "primaryMuscles": [
       "rear deltoids"
@@ -2772,7 +2875,8 @@
     ],
     "bodyRegions": [
       "shoulders",
-      "back"
+      "back",
+      "delts"
     ],
     "equipment": [
       "dumbbell"
@@ -2783,7 +2887,8 @@
     "name": "Cable Reverse Fly",
     "aliases": [
       "cable rear delt fly",
-      "high cable reverse fly"
+      "high cable reverse fly",
+      "cable reverse flyes"
     ],
     "primaryMuscles": [
       "rear deltoids"
@@ -2797,7 +2902,8 @@
     ],
     "bodyRegions": [
       "shoulders",
-      "back"
+      "back",
+      "delts"
     ],
     "equipment": [
       "cable"
@@ -2808,7 +2914,9 @@
     "name": "Face Pull",
     "aliases": [
       "cable face pull",
-      "rope face pull"
+      "rope face pull",
+      "facepull",
+      "facepulls"
     ],
     "primaryMuscles": [
       "rear deltoids",
@@ -2824,7 +2932,8 @@
     ],
     "bodyRegions": [
       "shoulders",
-      "back"
+      "back",
+      "delts"
     ],
     "equipment": [
       "cable"
@@ -2851,7 +2960,9 @@
       "elbow"
     ],
     "bodyRegions": [
-      "shoulders"
+      "shoulders",
+      "delts",
+      "traps"
     ],
     "equipment": [
       "barbell"
@@ -2876,7 +2987,9 @@
       "elbow"
     ],
     "bodyRegions": [
-      "shoulders"
+      "shoulders",
+      "delts",
+      "traps"
     ],
     "equipment": [
       "dumbbell"
@@ -2899,7 +3012,9 @@
       "elbow"
     ],
     "bodyRegions": [
-      "shoulders"
+      "shoulders",
+      "delts",
+      "traps"
     ],
     "equipment": [
       "cable"
@@ -2923,7 +3038,8 @@
       "shoulder"
     ],
     "bodyRegions": [
-      "shoulders"
+      "shoulders",
+      "delts"
     ],
     "equipment": [
       "dumbbell"
@@ -2950,7 +3066,8 @@
       "elbow"
     ],
     "bodyRegions": [
-      "shoulders"
+      "shoulders",
+      "delts"
     ],
     "equipment": [
       "bodyweight"
@@ -2976,7 +3093,8 @@
     ],
     "bodyRegions": [
       "shoulders",
-      "back"
+      "back",
+      "delts"
     ],
     "equipment": [
       "resistance_band"
@@ -3003,7 +3121,8 @@
     ],
     "bodyRegions": [
       "shoulders",
-      "chest"
+      "chest",
+      "delts"
     ],
     "equipment": [
       "barbell"
@@ -3029,7 +3148,8 @@
       "elbow"
     ],
     "bodyRegions": [
-      "arms"
+      "arms",
+      "bis"
     ],
     "equipment": [
       "barbell"
@@ -3055,7 +3175,8 @@
       "elbow"
     ],
     "bodyRegions": [
-      "arms"
+      "arms",
+      "bis"
     ],
     "equipment": [
       "ez_bar"
@@ -3082,7 +3203,8 @@
       "elbow"
     ],
     "bodyRegions": [
-      "arms"
+      "arms",
+      "bis"
     ],
     "equipment": [
       "dumbbell"
@@ -3107,7 +3229,8 @@
       "elbow"
     ],
     "bodyRegions": [
-      "arms"
+      "arms",
+      "bis"
     ],
     "equipment": [
       "dumbbell"
@@ -3131,7 +3254,8 @@
       "elbow"
     ],
     "bodyRegions": [
-      "arms"
+      "arms",
+      "bis"
     ],
     "equipment": [
       "dumbbell"
@@ -3154,7 +3278,8 @@
       "elbow"
     ],
     "bodyRegions": [
-      "arms"
+      "arms",
+      "bis"
     ],
     "equipment": [
       "dumbbell"
@@ -3178,7 +3303,8 @@
       "elbow"
     ],
     "bodyRegions": [
-      "arms"
+      "arms",
+      "bis"
     ],
     "equipment": [
       "ez_bar"
@@ -3201,7 +3327,8 @@
       "elbow"
     ],
     "bodyRegions": [
-      "arms"
+      "arms",
+      "bis"
     ],
     "equipment": [
       "dumbbell"
@@ -3225,7 +3352,8 @@
       "elbow"
     ],
     "bodyRegions": [
-      "arms"
+      "arms",
+      "bis"
     ],
     "equipment": [
       "cable"
@@ -3250,7 +3378,8 @@
       "elbow"
     ],
     "bodyRegions": [
-      "arms"
+      "arms",
+      "bis"
     ],
     "equipment": [
       "cable"
@@ -3273,7 +3402,8 @@
       "elbow"
     ],
     "bodyRegions": [
-      "arms"
+      "arms",
+      "bis"
     ],
     "equipment": [
       "machine"
@@ -3295,7 +3425,8 @@
       "elbow"
     ],
     "bodyRegions": [
-      "arms"
+      "arms",
+      "bis"
     ],
     "equipment": [
       "dumbbell"
@@ -3320,7 +3451,8 @@
       "elbow"
     ],
     "bodyRegions": [
-      "arms"
+      "arms",
+      "bis"
     ],
     "equipment": [
       "dumbbell"
@@ -3369,7 +3501,8 @@
       "elbow"
     ],
     "bodyRegions": [
-      "arms"
+      "arms",
+      "bis"
     ],
     "equipment": [
       "dumbbell"
@@ -3394,7 +3527,8 @@
       "elbow"
     ],
     "bodyRegions": [
-      "arms"
+      "arms",
+      "bis"
     ],
     "equipment": [
       "ez_bar"
@@ -3415,7 +3549,8 @@
       "elbow"
     ],
     "bodyRegions": [
-      "arms"
+      "arms",
+      "tris"
     ],
     "equipment": [
       "cable"
@@ -3439,7 +3574,8 @@
       "elbow"
     ],
     "bodyRegions": [
-      "arms"
+      "arms",
+      "tris"
     ],
     "equipment": [
       "cable"
@@ -3460,7 +3596,8 @@
       "elbow"
     ],
     "bodyRegions": [
-      "arms"
+      "arms",
+      "tris"
     ],
     "equipment": [
       "cable"
@@ -3474,7 +3611,9 @@
       "skull crushers",
       "nose breaker",
       "french press",
-      "ez bar skull crusher"
+      "ez bar skull crusher",
+      "skullcrusher",
+      "skullcrushers"
     ],
     "primaryMuscles": [
       "triceps"
@@ -3484,7 +3623,8 @@
       "elbow"
     ],
     "bodyRegions": [
-      "arms"
+      "arms",
+      "tris"
     ],
     "equipment": [
       "ez_bar"
@@ -3495,7 +3635,10 @@
     "name": "Dumbbell Lying Tricep Extension",
     "aliases": [
       "db skull crusher",
-      "dumbbell skull crusher"
+      "dumbbell skull crusher",
+      "skullcrusher",
+      "skullcrushers",
+      "db skullcrusher"
     ],
     "primaryMuscles": [
       "triceps"
@@ -3505,7 +3648,8 @@
       "elbow"
     ],
     "bodyRegions": [
-      "arms"
+      "arms",
+      "tris"
     ],
     "equipment": [
       "dumbbell"
@@ -3527,7 +3671,8 @@
       "elbow"
     ],
     "bodyRegions": [
-      "arms"
+      "arms",
+      "tris"
     ],
     "equipment": [
       "dumbbell"
@@ -3548,7 +3693,8 @@
       "elbow"
     ],
     "bodyRegions": [
-      "arms"
+      "arms",
+      "tris"
     ],
     "equipment": [
       "dumbbell"
@@ -3574,7 +3720,8 @@
       "elbow"
     ],
     "bodyRegions": [
-      "arms"
+      "arms",
+      "tris"
     ],
     "equipment": [
       "bodyweight"
@@ -3595,7 +3742,8 @@
       "elbow"
     ],
     "bodyRegions": [
-      "arms"
+      "arms",
+      "tris"
     ],
     "equipment": [
       "barbell"
@@ -3615,7 +3763,8 @@
       "elbow"
     ],
     "bodyRegions": [
-      "arms"
+      "arms",
+      "tris"
     ],
     "equipment": [
       "machine"
@@ -3636,7 +3785,8 @@
       "elbow"
     ],
     "bodyRegions": [
-      "arms"
+      "arms",
+      "tris"
     ],
     "equipment": [
       "cable"
@@ -3708,7 +3858,8 @@
     "bodyRegions": [
       "arms",
       "core",
-      "abs"
+      "abs",
+      "traps"
     ],
     "equipment": [
       "dumbbell"
@@ -4491,7 +4642,9 @@
     "bodyRegions": [
       "legs",
       "back",
-      "shoulders"
+      "shoulders",
+      "traps",
+      "quads"
     ],
     "equipment": [
       "barbell"
@@ -4523,7 +4676,9 @@
     "bodyRegions": [
       "legs",
       "back",
-      "shoulders"
+      "shoulders",
+      "traps",
+      "quads"
     ],
     "equipment": [
       "barbell"
@@ -4558,7 +4713,9 @@
     "bodyRegions": [
       "legs",
       "back",
-      "shoulders"
+      "shoulders",
+      "traps",
+      "quads"
     ],
     "equipment": [
       "barbell"
@@ -4589,7 +4746,9 @@
     "bodyRegions": [
       "legs",
       "back",
-      "shoulders"
+      "shoulders",
+      "traps",
+      "quads"
     ],
     "equipment": [
       "barbell"
@@ -4625,7 +4784,10 @@
     "bodyRegions": [
       "legs",
       "back",
-      "shoulders"
+      "shoulders",
+      "delts",
+      "quads",
+      "tris"
     ],
     "equipment": [
       "barbell"
@@ -4657,7 +4819,9 @@
     ],
     "bodyRegions": [
       "legs",
-      "shoulders"
+      "shoulders",
+      "delts",
+      "quads"
     ],
     "equipment": [
       "barbell"
@@ -4690,7 +4854,9 @@
     ],
     "bodyRegions": [
       "legs",
-      "shoulders"
+      "shoulders",
+      "delts",
+      "quads"
     ],
     "equipment": [
       "barbell"
@@ -4721,7 +4887,9 @@
     ],
     "bodyRegions": [
       "legs",
-      "shoulders"
+      "shoulders",
+      "delts",
+      "quads"
     ],
     "equipment": [
       "dumbbell"
@@ -4812,7 +4980,8 @@
     ],
     "bodyRegions": [
       "legs",
-      "back"
+      "back",
+      "traps"
     ],
     "equipment": [
       "kettlebell"
@@ -4842,7 +5011,8 @@
     ],
     "bodyRegions": [
       "legs",
-      "shoulders"
+      "shoulders",
+      "delts"
     ],
     "equipment": [
       "kettlebell"
@@ -4868,7 +5038,8 @@
       "elbow"
     ],
     "bodyRegions": [
-      "shoulders"
+      "shoulders",
+      "delts"
     ],
     "equipment": [
       "kettlebell"
@@ -4903,7 +5074,8 @@
       "shoulders",
       "core",
       "abs",
-      "legs"
+      "legs",
+      "delts"
     ],
     "equipment": [
       "kettlebell"
@@ -4959,7 +5131,8 @@
       "elbow"
     ],
     "bodyRegions": [
-      "back"
+      "back",
+      "lats"
     ],
     "equipment": [
       "kettlebell"
@@ -5014,7 +5187,8 @@
     "bodyRegions": [
       "shoulders",
       "core",
-      "abs"
+      "abs",
+      "delts"
     ],
     "equipment": [
       "kettlebell"
@@ -5046,7 +5220,8 @@
     ],
     "bodyRegions": [
       "legs",
-      "shoulders"
+      "shoulders",
+      "delts"
     ],
     "equipment": [
       "kettlebell"
@@ -5075,7 +5250,8 @@
     ],
     "bodyRegions": [
       "arms",
-      "shoulders"
+      "shoulders",
+      "delts"
     ],
     "equipment": [
       "bodyweight"
@@ -5109,7 +5285,10 @@
       "legs",
       "chest",
       "core",
-      "abs"
+      "abs",
+      "pecs",
+      "delts",
+      "quads"
     ],
     "equipment": [
       "bodyweight"
@@ -5137,7 +5316,8 @@
       "ankle"
     ],
     "bodyRegions": [
-      "legs"
+      "legs",
+      "quads"
     ],
     "equipment": [
       "bodyweight"
@@ -5164,7 +5344,8 @@
       "ankle"
     ],
     "bodyRegions": [
-      "legs"
+      "legs",
+      "quads"
     ],
     "equipment": [
       "bodyweight"
@@ -5191,7 +5372,8 @@
       "ankle"
     ],
     "bodyRegions": [
-      "legs"
+      "legs",
+      "quads"
     ],
     "equipment": [
       "bodyweight"
@@ -5221,7 +5403,10 @@
     "bodyRegions": [
       "back",
       "chest",
-      "arms"
+      "arms",
+      "pecs",
+      "lats",
+      "tris"
     ],
     "equipment": [
       "bodyweight"
@@ -5251,7 +5436,10 @@
     "bodyRegions": [
       "back",
       "chest",
-      "arms"
+      "arms",
+      "pecs",
+      "lats",
+      "tris"
     ],
     "equipment": [
       "bodyweight"
@@ -5278,7 +5466,9 @@
     ],
     "bodyRegions": [
       "chest",
-      "arms"
+      "arms",
+      "pecs",
+      "tris"
     ],
     "equipment": [
       "bodyweight"
@@ -5304,7 +5494,8 @@
       "elbow"
     ],
     "bodyRegions": [
-      "back"
+      "back",
+      "lats"
     ],
     "equipment": [
       "bodyweight"
@@ -5331,7 +5522,8 @@
       "elbow"
     ],
     "bodyRegions": [
-      "back"
+      "back",
+      "lats"
     ],
     "equipment": [
       "suspension"
@@ -5357,7 +5549,8 @@
       "elbow"
     ],
     "bodyRegions": [
-      "chest"
+      "chest",
+      "pecs"
     ],
     "equipment": [
       "suspension"
@@ -5383,7 +5576,9 @@
     ],
     "bodyRegions": [
       "shoulders",
-      "back"
+      "back",
+      "delts",
+      "traps"
     ],
     "equipment": [
       "suspension"
@@ -5407,7 +5602,8 @@
       "elbow"
     ],
     "bodyRegions": [
-      "arms"
+      "arms",
+      "bis"
     ],
     "equipment": [
       "suspension"
@@ -5430,7 +5626,8 @@
       "elbow"
     ],
     "bodyRegions": [
-      "arms"
+      "arms",
+      "tris"
     ],
     "equipment": [
       "suspension"
@@ -5459,7 +5656,8 @@
     "bodyRegions": [
       "core",
       "abs",
-      "shoulders"
+      "shoulders",
+      "delts"
     ],
     "equipment": [
       "suspension"
@@ -5539,7 +5737,8 @@
       "ankle"
     ],
     "bodyRegions": [
-      "legs"
+      "legs",
+      "quads"
     ],
     "equipment": [
       "dumbbell"
@@ -5565,7 +5764,8 @@
       "hip"
     ],
     "bodyRegions": [
-      "legs"
+      "legs",
+      "quads"
     ],
     "equipment": [
       "bodyweight"
@@ -5592,7 +5792,8 @@
       "ankle"
     ],
     "bodyRegions": [
-      "legs"
+      "legs",
+      "quads"
     ],
     "equipment": [
       "barbell"
@@ -5713,7 +5914,8 @@
     ],
     "bodyRegions": [
       "shoulders",
-      "back"
+      "back",
+      "delts"
     ],
     "equipment": [
       "resistance_band"
@@ -5738,7 +5940,8 @@
       "hip"
     ],
     "bodyRegions": [
-      "legs"
+      "legs",
+      "quads"
     ],
     "equipment": [
       "resistance_band"
@@ -5761,7 +5964,8 @@
       "elbow"
     ],
     "bodyRegions": [
-      "arms"
+      "arms",
+      "bis"
     ],
     "equipment": [
       "resistance_band"
@@ -5786,7 +5990,8 @@
       "elbow"
     ],
     "bodyRegions": [
-      "shoulders"
+      "shoulders",
+      "delts"
     ],
     "equipment": [
       "resistance_band"
@@ -5812,7 +6017,8 @@
       "elbow"
     ],
     "bodyRegions": [
-      "back"
+      "back",
+      "lats"
     ],
     "equipment": [
       "resistance_band"
@@ -5849,7 +6055,9 @@
     "id": "cable-face-pull-high",
     "name": "High Cable Face Pull",
     "aliases": [
-      "high face pull"
+      "high face pull",
+      "facepull",
+      "facepulls"
     ],
     "primaryMuscles": [
       "rear deltoids",
@@ -5865,7 +6073,8 @@
     ],
     "bodyRegions": [
       "shoulders",
-      "back"
+      "back",
+      "delts"
     ],
     "equipment": [
       "cable"
@@ -5891,7 +6100,8 @@
       "elbow"
     ],
     "bodyRegions": [
-      "shoulders"
+      "shoulders",
+      "delts"
     ],
     "equipment": [
       "barbell"
@@ -5920,7 +6130,8 @@
     ],
     "bodyRegions": [
       "back",
-      "legs"
+      "legs",
+      "traps"
     ],
     "equipment": [
       "barbell"
@@ -5949,7 +6160,8 @@
     ],
     "bodyRegions": [
       "legs",
-      "back"
+      "back",
+      "quads"
     ],
     "equipment": [
       "barbell"
@@ -5975,7 +6187,8 @@
       "elbow"
     ],
     "bodyRegions": [
-      "back"
+      "back",
+      "lats"
     ],
     "equipment": [
       "dumbbell"
@@ -6001,7 +6214,8 @@
       "elbow"
     ],
     "bodyRegions": [
-      "back"
+      "back",
+      "lats"
     ],
     "equipment": [
       "dumbbell"
@@ -6027,7 +6241,8 @@
       "elbow"
     ],
     "bodyRegions": [
-      "back"
+      "back",
+      "lats"
     ],
     "equipment": [
       "barbell"
@@ -6054,7 +6269,8 @@
       "elbow"
     ],
     "bodyRegions": [
-      "back"
+      "back",
+      "lats"
     ],
     "equipment": [
       "barbell"
@@ -6081,7 +6297,8 @@
       "elbow"
     ],
     "bodyRegions": [
-      "back"
+      "back",
+      "lats"
     ],
     "equipment": [
       "smith_machine"
@@ -6107,7 +6324,8 @@
       "elbow"
     ],
     "bodyRegions": [
-      "back"
+      "back",
+      "lats"
     ],
     "equipment": [
       "bodyweight"
@@ -6134,7 +6352,8 @@
       "elbow"
     ],
     "bodyRegions": [
-      "back"
+      "back",
+      "lats"
     ],
     "equipment": [
       "machine"
@@ -6159,7 +6378,8 @@
       "elbow"
     ],
     "bodyRegions": [
-      "back"
+      "back",
+      "lats"
     ],
     "equipment": [
       "cable"
@@ -6182,7 +6402,8 @@
       "shoulder"
     ],
     "bodyRegions": [
-      "back"
+      "back",
+      "lats"
     ],
     "equipment": [
       "cable"
@@ -6206,7 +6427,8 @@
       "shoulder"
     ],
     "bodyRegions": [
-      "shoulders"
+      "shoulders",
+      "delts"
     ],
     "equipment": [
       "dumbbell"
@@ -6232,7 +6454,9 @@
     ],
     "bodyRegions": [
       "shoulders",
-      "back"
+      "back",
+      "delts",
+      "traps"
     ],
     "equipment": [
       "dumbbell"
@@ -6325,7 +6549,8 @@
       "elbow"
     ],
     "bodyRegions": [
-      "back"
+      "back",
+      "lats"
     ],
     "equipment": [
       "dumbbell"
@@ -6350,7 +6575,8 @@
       "elbow"
     ],
     "bodyRegions": [
-      "chest"
+      "chest",
+      "pecs"
     ],
     "equipment": [
       "bodyweight"
@@ -6375,7 +6601,8 @@
       "elbow"
     ],
     "bodyRegions": [
-      "shoulders"
+      "shoulders",
+      "delts"
     ],
     "equipment": [
       "bodyweight"
@@ -6400,7 +6627,8 @@
       "elbow"
     ],
     "bodyRegions": [
-      "chest"
+      "chest",
+      "pecs"
     ],
     "equipment": [
       "dumbbell"
@@ -6425,7 +6653,9 @@
       "elbow"
     ],
     "bodyRegions": [
-      "chest"
+      "chest",
+      "pecs",
+      "delts"
     ],
     "equipment": [
       "smith_machine"
@@ -6451,7 +6681,9 @@
     ],
     "bodyRegions": [
       "chest",
-      "arms"
+      "arms",
+      "pecs",
+      "tris"
     ],
     "equipment": [
       "machine"
@@ -6475,7 +6707,8 @@
       "elbow"
     ],
     "bodyRegions": [
-      "chest"
+      "chest",
+      "pecs"
     ],
     "equipment": [
       "machine"
@@ -6500,7 +6733,8 @@
     ],
     "bodyRegions": [
       "arms",
-      "chest"
+      "chest",
+      "tris"
     ],
     "equipment": [
       "barbell"
@@ -6525,7 +6759,8 @@
       "elbow"
     ],
     "bodyRegions": [
-      "chest"
+      "chest",
+      "pecs"
     ],
     "equipment": [
       "barbell"
@@ -6551,7 +6786,8 @@
       "elbow"
     ],
     "bodyRegions": [
-      "chest"
+      "chest",
+      "pecs"
     ],
     "equipment": [
       "barbell"
@@ -6574,7 +6810,8 @@
       "elbow"
     ],
     "bodyRegions": [
-      "arms"
+      "arms",
+      "bis"
     ],
     "equipment": [
       "ez_bar"
@@ -6597,7 +6834,8 @@
       "elbow"
     ],
     "bodyRegions": [
-      "arms"
+      "arms",
+      "bis"
     ],
     "equipment": [
       "cable"
@@ -6620,7 +6858,8 @@
       "elbow"
     ],
     "bodyRegions": [
-      "arms"
+      "arms",
+      "bis"
     ],
     "equipment": [
       "cable"
@@ -6644,7 +6883,8 @@
       "shoulder"
     ],
     "bodyRegions": [
-      "arms"
+      "arms",
+      "bis"
     ],
     "equipment": [
       "barbell"
@@ -6666,7 +6906,8 @@
       "elbow"
     ],
     "bodyRegions": [
-      "arms"
+      "arms",
+      "bis"
     ],
     "equipment": [
       "dumbbell"
@@ -6693,7 +6934,9 @@
     ],
     "bodyRegions": [
       "chest",
-      "arms"
+      "arms",
+      "pecs",
+      "tris"
     ],
     "equipment": [
       "bodyweight"
@@ -6762,7 +7005,9 @@
       "elbow"
     ],
     "bodyRegions": [
-      "back"
+      "back",
+      "lats",
+      "delts"
     ],
     "equipment": [
       "cable"
@@ -6814,7 +7059,8 @@
       "hip"
     ],
     "bodyRegions": [
-      "legs"
+      "legs",
+      "quads"
     ],
     "equipment": [
       "bodyweight"
@@ -6839,7 +7085,8 @@
       "hip"
     ],
     "bodyRegions": [
-      "legs"
+      "legs",
+      "quads"
     ],
     "equipment": [
       "barbell"
@@ -6914,7 +7161,8 @@
       "elbow"
     ],
     "bodyRegions": [
-      "shoulders"
+      "shoulders",
+      "delts"
     ],
     "equipment": [
       "dumbbell"
@@ -6940,7 +7188,8 @@
       "elbow"
     ],
     "bodyRegions": [
-      "shoulders"
+      "shoulders",
+      "delts"
     ],
     "equipment": [
       "dumbbell"
@@ -6966,7 +7215,8 @@
       "elbow"
     ],
     "bodyRegions": [
-      "shoulders"
+      "shoulders",
+      "delts"
     ],
     "equipment": [
       "barbell"
@@ -6989,7 +7239,8 @@
       "shoulder"
     ],
     "bodyRegions": [
-      "back"
+      "back",
+      "traps"
     ],
     "equipment": [
       "dumbbell"
@@ -7009,7 +7260,8 @@
       "shoulder"
     ],
     "bodyRegions": [
-      "back"
+      "back",
+      "traps"
     ],
     "equipment": [
       "cable"
@@ -7114,7 +7366,8 @@
       "shoulder"
     ],
     "bodyRegions": [
-      "legs"
+      "legs",
+      "quads"
     ],
     "equipment": [
       "machine"
@@ -7173,7 +7426,8 @@
     ],
     "bodyRegions": [
       "legs",
-      "back"
+      "back",
+      "quads"
     ],
     "equipment": [
       "bodyweight"
@@ -7201,7 +7455,9 @@
     ],
     "bodyRegions": [
       "back",
-      "arms"
+      "arms",
+      "lats",
+      "bis"
     ],
     "equipment": [
       "bodyweight"
@@ -7232,7 +7488,9 @@
     ],
     "bodyRegions": [
       "legs",
-      "shoulders"
+      "shoulders",
+      "delts",
+      "quads"
     ],
     "equipment": [
       "bodyweight"
@@ -7266,7 +7524,9 @@
     ],
     "bodyRegions": [
       "back",
-      "legs"
+      "legs",
+      "lats",
+      "quads"
     ],
     "equipment": [
       "machine"
@@ -7299,7 +7559,8 @@
     ],
     "bodyRegions": [
       "legs",
-      "arms"
+      "arms",
+      "quads"
     ],
     "equipment": [
       "machine"
@@ -7327,7 +7588,9 @@
     ],
     "bodyRegions": [
       "back",
-      "arms"
+      "arms",
+      "lats",
+      "tris"
     ],
     "equipment": [
       "machine"
@@ -7359,7 +7622,10 @@
     "bodyRegions": [
       "chest",
       "shoulders",
-      "legs"
+      "legs",
+      "pecs",
+      "delts",
+      "quads"
     ],
     "equipment": [
       "dumbbell"
@@ -7391,7 +7657,9 @@
     "bodyRegions": [
       "chest",
       "shoulders",
-      "legs"
+      "legs",
+      "pecs",
+      "delts"
     ],
     "equipment": [
       "dumbbell"
@@ -7422,7 +7690,9 @@
     ],
     "bodyRegions": [
       "legs",
-      "back"
+      "back",
+      "traps",
+      "quads"
     ],
     "equipment": [
       "barbell"
@@ -7448,7 +7718,10 @@
     ],
     "bodyRegions": [
       "shoulders",
-      "back"
+      "back",
+      "delts",
+      "traps",
+      "bis"
     ],
     "equipment": [
       "barbell"
@@ -7477,7 +7750,8 @@
     ],
     "bodyRegions": [
       "back",
-      "legs"
+      "legs",
+      "traps"
     ],
     "equipment": [
       "barbell"
@@ -7506,7 +7780,8 @@
     ],
     "bodyRegions": [
       "back",
-      "legs"
+      "legs",
+      "traps"
     ],
     "equipment": [
       "barbell"
@@ -7534,7 +7809,8 @@
     "bodyRegions": [
       "shoulders",
       "legs",
-      "back"
+      "back",
+      "traps"
     ],
     "equipment": [
       "barbell"
@@ -7564,7 +7840,8 @@
     ],
     "bodyRegions": [
       "legs",
-      "shoulders"
+      "shoulders",
+      "delts"
     ],
     "equipment": [
       "dumbbell"
@@ -7593,7 +7870,9 @@
     "bodyRegions": [
       "core",
       "abs",
-      "shoulders"
+      "shoulders",
+      "delts",
+      "quads"
     ],
     "equipment": [
       "bodyweight"
@@ -7620,7 +7899,8 @@
     ],
     "bodyRegions": [
       "core",
-      "abs"
+      "abs",
+      "delts"
     ],
     "equipment": [
       "bodyweight"
@@ -7689,7 +7969,9 @@
       "elbow"
     ],
     "bodyRegions": [
-      "chest"
+      "chest",
+      "pecs",
+      "tris"
     ],
     "equipment": [
       "dumbbell"
@@ -7713,7 +7995,8 @@
       "elbow"
     ],
     "bodyRegions": [
-      "chest"
+      "chest",
+      "pecs"
     ],
     "equipment": [
       "cable"
@@ -7723,7 +8006,8 @@
     "id": "incline-cable-fly",
     "name": "Incline Cable Fly",
     "aliases": [
-      "low to high cable fly incline"
+      "low to high cable fly incline",
+      "incline cable flyes"
     ],
     "primaryMuscles": [
       "pectoralis major"
@@ -7735,7 +8019,8 @@
       "shoulder"
     ],
     "bodyRegions": [
-      "chest"
+      "chest",
+      "pecs"
     ],
     "equipment": [
       "cable"
@@ -7761,7 +8046,8 @@
       "elbow"
     ],
     "bodyRegions": [
-      "chest"
+      "chest",
+      "pecs"
     ],
     "equipment": [
       "bodyweight"
@@ -7788,7 +8074,8 @@
       "ankle"
     ],
     "bodyRegions": [
-      "legs"
+      "legs",
+      "quads"
     ],
     "equipment": [
       "bodyweight"

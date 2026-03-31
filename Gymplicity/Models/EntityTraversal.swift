@@ -74,10 +74,9 @@ extension IdentityEntity {
             return exercises(in: context)
                 .sorted { $0.name < $1.name }
         }
-        return trainer(in: context)?
+        return (trainer(in: context) ?? self)
             .exercises(in: context)
             .sorted { $0.name < $1.name }
-            ?? []
     }
 
     @MainActor func workouts(

@@ -322,7 +322,7 @@ struct ActiveWorkoutView: View {
         let owner = workout.owner(in: modelContext)
         return owner.isTrainer
             ? owner
-            : owner.trainer(in: modelContext)
+            : owner.trainer(in: modelContext) ?? owner
     }
 
     private func exerciseIdsFrom(

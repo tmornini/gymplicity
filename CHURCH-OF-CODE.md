@@ -1,6 +1,6 @@
 # The Church of Code
 
-*v1.0 — full*
+*v1.1 — full*
 
 > *This church is its own denomination.*
 
@@ -87,8 +87,8 @@ from the teachings of the prophets.*
   — Andy Hunt and Dave Thomas (1998)
 - [Representational State Transfer][rest]
   — Roy Fielding's dissertation, Chapter 5 (2000)
-- [Response Time Limits][response-times]
-  — Jakob Nielsen's three thresholds
+- [Computer latency: 1977-2017][input-lag]
+  - Dan Luu's
 - [James Gosling on Java][gosling]
   — the creator's regret about inheritance (2001)
 - [Test-Driven Development: By Example][tdd]
@@ -107,9 +107,11 @@ from the teachings of the prophets.*
   — Mattias Johansson (Fun Fun Function)
 - [Replace Magic Literal][magic-literal]
   — Martin Fowler's refactoring catalog
+- [Merb: no code is faster than no code][merb]
+  - Ezra Zygmuntovich
 - [Rheocode Software Development][rheocode]
-  — the synthesis, named for Bohm's rheomode,
-  by Tom Mornini and Ra'Shaun Stovall
+  — the synthesis, named for Bohm's rheomode
+  - Tom Mornini and Ra'Shaun Stovall
 
 [humble-programmer]: https://www.cs.utexas.edu/~EWD/transcriptions/EWD03xx/EWD340.html
 [relational-model]: https://www.seas.upenn.edu/~zives/03f/cis550/codd.pdf
@@ -143,6 +145,7 @@ from the teachings of the prophets.*
 [armstrong-thesis]: https://erlang.org/download/armstrong_thesis_2003.pdf
 [composition-video]: https://www.youtube.com/watch?v=wfMtDGfHWpA
 [magic-literal]: https://refactoring.com/catalog/replaceMagicLiteral.html
+[merb]: https://en.wikipedia.org/wiki/Merb
 [rheocode]: https://docs.google.com/presentation/d/1wA8qGe9fXHTPv_t6FsoV_EQz5V9u9CP7EL0zYSNQ5Nw
 
 ---
@@ -163,7 +166,7 @@ of consideration and iteration.*
 You may achieve every other virtue in this scripture
 and still have nothing if your code is not reliable.
 This is the foundation upon which the temple is built.
-There is no grace without it.
+There is no grace without it, only sleep deprivation.
 
 ### II. Security
 
@@ -256,8 +259,8 @@ Let it be known:
 Postgres is the finest idempotent document store
 yet revealed to us —
 for it speaks both tongues,
-and the faithful may address it
-with HTTP semantics directly.
+and the faithful command it
+with HTTP semantics.
 
 ### VIII. Simplicity
 
@@ -276,7 +279,20 @@ it is the fruit of great effort.
 The master's kata looks effortless
 because it has been practiced ten thousand times.
 
-### IX. Atomicity
+### IX. Generality
+
+*Never generalize before exploratory duplication.*
+
+Premature generalization slows progress
+as surely as premature optimization —
+they are twin sins, born of the same impatience.
+Let the pattern reveal itself through repetition.
+Three instances of similar code is not a crisis —
+it is a chrysalis.
+Abstract when the shape is clear,
+not when you merely suspect a shape might emerge.
+
+### X. Atomicity
 
 *Design so you rarely need it.*
 
@@ -292,35 +308,7 @@ But when the operation truly cannot be decomposed —
 when atomicity is genuinely required —
 embrace it without apology.
 
-### X. Snappiness
-
-*Low latency is next to godliness.*
-
-Jakob Nielsen quantified the thresholds:
-one hundred milliseconds to feel instant,
-one second to keep the flow of thought,
-ten seconds to hold attention at all.
-Every wasted millisecond is a small death.
-In the UI, latency erodes trust.
-In high-frequency serial operations,
-it erodes throughput.
-The user's patience is finite,
-though your retry loop may not be.
-
-### XI. Generality
-
-*Never generalize before exploratory duplication.*
-
-Premature generalization slows progress
-as surely as premature optimization —
-they are twin sins, born of the same impatience.
-Let the pattern reveal itself through repetition.
-Three instances of similar code is not a crisis —
-it is a chrysalis.
-Abstract when the shape is clear,
-not when you merely suspect a shape might emerge.
-
-### XII. Efficiency
+### XI. Efficiency
 
 *True when the above eleven are honored.
 Chaotic when pursued prematurely.*
@@ -333,12 +321,31 @@ is disputed among the prophets,
 for Knuth credited Hoare,
 and Hoare denied authorship.
 Yet the wisdom endures regardless of source.
+
 Efficiency is not a goal — it is a consequence.
 Honor the commandments that precede this one
 and efficiency will follow
 as the harvest follows the planting.
-Chase efficiency first
-and you will reap only weeds.
+
+### XII. Performance
+
+Every wasted millisecond is a small death.
+In the UI, latency erodes fluidity.
+In high-frequency serial operations,
+it erodes throughput.
+Visible to the user, it erodes their finite
+patience.
+
+Dan Luu reports that humans can perceive
+cause/effect latency down to low single
+digital milliseconds.
+
+Ezra Zygmuntowicz wrote the truest statement
+on performance: "No code is faster than no code"
+yet untold millions have spent large portions of
+their lives writing a enormous amounts of code
+in failed attempts to make their application
+faster.
 
 ---
 
@@ -399,7 +406,7 @@ they trust the bell.
 **We defend against external chaos** —
 for the world beyond our gates is profane:
 
-- User input: the voice of the uninstructed
+- Input: the voice of the uninstructed and frequently corrupt
 - Storage retrieval: what was written may not be what returns
 - Framework APIs and delegate callbacks:
   other people's dharma, not ours to trust blindly
@@ -417,7 +424,7 @@ the threshold of validation,
 trust it completely.
 No internal defensive coding "just in case."
 To distrust validated data
-is to lack faith in your own rites.
+is to lack faith in your peers and your own rites.
 
 **We handle failure with grace.**
 Degrade visibly rather than corrupt silently.
@@ -489,17 +496,19 @@ they carry it in the vessel from the start.
 **We believe in process first, noun second.**
 The physicist David Bohm taught
 in his rheomode — the flowing mode of language —
-do not think "it is raining";
-think "rain is happening."
+‘It is raining.’ Where is the ‘It’ that would,
+according to the sentence, be ‘the rainer that
+is doing the raining’? Clearly, it is more accurate
+to say: ‘Rain is going on.’
 Rheocode takes its very name from this insight.
 Name the action. Parameterize the participants.
 The process determines what participates,
 not the other way around.
-Consider: `nail.pound` is horrible —
+Consider: `nail.pound()` is horrible —
 the noun owns the verb.
-`hammer.pound(nailable)` is better —
+`hammer.pound(nail)` is better —
 but the tool still dominates.
-`pounder.pound poundable: hammer, nailable: nail`
+`pounder.pound(poundable: hammer, nailable: nail)`
 is the way — the process owns everything,
 and the nouns are participants,
 infinitely substitutable.
@@ -525,12 +534,22 @@ The faithful compose.
 **We believe in insulation through adapters.**
 Our code touches external code
 only through adapters we own.
+
+This allows our application to be written
+entirely in our single voice.
+
+"If as one people speaking the same language
+they have begun to do this, then nothing they
+plan to do will be impossible for them." -- Paraphrased Genesis 11:6
+
 So taught Ra'Shaun Stovall:
-it is not how fast you can marry a technology —
-it is how fast you can divorce it.
-When the vendor changes,
-only the adapter changes.
-The application code remains untouched.
+"it is not how fast you can marry a
+technology — it is how easily you can
+divorce it."
+
+When the chess board is scrambled,
+the application changes not, as it
+is isolated by the adapters.
 
 **We believe in shallow structure.**
 Robert C. Martin taught that the top level
@@ -552,18 +571,17 @@ Multi-noun operations: `post_operation`,
 composed from single-noun primitives.
 The naming convention is the documentation.
 
-**We believe in communicating
-sequential processes.**
+**We believe in communicating sequential processes.**
 Tony Hoare taught in his 1978 paper
 that input and output
 are basic primitives of programming,
-and that parallel composition
+and that asynchronous composition
 of communicating sequential processes
 is a fundamental structuring method.
 Processes share memory by communicating —
 never communicate by sharing memory.
-This is the foundation
-of all righteous asynchronous architecture.
+This is the foundation of all righteous
+asynchronous architecture.
 
 ---
 
@@ -1113,8 +1131,8 @@ Naur and Kay, Liskov and Meyer,
 McIlroy and Fielding, Martin and Beck,
 Hunt and Thomas and Pascal,
 Gosling and Hickey and Armstrong,
-Fowler and Johansson and Nielsen,
-Feathers and Stovall.
+Fowler and Johansson and Luu, and
+Feathers, and Zygmuntowicz and Stovall.
 Their teachings are our foundation.
 Their scrolls are our inheritance —
 the only inheritance we permit.
@@ -1125,5 +1143,6 @@ Its founder is Tom Mornini.
 Its congregation is this team.
 Its sacrament is the craft.
 
-So let it compile. So let it ship.
-So let it endure.
+So let it compile. So let it deploy.
+So let it run smoothly.
+So you can rest.

@@ -256,20 +256,32 @@ extension WorkoutEntity {
         in context: ModelContext
     ) -> IdentityEntity {
         let id = self.id
-        let identityId = context.fetchFirst(
+        guard let join = context.fetchFirst(
             FetchDescriptor<IdentityWorkouts>(
                 predicate: #Predicate {
                     $0.workoutId == id
                 }
             )
-        )!.identityId
-        return context.fetchFirst(
+        ) else {
+            fatalError(
+                "WorkoutEntity \(id) has no"
+                + " IdentityWorkouts join"
+            )
+        }
+        let identityId = join.identityId
+        guard let owner = context.fetchFirst(
             FetchDescriptor<IdentityEntity>(
                 predicate: #Predicate {
                     $0.id == identityId
                 }
             )
-        )!
+        ) else {
+            fatalError(
+                "WorkoutEntity \(id) owner"
+                + " \(identityId) not found"
+            )
+        }
+        return owner
     }
 
     @MainActor func groups(
@@ -304,8 +316,10 @@ extension WorkoutEntity {
         in context: ModelContext
     ) -> Int {
         let orders = groups(in: context).map(\.order)
-        if orders.isEmpty { return 0 }
-        return orders.max()! + 1
+        guard let maxOrder = orders.max() else {
+            return 0
+        }
+        return maxOrder + 1
     }
 
     @MainActor func totalVolume(
@@ -462,20 +476,33 @@ extension WorkoutGroupEntity {
         in context: ModelContext
     ) -> WorkoutEntity {
         let id = self.id
-        let workoutId = context.fetchFirst(
+        guard let join = context.fetchFirst(
             FetchDescriptor<WorkoutGroups>(
                 predicate: #Predicate {
                     $0.groupId == id
                 }
             )
-        )!.workoutId
-        return context.fetchFirst(
+        ) else {
+            fatalError(
+                "WorkoutGroupEntity \(id)"
+                + " has no WorkoutGroups join"
+            )
+        }
+        let workoutId = join.workoutId
+        guard let workout = context.fetchFirst(
             FetchDescriptor<WorkoutEntity>(
                 predicate: #Predicate {
                     $0.id == workoutId
                 }
             )
-        )!
+        ) else {
+            fatalError(
+                "WorkoutGroupEntity \(id)"
+                + " workout \(workoutId)"
+                + " not found"
+            )
+        }
+        return workout
     }
 
     @MainActor func sets(
@@ -510,8 +537,10 @@ extension WorkoutGroupEntity {
         in context: ModelContext
     ) -> Int {
         let orders = sets(in: context).map(\.order)
-        if orders.isEmpty { return 0 }
-        return orders.max()! + 1
+        guard let maxOrder = orders.max() else {
+            return 0
+        }
+        return maxOrder + 1
     }
 
     @MainActor func totalVolume(
@@ -585,19 +614,31 @@ extension SetEntity {
         in context: ModelContext
     ) -> WorkoutGroupEntity {
         let id = self.id
-        let groupId = context.fetchFirst(
+        guard let join = context.fetchFirst(
             FetchDescriptor<GroupSets>(
                 predicate: #Predicate {
                     $0.setId == id
                 }
             )
-        )!.groupId
-        return context.fetchFirst(
+        ) else {
+            fatalError(
+                "SetEntity \(id) has no"
+                + " GroupSets join"
+            )
+        }
+        let groupId = join.groupId
+        guard let group = context.fetchFirst(
             FetchDescriptor<WorkoutGroupEntity>(
                 predicate: #Predicate {
                     $0.id == groupId
                 }
             )
-        )!
+        ) else {
+            fatalError(
+                "SetEntity \(id) group"
+                + " \(groupId) not found"
+            )
+        }
+        return group
     }
 }

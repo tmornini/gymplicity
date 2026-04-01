@@ -339,11 +339,16 @@ private struct TemplateSetEntryView: View {
     }
 
     private func save() {
-        guard isInputValid else { return }
-        set.weight = weightText.isEmpty
-            ? 0 : Double(weightText)!
-        set.reps = repsText.isEmpty
-            ? 0 : Int(repsText)!
+        let parsedWeight = Double(weightText)
+        let parsedReps = Int(repsText)
+        guard
+            weightText.isEmpty
+                || parsedWeight != nil,
+            repsText.isEmpty
+                || parsedReps != nil
+        else { return }
+        set.weight = parsedWeight ?? 0
+        set.reps = parsedReps ?? 0
         SyncTrigger.entityUpdated(.set, id: set.id)
         dismiss()
     }

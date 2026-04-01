@@ -150,13 +150,35 @@ struct GuidedWorkoutView: View {
     ) -> some View {
         let exercise = snapshot.subgraph.exercise(for: pair.set.id)
         let groups = snapshot.groups
-        let groupIndex = groups.firstIndex(
-            where: { $0.group.id == pair.group.id }
-        )!
+        let groupIndex: Int = {
+            guard let i = groups.firstIndex(
+                where: {
+                    $0.group.id == pair.group.id
+                }
+            ) else {
+                fatalError(
+                    "Group \(pair.group.id)"
+                    + " not in snapshot"
+                )
+            }
+            return i
+        }()
         let groupSnap = groups[groupIndex]
-        let setIndex = groupSnap.sets.firstIndex(
-            where: { $0.set.id == pair.set.id }
-        )!
+        let setIndex: Int = {
+            guard let i = groupSnap
+                .sets.firstIndex(
+                    where: {
+                        $0.set.id == pair.set.id
+                    }
+                )
+            else {
+                fatalError(
+                    "Set \(pair.set.id) not in"
+                    + " group \(pair.group.id)"
+                )
+            }
+            return i
+        }()
         let setsInGroupCount = groupSnap.sets.count
 
         VStack(spacing: GymMetrics.space20) {
@@ -310,16 +332,20 @@ struct GuidedWorkoutView: View {
         let flatSets = workout.allSetsFlattened(
             in: modelContext
         )
-        guard isInputValid,
-              currentIndex >= 0,
-              currentIndex < flatSets.count
+        let parsedWeight = Double(weightText)
+        let parsedReps = Int(repsText)
+        guard
+            weightText.isEmpty
+                || parsedWeight != nil,
+            repsText.isEmpty
+                || parsedReps != nil,
+            currentIndex >= 0,
+            currentIndex < flatSets.count
         else { return }
         let pair = flatSets[currentIndex]
 
-        pair.set.weight = weightText.isEmpty
-            ? 0 : Double(weightText)!
-        pair.set.reps = repsText.isEmpty
-            ? 0 : Int(repsText)!
+        pair.set.weight = parsedWeight ?? 0
+        pair.set.reps = parsedReps ?? 0
         modelContext.insert(
             SetCompletions(
                 setId: pair.set.id,

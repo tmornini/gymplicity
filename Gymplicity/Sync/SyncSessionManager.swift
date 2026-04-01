@@ -387,7 +387,7 @@ class SyncSessionManager:
                     try FileManager.default
                         .removeItem(at: tempURL)
                 } catch {
-                    print(
+                    assertionFailure(
                         "[SyncCleanup] \(error)"
                     )
                 }
@@ -715,7 +715,9 @@ class SyncSessionManager:
             try FileManager.default
                 .removeItem(at: url)
         } catch {
-            print("[SyncCleanup] \(error)")
+            assertionFailure(
+                "[SyncCleanup] \(error)"
+            )
         }
     }
 

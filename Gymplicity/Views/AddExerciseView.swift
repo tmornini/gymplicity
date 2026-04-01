@@ -219,4 +219,3 @@ struct AddExerciseView: View {
         )
     }
 }
-

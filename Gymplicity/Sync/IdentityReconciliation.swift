@@ -62,7 +62,9 @@ struct IdentityReconciliation {
             visited.formUnion(frontier)
             var nextFrontier = Set<UUID>()
             for id in frontier {
-                for neighbor in adjacency[id] ?? [] {
+                guard let neighbors = adjacency[id]
+                else { continue }
+                for neighbor in neighbors {
                     if !visited.contains(neighbor) {
                         nextFrontier.insert(neighbor)
                     }

@@ -17,14 +17,24 @@ struct WorkoutSubgraph {
     func sortedGroups(
         for workoutId: UUID
     ) -> [WorkoutGroupEntity] {
-        (groupsByWorkout[workoutId] ?? [])
+        guard let groups = groupsByWorkout[
+            workoutId
+        ] else {
+            return []
+        }
+        return groups
             .sorted { $0.order < $1.order }
     }
 
     func sortedSets(
         for groupId: UUID
     ) -> [SetEntity] {
-        (setsByGroup[groupId] ?? [])
+        guard let sets = setsByGroup[
+            groupId
+        ] else {
+            return []
+        }
+        return sets
             .sorted { $0.order < $1.order }
     }
 
@@ -34,25 +44,43 @@ struct WorkoutSubgraph {
         exerciseBySet[setId]
     }
 
-    func exerciseCount(for workoutId: UUID) -> Int {
-        let groups = groupsByWorkout[workoutId] ?? []
+    func exerciseCount(
+        for workoutId: UUID
+    ) -> Int {
+        guard let groups = groupsByWorkout[
+            workoutId
+        ] else {
+            return 0
+        }
         var seen = Set<UUID>()
         for group in groups {
-            for set in setsByGroup[group.id] ?? [] {
-                if let ex = exerciseBySet[set.id] {
-                    seen.insert(ex.id)
+            if let sets = setsByGroup[group.id] {
+                for set in sets {
+                    if let ex = exerciseBySet[
+                        set.id
+                    ] {
+                        seen.insert(ex.id)
+                    }
                 }
             }
         }
         return seen.count
     }
 
-    func totalVolume(for workoutId: UUID) -> Double {
-        let groups = groupsByWorkout[workoutId] ?? []
+    func totalVolume(
+        for workoutId: UUID
+    ) -> Double {
+        guard let groups = groupsByWorkout[
+            workoutId
+        ] else {
+            return 0.0
+        }
         var total = 0.0
         for group in groups {
-            for set in setsByGroup[group.id] ?? [] {
-                total += set.volume
+            if let sets = setsByGroup[group.id] {
+                for set in sets {
+                    total += set.volume
+                }
             }
         }
         return total

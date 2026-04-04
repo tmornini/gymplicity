@@ -22,8 +22,12 @@ struct HomeView: View {
             )
 
         let active = trainees.flatMap { trainee in
-            (workoutsByIdentity[trainee.id] ?? [])
-                .filter {
+            guard let workouts = workoutsByIdentity[
+                trainee.id
+            ] else {
+                return [WorkoutEntity]()
+            }
+            return workouts.filter {
                     !$0.isCompleted(
                         in: modelContext
                     ) && !$0.isTemplate
@@ -107,10 +111,14 @@ struct HomeView: View {
                 let sortedTrainees = trainees
                     .sorted(by: { $0.name < $1.name })
                 ForEach(sortedTrainees) { trainee in
-                    let traineeWorkouts =
-                        workoutsByIdentity[
-                            trainee.id
-                        ] ?? []
+                    let traineeWorkouts: [WorkoutEntity]
+                    if let found = workoutsByIdentity[
+                        trainee.id
+                    ] {
+                        traineeWorkouts = found
+                    } else {
+                        traineeWorkouts = []
+                    }
                     let completed =
                         traineeWorkouts.filter {
                             $0.isCompleted(

@@ -260,7 +260,9 @@ import SwiftData
         )
 
         XCTAssertEqual(payload.identityAliases.count, 1)
-        let alias = payload.identityAliases.first!
+        let alias = try XCTUnwrap(
+            payload.identityAliases.first
+        )
         XCTAssert(
             (alias.identityId1 == trainee.id
                 && alias.identityId2 == aliasId) ||

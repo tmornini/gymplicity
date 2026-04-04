@@ -179,9 +179,13 @@ import SwiftData
         let workout = ctx.instantiateTemplate(template, for: trainee)
 
         XCTAssertNotEqual(workout.id, template.id)
-        let clonedGroup = workout.groups(in: ctx).first!
+        let clonedGroup = try XCTUnwrap(
+            workout.groups(in: ctx).first
+        )
         XCTAssertNotEqual(clonedGroup.id, group.id)
-        let clonedSet = clonedGroup.sets(in: ctx).first!
+        let clonedSet = try XCTUnwrap(
+            clonedGroup.sets(in: ctx).first
+        )
         XCTAssertNotEqual(clonedSet.id, templateSet.id)
         XCTAssertFalse(clonedSet.isCompleted(in: ctx))
         XCTAssertNil(clonedSet.completedAt(in: ctx))
@@ -252,9 +256,18 @@ import SwiftData
         )
 
         // Clone should be unchanged
-        let clonedSets = workout.groups(in: ctx).first!.sets(in: ctx)
+        let clonedGroup = try XCTUnwrap(
+            workout.groups(in: ctx).first
+        )
+        let clonedSets = clonedGroup.sets(in: ctx)
         XCTAssertEqual(clonedSets.count, 1)
-        XCTAssertEqual(template.groups(in: ctx).first!.sets(in: ctx).count, 2)
+        let templateGroup = try XCTUnwrap(
+            template.groups(in: ctx).first
+        )
+        XCTAssertEqual(
+            templateGroup.sets(in: ctx).count,
+            2
+        )
     }
 
     func testDeleteTemplateDoesNotAffectInstantiatedWorkout() throws {
@@ -340,10 +353,25 @@ import SwiftData
         XCTAssertNotEqual(workout1.id, workout2.id)
 
         // Complete a set in workout1 — workout2 unaffected
-        let set1 = workout1.groups(in: ctx).first!.sets(in: ctx).first!
-        ctx.insert(SetCompletions(setId: set1.id, completedAt: .now))
+        let g1 = try XCTUnwrap(
+            workout1.groups(in: ctx).first
+        )
+        let set1 = try XCTUnwrap(
+            g1.sets(in: ctx).first
+        )
+        ctx.insert(
+            SetCompletions(
+                setId: set1.id,
+                completedAt: .now
+            )
+        )
 
-        let set2 = workout2.groups(in: ctx).first!.sets(in: ctx).first!
+        let g2 = try XCTUnwrap(
+            workout2.groups(in: ctx).first
+        )
+        let set2 = try XCTUnwrap(
+            g2.sets(in: ctx).first
+        )
         XCTAssertFalse(set2.isCompleted(in: ctx))
     }
 }

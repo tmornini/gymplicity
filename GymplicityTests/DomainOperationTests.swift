@@ -14,11 +14,14 @@ import SwiftData
             trainer: trainer
         )
 
-        let workout = ctx.startWorkout(for: trainee)
+        let workout = try XCTUnwrap(
+            ctx.startWorkout(for: trainee)
+        )
 
-        XCTAssertNotNil(workout)
-        XCTAssertFalse(workout!.isCompleted(in: ctx))
-        XCTAssertFalse(workout!.isTemplate)
+        XCTAssertFalse(
+            workout.isCompleted(in: ctx)
+        )
+        XCTAssertFalse(workout.isTemplate)
     }
 
     func testStartWorkoutReturnsNilWhenActiveWorkoutExists() throws {

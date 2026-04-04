@@ -107,6 +107,7 @@ struct DeviceSyncEventDTO:
 // MARK: - Payload Envelope
 
 struct SyncPayload: Codable, Sendable {
+    static let currentVersion = 1
     let version: Int
     let senderIdentityId: UUID
 
@@ -157,7 +158,7 @@ struct SyncPayload: Codable, Sendable {
             [DeviceSyncEventDTO]
     ) -> SyncPayload {
         SyncPayload(
-            version: 1,
+            version: SyncPayload.currentVersion,
             senderIdentityId: senderIdentityId,
             identities: identities,
             exercises: exercises,
@@ -593,7 +594,7 @@ struct SyncPayloadBuilder {
 
         // 14. Package into SyncPayload
         return SyncPayload(
-            version: 1,
+            version: SyncPayload.currentVersion,
             senderIdentityId: localIdentity.id,
             identities: identities,
             exercises:

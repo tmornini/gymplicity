@@ -164,7 +164,7 @@ extension ModelContext {
     deviceSyncEvents: [DeviceSyncEventDTO]
 ) -> SyncPayload {
     SyncPayload(
-        version: 1,
+        version: SyncPayload.currentVersion,
         senderIdentityId: senderIdentityId,
         identities: identities,
         exercises: exercises,

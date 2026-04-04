@@ -241,7 +241,9 @@ struct GuidedWorkoutView: View {
                 MascotView(
                     pose: .walking,
                     color: GymColors.energy
-                        .opacity(0.5)
+                        .opacity(
+                            GymMetrics.opacityHalf
+                        )
                 )
                 .frame(height: GymMetrics.mascotTiny)
                 .transition(.asymmetric(

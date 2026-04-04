@@ -109,7 +109,15 @@ import SwiftData
             order: 0,
             isSuperset: false
         )
-        ctx.makeSet(in: g1, exercise: bench, order: 0, weight: 135, reps: 10)
+        ctx.makeSet(
+            in: g1,
+            exercise: bench,
+            order: 0,
+            weight: 135,
+            reps: 10,
+            isCompleted: false,
+            completedAt: nil
+        )
 
         let w2 = ctx.makeWorkout(
             for: trainee,
@@ -121,8 +129,24 @@ import SwiftData
             order: 0,
             isSuperset: false
         )
-        ctx.makeSet(in: g2, exercise: bench, order: 0, weight: 145, reps: 8)
-        ctx.makeSet(in: g2, exercise: squat, order: 1, weight: 225, reps: 5)
+        ctx.makeSet(
+            in: g2,
+            exercise: bench,
+            order: 0,
+            weight: 145,
+            reps: 8,
+            isCompleted: false,
+            completedAt: nil
+        )
+        ctx.makeSet(
+            in: g2,
+            exercise: squat,
+            order: 1,
+            weight: 225,
+            reps: 5,
+            isCompleted: false,
+            completedAt: nil
+        )
 
         let all = trainee.exercisesUsed(in: ctx)
         XCTAssertEqual(all.count, 2)
@@ -149,7 +173,15 @@ import SwiftData
             order: 0,
             isSuperset: false
         )
-        ctx.makeSet(in: g1, exercise: bench, order: 0, weight: 135, reps: 10)
+        ctx.makeSet(
+            in: g1,
+            exercise: bench,
+            order: 0,
+            weight: 135,
+            reps: 10,
+            isCompleted: false,
+            completedAt: nil
+        )
 
         let w2 = ctx.makeWorkout(
             for: trainee,
@@ -161,8 +193,24 @@ import SwiftData
             order: 0,
             isSuperset: false
         )
-        ctx.makeSet(in: g2, exercise: bench, order: 0, weight: 145, reps: 8)
-        ctx.makeSet(in: g2, exercise: squat, order: 1, weight: 225, reps: 5)
+        ctx.makeSet(
+            in: g2,
+            exercise: bench,
+            order: 0,
+            weight: 145,
+            reps: 8,
+            isCompleted: false,
+            completedAt: nil
+        )
+        ctx.makeSet(
+            in: g2,
+            exercise: squat,
+            order: 1,
+            weight: 225,
+            reps: 5,
+            isCompleted: false,
+            completedAt: nil
+        )
 
         let entityIds = Set(trainee.exercisesUsed(in: ctx).map(\.id))
         let batchIds = BatchTraversal.exerciseIdsUsed(for: trainee, in: ctx)

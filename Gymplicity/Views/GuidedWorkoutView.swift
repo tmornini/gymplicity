@@ -371,11 +371,16 @@ struct GuidedWorkoutView: View {
                 showWalkingTransition = true
             }
             Task {
-                try? await Task.sleep(
-                    for: .milliseconds(
-                        GymMetrics.transitionDelayMs
+                do {
+                    try await Task.sleep(
+                        for: .milliseconds(
+                            GymMetrics
+                                .transitionDelayMs
+                        )
                     )
-                )
+                } catch {
+                    return
+                }
                 currentIndex = next
                 onSetIndexChange?(currentIndex)
                 loadCurrentSet()

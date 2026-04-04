@@ -153,13 +153,17 @@ struct AddExerciseView: View {
                 )
             }
             .task(id: searchText) {
-                try? await Task.sleep(
-                    for: .milliseconds(
-                        GymMetrics.searchDebounceMs
+                do {
+                    try await Task.sleep(
+                        for: .milliseconds(
+                            GymMetrics
+                                .searchDebounceMs
+                        )
                     )
-                )
-                guard !Task.isCancelled, isLoaded
-                else { return }
+                } catch {
+                    return
+                }
+                guard isLoaded else { return }
                 results = searchEngine.search(
                     query: searchText,
                     userExercises: userExercises,

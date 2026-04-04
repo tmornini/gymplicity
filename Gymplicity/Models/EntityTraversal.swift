@@ -74,8 +74,12 @@ extension IdentityEntity {
             return exercises(in: context)
                 .sorted { $0.name < $1.name }
         }
-        return (trainer(in: context) ?? self)
-            .exercises(in: context)
+        if let trainer = trainer(in: context) {
+            return trainer
+                .exercises(in: context)
+                .sorted { $0.name < $1.name }
+        }
+        return exercises(in: context)
             .sorted { $0.name < $1.name }
     }
 

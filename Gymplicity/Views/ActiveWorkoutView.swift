@@ -320,9 +320,8 @@ struct ActiveWorkoutView: View {
     private func resolveTrainer(
     ) -> IdentityEntity? {
         let owner = workout.owner(in: modelContext)
-        return owner.isTrainer
-            ? owner
-            : owner.trainer(in: modelContext) ?? owner
+        if owner.isTrainer { return owner }
+        return owner.trainer(in: modelContext)
     }
 
     private func exerciseIdsFrom(

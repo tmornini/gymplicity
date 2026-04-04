@@ -23,7 +23,7 @@ import XCTest
 
 extension ModelContext {
     @MainActor @discardableResult
-    func makeTrainer(name: String = "Trainer") -> IdentityEntity {
+    func makeTrainer(name: String) -> IdentityEntity {
         let trainer = IdentityEntity(name: name, isTrainer: true)
         insert(trainer)
         return trainer
@@ -31,7 +31,7 @@ extension ModelContext {
 
     @MainActor @discardableResult
     func makeTrainee(
-        name: String = "Trainee",
+        name: String,
         trainer: IdentityEntity
     ) -> IdentityEntity {
         let trainee = IdentityEntity(name: name, isTrainer: false)
@@ -60,8 +60,8 @@ extension ModelContext {
     @MainActor @discardableResult
     func makeWorkout(
         for identity: IdentityEntity,
-        date: Date = .now,
-        isCompleted: Bool = false
+        date: Date,
+        isCompleted: Bool
     ) -> WorkoutEntity {
         let workout = WorkoutEntity(date: date, isTemplate: false)
         insert(workout)
@@ -82,7 +82,7 @@ extension ModelContext {
     func makeGroup(
         in workout: WorkoutEntity,
         order: Int,
-        isSuperset: Bool = false
+        isSuperset: Bool
     ) -> WorkoutGroupEntity {
         let group = WorkoutGroupEntity(order: order, isSuperset: isSuperset)
         insert(group)
@@ -118,17 +118,22 @@ extension ModelContext {
         order: Int,
         weight: Double,
         reps: Int,
-        isCompleted: Bool = false,
-        completedAt: Date? = nil
+        isCompleted: Bool,
+        completedAt: Date?
     ) -> SetEntity {
         let set = SetEntity(order: order, weight: weight, reps: reps)
         insert(set)
         insert(GroupSets(groupId: group.id, setId: set.id))
         insert(ExerciseSets(exerciseId: exercise.id, setId: set.id))
         if isCompleted {
+            guard let completedAt else {
+                preconditionFailure(
+                    "completedAt required when isCompleted"
+                )
+            }
             insert(SetCompletions(
                 setId: set.id,
-                completedAt: completedAt ?? .now
+                completedAt: completedAt
             ))
         }
         return set
@@ -139,24 +144,24 @@ extension ModelContext {
 
 @MainActor func makePayload(
     senderIdentityId: UUID,
-    identities: [IdentityDTO] = [],
-    exercises: [ExerciseDTO] = [],
-    workouts: [WorkoutDTO] = [],
-    workoutGroups: [WorkoutGroupDTO] = [],
-    sets: [SetDTO] = [],
-    workoutTemplates: [WorkoutTemplateDTO] = [],
-    workoutNotes: [WorkoutNotesDTO] = [],
-    trainerTrainees: [TrainerTraineesDTO] = [],
-    trainerExercises: [TrainerExercisesDTO] = [],
-    identityWorkouts: [IdentityWorkoutsDTO] = [],
-    workoutGroupJoins: [WorkoutGroupsDTO] = [],
-    groupSetJoins: [GroupSetsDTO] = [],
-    exerciseSetJoins: [ExerciseSetsDTO] = [],
-    templateInstanceJoins: [TemplateInstancesDTO] = [],
-    identityAliases: [IdentityAliasesDTO] = [],
-    setCompletions: [SetCompletionDTO] = [],
-    workoutCompletions: [WorkoutCompletionDTO] = [],
-    deviceSyncEvents: [DeviceSyncEventDTO] = []
+    identities: [IdentityDTO],
+    exercises: [ExerciseDTO],
+    workouts: [WorkoutDTO],
+    workoutGroups: [WorkoutGroupDTO],
+    sets: [SetDTO],
+    workoutTemplates: [WorkoutTemplateDTO],
+    workoutNotes: [WorkoutNotesDTO],
+    trainerTrainees: [TrainerTraineesDTO],
+    trainerExercises: [TrainerExercisesDTO],
+    identityWorkouts: [IdentityWorkoutsDTO],
+    workoutGroupJoins: [WorkoutGroupsDTO],
+    groupSetJoins: [GroupSetsDTO],
+    exerciseSetJoins: [ExerciseSetsDTO],
+    templateInstanceJoins: [TemplateInstancesDTO],
+    identityAliases: [IdentityAliasesDTO],
+    setCompletions: [SetCompletionDTO],
+    workoutCompletions: [WorkoutCompletionDTO],
+    deviceSyncEvents: [DeviceSyncEventDTO]
 ) -> SyncPayload {
     SyncPayload(
         version: 1,

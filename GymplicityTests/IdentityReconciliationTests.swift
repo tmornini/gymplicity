@@ -110,14 +110,25 @@ import SwiftData
 
     func testWorkoutsReturnedAcrossAliases() throws {
         let ctx = try makeTestContext()
-        let trainer = ctx.makeTrainer()
-        let traineeA = ctx.makeTrainee(name: "Alex-A", trainer: trainer)
+        let trainer = ctx.makeTrainer(name: "Trainer")
+        let traineeA = ctx.makeTrainee(
+            name: "Alex-A",
+            trainer: trainer
+        )
         let traineeB = IdentityEntity(name: "Alex-B", isTrainer: false)
         ctx.insert(traineeB)
 
         // Each identity has a workout
-        ctx.makeWorkout(for: traineeA, isCompleted: true)
-        ctx.makeWorkout(for: traineeB, isCompleted: true)
+        ctx.makeWorkout(
+            for: traineeA,
+            date: .now,
+            isCompleted: true
+        )
+        ctx.makeWorkout(
+            for: traineeB,
+            date: .now,
+            isCompleted: true
+        )
 
         // Before alias: each sees only their own
         XCTAssertEqual(traineeA.workouts(in: ctx).count, 1)
@@ -137,13 +148,28 @@ import SwiftData
 
     func testCompletedWorkoutsAliasAware() throws {
         let ctx = try makeTestContext()
-        let trainer = ctx.makeTrainer()
-        let traineeA = ctx.makeTrainee(name: "A", trainer: trainer)
+        let trainer = ctx.makeTrainer(name: "Trainer")
+        let traineeA = ctx.makeTrainee(
+            name: "A",
+            trainer: trainer
+        )
         let traineeB = IdentityEntity(name: "B", isTrainer: false)
         ctx.insert(traineeB)
-        ctx.makeWorkout(for: traineeA, isCompleted: true)
-        ctx.makeWorkout(for: traineeB, isCompleted: true)
-        ctx.makeWorkout(for: traineeB) // active, should not appear
+        ctx.makeWorkout(
+            for: traineeA,
+            date: .now,
+            isCompleted: true
+        )
+        ctx.makeWorkout(
+            for: traineeB,
+            date: .now,
+            isCompleted: true
+        )
+        ctx.makeWorkout(
+            for: traineeB,
+            date: .now,
+            isCompleted: false
+        ) // active, should not appear
 
         IdentityReconciliation.createAlias(
             id1: traineeA.id,
@@ -156,11 +182,25 @@ import SwiftData
 
     func testWithoutAliasOnlyOwnWorkouts() throws {
         let ctx = try makeTestContext()
-        let trainer = ctx.makeTrainer()
-        let traineeA = ctx.makeTrainee(name: "A", trainer: trainer)
-        let traineeB = ctx.makeTrainee(name: "B", trainer: trainer)
-        ctx.makeWorkout(for: traineeA)
-        ctx.makeWorkout(for: traineeB)
+        let trainer = ctx.makeTrainer(name: "Trainer")
+        let traineeA = ctx.makeTrainee(
+            name: "A",
+            trainer: trainer
+        )
+        let traineeB = ctx.makeTrainee(
+            name: "B",
+            trainer: trainer
+        )
+        ctx.makeWorkout(
+            for: traineeA,
+            date: .now,
+            isCompleted: false
+        )
+        ctx.makeWorkout(
+            for: traineeB,
+            date: .now,
+            isCompleted: false
+        )
 
         // No alias — each sees only their own
         XCTAssertEqual(traineeA.workouts(in: ctx).count, 1)

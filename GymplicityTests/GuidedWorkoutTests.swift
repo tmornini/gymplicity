@@ -6,35 +6,62 @@ import SwiftData
 
     func testAllSetsFlattenedReturnsCorrectOrder() throws {
         let ctx = try makeTestContext()
-        let trainer = ctx.makeTrainer()
-        let bench = ctx.makeExercise(name: "Bench", trainer: trainer)
-        let squat = ctx.makeExercise(name: "Squat", trainer: trainer)
-        let trainee = ctx.makeTrainee(trainer: trainer)
-        let workout = ctx.makeWorkout(for: trainee)
+        let trainer = ctx.makeTrainer(name: "Trainer")
+        let bench = ctx.makeExercise(
+            name: "Bench",
+            trainer: trainer
+        )
+        let squat = ctx.makeExercise(
+            name: "Squat",
+            trainer: trainer
+        )
+        let trainee = ctx.makeTrainee(
+            name: "Trainee",
+            trainer: trainer
+        )
+        let workout = ctx.makeWorkout(
+            for: trainee,
+            date: .now,
+            isCompleted: false
+        )
 
-        let g1 = ctx.makeGroup(in: workout, order: 0)
+        let g1 = ctx.makeGroup(
+            in: workout,
+            order: 0,
+            isSuperset: false
+        )
         let set1 = ctx.makeSet(
             in: g1,
             exercise: bench,
             order: 0,
             weight: 135,
-            reps: 10
+            reps: 10,
+            isCompleted: false,
+            completedAt: nil
         )
         let set2 = ctx.makeSet(
             in: g1,
             exercise: bench,
             order: 1,
             weight: 155,
-            reps: 8
+            reps: 8,
+            isCompleted: false,
+            completedAt: nil
         )
 
-        let g2 = ctx.makeGroup(in: workout, order: 1)
+        let g2 = ctx.makeGroup(
+            in: workout,
+            order: 1,
+            isSuperset: false
+        )
         let set3 = ctx.makeSet(
             in: g2,
             exercise: squat,
             order: 0,
             weight: 225,
-            reps: 5
+            reps: 5,
+            isCompleted: false,
+            completedAt: nil
         )
 
         let flat = workout.allSetsFlattened(in: ctx)
@@ -48,32 +75,51 @@ import SwiftData
 
     func testFirstIncompleteSetIndexReturnsFirst() throws {
         let ctx = try makeTestContext()
-        let trainer = ctx.makeTrainer()
-        let bench = ctx.makeExercise(name: "Bench", trainer: trainer)
-        let trainee = ctx.makeTrainee(trainer: trainer)
-        let workout = ctx.makeWorkout(for: trainee)
-        let ss = ctx.makeGroup(in: workout, order: 0)
+        let trainer = ctx.makeTrainer(name: "Trainer")
+        let bench = ctx.makeExercise(
+            name: "Bench",
+            trainer: trainer
+        )
+        let trainee = ctx.makeTrainee(
+            name: "Trainee",
+            trainer: trainer
+        )
+        let workout = ctx.makeWorkout(
+            for: trainee,
+            date: .now,
+            isCompleted: false
+        )
+        let ss = ctx.makeGroup(
+            in: workout,
+            order: 0,
+            isSuperset: false
+        )
         ctx.makeSet(
             in: ss,
             exercise: bench,
             order: 0,
             weight: 135,
             reps: 10,
-            isCompleted: true
+            isCompleted: true,
+            completedAt: .now
         )
         ctx.makeSet(
             in: ss,
             exercise: bench,
             order: 1,
             weight: 155,
-            reps: 8
+            reps: 8,
+            isCompleted: false,
+            completedAt: nil
         )
         ctx.makeSet(
             in: ss,
             exercise: bench,
             order: 2,
             weight: 165,
-            reps: 6
+            reps: 6,
+            isCompleted: false,
+            completedAt: nil
         )
 
         XCTAssertEqual(
@@ -84,18 +130,33 @@ import SwiftData
 
     func testFirstIncompleteSetIndexReturnsNilWhenAllComplete() throws {
         let ctx = try makeTestContext()
-        let trainer = ctx.makeTrainer()
-        let bench = ctx.makeExercise(name: "Bench", trainer: trainer)
-        let trainee = ctx.makeTrainee(trainer: trainer)
-        let workout = ctx.makeWorkout(for: trainee)
-        let ss = ctx.makeGroup(in: workout, order: 0)
+        let trainer = ctx.makeTrainer(name: "Trainer")
+        let bench = ctx.makeExercise(
+            name: "Bench",
+            trainer: trainer
+        )
+        let trainee = ctx.makeTrainee(
+            name: "Trainee",
+            trainer: trainer
+        )
+        let workout = ctx.makeWorkout(
+            for: trainee,
+            date: .now,
+            isCompleted: false
+        )
+        let ss = ctx.makeGroup(
+            in: workout,
+            order: 0,
+            isSuperset: false
+        )
         ctx.makeSet(
             in: ss,
             exercise: bench,
             order: 0,
             weight: 135,
             reps: 10,
-            isCompleted: true
+            isCompleted: true,
+            completedAt: .now
         )
         ctx.makeSet(
             in: ss,
@@ -103,7 +164,8 @@ import SwiftData
             order: 1,
             weight: 155,
             reps: 8,
-            isCompleted: true
+            isCompleted: true,
+            completedAt: .now
         )
 
         XCTAssertNil(workout.firstIncompleteSetIndex(in: ctx))
@@ -111,18 +173,34 @@ import SwiftData
 
     func testNextIncompleteSetIndexScansForward() throws {
         let ctx = try makeTestContext()
-        let trainer = ctx.makeTrainer()
-        let bench = ctx.makeExercise(name: "Bench", trainer: trainer)
-        let trainee = ctx.makeTrainee(trainer: trainer)
-        let workout = ctx.makeWorkout(for: trainee)
-        let ss = ctx.makeGroup(in: workout, order: 0)
+        let trainer = ctx.makeTrainer(name: "Trainer")
+        let bench = ctx.makeExercise(
+            name: "Bench",
+            trainer: trainer
+        )
+        let trainee = ctx.makeTrainee(
+            name: "Trainee",
+            trainer: trainer
+        )
+        let workout = ctx.makeWorkout(
+            for: trainee,
+            date: .now,
+            isCompleted: false
+        )
+        let ss = ctx.makeGroup(
+            in: workout,
+            order: 0,
+            isSuperset: false
+        )
         // index 0
         ctx.makeSet(
             in: ss,
             exercise: bench,
             order: 0,
             weight: 135,
-            reps: 10
+            reps: 10,
+            isCompleted: false,
+            completedAt: nil
         )
         // index 1
         ctx.makeSet(
@@ -131,7 +209,8 @@ import SwiftData
             order: 1,
             weight: 155,
             reps: 8,
-            isCompleted: true
+            isCompleted: true,
+            completedAt: .now
         )
         // index 2
         ctx.makeSet(
@@ -139,7 +218,9 @@ import SwiftData
             exercise: bench,
             order: 2,
             weight: 165,
-            reps: 6
+            reps: 6,
+            isCompleted: false,
+            completedAt: nil
         )
 
         // From index 0, next incomplete is index 2
@@ -152,18 +233,34 @@ import SwiftData
 
     func testNextIncompleteSetIndexWrapsAround() throws {
         let ctx = try makeTestContext()
-        let trainer = ctx.makeTrainer()
-        let bench = ctx.makeExercise(name: "Bench", trainer: trainer)
-        let trainee = ctx.makeTrainee(trainer: trainer)
-        let workout = ctx.makeWorkout(for: trainee)
-        let ss = ctx.makeGroup(in: workout, order: 0)
+        let trainer = ctx.makeTrainer(name: "Trainer")
+        let bench = ctx.makeExercise(
+            name: "Bench",
+            trainer: trainer
+        )
+        let trainee = ctx.makeTrainee(
+            name: "Trainee",
+            trainer: trainer
+        )
+        let workout = ctx.makeWorkout(
+            for: trainee,
+            date: .now,
+            isCompleted: false
+        )
+        let ss = ctx.makeGroup(
+            in: workout,
+            order: 0,
+            isSuperset: false
+        )
         // index 0 - incomplete
         ctx.makeSet(
             in: ss,
             exercise: bench,
             order: 0,
             weight: 135,
-            reps: 10
+            reps: 10,
+            isCompleted: false,
+            completedAt: nil
         )
         // index 1
         ctx.makeSet(
@@ -172,7 +269,8 @@ import SwiftData
             order: 1,
             weight: 155,
             reps: 8,
-            isCompleted: true
+            isCompleted: true,
+            completedAt: .now
         )
         // index 2
         ctx.makeSet(
@@ -181,7 +279,8 @@ import SwiftData
             order: 2,
             weight: 165,
             reps: 6,
-            isCompleted: true
+            isCompleted: true,
+            completedAt: .now
         )
 
         // From index 2, only incomplete is index 0
@@ -194,13 +293,43 @@ import SwiftData
 
     func testCompletionProgress() throws {
         let ctx = try makeTestContext()
-        let trainer = ctx.makeTrainer()
-        let bench = ctx.makeExercise(name: "Bench", trainer: trainer)
-        let trainee = ctx.makeTrainee(trainer: trainer)
-        let workout = ctx.makeWorkout(for: trainee)
-        let ss = ctx.makeGroup(in: workout, order: 0)
-        ctx.makeSet(in: ss, exercise: bench, order: 0, weight: 135, reps: 10)
-        ctx.makeSet(in: ss, exercise: bench, order: 1, weight: 155, reps: 8)
+        let trainer = ctx.makeTrainer(name: "Trainer")
+        let bench = ctx.makeExercise(
+            name: "Bench",
+            trainer: trainer
+        )
+        let trainee = ctx.makeTrainee(
+            name: "Trainee",
+            trainer: trainer
+        )
+        let workout = ctx.makeWorkout(
+            for: trainee,
+            date: .now,
+            isCompleted: false
+        )
+        let ss = ctx.makeGroup(
+            in: workout,
+            order: 0,
+            isSuperset: false
+        )
+        ctx.makeSet(
+            in: ss,
+            exercise: bench,
+            order: 0,
+            weight: 135,
+            reps: 10,
+            isCompleted: false,
+            completedAt: nil
+        )
+        ctx.makeSet(
+            in: ss,
+            exercise: bench,
+            order: 1,
+            weight: 155,
+            reps: 8,
+            isCompleted: false,
+            completedAt: nil
+        )
 
         // 0% complete
         XCTAssertEqual(workout.completionProgress(in: ctx), 0.0)
@@ -217,9 +346,16 @@ import SwiftData
 
     func testCompletionProgressEmptyWorkout() throws {
         let ctx = try makeTestContext()
-        let trainer = ctx.makeTrainer()
-        let trainee = ctx.makeTrainee(trainer: trainer)
-        let workout = ctx.makeWorkout(for: trainee)
+        let trainer = ctx.makeTrainer(name: "Trainer")
+        let trainee = ctx.makeTrainee(
+            name: "Trainee",
+            trainer: trainer
+        )
+        let workout = ctx.makeWorkout(
+            for: trainee,
+            date: .now,
+            isCompleted: false
+        )
 
         // Empty workout → 100% (nothing to do)
         XCTAssertEqual(workout.completionProgress(in: ctx), 1.0)

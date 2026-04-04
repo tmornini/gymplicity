@@ -8,8 +8,11 @@ import SwiftData
 
     func testStartWorkoutCreatesWorkout() throws {
         let ctx = try makeTestContext()
-        let trainer = ctx.makeTrainer()
-        let trainee = ctx.makeTrainee(trainer: trainer)
+        let trainer = ctx.makeTrainer(name: "Trainer")
+        let trainee = ctx.makeTrainee(
+            name: "Trainee",
+            trainer: trainer
+        )
 
         let workout = ctx.startWorkout(for: trainee)
 
@@ -20,9 +23,16 @@ import SwiftData
 
     func testStartWorkoutReturnsNilWhenActiveWorkoutExists() throws {
         let ctx = try makeTestContext()
-        let trainer = ctx.makeTrainer()
-        let trainee = ctx.makeTrainee(trainer: trainer)
-        ctx.makeWorkout(for: trainee) // active (not completed)
+        let trainer = ctx.makeTrainer(name: "Trainer")
+        let trainee = ctx.makeTrainee(
+            name: "Trainee",
+            trainer: trainer
+        )
+        ctx.makeWorkout(
+            for: trainee,
+            date: .now,
+            isCompleted: false
+        ) // active (not completed)
 
         let second = ctx.startWorkout(for: trainee)
 
@@ -31,8 +41,11 @@ import SwiftData
 
     func testCreatedWorkoutAppearsInActiveWorkouts() throws {
         let ctx = try makeTestContext()
-        let trainer = ctx.makeTrainer()
-        let trainee = ctx.makeTrainee(trainer: trainer)
+        let trainer = ctx.makeTrainer(name: "Trainer")
+        let trainee = ctx.makeTrainee(
+            name: "Trainee",
+            trainer: trainer
+        )
 
         let workout = ctx.startWorkout(for: trainee)
 
@@ -45,9 +58,16 @@ import SwiftData
 
     func testMarkCompletedSetsIsCompleted() throws {
         let ctx = try makeTestContext()
-        let trainer = ctx.makeTrainer()
-        let trainee = ctx.makeTrainee(trainer: trainer)
-        let workout = ctx.makeWorkout(for: trainee)
+        let trainer = ctx.makeTrainer(name: "Trainer")
+        let trainee = ctx.makeTrainee(
+            name: "Trainee",
+            trainer: trainer
+        )
+        let workout = ctx.makeWorkout(
+            for: trainee,
+            date: .now,
+            isCompleted: false
+        )
 
         workout.markCompleted(in: ctx)
 
@@ -56,9 +76,16 @@ import SwiftData
 
     func testCompletedWorkoutMovesToCompletedWorkouts() throws {
         let ctx = try makeTestContext()
-        let trainer = ctx.makeTrainer()
-        let trainee = ctx.makeTrainee(trainer: trainer)
-        let workout = ctx.makeWorkout(for: trainee)
+        let trainer = ctx.makeTrainer(name: "Trainer")
+        let trainee = ctx.makeTrainee(
+            name: "Trainee",
+            trainer: trainer
+        )
+        let workout = ctx.makeWorkout(
+            for: trainee,
+            date: .now,
+            isCompleted: false
+        )
 
         XCTAssertEqual(trainee.activeWorkouts(in: ctx).count, 1)
         XCTAssertEqual(trainee.completedWorkouts(in: ctx).count, 0)
@@ -73,13 +100,31 @@ import SwiftData
 
     func testAddSetCreatesSetWithJoins() throws {
         let ctx = try makeTestContext()
-        let trainer = ctx.makeTrainer()
-        let bench = ctx.makeExercise(name: "Bench", trainer: trainer)
-        let trainee = ctx.makeTrainee(trainer: trainer)
-        let workout = ctx.makeWorkout(for: trainee)
-        let group = ctx.makeGroup(in: workout, order: 0)
+        let trainer = ctx.makeTrainer(name: "Trainer")
+        let bench = ctx.makeExercise(
+            name: "Bench",
+            trainer: trainer
+        )
+        let trainee = ctx.makeTrainee(
+            name: "Trainee",
+            trainer: trainer
+        )
+        let workout = ctx.makeWorkout(
+            for: trainee,
+            date: .now,
+            isCompleted: false
+        )
+        let group = ctx.makeGroup(
+            in: workout,
+            order: 0,
+            isSuperset: false
+        )
 
-        let set = ctx.addSet(to: group, exercise: bench, seedingFrom: trainee)
+        let set = ctx.addSet(
+            to: group,
+            exercise: bench,
+            seedingFrom: trainee
+        )
 
         XCTAssertNotNil(set)
         // Verify GroupSets join exists
@@ -98,9 +143,15 @@ import SwiftData
 
     func testAddSetSeedsFromLastCompletedSet() throws {
         let ctx = try makeTestContext()
-        let trainer = ctx.makeTrainer()
-        let bench = ctx.makeExercise(name: "Bench", trainer: trainer)
-        let trainee = ctx.makeTrainee(trainer: trainer)
+        let trainer = ctx.makeTrainer(name: "Trainer")
+        let bench = ctx.makeExercise(
+            name: "Bench",
+            trainer: trainer
+        )
+        let trainee = ctx.makeTrainee(
+            name: "Trainee",
+            trainer: trainer
+        )
 
         // Create a completed workout with a bench set
         let past = ctx.makeWorkout(
@@ -108,21 +159,38 @@ import SwiftData
             date: .now.addingTimeInterval(-86400),
             isCompleted: true
         )
-        let pastGroup = ctx.makeGroup(in: past, order: 0)
+        let pastGroup = ctx.makeGroup(
+            in: past,
+            order: 0,
+            isSuperset: false
+        )
         ctx.makeSet(
             in: pastGroup,
             exercise: bench,
             order: 0,
             weight: 185,
             reps: 5,
-            isCompleted: true
+            isCompleted: true,
+            completedAt: .now
         )
 
         // New workout
-        let workout = ctx.makeWorkout(for: trainee)
-        let group = ctx.makeGroup(in: workout, order: 0)
+        let workout = ctx.makeWorkout(
+            for: trainee,
+            date: .now,
+            isCompleted: false
+        )
+        let group = ctx.makeGroup(
+            in: workout,
+            order: 0,
+            isSuperset: false
+        )
 
-        let set = ctx.addSet(to: group, exercise: bench, seedingFrom: trainee)
+        let set = ctx.addSet(
+            to: group,
+            exercise: bench,
+            seedingFrom: trainee
+        )
 
         XCTAssertEqual(set.weight, 185)
         XCTAssertEqual(set.reps, 5)
@@ -130,13 +198,31 @@ import SwiftData
 
     func testAddSetNoPriorCompletedSetsDefaultsToZero() throws {
         let ctx = try makeTestContext()
-        let trainer = ctx.makeTrainer()
-        let bench = ctx.makeExercise(name: "Bench", trainer: trainer)
-        let trainee = ctx.makeTrainee(trainer: trainer)
-        let workout = ctx.makeWorkout(for: trainee)
-        let group = ctx.makeGroup(in: workout, order: 0)
+        let trainer = ctx.makeTrainer(name: "Trainer")
+        let bench = ctx.makeExercise(
+            name: "Bench",
+            trainer: trainer
+        )
+        let trainee = ctx.makeTrainee(
+            name: "Trainee",
+            trainer: trainer
+        )
+        let workout = ctx.makeWorkout(
+            for: trainee,
+            date: .now,
+            isCompleted: false
+        )
+        let group = ctx.makeGroup(
+            in: workout,
+            order: 0,
+            isSuperset: false
+        )
 
-        let set = ctx.addSet(to: group, exercise: bench, seedingFrom: trainee)
+        let set = ctx.addSet(
+            to: group,
+            exercise: bench,
+            seedingFrom: trainee
+        )
 
         XCTAssertEqual(set.weight, 0)
         XCTAssertEqual(set.reps, 0)
@@ -144,13 +230,31 @@ import SwiftData
 
     func testAddSetOwnerNilDefaultsToZero() throws {
         let ctx = try makeTestContext()
-        let trainer = ctx.makeTrainer()
-        let bench = ctx.makeExercise(name: "Bench", trainer: trainer)
-        let trainee = ctx.makeTrainee(trainer: trainer)
-        let workout = ctx.makeWorkout(for: trainee)
-        let group = ctx.makeGroup(in: workout, order: 0)
+        let trainer = ctx.makeTrainer(name: "Trainer")
+        let bench = ctx.makeExercise(
+            name: "Bench",
+            trainer: trainer
+        )
+        let trainee = ctx.makeTrainee(
+            name: "Trainee",
+            trainer: trainer
+        )
+        let workout = ctx.makeWorkout(
+            for: trainee,
+            date: .now,
+            isCompleted: false
+        )
+        let group = ctx.makeGroup(
+            in: workout,
+            order: 0,
+            isSuperset: false
+        )
 
-        let set = ctx.addSet(to: group, exercise: bench, seedingFrom: nil)
+        let set = ctx.addSet(
+            to: group,
+            exercise: bench,
+            seedingFrom: nil
+        )
 
         XCTAssertEqual(set.weight, 0)
         XCTAssertEqual(set.reps, 0)
@@ -158,15 +262,41 @@ import SwiftData
 
     func testAddSetOrderIncrementsViaNextSetOrder() throws {
         let ctx = try makeTestContext()
-        let trainer = ctx.makeTrainer()
-        let bench = ctx.makeExercise(name: "Bench", trainer: trainer)
-        let trainee = ctx.makeTrainee(trainer: trainer)
-        let workout = ctx.makeWorkout(for: trainee)
-        let group = ctx.makeGroup(in: workout, order: 0)
+        let trainer = ctx.makeTrainer(name: "Trainer")
+        let bench = ctx.makeExercise(
+            name: "Bench",
+            trainer: trainer
+        )
+        let trainee = ctx.makeTrainee(
+            name: "Trainee",
+            trainer: trainer
+        )
+        let workout = ctx.makeWorkout(
+            for: trainee,
+            date: .now,
+            isCompleted: false
+        )
+        let group = ctx.makeGroup(
+            in: workout,
+            order: 0,
+            isSuperset: false
+        )
 
-        let set1 = ctx.addSet(to: group, exercise: bench, seedingFrom: nil)
-        let set2 = ctx.addSet(to: group, exercise: bench, seedingFrom: nil)
-        let set3 = ctx.addSet(to: group, exercise: bench, seedingFrom: nil)
+        let set1 = ctx.addSet(
+            to: group,
+            exercise: bench,
+            seedingFrom: nil
+        )
+        let set2 = ctx.addSet(
+            to: group,
+            exercise: bench,
+            seedingFrom: nil
+        )
+        let set3 = ctx.addSet(
+            to: group,
+            exercise: bench,
+            seedingFrom: nil
+        )
 
         XCTAssertEqual(set1.order, 0)
         XCTAssertEqual(set2.order, 1)
@@ -177,31 +307,51 @@ import SwiftData
 
     func testDeleteSetsAtOffsets() throws {
         let ctx = try makeTestContext()
-        let trainer = ctx.makeTrainer()
-        let bench = ctx.makeExercise(name: "Bench", trainer: trainer)
-        let trainee = ctx.makeTrainee(trainer: trainer)
-        let workout = ctx.makeWorkout(for: trainee)
-        let group = ctx.makeGroup(in: workout, order: 0)
+        let trainer = ctx.makeTrainer(name: "Trainer")
+        let bench = ctx.makeExercise(
+            name: "Bench",
+            trainer: trainer
+        )
+        let trainee = ctx.makeTrainee(
+            name: "Trainee",
+            trainer: trainer
+        )
+        let workout = ctx.makeWorkout(
+            for: trainee,
+            date: .now,
+            isCompleted: false
+        )
+        let group = ctx.makeGroup(
+            in: workout,
+            order: 0,
+            isSuperset: false
+        )
         ctx.makeSet(
             in: group,
             exercise: bench,
             order: 0,
             weight: 100,
-            reps: 10
+            reps: 10,
+            isCompleted: false,
+            completedAt: nil
         )
         let set1 = ctx.makeSet(
             in: group,
             exercise: bench,
             order: 1,
             weight: 110,
-            reps: 8
+            reps: 8,
+            isCompleted: false,
+            completedAt: nil
         )
         ctx.makeSet(
             in: group,
             exercise: bench,
             order: 2,
             weight: 120,
-            reps: 6
+            reps: 6,
+            isCompleted: false,
+            completedAt: nil
         )
 
         // delete middle set
@@ -212,22 +362,40 @@ import SwiftData
 
         let remaining = group.sortedSets(in: ctx)
         XCTAssertEqual(remaining.count, 2)
-        XCTAssertFalse(remaining.contains { $0.id == set1.id })
+        XCTAssertFalse(
+            remaining.contains { $0.id == set1.id }
+        )
     }
 
     func testDeleteSetsRemovesJoinRows() throws {
         let ctx = try makeTestContext()
-        let trainer = ctx.makeTrainer()
-        let bench = ctx.makeExercise(name: "Bench", trainer: trainer)
-        let trainee = ctx.makeTrainee(trainer: trainer)
-        let workout = ctx.makeWorkout(for: trainee)
-        let group = ctx.makeGroup(in: workout, order: 0)
+        let trainer = ctx.makeTrainer(name: "Trainer")
+        let bench = ctx.makeExercise(
+            name: "Bench",
+            trainer: trainer
+        )
+        let trainee = ctx.makeTrainee(
+            name: "Trainee",
+            trainer: trainer
+        )
+        let workout = ctx.makeWorkout(
+            for: trainee,
+            date: .now,
+            isCompleted: false
+        )
+        let group = ctx.makeGroup(
+            in: workout,
+            order: 0,
+            isSuperset: false
+        )
         let set = ctx.makeSet(
             in: group,
             exercise: bench,
             order: 0,
             weight: 100,
-            reps: 10
+            reps: 10,
+            isCompleted: false,
+            completedAt: nil
         )
         let setId = set.id
 
@@ -250,26 +418,51 @@ import SwiftData
 
     func testExerciseNamesReturnsCommaSeparated() throws {
         let ctx = try makeTestContext()
-        let trainer = ctx.makeTrainer()
-        let bench = ctx.makeExercise(name: "Bench", trainer: trainer)
-        let squat = ctx.makeExercise(name: "Squat", trainer: trainer)
-        let trainee = ctx.makeTrainee(trainer: trainer)
-        let workout = ctx.makeWorkout(for: trainee)
-        let g1 = ctx.makeGroup(in: workout, order: 0)
+        let trainer = ctx.makeTrainer(name: "Trainer")
+        let bench = ctx.makeExercise(
+            name: "Bench",
+            trainer: trainer
+        )
+        let squat = ctx.makeExercise(
+            name: "Squat",
+            trainer: trainer
+        )
+        let trainee = ctx.makeTrainee(
+            name: "Trainee",
+            trainer: trainer
+        )
+        let workout = ctx.makeWorkout(
+            for: trainee,
+            date: .now,
+            isCompleted: false
+        )
+        let g1 = ctx.makeGroup(
+            in: workout,
+            order: 0,
+            isSuperset: false
+        )
         ctx.makeSet(
             in: g1,
             exercise: bench,
             order: 0,
             weight: 135,
-            reps: 10
+            reps: 10,
+            isCompleted: false,
+            completedAt: nil
         )
-        let g2 = ctx.makeGroup(in: workout, order: 1)
+        let g2 = ctx.makeGroup(
+            in: workout,
+            order: 1,
+            isSuperset: false
+        )
         ctx.makeSet(
             in: g2,
             exercise: squat,
             order: 0,
             weight: 225,
-            reps: 5
+            reps: 5,
+            isCompleted: false,
+            completedAt: nil
         )
 
         let names = workout.exerciseNames(in: ctx)
@@ -279,13 +472,43 @@ import SwiftData
 
     func testExerciseNamesDeduplicates() throws {
         let ctx = try makeTestContext()
-        let trainer = ctx.makeTrainer()
-        let bench = ctx.makeExercise(name: "Bench", trainer: trainer)
-        let trainee = ctx.makeTrainee(trainer: trainer)
-        let workout = ctx.makeWorkout(for: trainee)
-        let g1 = ctx.makeGroup(in: workout, order: 0)
-        ctx.makeSet(in: g1, exercise: bench, order: 0, weight: 135, reps: 10)
-        ctx.makeSet(in: g1, exercise: bench, order: 1, weight: 155, reps: 8)
+        let trainer = ctx.makeTrainer(name: "Trainer")
+        let bench = ctx.makeExercise(
+            name: "Bench",
+            trainer: trainer
+        )
+        let trainee = ctx.makeTrainee(
+            name: "Trainee",
+            trainer: trainer
+        )
+        let workout = ctx.makeWorkout(
+            for: trainee,
+            date: .now,
+            isCompleted: false
+        )
+        let g1 = ctx.makeGroup(
+            in: workout,
+            order: 0,
+            isSuperset: false
+        )
+        ctx.makeSet(
+            in: g1,
+            exercise: bench,
+            order: 0,
+            weight: 135,
+            reps: 10,
+            isCompleted: false,
+            completedAt: nil
+        )
+        ctx.makeSet(
+            in: g1,
+            exercise: bench,
+            order: 1,
+            weight: 155,
+            reps: 8,
+            isCompleted: false,
+            completedAt: nil
+        )
 
         let names = workout.exerciseNames(in: ctx)
 
@@ -294,9 +517,16 @@ import SwiftData
 
     func testExerciseNamesEmptyWorkout() throws {
         let ctx = try makeTestContext()
-        let trainer = ctx.makeTrainer()
-        let trainee = ctx.makeTrainee(trainer: trainer)
-        let workout = ctx.makeWorkout(for: trainee)
+        let trainer = ctx.makeTrainer(name: "Trainer")
+        let trainee = ctx.makeTrainee(
+            name: "Trainee",
+            trainer: trainer
+        )
+        let workout = ctx.makeWorkout(
+            for: trainee,
+            date: .now,
+            isCompleted: false
+        )
 
         let names = workout.exerciseNames(in: ctx)
 
@@ -307,28 +537,58 @@ import SwiftData
 
     func testGroupExerciseNameReturnsFirstSetsExercise() throws {
         let ctx = try makeTestContext()
-        let trainer = ctx.makeTrainer()
-        let bench = ctx.makeExercise(name: "Bench", trainer: trainer)
-        let trainee = ctx.makeTrainee(trainer: trainer)
-        let workout = ctx.makeWorkout(for: trainee)
-        let group = ctx.makeGroup(in: workout, order: 0)
+        let trainer = ctx.makeTrainer(name: "Trainer")
+        let bench = ctx.makeExercise(
+            name: "Bench",
+            trainer: trainer
+        )
+        let trainee = ctx.makeTrainee(
+            name: "Trainee",
+            trainer: trainer
+        )
+        let workout = ctx.makeWorkout(
+            for: trainee,
+            date: .now,
+            isCompleted: false
+        )
+        let group = ctx.makeGroup(
+            in: workout,
+            order: 0,
+            isSuperset: false
+        )
         ctx.makeSet(
             in: group,
             exercise: bench,
             order: 0,
             weight: 135,
-            reps: 10
+            reps: 10,
+            isCompleted: false,
+            completedAt: nil
         )
 
-        XCTAssertEqual(group.exerciseName(in: ctx), "Bench")
+        XCTAssertEqual(
+            group.exerciseName(in: ctx),
+            "Bench"
+        )
     }
 
     func testGroupExerciseNameEmptyGroupReturnsFallback() throws {
         let ctx = try makeTestContext()
-        let trainer = ctx.makeTrainer()
-        let trainee = ctx.makeTrainee(trainer: trainer)
-        let workout = ctx.makeWorkout(for: trainee)
-        let group = ctx.makeGroup(in: workout, order: 0)
+        let trainer = ctx.makeTrainer(name: "Trainer")
+        let trainee = ctx.makeTrainee(
+            name: "Trainee",
+            trainer: trainer
+        )
+        let workout = ctx.makeWorkout(
+            for: trainee,
+            date: .now,
+            isCompleted: false
+        )
+        let group = ctx.makeGroup(
+            in: workout,
+            order: 0,
+            isSuperset: false
+        )
 
         XCTAssertNil(group.exerciseName(in: ctx))
     }
@@ -337,10 +597,19 @@ import SwiftData
 
     func testTemplateReturnsSourceTemplate() throws {
         let ctx = try makeTestContext()
-        let trainer = ctx.makeTrainer()
-        let trainee = ctx.makeTrainee(trainer: trainer)
-        let template = ctx.makeTemplate(name: "Push", for: trainer)
-        let workout = ctx.instantiateTemplate(template, for: trainee)
+        let trainer = ctx.makeTrainer(name: "Trainer")
+        let trainee = ctx.makeTrainee(
+            name: "Trainee",
+            trainer: trainer
+        )
+        let template = ctx.makeTemplate(
+            name: "Push",
+            for: trainer
+        )
+        let workout = ctx.instantiateTemplate(
+            template,
+            for: trainee
+        )
 
         let found = workout.template(in: ctx)
 
@@ -349,9 +618,16 @@ import SwiftData
 
     func testTemplateReturnsNilForNonInstantiatedWorkout() throws {
         let ctx = try makeTestContext()
-        let trainer = ctx.makeTrainer()
-        let trainee = ctx.makeTrainee(trainer: trainer)
-        let workout = ctx.makeWorkout(for: trainee)
+        let trainer = ctx.makeTrainer(name: "Trainer")
+        let trainee = ctx.makeTrainee(
+            name: "Trainee",
+            trainer: trainer
+        )
+        let workout = ctx.makeWorkout(
+            for: trainee,
+            date: .now,
+            isCompleted: false
+        )
 
         XCTAssertNil(workout.template(in: ctx))
     }

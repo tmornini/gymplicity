@@ -6,18 +6,24 @@ import SwiftData
 
     func testLastSetReturnsNilForNewExercise() throws {
         let ctx = try makeTestContext()
-        let trainer = ctx.makeTrainer()
+        let trainer = ctx.makeTrainer(name: "Trainer")
         let bench = ctx.makeExercise(name: "Bench", trainer: trainer)
-        let trainee = ctx.makeTrainee(trainer: trainer)
+        let trainee = ctx.makeTrainee(
+            name: "Trainee",
+            trainer: trainer
+        )
 
         XCTAssertNil(trainee.lastSet(for: bench, in: ctx))
     }
 
     func testLastSetReturnsMostRecentCompleted() throws {
         let ctx = try makeTestContext()
-        let trainer = ctx.makeTrainer()
+        let trainer = ctx.makeTrainer(name: "Trainer")
         let bench = ctx.makeExercise(name: "Bench", trainer: trainer)
-        let trainee = ctx.makeTrainee(trainer: trainer)
+        let trainee = ctx.makeTrainee(
+            name: "Trainee",
+            trainer: trainer
+        )
 
         // Older workout
         let w1 = ctx.makeWorkout(
@@ -25,14 +31,19 @@ import SwiftData
             date: .now.addingTimeInterval(-86400 * 2),
             isCompleted: true
         )
-        let g1 = ctx.makeGroup(in: w1, order: 0)
+        let g1 = ctx.makeGroup(
+            in: w1,
+            order: 0,
+            isSuperset: false
+        )
         ctx.makeSet(
             in: g1,
             exercise: bench,
             order: 0,
             weight: 135,
             reps: 10,
-            isCompleted: true
+            isCompleted: true,
+            completedAt: .now
         )
 
         // Newer workout
@@ -41,14 +52,19 @@ import SwiftData
             date: .now.addingTimeInterval(-86400),
             isCompleted: true
         )
-        let g2 = ctx.makeGroup(in: w2, order: 0)
+        let g2 = ctx.makeGroup(
+            in: w2,
+            order: 0,
+            isSuperset: false
+        )
         ctx.makeSet(
             in: g2,
             exercise: bench,
             order: 0,
             weight: 155,
             reps: 8,
-            isCompleted: true
+            isCompleted: true,
+            completedAt: .now
         )
 
         let last = trainee.lastSet(for: bench, in: ctx)
@@ -59,25 +75,76 @@ import SwiftData
 
     func testHistoryReturnsChronologicalOrder() throws {
         let ctx = try makeTestContext()
-        let trainer = ctx.makeTrainer()
+        let trainer = ctx.makeTrainer(name: "Trainer")
         let bench = ctx.makeExercise(name: "Bench", trainer: trainer)
-        let trainee = ctx.makeTrainee(trainer: trainer)
+        let trainee = ctx.makeTrainee(
+            name: "Trainee",
+            trainer: trainer
+        )
 
         let day1 = Date.now.addingTimeInterval(-86400 * 3)
         let day2 = Date.now.addingTimeInterval(-86400 * 2)
         let day3 = Date.now.addingTimeInterval(-86400)
 
-        let w1 = ctx.makeWorkout(for: trainee, date: day1, isCompleted: true)
-        let g1 = ctx.makeGroup(in: w1, order: 0)
-        ctx.makeSet(in: g1, exercise: bench, order: 0, weight: 135, reps: 10)
+        let w1 = ctx.makeWorkout(
+            for: trainee,
+            date: day1,
+            isCompleted: true
+        )
+        let g1 = ctx.makeGroup(
+            in: w1,
+            order: 0,
+            isSuperset: false
+        )
+        ctx.makeSet(
+            in: g1,
+            exercise: bench,
+            order: 0,
+            weight: 135,
+            reps: 10,
+            isCompleted: false,
+            completedAt: nil
+        )
 
-        let w2 = ctx.makeWorkout(for: trainee, date: day2, isCompleted: true)
-        let g2 = ctx.makeGroup(in: w2, order: 0)
-        ctx.makeSet(in: g2, exercise: bench, order: 0, weight: 145, reps: 8)
+        let w2 = ctx.makeWorkout(
+            for: trainee,
+            date: day2,
+            isCompleted: true
+        )
+        let g2 = ctx.makeGroup(
+            in: w2,
+            order: 0,
+            isSuperset: false
+        )
+        ctx.makeSet(
+            in: g2,
+            exercise: bench,
+            order: 0,
+            weight: 145,
+            reps: 8,
+            isCompleted: false,
+            completedAt: nil
+        )
 
-        let w3 = ctx.makeWorkout(for: trainee, date: day3, isCompleted: true)
-        let g3 = ctx.makeGroup(in: w3, order: 0)
-        ctx.makeSet(in: g3, exercise: bench, order: 0, weight: 155, reps: 6)
+        let w3 = ctx.makeWorkout(
+            for: trainee,
+            date: day3,
+            isCompleted: true
+        )
+        let g3 = ctx.makeGroup(
+            in: w3,
+            order: 0,
+            isSuperset: false
+        )
+        ctx.makeSet(
+            in: g3,
+            exercise: bench,
+            order: 0,
+            weight: 155,
+            reps: 6,
+            isCompleted: false,
+            completedAt: nil
+        )
 
         let history = trainee.history(for: bench, in: ctx)
         XCTAssertEqual(history.count, 3)
@@ -89,9 +156,12 @@ import SwiftData
 
     func testHistoryExcludesActiveWorkouts() throws {
         let ctx = try makeTestContext()
-        let trainer = ctx.makeTrainer()
+        let trainer = ctx.makeTrainer(name: "Trainer")
         let bench = ctx.makeExercise(name: "Bench", trainer: trainer)
-        let trainee = ctx.makeTrainee(trainer: trainer)
+        let trainee = ctx.makeTrainee(
+            name: "Trainee",
+            trainer: trainer
+        )
 
         // Completed workout
         let completed = ctx.makeWorkout(
@@ -99,13 +169,41 @@ import SwiftData
             date: .now.addingTimeInterval(-86400),
             isCompleted: true
         )
-        let g1 = ctx.makeGroup(in: completed, order: 0)
-        ctx.makeSet(in: g1, exercise: bench, order: 0, weight: 135, reps: 10)
+        let g1 = ctx.makeGroup(
+            in: completed,
+            order: 0,
+            isSuperset: false
+        )
+        ctx.makeSet(
+            in: g1,
+            exercise: bench,
+            order: 0,
+            weight: 135,
+            reps: 10,
+            isCompleted: false,
+            completedAt: nil
+        )
 
         // Active workout (not complete)
-        let active = ctx.makeWorkout(for: trainee)
-        let g2 = ctx.makeGroup(in: active, order: 0)
-        ctx.makeSet(in: g2, exercise: bench, order: 0, weight: 155, reps: 8)
+        let active = ctx.makeWorkout(
+            for: trainee,
+            date: .now,
+            isCompleted: false
+        )
+        let g2 = ctx.makeGroup(
+            in: active,
+            order: 0,
+            isSuperset: false
+        )
+        ctx.makeSet(
+            in: g2,
+            exercise: bench,
+            order: 0,
+            weight: 155,
+            reps: 8,
+            isCompleted: false,
+            completedAt: nil
+        )
 
         let history = trainee.history(for: bench, in: ctx)
         XCTAssertEqual(history.count, 1)

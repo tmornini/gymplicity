@@ -23,8 +23,11 @@ import SwiftData
 
     func testPayloadIncludesTrainerExercises() throws {
         let ctx = try makeTestContext()
-        let trainer = ctx.makeTrainer()
-        let trainee = ctx.makeTrainee(trainer: trainer)
+        let trainer = ctx.makeTrainer(name: "Trainer")
+        let trainee = ctx.makeTrainee(
+            name: "Trainee",
+            trainer: trainer
+        )
         ctx.makeExercise(name: "Bench", trainer: trainer)
         ctx.makeExercise(name: "Squat", trainer: trainer)
 
@@ -42,10 +45,21 @@ import SwiftData
 
     func testPayloadIncludesAllTraineeWorkouts() throws {
         let ctx = try makeTestContext()
-        let trainer = ctx.makeTrainer()
-        let trainee = ctx.makeTrainee(trainer: trainer)
-        ctx.makeWorkout(for: trainee)                           // active
-        ctx.makeWorkout(for: trainee, isCompleted: true)        // completed
+        let trainer = ctx.makeTrainer(name: "Trainer")
+        let trainee = ctx.makeTrainee(
+            name: "Trainee",
+            trainer: trainer
+        )
+        ctx.makeWorkout(                              // active
+            for: trainee,
+            date: .now,
+            isCompleted: false
+        )
+        ctx.makeWorkout(                           // completed
+            for: trainee,
+            date: .now,
+            isCompleted: true
+        )
 
         let payload = SyncPayloadBuilder.build(
             localIdentity: trainee,
@@ -58,11 +72,18 @@ import SwiftData
 
     func testPayloadIncludesTrainerTemplatesOnly() throws {
         let ctx = try makeTestContext()
-        let trainer = ctx.makeTrainer()
-        let trainee = ctx.makeTrainee(trainer: trainer)
+        let trainer = ctx.makeTrainer(name: "Trainer")
+        let trainee = ctx.makeTrainee(
+            name: "Trainee",
+            trainer: trainer
+        )
         ctx.makeTemplate(name: "Push Day", for: trainer)
         // trainer's personal workout -- should be excluded
-        ctx.makeWorkout(for: trainer)
+        ctx.makeWorkout(
+            for: trainer,
+            date: .now,
+            isCompleted: false
+        )
 
         let payload = SyncPayloadBuilder.build(
             localIdentity: trainer,
@@ -79,8 +100,11 @@ import SwiftData
 
     func testPayloadIncludesTemplateInstancesJoins() throws {
         let ctx = try makeTestContext()
-        let trainer = ctx.makeTrainer()
-        let trainee = ctx.makeTrainee(trainer: trainer)
+        let trainer = ctx.makeTrainer(name: "Trainer")
+        let trainee = ctx.makeTrainee(
+            name: "Trainee",
+            trainer: trainer
+        )
         let template = ctx.makeTemplate(name: "Push", for: trainer)
         let workout = ctx.instantiateTemplate(template, for: trainee)
 
@@ -99,17 +123,33 @@ import SwiftData
 
     func testPayloadIncludesGroupsSetsAndExerciseLinks() throws {
         let ctx = try makeTestContext()
-        let trainer = ctx.makeTrainer()
-        let trainee = ctx.makeTrainee(trainer: trainer)
-        let bench = ctx.makeExercise(name: "Bench", trainer: trainer)
-        let workout = ctx.makeWorkout(for: trainee)
-        let group = ctx.makeGroup(in: workout, order: 0)
+        let trainer = ctx.makeTrainer(name: "Trainer")
+        let trainee = ctx.makeTrainee(
+            name: "Trainee",
+            trainer: trainer
+        )
+        let bench = ctx.makeExercise(
+            name: "Bench",
+            trainer: trainer
+        )
+        let workout = ctx.makeWorkout(
+            for: trainee,
+            date: .now,
+            isCompleted: false
+        )
+        let group = ctx.makeGroup(
+            in: workout,
+            order: 0,
+            isSuperset: false
+        )
         ctx.makeSet(
             in: group,
             exercise: bench,
             order: 0,
             weight: 135,
-            reps: 10
+            reps: 10,
+            isCompleted: false,
+            completedAt: nil
         )
 
         let payload = SyncPayloadBuilder.build(
@@ -127,12 +167,23 @@ import SwiftData
 
     func testIdentityWorkoutsIncludesTraineeAndTrainerTemplateJoins() throws {
         let ctx = try makeTestContext()
-        let trainer = ctx.makeTrainer()
-        let trainee = ctx.makeTrainee(trainer: trainer)
-        ctx.makeWorkout(for: trainee)
+        let trainer = ctx.makeTrainer(name: "Trainer")
+        let trainee = ctx.makeTrainee(
+            name: "Trainee",
+            trainer: trainer
+        )
+        ctx.makeWorkout(
+            for: trainee,
+            date: .now,
+            isCompleted: false
+        )
         ctx.makeTemplate(name: "Pull Day", for: trainer)
         // trainer's personal -- its IW join excluded
-        ctx.makeWorkout(for: trainer)
+        ctx.makeWorkout(
+            for: trainer,
+            date: .now,
+            isCompleted: false
+        )
 
         let payload = SyncPayloadBuilder.build(
             localIdentity: trainer,
@@ -146,14 +197,28 @@ import SwiftData
 
     func testPayloadIncludesAliasedTraineeWorkouts() throws {
         let ctx = try makeTestContext()
-        let trainer = ctx.makeTrainer()
-        let traineeA = ctx.makeTrainee(name: "Alex-A", trainer: trainer)
-        let traineeB = IdentityEntity(name: "Alex-B", isTrainer: false)
+        let trainer = ctx.makeTrainer(name: "Trainer")
+        let traineeA = ctx.makeTrainee(
+            name: "Alex-A",
+            trainer: trainer
+        )
+        let traineeB = IdentityEntity(
+            name: "Alex-B",
+            isTrainer: false
+        )
         ctx.insert(traineeB)
 
         // Both identities have workouts
-        ctx.makeWorkout(for: traineeA, isCompleted: true)
-        ctx.makeWorkout(for: traineeB, isCompleted: true)
+        ctx.makeWorkout(
+            for: traineeA,
+            date: .now,
+            isCompleted: true
+        )
+        ctx.makeWorkout(
+            for: traineeB,
+            date: .now,
+            isCompleted: true
+        )
 
         // Create alias
         IdentityReconciliation.createAlias(
@@ -175,8 +240,11 @@ import SwiftData
 
     func testPayloadIncludesIdentityAliasRows() throws {
         let ctx = try makeTestContext()
-        let trainer = ctx.makeTrainer()
-        let trainee = ctx.makeTrainee(trainer: trainer)
+        let trainer = ctx.makeTrainer(name: "Trainer")
+        let trainee = ctx.makeTrainee(
+            name: "Trainee",
+            trainer: trainer
+        )
         let aliasId = UUID()
 
         IdentityReconciliation.createAlias(

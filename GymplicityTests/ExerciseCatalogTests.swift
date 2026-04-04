@@ -6,7 +6,7 @@ import SwiftData
 
     func testFindOrCreateExerciseCreatesNew() throws {
         let ctx = try makeTestContext()
-        let trainer = ctx.makeTrainer()
+        let trainer = ctx.makeTrainer(name: "Trainer")
 
         XCTAssert(trainer.exercises(in: ctx).isEmpty)
 
@@ -21,7 +21,7 @@ import SwiftData
 
     func testFindOrCreateExerciseFindsExisting() throws {
         let ctx = try makeTestContext()
-        let trainer = ctx.makeTrainer()
+        let trainer = ctx.makeTrainer(name: "Trainer")
         let original = ctx.makeExercise(name: "Bench Press", trainer: trainer)
 
         let found = trainer.findOrCreateExercise(
@@ -35,7 +35,7 @@ import SwiftData
 
     func testFindOrCreateExerciseCaseInsensitive() throws {
         let ctx = try makeTestContext()
-        let trainer = ctx.makeTrainer()
+        let trainer = ctx.makeTrainer(name: "Trainer")
         let original = ctx.makeExercise(name: "Bench Press", trainer: trainer)
 
         let lower = trainer.findOrCreateExercise(
@@ -54,7 +54,7 @@ import SwiftData
 
     func testExerciseCatalogSortedAlphabetically() throws {
         let ctx = try makeTestContext()
-        let trainer = ctx.makeTrainer()
+        let trainer = ctx.makeTrainer(name: "Trainer")
         ctx.makeExercise(name: "Squat", trainer: trainer)
         ctx.makeExercise(name: "Bench Press", trainer: trainer)
         ctx.makeExercise(name: "Deadlift", trainer: trainer)
@@ -68,10 +68,13 @@ import SwiftData
 
     func testTraineeExerciseCatalogReturnsTrainerExercises() throws {
         let ctx = try makeTestContext()
-        let trainer = ctx.makeTrainer()
+        let trainer = ctx.makeTrainer(name: "Trainer")
         ctx.makeExercise(name: "Squat", trainer: trainer)
         ctx.makeExercise(name: "Bench Press", trainer: trainer)
-        let trainee = ctx.makeTrainee(trainer: trainer)
+        let trainee = ctx.makeTrainee(
+            name: "Trainee",
+            trainer: trainer
+        )
 
         let catalog = trainee.exerciseCatalog(in: ctx)
         XCTAssertEqual(catalog.map(\.name), ["Bench Press", "Squat"])
@@ -87,10 +90,13 @@ import SwiftData
 
     func testExercisesUsedDeduplicatesAndSorts() throws {
         let ctx = try makeTestContext()
-        let trainer = ctx.makeTrainer()
+        let trainer = ctx.makeTrainer(name: "Trainer")
         let bench = ctx.makeExercise(name: "Bench Press", trainer: trainer)
         let squat = ctx.makeExercise(name: "Squat", trainer: trainer)
-        let trainee = ctx.makeTrainee(trainer: trainer)
+        let trainee = ctx.makeTrainee(
+            name: "Trainee",
+            trainer: trainer
+        )
 
         // Two workouts both using Bench
         let w1 = ctx.makeWorkout(
@@ -98,11 +104,23 @@ import SwiftData
             date: .now.addingTimeInterval(-86400),
             isCompleted: true
         )
-        let g1 = ctx.makeGroup(in: w1, order: 0)
+        let g1 = ctx.makeGroup(
+            in: w1,
+            order: 0,
+            isSuperset: false
+        )
         ctx.makeSet(in: g1, exercise: bench, order: 0, weight: 135, reps: 10)
 
-        let w2 = ctx.makeWorkout(for: trainee, isCompleted: true)
-        let g2 = ctx.makeGroup(in: w2, order: 0)
+        let w2 = ctx.makeWorkout(
+            for: trainee,
+            date: .now,
+            isCompleted: true
+        )
+        let g2 = ctx.makeGroup(
+            in: w2,
+            order: 0,
+            isSuperset: false
+        )
         ctx.makeSet(in: g2, exercise: bench, order: 0, weight: 145, reps: 8)
         ctx.makeSet(in: g2, exercise: squat, order: 1, weight: 225, reps: 5)
 
@@ -113,21 +131,36 @@ import SwiftData
 
     func testBatchExerciseIdsUsedMatchesEntityTraversal() throws {
         let ctx = try makeTestContext()
-        let trainer = ctx.makeTrainer()
+        let trainer = ctx.makeTrainer(name: "Trainer")
         let bench = ctx.makeExercise(name: "Bench Press", trainer: trainer)
         let squat = ctx.makeExercise(name: "Squat", trainer: trainer)
-        let trainee = ctx.makeTrainee(trainer: trainer)
+        let trainee = ctx.makeTrainee(
+            name: "Trainee",
+            trainer: trainer
+        )
 
         let w1 = ctx.makeWorkout(
             for: trainee,
             date: .now.addingTimeInterval(-86400),
             isCompleted: true
         )
-        let g1 = ctx.makeGroup(in: w1, order: 0)
+        let g1 = ctx.makeGroup(
+            in: w1,
+            order: 0,
+            isSuperset: false
+        )
         ctx.makeSet(in: g1, exercise: bench, order: 0, weight: 135, reps: 10)
 
-        let w2 = ctx.makeWorkout(for: trainee, isCompleted: true)
-        let g2 = ctx.makeGroup(in: w2, order: 0)
+        let w2 = ctx.makeWorkout(
+            for: trainee,
+            date: .now,
+            isCompleted: true
+        )
+        let g2 = ctx.makeGroup(
+            in: w2,
+            order: 0,
+            isSuperset: false
+        )
         ctx.makeSet(in: g2, exercise: bench, order: 0, weight: 145, reps: 8)
         ctx.makeSet(in: g2, exercise: squat, order: 1, weight: 225, reps: 5)
 
@@ -139,7 +172,7 @@ import SwiftData
 
     func testBatchExerciseIdsUsedEmptyForNewUser() throws {
         let ctx = try makeTestContext()
-        let trainer = ctx.makeTrainer()
+        let trainer = ctx.makeTrainer(name: "Trainer")
 
         let ids = BatchTraversal.exerciseIdsUsed(for: trainer, in: ctx)
         XCTAssert(ids.isEmpty)

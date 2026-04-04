@@ -288,7 +288,7 @@ import SwiftData
 
     func testCatalogExcludesUserExercises() throws {
         let ctx = try makeTestContext()
-        let trainer = ctx.makeTrainer()
+        let trainer = ctx.makeTrainer(name: "Trainer")
         ctx.makeExercise(name: "Barbell Back Squat", trainer: trainer)
         try ctx.save()
 
@@ -311,7 +311,7 @@ import SwiftData
 
     func testUserExerciseFuzzyMatch() throws {
         let ctx = try makeTestContext()
-        let trainer = ctx.makeTrainer()
+        let trainer = ctx.makeTrainer(name: "Trainer")
         ctx.makeExercise(name: "Bench Press", trainer: trainer)
         ctx.makeExercise(name: "Overhead Press", trainer: trainer)
         try ctx.save()
@@ -333,7 +333,7 @@ import SwiftData
 
     func testEmptyQueryReturnsAllUserExercises() throws {
         let ctx = try makeTestContext()
-        let trainer = ctx.makeTrainer()
+        let trainer = ctx.makeTrainer(name: "Trainer")
         ctx.makeExercise(name: "Squat", trainer: trainer)
         ctx.makeExercise(name: "Bench", trainer: trainer)
         try ctx.save()

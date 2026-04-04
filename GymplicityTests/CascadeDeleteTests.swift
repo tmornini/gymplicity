@@ -6,17 +6,33 @@ import SwiftData
 
     func testDeleteSetRemovesJoinRows() throws {
         let ctx = try makeTestContext()
-        let trainer = ctx.makeTrainer()
-        let bench = ctx.makeExercise(name: "Bench", trainer: trainer)
-        let trainee = ctx.makeTrainee(trainer: trainer)
-        let workout = ctx.makeWorkout(for: trainee)
-        let group = ctx.makeGroup(in: workout, order: 0)
+        let trainer = ctx.makeTrainer(name: "Trainer")
+        let bench = ctx.makeExercise(
+            name: "Bench",
+            trainer: trainer
+        )
+        let trainee = ctx.makeTrainee(
+            name: "Trainee",
+            trainer: trainer
+        )
+        let workout = ctx.makeWorkout(
+            for: trainee,
+            date: .now,
+            isCompleted: false
+        )
+        let group = ctx.makeGroup(
+            in: workout,
+            order: 0,
+            isSuperset: false
+        )
         let set = ctx.makeSet(
             in: group,
             exercise: bench,
             order: 0,
             weight: 135,
-            reps: 10
+            reps: 10,
+            isCompleted: false,
+            completedAt: nil
         )
         let setId = set.id
 
@@ -48,24 +64,42 @@ import SwiftData
 
     func testDeleteGroupCascadesToSets() throws {
         let ctx = try makeTestContext()
-        let trainer = ctx.makeTrainer()
-        let bench = ctx.makeExercise(name: "Bench", trainer: trainer)
-        let trainee = ctx.makeTrainee(trainer: trainer)
-        let workout = ctx.makeWorkout(for: trainee)
-        let group = ctx.makeGroup(in: workout, order: 0)
+        let trainer = ctx.makeTrainer(name: "Trainer")
+        let bench = ctx.makeExercise(
+            name: "Bench",
+            trainer: trainer
+        )
+        let trainee = ctx.makeTrainee(
+            name: "Trainee",
+            trainer: trainer
+        )
+        let workout = ctx.makeWorkout(
+            for: trainee,
+            date: .now,
+            isCompleted: false
+        )
+        let group = ctx.makeGroup(
+            in: workout,
+            order: 0,
+            isSuperset: false
+        )
         ctx.makeSet(
             in: group,
             exercise: bench,
             order: 0,
             weight: 135,
-            reps: 10
+            reps: 10,
+            isCompleted: false,
+            completedAt: nil
         )
         ctx.makeSet(
             in: group,
             exercise: bench,
             order: 1,
             weight: 155,
-            reps: 8
+            reps: 8,
+            isCompleted: false,
+            completedAt: nil
         )
         let groupId = group.id
 
@@ -87,14 +121,48 @@ import SwiftData
 
     func testDeleteWorkoutCascadesToGroupsAndSets() throws {
         let ctx = try makeTestContext()
-        let trainer = ctx.makeTrainer()
-        let bench = ctx.makeExercise(name: "Bench", trainer: trainer)
-        let trainee = ctx.makeTrainee(trainer: trainer)
-        let workout = ctx.makeWorkout(for: trainee)
-        let g1 = ctx.makeGroup(in: workout, order: 0)
-        ctx.makeSet(in: g1, exercise: bench, order: 0, weight: 135, reps: 10)
-        let g2 = ctx.makeGroup(in: workout, order: 1)
-        ctx.makeSet(in: g2, exercise: bench, order: 0, weight: 155, reps: 8)
+        let trainer = ctx.makeTrainer(name: "Trainer")
+        let bench = ctx.makeExercise(
+            name: "Bench",
+            trainer: trainer
+        )
+        let trainee = ctx.makeTrainee(
+            name: "Trainee",
+            trainer: trainer
+        )
+        let workout = ctx.makeWorkout(
+            for: trainee,
+            date: .now,
+            isCompleted: false
+        )
+        let g1 = ctx.makeGroup(
+            in: workout,
+            order: 0,
+            isSuperset: false
+        )
+        ctx.makeSet(
+            in: g1,
+            exercise: bench,
+            order: 0,
+            weight: 135,
+            reps: 10,
+            isCompleted: false,
+            completedAt: nil
+        )
+        let g2 = ctx.makeGroup(
+            in: workout,
+            order: 1,
+            isSuperset: false
+        )
+        ctx.makeSet(
+            in: g2,
+            exercise: bench,
+            order: 0,
+            weight: 155,
+            reps: 8,
+            isCompleted: false,
+            completedAt: nil
+        )
         let workoutId = workout.id
 
         ctx.deleteWorkout(workout)
@@ -117,24 +185,42 @@ import SwiftData
 
     func testDeleteExerciseNullifiesSets() throws {
         let ctx = try makeTestContext()
-        let trainer = ctx.makeTrainer()
-        let bench = ctx.makeExercise(name: "Bench", trainer: trainer)
-        let trainee = ctx.makeTrainee(trainer: trainer)
-        let workout = ctx.makeWorkout(for: trainee)
-        let group = ctx.makeGroup(in: workout, order: 0)
+        let trainer = ctx.makeTrainer(name: "Trainer")
+        let bench = ctx.makeExercise(
+            name: "Bench",
+            trainer: trainer
+        )
+        let trainee = ctx.makeTrainee(
+            name: "Trainee",
+            trainer: trainer
+        )
+        let workout = ctx.makeWorkout(
+            for: trainee,
+            date: .now,
+            isCompleted: false
+        )
+        let group = ctx.makeGroup(
+            in: workout,
+            order: 0,
+            isSuperset: false
+        )
         let set1 = ctx.makeSet(
             in: group,
             exercise: bench,
             order: 0,
             weight: 135,
-            reps: 10
+            reps: 10,
+            isCompleted: false,
+            completedAt: nil
         )
         let set2 = ctx.makeSet(
             in: group,
             exercise: bench,
             order: 1,
             weight: 155,
-            reps: 8
+            reps: 8,
+            isCompleted: false,
+            completedAt: nil
         )
 
         ctx.deleteExercise(bench)
@@ -155,17 +241,33 @@ import SwiftData
 
     func testDeleteIdentityCascadesCompletely() throws {
         let ctx = try makeTestContext()
-        let trainer = ctx.makeTrainer()
-        let bench = ctx.makeExercise(name: "Bench", trainer: trainer)
-        let trainee = ctx.makeTrainee(trainer: trainer)
-        let workout = ctx.makeWorkout(for: trainee)
-        let group = ctx.makeGroup(in: workout, order: 0)
+        let trainer = ctx.makeTrainer(name: "Trainer")
+        let bench = ctx.makeExercise(
+            name: "Bench",
+            trainer: trainer
+        )
+        let trainee = ctx.makeTrainee(
+            name: "Trainee",
+            trainer: trainer
+        )
+        let workout = ctx.makeWorkout(
+            for: trainee,
+            date: .now,
+            isCompleted: false
+        )
+        let group = ctx.makeGroup(
+            in: workout,
+            order: 0,
+            isSuperset: false
+        )
         ctx.makeSet(
             in: group,
             exercise: bench,
             order: 0,
             weight: 135,
-            reps: 10
+            reps: 10,
+            isCompleted: false,
+            completedAt: nil
         )
 
         ctx.deleteIdentity(trainer)

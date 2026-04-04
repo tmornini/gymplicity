@@ -18,7 +18,24 @@ import SwiftData
                     name: "New Name",
                     isTrainer: true
                 )
-            ]
+            ],
+            exercises: [],
+            workouts: [],
+            workoutGroups: [],
+            sets: [],
+            workoutTemplates: [],
+            workoutNotes: [],
+            trainerTrainees: [],
+            trainerExercises: [],
+            identityWorkouts: [],
+            workoutGroupJoins: [],
+            groupSetJoins: [],
+            exerciseSetJoins: [],
+            templateInstanceJoins: [],
+            identityAliases: [],
+            setCompletions: [],
+            workoutCompletions: [],
+            deviceSyncEvents: []
         )
         let result = SyncEngine.merge(payload, into: ctx)
 
@@ -31,18 +48,44 @@ import SwiftData
         let trainer = ctx.makeTrainer(name: "Trainer")
         let trainee = ctx.makeTrainee(name: "Original", trainer: trainer)
 
-        // Trainer sends payload containing trainee identity with changed name
+        // Trainer sends payload with trainee identity changed
         let payload = makePayload(
             senderIdentityId: trainer.id,
             identities: [
-                IdentityDTO(id: trainer.id, name: "Trainer", isTrainer: true),
-                IdentityDTO(id: trainee.id, name: "Changed", isTrainer: false)
-            ]
+                IdentityDTO(
+                    id: trainer.id,
+                    name: "Trainer",
+                    isTrainer: true
+                ),
+                IdentityDTO(
+                    id: trainee.id,
+                    name: "Changed",
+                    isTrainer: false
+                )
+            ],
+            exercises: [],
+            workouts: [],
+            workoutGroups: [],
+            sets: [],
+            workoutTemplates: [],
+            workoutNotes: [],
+            trainerTrainees: [],
+            trainerExercises: [],
+            identityWorkouts: [],
+            workoutGroupJoins: [],
+            groupSetJoins: [],
+            exerciseSetJoins: [],
+            templateInstanceJoins: [],
+            identityAliases: [],
+            setCompletions: [],
+            workoutCompletions: [],
+            deviceSyncEvents: []
         )
         let result = SyncEngine.merge(payload, into: ctx)
 
         XCTAssertEqual(trainee.name, "Original")
-        XCTAssertEqual(result.identitiesUpdated, 1) // only sender's own
+        // only sender's own
+        XCTAssertEqual(result.identitiesUpdated, 1)
     }
 
     func testNewIdentityInsertedFromPayload() throws {
@@ -53,9 +96,34 @@ import SwiftData
         let payload = makePayload(
             senderIdentityId: senderId,
             identities: [
-                IdentityDTO(id: senderId, name: "Sender", isTrainer: true),
-                IdentityDTO(id: newId, name: "New Person", isTrainer: false)
-            ]
+                IdentityDTO(
+                    id: senderId,
+                    name: "Sender",
+                    isTrainer: true
+                ),
+                IdentityDTO(
+                    id: newId,
+                    name: "New Person",
+                    isTrainer: false
+                )
+            ],
+            exercises: [],
+            workouts: [],
+            workoutGroups: [],
+            sets: [],
+            workoutTemplates: [],
+            workoutNotes: [],
+            trainerTrainees: [],
+            trainerExercises: [],
+            identityWorkouts: [],
+            workoutGroupJoins: [],
+            groupSetJoins: [],
+            exerciseSetJoins: [],
+            templateInstanceJoins: [],
+            identityAliases: [],
+            setCompletions: [],
+            workoutCompletions: [],
+            deviceSyncEvents: []
         )
         let result = SyncEngine.merge(payload, into: ctx)
 
@@ -70,7 +138,7 @@ import SwiftData
 
     func testTrainerSenderUpdatesExerciseName() throws {
         let ctx = try makeTestContext()
-        let trainer = ctx.makeTrainer()
+        let trainer = ctx.makeTrainer(name: "Trainer")
         let bench = ctx.makeExercise(name: "Bnech", trainer: trainer)
 
         let payload = makePayload(
@@ -88,7 +156,23 @@ import SwiftData
                     name: "Bench",
                     catalogId: nil
                 )
-            ]
+            ],
+            workouts: [],
+            workoutGroups: [],
+            sets: [],
+            workoutTemplates: [],
+            workoutNotes: [],
+            trainerTrainees: [],
+            trainerExercises: [],
+            identityWorkouts: [],
+            workoutGroupJoins: [],
+            groupSetJoins: [],
+            exerciseSetJoins: [],
+            templateInstanceJoins: [],
+            identityAliases: [],
+            setCompletions: [],
+            workoutCompletions: [],
+            deviceSyncEvents: []
         )
         let result = SyncEngine.merge(payload, into: ctx)
 
@@ -98,8 +182,11 @@ import SwiftData
 
     func testTraineeSenderCannotUpdateExerciseName() throws {
         let ctx = try makeTestContext()
-        let trainer = ctx.makeTrainer()
-        let trainee = ctx.makeTrainee(trainer: trainer)
+        let trainer = ctx.makeTrainer(name: "Trainer")
+        let trainee = ctx.makeTrainee(
+            name: "Trainee",
+            trainer: trainer
+        )
         let bench = ctx.makeExercise(name: "Bench", trainer: trainer)
 
         let payload = makePayload(
@@ -117,7 +204,23 @@ import SwiftData
                     name: "Renamed",
                     catalogId: nil
                 )
-            ]
+            ],
+            workouts: [],
+            workoutGroups: [],
+            sets: [],
+            workoutTemplates: [],
+            workoutNotes: [],
+            trainerTrainees: [],
+            trainerExercises: [],
+            identityWorkouts: [],
+            workoutGroupJoins: [],
+            groupSetJoins: [],
+            exerciseSetJoins: [],
+            templateInstanceJoins: [],
+            identityAliases: [],
+            setCompletions: [],
+            workoutCompletions: [],
+            deviceSyncEvents: []
         )
         let result = SyncEngine.merge(payload, into: ctx)
 
@@ -127,7 +230,7 @@ import SwiftData
 
     func testNewExerciseInsertedRegardlessOfSenderRole() throws {
         let ctx = try makeTestContext()
-        let trainer = ctx.makeTrainer()
+        let trainer = ctx.makeTrainer(name: "Trainer")
         let trainee = ctx.makeTrainee(
             name: "T",
             trainer: trainer
@@ -149,7 +252,23 @@ import SwiftData
                     name: "New Exercise",
                     catalogId: nil
                 )
-            ]
+            ],
+            workouts: [],
+            workoutGroups: [],
+            sets: [],
+            workoutTemplates: [],
+            workoutNotes: [],
+            trainerTrainees: [],
+            trainerExercises: [],
+            identityWorkouts: [],
+            workoutGroupJoins: [],
+            groupSetJoins: [],
+            exerciseSetJoins: [],
+            templateInstanceJoins: [],
+            identityAliases: [],
+            setCompletions: [],
+            workoutCompletions: [],
+            deviceSyncEvents: []
         )
         let result = SyncEngine.merge(payload, into: ctx)
 
@@ -164,9 +283,16 @@ import SwiftData
 
     func testEitherSideUpdatesNonTemplateWorkout() throws {
         let ctx = try makeTestContext()
-        let trainer = ctx.makeTrainer()
-        let trainee = ctx.makeTrainee(trainer: trainer)
-        let workout = ctx.makeWorkout(for: trainee)
+        let trainer = ctx.makeTrainer(name: "Trainer")
+        let trainee = ctx.makeTrainee(
+            name: "Trainee",
+            trainer: trainer
+        )
+        let workout = ctx.makeWorkout(
+            for: trainee,
+            date: .now,
+            isCompleted: false
+        )
 
         // Trainee sends update
         let payload = makePayload(
@@ -178,6 +304,7 @@ import SwiftData
                     isTrainer: false
                 )
             ],
+            exercises: [],
             workouts: [
                 WorkoutDTO(
                     id: workout.id,
@@ -185,18 +312,31 @@ import SwiftData
                     isTemplate: false
                 )
             ],
+            workoutGroups: [],
+            sets: [],
+            workoutTemplates: [],
             workoutNotes: [
                 WorkoutNotesDTO(
                     workoutId: workout.id,
                     notes: "Great session"
                 )
             ],
+            trainerTrainees: [],
+            trainerExercises: [],
+            identityWorkouts: [],
+            workoutGroupJoins: [],
+            groupSetJoins: [],
+            exerciseSetJoins: [],
+            templateInstanceJoins: [],
+            identityAliases: [],
+            setCompletions: [],
             workoutCompletions: [
                 WorkoutCompletionDTO(
                     workoutId: workout.id,
                     completedAt: .now
                 )
-            ]
+            ],
+            deviceSyncEvents: []
         )
         let result = SyncEngine.merge(payload, into: ctx)
 
@@ -210,7 +350,7 @@ import SwiftData
 
     func testTrainerUpdatesTemplateWorkout() throws {
         let ctx = try makeTestContext()
-        let trainer = ctx.makeTrainer()
+        let trainer = ctx.makeTrainer(name: "Trainer")
         let template = ctx.makeTemplate(name: "Push Day", for: trainer)
 
         let payload = makePayload(
@@ -222,12 +362,28 @@ import SwiftData
                     isTrainer: true
                 )
             ],
+            exercises: [],
+            workouts: [],
+            workoutGroups: [],
+            sets: [],
             workoutTemplates: [
                 WorkoutTemplateDTO(
                     workoutId: template.id,
                     name: "Push A"
                 )
-            ]
+            ],
+            workoutNotes: [],
+            trainerTrainees: [],
+            trainerExercises: [],
+            identityWorkouts: [],
+            workoutGroupJoins: [],
+            groupSetJoins: [],
+            exerciseSetJoins: [],
+            templateInstanceJoins: [],
+            identityAliases: [],
+            setCompletions: [],
+            workoutCompletions: [],
+            deviceSyncEvents: []
         )
         let result = SyncEngine.merge(payload, into: ctx)
 
@@ -240,8 +396,11 @@ import SwiftData
 
     func testTraineeCannotUpdateTemplateWorkout() throws {
         let ctx = try makeTestContext()
-        let trainer = ctx.makeTrainer()
-        let trainee = ctx.makeTrainee(trainer: trainer)
+        let trainer = ctx.makeTrainer(name: "Trainer")
+        let trainee = ctx.makeTrainee(
+            name: "Trainee",
+            trainer: trainer
+        )
         let template = ctx.makeTemplate(
             name: "Push Day",
             for: trainer
@@ -256,12 +415,28 @@ import SwiftData
                     isTrainer: false
                 )
             ],
+            exercises: [],
+            workouts: [],
+            workoutGroups: [],
+            sets: [],
             workoutTemplates: [
                 WorkoutTemplateDTO(
                     workoutId: template.id,
                     name: "Hacked"
                 )
-            ]
+            ],
+            workoutNotes: [],
+            trainerTrainees: [],
+            trainerExercises: [],
+            identityWorkouts: [],
+            workoutGroupJoins: [],
+            groupSetJoins: [],
+            exerciseSetJoins: [],
+            templateInstanceJoins: [],
+            identityAliases: [],
+            setCompletions: [],
+            workoutCompletions: [],
+            deviceSyncEvents: []
         )
         let result = SyncEngine.merge(payload, into: ctx)
 
@@ -274,7 +449,7 @@ import SwiftData
 
     func testNewWorkoutInsertedFromPayload() throws {
         let ctx = try makeTestContext()
-        let trainer = ctx.makeTrainer()
+        let trainer = ctx.makeTrainer(name: "Trainer")
         let trainee = ctx.makeTrainee(
             name: "T",
             trainer: trainer
@@ -290,6 +465,7 @@ import SwiftData
                     isTrainer: false
                 )
             ],
+            exercises: [],
             workouts: [
                 WorkoutDTO(
                     id: newId,
@@ -297,12 +473,26 @@ import SwiftData
                     isTemplate: false
                 )
             ],
+            workoutGroups: [],
+            sets: [],
+            workoutTemplates: [],
             workoutNotes: [
                 WorkoutNotesDTO(
                     workoutId: newId,
                     notes: "New workout"
                 )
-            ]
+            ],
+            trainerTrainees: [],
+            trainerExercises: [],
+            identityWorkouts: [],
+            workoutGroupJoins: [],
+            groupSetJoins: [],
+            exerciseSetJoins: [],
+            templateInstanceJoins: [],
+            identityAliases: [],
+            setCompletions: [],
+            workoutCompletions: [],
+            deviceSyncEvents: []
         )
         let result = SyncEngine.merge(payload, into: ctx)
 
@@ -324,10 +514,21 @@ import SwiftData
 
     func testTrainerUpdatesGroupOrder() throws {
         let ctx = try makeTestContext()
-        let trainer = ctx.makeTrainer()
-        let trainee = ctx.makeTrainee(trainer: trainer)
-        let workout = ctx.makeWorkout(for: trainee)
-        let group = ctx.makeGroup(in: workout, order: 0)
+        let trainer = ctx.makeTrainer(name: "Trainer")
+        let trainee = ctx.makeTrainee(
+            name: "Trainee",
+            trainer: trainer
+        )
+        let workout = ctx.makeWorkout(
+            for: trainee,
+            date: .now,
+            isCompleted: false
+        )
+        let group = ctx.makeGroup(
+            in: workout,
+            order: 0,
+            isSuperset: false
+        )
 
         let payload = makePayload(
             senderIdentityId: trainer.id,
@@ -338,13 +539,29 @@ import SwiftData
                     isTrainer: true
                 )
             ],
+            exercises: [],
+            workouts: [],
             workoutGroups: [
                 WorkoutGroupDTO(
                     id: group.id,
                     order: 2,
                     isSuperset: true
                 )
-            ]
+            ],
+            sets: [],
+            workoutTemplates: [],
+            workoutNotes: [],
+            trainerTrainees: [],
+            trainerExercises: [],
+            identityWorkouts: [],
+            workoutGroupJoins: [],
+            groupSetJoins: [],
+            exerciseSetJoins: [],
+            templateInstanceJoins: [],
+            identityAliases: [],
+            setCompletions: [],
+            workoutCompletions: [],
+            deviceSyncEvents: []
         )
         let result = SyncEngine.merge(payload, into: ctx)
 
@@ -355,10 +572,21 @@ import SwiftData
 
     func testTraineeCannotUpdateGroup() throws {
         let ctx = try makeTestContext()
-        let trainer = ctx.makeTrainer()
-        let trainee = ctx.makeTrainee(trainer: trainer)
-        let workout = ctx.makeWorkout(for: trainee)
-        let group = ctx.makeGroup(in: workout, order: 0)
+        let trainer = ctx.makeTrainer(name: "Trainer")
+        let trainee = ctx.makeTrainee(
+            name: "Trainee",
+            trainer: trainer
+        )
+        let workout = ctx.makeWorkout(
+            for: trainee,
+            date: .now,
+            isCompleted: false
+        )
+        let group = ctx.makeGroup(
+            in: workout,
+            order: 0,
+            isSuperset: false
+        )
 
         let payload = makePayload(
             senderIdentityId: trainee.id,
@@ -369,13 +597,29 @@ import SwiftData
                     isTrainer: false
                 )
             ],
+            exercises: [],
+            workouts: [],
             workoutGroups: [
                 WorkoutGroupDTO(
                     id: group.id,
                     order: 5,
                     isSuperset: true
                 )
-            ]
+            ],
+            sets: [],
+            workoutTemplates: [],
+            workoutNotes: [],
+            trainerTrainees: [],
+            trainerExercises: [],
+            identityWorkouts: [],
+            workoutGroupJoins: [],
+            groupSetJoins: [],
+            exerciseSetJoins: [],
+            templateInstanceJoins: [],
+            identityAliases: [],
+            setCompletions: [],
+            workoutCompletions: [],
+            deviceSyncEvents: []
         )
         let result = SyncEngine.merge(payload, into: ctx)
 
@@ -388,17 +632,33 @@ import SwiftData
 
     func testEitherSideUpdatesSet() throws {
         let ctx = try makeTestContext()
-        let trainer = ctx.makeTrainer()
-        let trainee = ctx.makeTrainee(trainer: trainer)
-        let bench = ctx.makeExercise(name: "Bench", trainer: trainer)
-        let workout = ctx.makeWorkout(for: trainee)
-        let group = ctx.makeGroup(in: workout, order: 0)
+        let trainer = ctx.makeTrainer(name: "Trainer")
+        let trainee = ctx.makeTrainee(
+            name: "Trainee",
+            trainer: trainer
+        )
+        let bench = ctx.makeExercise(
+            name: "Bench",
+            trainer: trainer
+        )
+        let workout = ctx.makeWorkout(
+            for: trainee,
+            date: .now,
+            isCompleted: false
+        )
+        let group = ctx.makeGroup(
+            in: workout,
+            order: 0,
+            isSuperset: false
+        )
         let set = ctx.makeSet(
             in: group,
             exercise: bench,
             order: 0,
             weight: 100,
-            reps: 8
+            reps: 8,
+            isCompleted: false,
+            completedAt: nil
         )
         let now = Date.now
 
@@ -412,6 +672,9 @@ import SwiftData
                     isTrainer: true
                 )
             ],
+            exercises: [],
+            workouts: [],
+            workoutGroups: [],
             sets: [
                 SetDTO(
                     id: set.id,
@@ -420,12 +683,24 @@ import SwiftData
                     reps: 10
                 )
             ],
+            workoutTemplates: [],
+            workoutNotes: [],
+            trainerTrainees: [],
+            trainerExercises: [],
+            identityWorkouts: [],
+            workoutGroupJoins: [],
+            groupSetJoins: [],
+            exerciseSetJoins: [],
+            templateInstanceJoins: [],
+            identityAliases: [],
             setCompletions: [
                 SetCompletionDTO(
                     setId: set.id,
                     completedAt: now
                 )
-            ]
+            ],
+            workoutCompletions: [],
+            deviceSyncEvents: []
         )
         let result = SyncEngine.merge(payload, into: ctx)
 
@@ -439,8 +714,11 @@ import SwiftData
 
     func testNewJoinRowInserted() throws {
         let ctx = try makeTestContext()
-        let trainer = ctx.makeTrainer()
-        let trainee = ctx.makeTrainee(trainer: trainer)
+        let trainer = ctx.makeTrainer(name: "Trainer")
+        let trainee = ctx.makeTrainee(
+            name: "Trainee",
+            trainer: trainer
+        )
         let newWorkoutId = UUID()
 
         let payload = makePayload(
@@ -452,12 +730,28 @@ import SwiftData
                     isTrainer: true
                 )
             ],
+            exercises: [],
+            workouts: [],
+            workoutGroups: [],
+            sets: [],
+            workoutTemplates: [],
+            workoutNotes: [],
+            trainerTrainees: [],
+            trainerExercises: [],
             identityWorkouts: [
                 IdentityWorkoutsDTO(
                     identityId: trainee.id,
                     workoutId: newWorkoutId
                 )
-            ]
+            ],
+            workoutGroupJoins: [],
+            groupSetJoins: [],
+            exerciseSetJoins: [],
+            templateInstanceJoins: [],
+            identityAliases: [],
+            setCompletions: [],
+            workoutCompletions: [],
+            deviceSyncEvents: []
         )
         let result = SyncEngine.merge(payload, into: ctx)
 
@@ -466,8 +760,11 @@ import SwiftData
 
     func testDuplicateJoinRowSkipped() throws {
         let ctx = try makeTestContext()
-        let trainer = ctx.makeTrainer()
-        let trainee = ctx.makeTrainee(trainer: trainer)
+        let trainer = ctx.makeTrainer(name: "Trainer")
+        let trainee = ctx.makeTrainee(
+            name: "Trainee",
+            trainer: trainer
+        )
 
         // TrainerTrainees join already exists from makeTrainee
         let payload = makePayload(
@@ -479,12 +776,28 @@ import SwiftData
                     isTrainer: true
                 )
             ],
+            exercises: [],
+            workouts: [],
+            workoutGroups: [],
+            sets: [],
+            workoutTemplates: [],
+            workoutNotes: [],
             trainerTrainees: [
                 TrainerTraineesDTO(
                     trainerId: trainer.id,
                     traineeId: trainee.id
                 )
-            ]
+            ],
+            trainerExercises: [],
+            identityWorkouts: [],
+            workoutGroupJoins: [],
+            groupSetJoins: [],
+            exerciseSetJoins: [],
+            templateInstanceJoins: [],
+            identityAliases: [],
+            setCompletions: [],
+            workoutCompletions: [],
+            deviceSyncEvents: []
         )
         let result = SyncEngine.merge(payload, into: ctx)
 
@@ -493,7 +806,7 @@ import SwiftData
 
     func testTemplateInstancesJoinInsertedAndDeduplicated() throws {
         let ctx = try makeTestContext()
-        let trainer = ctx.makeTrainer()
+        let trainer = ctx.makeTrainer(name: "Trainer")
         let template = ctx.makeTemplate(name: "Push", for: trainer)
         let workoutId = UUID()
 
@@ -506,6 +819,18 @@ import SwiftData
                     isTrainer: true
                 )
             ],
+            exercises: [],
+            workouts: [],
+            workoutGroups: [],
+            sets: [],
+            workoutTemplates: [],
+            workoutNotes: [],
+            trainerTrainees: [],
+            trainerExercises: [],
+            identityWorkouts: [],
+            workoutGroupJoins: [],
+            groupSetJoins: [],
+            exerciseSetJoins: [],
             templateInstanceJoins: [
                 TemplateInstancesDTO(
                     templateId: template.id,
@@ -516,12 +841,19 @@ import SwiftData
                     templateId: template.id,
                     workoutId: workoutId
                 )
-            ]
+            ],
+            identityAliases: [],
+            setCompletions: [],
+            workoutCompletions: [],
+            deviceSyncEvents: []
         )
         let result = SyncEngine.merge(payload, into: ctx)
 
-        // First one inserts, second one is deduplicated
-        XCTAssertEqual(result.templateInstanceJoinsInserted, 1)
+        // First inserts, second is deduplicated
+        XCTAssertEqual(
+            result.templateInstanceJoinsInserted,
+            1
+        )
     }
 
     // MARK: - MergeResult
@@ -530,7 +862,27 @@ import SwiftData
         let ctx = try makeTestContext()
         let senderId = UUID()
 
-        let payload = makePayload(senderIdentityId: senderId)
+        let payload = makePayload(
+            senderIdentityId: senderId,
+            identities: [],
+            exercises: [],
+            workouts: [],
+            workoutGroups: [],
+            sets: [],
+            workoutTemplates: [],
+            workoutNotes: [],
+            trainerTrainees: [],
+            trainerExercises: [],
+            identityWorkouts: [],
+            workoutGroupJoins: [],
+            groupSetJoins: [],
+            exerciseSetJoins: [],
+            templateInstanceJoins: [],
+            identityAliases: [],
+            setCompletions: [],
+            workoutCompletions: [],
+            deviceSyncEvents: []
+        )
         let result = SyncEngine.merge(payload, into: ctx)
 
         XCTAssertEqual(result.summary, "Already up to date")
@@ -555,17 +907,35 @@ import SwiftData
                     isTrainer: false
                 )
             ],
+            exercises: [],
+            workouts: [],
+            workoutGroups: [],
+            sets: [],
+            workoutTemplates: [],
+            workoutNotes: [],
+            trainerTrainees: [],
+            trainerExercises: [],
+            identityWorkouts: [],
+            workoutGroupJoins: [],
+            groupSetJoins: [],
+            exerciseSetJoins: [],
+            templateInstanceJoins: [],
             identityAliases: [
                 IdentityAliasesDTO(
                     identityId1: id1,
                     identityId2: id2
                 )
-            ]
+            ],
+            setCompletions: [],
+            workoutCompletions: [],
+            deviceSyncEvents: []
         )
         let result = SyncEngine.merge(payload, into: ctx)
 
         XCTAssertEqual(result.identityAliasesInserted, 1)
-        let rows = try ctx.fetch(FetchDescriptor<IdentityAliases>())
+        let rows = try ctx.fetch(
+            FetchDescriptor<IdentityAliases>()
+        )
         XCTAssertEqual(rows.count, 1)
     }
 
@@ -587,12 +957,28 @@ import SwiftData
                     isTrainer: false
                 )
             ],
+            exercises: [],
+            workouts: [],
+            workoutGroups: [],
+            sets: [],
+            workoutTemplates: [],
+            workoutNotes: [],
+            trainerTrainees: [],
+            trainerExercises: [],
+            identityWorkouts: [],
+            workoutGroupJoins: [],
+            groupSetJoins: [],
+            exerciseSetJoins: [],
+            templateInstanceJoins: [],
             identityAliases: [
                 IdentityAliasesDTO(
                     identityId1: id1,
                     identityId2: id2
                 )
-            ]
+            ],
+            setCompletions: [],
+            workoutCompletions: [],
+            deviceSyncEvents: []
         )
         let result = SyncEngine.merge(payload, into: ctx)
 
@@ -618,17 +1004,35 @@ import SwiftData
                     isTrainer: false
                 )
             ],
+            exercises: [],
+            workouts: [],
+            workoutGroups: [],
+            sets: [],
+            workoutTemplates: [],
+            workoutNotes: [],
+            trainerTrainees: [],
+            trainerExercises: [],
+            identityWorkouts: [],
+            workoutGroupJoins: [],
+            groupSetJoins: [],
+            exerciseSetJoins: [],
+            templateInstanceJoins: [],
             identityAliases: [
                 IdentityAliasesDTO(
                     identityId1: id2,
                     identityId2: id1
                 )
-            ]
+            ],
+            setCompletions: [],
+            workoutCompletions: [],
+            deviceSyncEvents: []
         )
         let result = SyncEngine.merge(payload, into: ctx)
 
         XCTAssertEqual(result.identityAliasesInserted, 0)
-        let rows = try ctx.fetch(FetchDescriptor<IdentityAliases>())
+        let rows = try ctx.fetch(
+            FetchDescriptor<IdentityAliases>()
+        )
         XCTAssertEqual(rows.count, 1)
     }
 
@@ -636,7 +1040,7 @@ import SwiftData
 
     func testMixedInsertsAndUpdatesSummary() throws {
         let ctx = try makeTestContext()
-        let trainer = ctx.makeTrainer()
+        let trainer = ctx.makeTrainer(name: "Trainer")
         let bench = ctx.makeExercise(name: "Bnech", trainer: trainer)
         let newExerciseId = UUID()
 
@@ -662,7 +1066,23 @@ import SwiftData
                     name: "Squat",
                     catalogId: nil
                 )
-            ]
+            ],
+            workouts: [],
+            workoutGroups: [],
+            sets: [],
+            workoutTemplates: [],
+            workoutNotes: [],
+            trainerTrainees: [],
+            trainerExercises: [],
+            identityWorkouts: [],
+            workoutGroupJoins: [],
+            groupSetJoins: [],
+            exerciseSetJoins: [],
+            templateInstanceJoins: [],
+            identityAliases: [],
+            setCompletions: [],
+            workoutCompletions: [],
+            deviceSyncEvents: []
         )
         let result = SyncEngine.merge(payload, into: ctx)
 
@@ -671,6 +1091,8 @@ import SwiftData
         XCTAssertEqual(result.totalInserted, 1)
         // 1 identity update + 1 exercise update
         XCTAssertEqual(result.totalUpdated, 2)
-        XCTAssert(result.summary.contains("2 exercises"))
+        XCTAssert(
+            result.summary.contains("2 exercises")
+        )
     }
 }

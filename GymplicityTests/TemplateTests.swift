@@ -6,8 +6,11 @@ import SwiftData
 
     func testCreateTemplate() throws {
         let ctx = try makeTestContext()
-        let trainer = ctx.makeTrainer()
-        let template = ctx.makeTemplate(name: "Push Day", for: trainer)
+        let trainer = ctx.makeTrainer(name: "Trainer")
+        let template = ctx.makeTemplate(
+            name: "Push Day",
+            for: trainer
+        )
 
         XCTAssertTrue(template.isTemplate)
         XCTAssertEqual(
@@ -19,10 +22,20 @@ import SwiftData
 
     func testTemplatesFilteredFromActiveWorkouts() throws {
         let ctx = try makeTestContext()
-        let trainer = ctx.makeTrainer()
-        let trainee = ctx.makeTrainee(trainer: trainer)
-        ctx.makeTemplate(name: "Push Day", for: trainer)
-        ctx.makeWorkout(for: trainee)
+        let trainer = ctx.makeTrainer(name: "Trainer")
+        let trainee = ctx.makeTrainee(
+            name: "Trainee",
+            trainer: trainer
+        )
+        ctx.makeTemplate(
+            name: "Push Day",
+            for: trainer
+        )
+        ctx.makeWorkout(
+            for: trainee,
+            date: .now,
+            isCompleted: false
+        )
 
         XCTAssertEqual(trainee.activeWorkouts(in: ctx).count, 1)
         XCTAssertTrue(
@@ -33,9 +46,16 @@ import SwiftData
 
     func testTemplatesFilteredFromCompletedWorkouts() throws {
         let ctx = try makeTestContext()
-        let trainer = ctx.makeTrainer()
-        ctx.makeTemplate(name: "Push Day", for: trainer)
-        let workout = ctx.makeWorkout(for: trainer)
+        let trainer = ctx.makeTrainer(name: "Trainer")
+        ctx.makeTemplate(
+            name: "Push Day",
+            for: trainer
+        )
+        let workout = ctx.makeWorkout(
+            for: trainer,
+            date: .now,
+            isCompleted: false
+        )
         ctx.insert(WorkoutCompletions(
             workoutId: workout.id,
             completedAt: .now
@@ -50,10 +70,20 @@ import SwiftData
 
     func testTemplatesReturnsOnlyTemplates() throws {
         let ctx = try makeTestContext()
-        let trainer = ctx.makeTrainer()
-        ctx.makeTemplate(name: "Push Day", for: trainer)
-        ctx.makeTemplate(name: "Pull Day", for: trainer)
-        ctx.makeWorkout(for: trainer)
+        let trainer = ctx.makeTrainer(name: "Trainer")
+        ctx.makeTemplate(
+            name: "Push Day",
+            for: trainer
+        )
+        ctx.makeTemplate(
+            name: "Pull Day",
+            for: trainer
+        )
+        ctx.makeWorkout(
+            for: trainer,
+            date: .now,
+            isCompleted: false
+        )
 
         let templates = trainer.templates(in: ctx)
         XCTAssertEqual(templates.count, 2)
@@ -62,25 +92,42 @@ import SwiftData
 
     func testInstantiateTemplateClones() throws {
         let ctx = try makeTestContext()
-        let trainer = ctx.makeTrainer()
-        let bench = ctx.makeExercise(name: "Bench", trainer: trainer)
-        let trainee = ctx.makeTrainee(trainer: trainer)
+        let trainer = ctx.makeTrainer(name: "Trainer")
+        let bench = ctx.makeExercise(
+            name: "Bench",
+            trainer: trainer
+        )
+        let trainee = ctx.makeTrainee(
+            name: "Trainee",
+            trainer: trainer
+        )
 
-        let template = ctx.makeTemplate(name: "Push Day", for: trainer)
-        let group = ctx.makeGroup(in: template, order: 0)
+        let template = ctx.makeTemplate(
+            name: "Push Day",
+            for: trainer
+        )
+        let group = ctx.makeGroup(
+            in: template,
+            order: 0,
+            isSuperset: false
+        )
         ctx.makeSet(
             in: group,
             exercise: bench,
             order: 0,
             weight: 135,
-            reps: 10
+            reps: 10,
+            isCompleted: false,
+            completedAt: nil
         )
         ctx.makeSet(
             in: group,
             exercise: bench,
             order: 1,
             weight: 155,
-            reps: 8
+            reps: 8,
+            isCompleted: false,
+            completedAt: nil
         )
 
         let workout = ctx.instantiateTemplate(template, for: trainee)
@@ -100,18 +147,33 @@ import SwiftData
 
     func testClonedUUIDsAreFreshAndSetsUncompleted() throws {
         let ctx = try makeTestContext()
-        let trainer = ctx.makeTrainer()
-        let bench = ctx.makeExercise(name: "Bench", trainer: trainer)
-        let trainee = ctx.makeTrainee(trainer: trainer)
+        let trainer = ctx.makeTrainer(name: "Trainer")
+        let bench = ctx.makeExercise(
+            name: "Bench",
+            trainer: trainer
+        )
+        let trainee = ctx.makeTrainee(
+            name: "Trainee",
+            trainer: trainer
+        )
 
-        let template = ctx.makeTemplate(name: "Push Day", for: trainer)
-        let group = ctx.makeGroup(in: template, order: 0)
+        let template = ctx.makeTemplate(
+            name: "Push Day",
+            for: trainer
+        )
+        let group = ctx.makeGroup(
+            in: template,
+            order: 0,
+            isSuperset: false
+        )
         let templateSet = ctx.makeSet(
             in: group,
             exercise: bench,
             order: 0,
             weight: 135,
-            reps: 10
+            reps: 10,
+            isCompleted: false,
+            completedAt: nil
         )
 
         let workout = ctx.instantiateTemplate(template, for: trainee)
@@ -127,9 +189,15 @@ import SwiftData
 
     func testClonedWorkoutLinkedViaJoinTable() throws {
         let ctx = try makeTestContext()
-        let trainer = ctx.makeTrainer()
-        let trainee = ctx.makeTrainee(trainer: trainer)
-        let template = ctx.makeTemplate(name: "Push Day", for: trainer)
+        let trainer = ctx.makeTrainer(name: "Trainer")
+        let trainee = ctx.makeTrainee(
+            name: "Trainee",
+            trainer: trainer
+        )
+        let template = ctx.makeTemplate(
+            name: "Push Day",
+            for: trainer
+        )
 
         let workout = ctx.instantiateTemplate(template, for: trainee)
 
@@ -138,21 +206,39 @@ import SwiftData
 
     func testModifyTemplateAfterCloneDoesNotAffectClone() throws {
         let ctx = try makeTestContext()
-        let trainer = ctx.makeTrainer()
-        let bench = ctx.makeExercise(name: "Bench", trainer: trainer)
-        let trainee = ctx.makeTrainee(trainer: trainer)
+        let trainer = ctx.makeTrainer(name: "Trainer")
+        let bench = ctx.makeExercise(
+            name: "Bench",
+            trainer: trainer
+        )
+        let trainee = ctx.makeTrainee(
+            name: "Trainee",
+            trainer: trainer
+        )
 
-        let template = ctx.makeTemplate(name: "Push Day", for: trainer)
-        let group = ctx.makeGroup(in: template, order: 0)
+        let template = ctx.makeTemplate(
+            name: "Push Day",
+            for: trainer
+        )
+        let group = ctx.makeGroup(
+            in: template,
+            order: 0,
+            isSuperset: false
+        )
         ctx.makeSet(
             in: group,
             exercise: bench,
             order: 0,
             weight: 135,
-            reps: 10
+            reps: 10,
+            isCompleted: false,
+            completedAt: nil
         )
 
-        let workout = ctx.instantiateTemplate(template, for: trainee)
+        let workout = ctx.instantiateTemplate(
+            template,
+            for: trainee
+        )
 
         // Modify template after clone
         ctx.makeSet(
@@ -160,7 +246,9 @@ import SwiftData
             exercise: bench,
             order: 1,
             weight: 185,
-            reps: 5
+            reps: 5,
+            isCompleted: false,
+            completedAt: nil
         )
 
         // Clone should be unchanged
@@ -171,18 +259,33 @@ import SwiftData
 
     func testDeleteTemplateDoesNotAffectInstantiatedWorkout() throws {
         let ctx = try makeTestContext()
-        let trainer = ctx.makeTrainer()
-        let bench = ctx.makeExercise(name: "Bench", trainer: trainer)
-        let trainee = ctx.makeTrainee(trainer: trainer)
+        let trainer = ctx.makeTrainer(name: "Trainer")
+        let bench = ctx.makeExercise(
+            name: "Bench",
+            trainer: trainer
+        )
+        let trainee = ctx.makeTrainee(
+            name: "Trainee",
+            trainer: trainer
+        )
 
-        let template = ctx.makeTemplate(name: "Push Day", for: trainer)
-        let group = ctx.makeGroup(in: template, order: 0)
+        let template = ctx.makeTemplate(
+            name: "Push Day",
+            for: trainer
+        )
+        let group = ctx.makeGroup(
+            in: template,
+            order: 0,
+            isSuperset: false
+        )
         ctx.makeSet(
             in: group,
             exercise: bench,
             order: 0,
             weight: 135,
-            reps: 10
+            reps: 10,
+            isCompleted: false,
+            completedAt: nil
         )
 
         let workout = ctx.instantiateTemplate(template, for: trainee)
@@ -198,19 +301,37 @@ import SwiftData
 
     func testMultipleInstantiationsAreIndependent() throws {
         let ctx = try makeTestContext()
-        let trainer = ctx.makeTrainer()
-        let bench = ctx.makeExercise(name: "Bench", trainer: trainer)
-        let trainee1 = ctx.makeTrainee(name: "Alex", trainer: trainer)
-        let trainee2 = ctx.makeTrainee(name: "Jamie", trainer: trainer)
+        let trainer = ctx.makeTrainer(name: "Trainer")
+        let bench = ctx.makeExercise(
+            name: "Bench",
+            trainer: trainer
+        )
+        let trainee1 = ctx.makeTrainee(
+            name: "Alex",
+            trainer: trainer
+        )
+        let trainee2 = ctx.makeTrainee(
+            name: "Jamie",
+            trainer: trainer
+        )
 
-        let template = ctx.makeTemplate(name: "Push Day", for: trainer)
-        let group = ctx.makeGroup(in: template, order: 0)
+        let template = ctx.makeTemplate(
+            name: "Push Day",
+            for: trainer
+        )
+        let group = ctx.makeGroup(
+            in: template,
+            order: 0,
+            isSuperset: false
+        )
         ctx.makeSet(
             in: group,
             exercise: bench,
             order: 0,
             weight: 135,
-            reps: 10
+            reps: 10,
+            isCompleted: false,
+            completedAt: nil
         )
 
         let workout1 = ctx.instantiateTemplate(template, for: trainee1)

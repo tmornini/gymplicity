@@ -21,10 +21,14 @@ struct TemplateEditorView: View {
                     }
                     Spacer()
                     Button("Rename") {
-                        nameText = template
+                        if let name = template
                             .templateName(
                                 in: modelContext
-                            ) ?? ""
+                            ) {
+                            nameText = name
+                        } else {
+                            nameText = ""
+                        }
                         editingName = true
                     }
                     .font(GymFont.label)

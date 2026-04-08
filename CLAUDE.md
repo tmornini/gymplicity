@@ -22,9 +22,8 @@ build/device YOUR_TEAM_ID    # pass Apple Team ID as argument
 
 ## Architecture
 
-- **Entities hold only their own attributes — no foreign keys**
-- All relationships live in join tables storing UUID pairs
-- See PLAN.md for vision and screen architecture
+- See CHURCH-OF-CODE.md and follow the strictures
+- See VISION.md for vision and screen architecture
 - See SCHEMA.md for full data model documentation
 
 ### Entities (5)

@@ -858,32 +858,30 @@ import SwiftData
 
     // MARK: - MergeResult
 
-    func testEmptyPayloadSummary() throws {
-        let ctx = try makeTestContext()
-        let senderId = UUID()
-
-        let payload = makePayload(
-            senderIdentityId: senderId,
-            identities: [],
-            exercises: [],
-            workouts: [],
-            workoutGroups: [],
-            sets: [],
-            workoutTemplates: [],
-            workoutNotes: [],
-            trainerTrainees: [],
-            trainerExercises: [],
-            identityWorkouts: [],
-            workoutGroupJoins: [],
-            groupSetJoins: [],
-            exerciseSetJoins: [],
-            templateInstanceJoins: [],
-            identityAliases: [],
-            setCompletions: [],
-            workoutCompletions: [],
-            deviceSyncEvents: []
+    func testEmptyResultSummary() {
+        let result = MergeResult(
+            identitiesInserted: 0,
+            identitiesUpdated: 0,
+            exercisesInserted: 0,
+            exercisesUpdated: 0,
+            workoutsInserted: 0,
+            workoutsUpdated: 0,
+            workoutGroupsInserted: 0,
+            workoutGroupsUpdated: 0,
+            setsInserted: 0,
+            setsUpdated: 0,
+            trainerTraineesInserted: 0,
+            trainerExercisesInserted: 0,
+            identityWorkoutsInserted: 0,
+            workoutGroupJoinsInserted: 0,
+            groupSetJoinsInserted: 0,
+            exerciseSetJoinsInserted: 0,
+            templateInstanceJoinsInserted: 0,
+            identityAliasesInserted: 0,
+            setCompletionsInserted: 0,
+            workoutCompletionsInserted: 0,
+            deviceSyncEventsInserted: 0
         )
-        let result = SyncEngine.merge(payload, into: ctx)
 
         XCTAssertEqual(result.summary, "Already up to date")
         XCTAssertEqual(result.totalInserted, 0)

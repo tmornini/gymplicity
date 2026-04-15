@@ -128,7 +128,12 @@ struct SyncEngine {
             .first(where: {
                 $0.id == payload.senderIdentityId
             })
-        else { return result }
+        else {
+            fatalError(
+                "sender \(payload.senderIdentityId)"
+                + " missing from payload identities"
+            )
+        }
         let senderIsTrainer = sender.isTrainer
 
         // 1. Identities — sender can only update their own identity

@@ -1,6 +1,9 @@
 import Foundation
 import SwiftData
 
+private let unseededWeight: Double = 0
+private let unseededReps: Int = 0
+
 // MARK: - Domain Operations
 
 extension ModelContext {
@@ -13,11 +16,15 @@ extension ModelContext {
         exercise: ExerciseEntity,
         seedingFrom owner: IdentityEntity?
     ) -> SetEntity {
-        var weight: Double = 0
-        var reps: Int = 0
-        if let owner, let lastSet = owner.lastSet(for: exercise, in: self) {
+        let weight: Double
+        let reps: Int
+        if let owner,
+           let lastSet = owner.lastSet(for: exercise, in: self) {
             weight = lastSet.weight
             reps = lastSet.reps
+        } else {
+            weight = unseededWeight
+            reps = unseededReps
         }
         let set = SetEntity(
             order: group.nextSetOrder(in: self),

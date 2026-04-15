@@ -67,23 +67,15 @@ struct SetEntryView: View {
     }
 
     private var isInputValid: Bool {
-        (weightText.isEmpty
-            || Double(weightText) != nil)
-            && (repsText.isEmpty
-                || Int(repsText) != nil)
+        Double(weightText) != nil && Int(repsText) != nil
     }
 
     private func save() {
-        let parsedWeight = Double(weightText)
-        let parsedReps = Int(repsText)
-        guard
-            weightText.isEmpty
-                || parsedWeight != nil,
-            repsText.isEmpty
-                || parsedReps != nil
+        guard let parsedWeight = Double(weightText),
+              let parsedReps = Int(repsText)
         else { return }
-        set.weight = parsedWeight ?? 0
-        set.reps = parsedReps ?? 0
+        set.weight = parsedWeight
+        set.reps = parsedReps
         modelContext.insert(
             SetCompletions(
                 setId: set.id,

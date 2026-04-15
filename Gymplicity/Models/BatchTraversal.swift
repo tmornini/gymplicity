@@ -174,7 +174,7 @@ struct BatchTraversal {
 
         // 1. WorkoutGroups joins
         let wIds = workoutIds
-        let wgJoins = context.fetchOrEmpty(
+        let wgJoins = context.fetchOrDie(
             FetchDescriptor<WorkoutGroups>(
                 predicate: #Predicate {
                     wIds.contains($0.workoutId)
@@ -184,7 +184,7 @@ struct BatchTraversal {
 
         // 2. Group entities
         let groupIds = wgJoins.map(\.groupId)
-        let groups = context.fetchOrEmpty(
+        let groups = context.fetchOrDie(
             FetchDescriptor<WorkoutGroupEntity>(
                 predicate: #Predicate {
                     groupIds.contains($0.id)
@@ -197,7 +197,7 @@ struct BatchTraversal {
         )
 
         // 3. GroupSets joins
-        let gsJoins = context.fetchOrEmpty(
+        let gsJoins = context.fetchOrDie(
             FetchDescriptor<GroupSets>(
                 predicate: #Predicate {
                     groupIds.contains($0.groupId)
@@ -207,7 +207,7 @@ struct BatchTraversal {
 
         // 4. Set entities
         let setIds = gsJoins.map(\.setId)
-        let sets = context.fetchOrEmpty(
+        let sets = context.fetchOrDie(
             FetchDescriptor<SetEntity>(
                 predicate: #Predicate {
                     setIds.contains($0.id)
@@ -220,7 +220,7 @@ struct BatchTraversal {
         )
 
         // 5. ExerciseSets joins
-        let esJoins = context.fetchOrEmpty(
+        let esJoins = context.fetchOrDie(
             FetchDescriptor<ExerciseSets>(
                 predicate: #Predicate {
                     setIds.contains($0.setId)
@@ -230,7 +230,7 @@ struct BatchTraversal {
 
         // 6. Exercise entities
         let exerciseIds = esJoins.map(\.exerciseId)
-        let exercises = context.fetchOrEmpty(
+        let exercises = context.fetchOrDie(
             FetchDescriptor<ExerciseEntity>(
                 predicate: #Predicate {
                     exerciseIds.contains($0.id)
@@ -268,7 +268,7 @@ struct BatchTraversal {
         }
 
         // 7. Set completions
-        let setCompletions = context.fetchOrEmpty(
+        let setCompletions = context.fetchOrDie(
             FetchDescriptor<SetCompletions>(
                 predicate: #Predicate {
                     setIds.contains($0.setId)
@@ -281,7 +281,7 @@ struct BatchTraversal {
 
         // 8. Workout completions
         let workoutCompletions =
-            context.fetchOrEmpty(
+            context.fetchOrDie(
                 FetchDescriptor<
                     WorkoutCompletions
                 >(
@@ -315,7 +315,7 @@ struct BatchTraversal {
         guard !identityIds.isEmpty else { return [:] }
 
         let ids = identityIds
-        let joins = context.fetchOrEmpty(
+        let joins = context.fetchOrDie(
             FetchDescriptor<IdentityWorkouts>(
                 predicate: #Predicate {
                     ids.contains($0.identityId)
@@ -324,7 +324,7 @@ struct BatchTraversal {
         )
 
         let workoutIds = joins.map(\.workoutId)
-        let workouts = context.fetchOrEmpty(
+        let workouts = context.fetchOrDie(
             FetchDescriptor<WorkoutEntity>(
                 predicate: #Predicate {
                     workoutIds.contains($0.id)
@@ -360,7 +360,7 @@ struct BatchTraversal {
         guard !workoutIds.isEmpty else { return [] }
 
         let wIds = workoutIds
-        let wgJoins = context.fetchOrEmpty(
+        let wgJoins = context.fetchOrDie(
             FetchDescriptor<WorkoutGroups>(
                 predicate: #Predicate {
                     wIds.contains($0.workoutId)
@@ -370,7 +370,7 @@ struct BatchTraversal {
         let groupIds = wgJoins.map(\.groupId)
         guard !groupIds.isEmpty else { return [] }
 
-        let gsJoins = context.fetchOrEmpty(
+        let gsJoins = context.fetchOrDie(
             FetchDescriptor<GroupSets>(
                 predicate: #Predicate {
                     groupIds.contains($0.groupId)
@@ -380,7 +380,7 @@ struct BatchTraversal {
         let setIds = gsJoins.map(\.setId)
         guard !setIds.isEmpty else { return [] }
 
-        let esJoins = context.fetchOrEmpty(
+        let esJoins = context.fetchOrDie(
             FetchDescriptor<ExerciseSets>(
                 predicate: #Predicate {
                     setIds.contains($0.setId)

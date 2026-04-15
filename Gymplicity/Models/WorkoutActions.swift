@@ -123,12 +123,12 @@ extension ModelContext {
         }
         // Delete join rows referencing this identity
         let id = identity.id
-        fetchOrEmpty(FetchDescriptor<TrainerTrainees>(
+        fetchOrDie(FetchDescriptor<TrainerTrainees>(
             predicate: #Predicate {
                 $0.trainerId == id || $0.traineeId == id
             }
         )).forEach { delete($0) }
-        fetchOrEmpty(FetchDescriptor<IdentityWorkouts>(
+        fetchOrDie(FetchDescriptor<IdentityWorkouts>(
             predicate: #Predicate { $0.identityId == id }
         )).forEach { delete($0) }
         delete(identity)
@@ -137,10 +137,10 @@ extension ModelContext {
     @MainActor func deleteExercise(_ exercise: ExerciseEntity) {
         let id = exercise.id
         // Nullify: remove ExerciseSets join rows but leave sets
-        fetchOrEmpty(FetchDescriptor<ExerciseSets>(
+        fetchOrDie(FetchDescriptor<ExerciseSets>(
             predicate: #Predicate { $0.exerciseId == id }
         )).forEach { delete($0) }
-        fetchOrEmpty(FetchDescriptor<TrainerExercises>(
+        fetchOrDie(FetchDescriptor<TrainerExercises>(
             predicate: #Predicate { $0.exerciseId == id }
         )).forEach { delete($0) }
         delete(exercise)
@@ -151,18 +151,18 @@ extension ModelContext {
             deleteGroup(group)
         }
         let id = workout.id
-        fetchOrEmpty(FetchDescriptor<IdentityWorkouts>(
+        fetchOrDie(FetchDescriptor<IdentityWorkouts>(
             predicate: #Predicate { $0.workoutId == id }
         )).forEach { delete($0) }
-        fetchOrEmpty(FetchDescriptor<WorkoutGroups>(
+        fetchOrDie(FetchDescriptor<WorkoutGroups>(
             predicate: #Predicate { $0.workoutId == id }
         )).forEach { delete($0) }
-        fetchOrEmpty(FetchDescriptor<TemplateInstances>(
+        fetchOrDie(FetchDescriptor<TemplateInstances>(
             predicate: #Predicate {
                 $0.templateId == id || $0.workoutId == id
             }
         )).forEach { delete($0) }
-        fetchOrEmpty(FetchDescriptor<WorkoutNotes>(
+        fetchOrDie(FetchDescriptor<WorkoutNotes>(
             predicate: #Predicate { $0.workoutId == id }
         )).forEach { delete($0) }
         delete(workout)
@@ -173,10 +173,10 @@ extension ModelContext {
             deleteSet(set)
         }
         let id = group.id
-        fetchOrEmpty(FetchDescriptor<WorkoutGroups>(
+        fetchOrDie(FetchDescriptor<WorkoutGroups>(
             predicate: #Predicate { $0.groupId == id }
         )).forEach { delete($0) }
-        fetchOrEmpty(FetchDescriptor<GroupSets>(
+        fetchOrDie(FetchDescriptor<GroupSets>(
             predicate: #Predicate { $0.groupId == id }
         )).forEach { delete($0) }
         delete(group)
@@ -184,10 +184,10 @@ extension ModelContext {
 
     @MainActor func deleteSet(_ set: SetEntity) {
         let id = set.id
-        fetchOrEmpty(FetchDescriptor<GroupSets>(
+        fetchOrDie(FetchDescriptor<GroupSets>(
             predicate: #Predicate { $0.setId == id }
         )).forEach { delete($0) }
-        fetchOrEmpty(FetchDescriptor<ExerciseSets>(
+        fetchOrDie(FetchDescriptor<ExerciseSets>(
             predicate: #Predicate { $0.setId == id }
         )).forEach { delete($0) }
         delete(set)

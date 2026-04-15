@@ -530,7 +530,7 @@ struct SyncView: View {
         guard let remoteId = peer.identityId
         else { return false }
         let localId = identity.id
-        let pairings = modelContext.fetchOrEmpty(
+        let pairings = modelContext.fetchOrDie(
             FetchDescriptor<PairedDevices>(
                 predicate: #Predicate {
                     $0.localIdentityId == localId

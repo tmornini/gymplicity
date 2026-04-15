@@ -2,7 +2,7 @@ import Foundation
 import SwiftData
 
 extension ModelContext {
-    @MainActor func fetchOrEmpty<T: PersistentModel>(
+    @MainActor func fetchOrDie<T: PersistentModel>(
         _ descriptor: FetchDescriptor<T>,
         file: String = #file,
         line: Int = #line
@@ -23,7 +23,7 @@ extension ModelContext {
         file: String = #file,
         line: Int = #line
     ) -> T? {
-        fetchOrEmpty(
+        fetchOrDie(
             descriptor,
             file: file,
             line: line

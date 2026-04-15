@@ -442,7 +442,7 @@ struct SetRow: View {
         let id = set.id
         if set.isCompleted(in: modelContext) {
             let completions =
-                modelContext.fetchOrEmpty(
+                modelContext.fetchOrDie(
                     FetchDescriptor<
                         SetCompletions
                     >(

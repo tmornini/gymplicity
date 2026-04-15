@@ -380,7 +380,7 @@ struct SyncPayloadBuilder {
         // 2. TrainerTrainees join
         let trainerId = trainer.id
         let traineeId = trainee.id
-        let ttJoins = context.fetchOrEmpty(
+        let ttJoins = context.fetchOrDie(
             FetchDescriptor<TrainerTrainees>(
                 predicate: #Predicate {
                     $0.trainerId == trainerId
@@ -390,7 +390,7 @@ struct SyncPayloadBuilder {
         )
 
         // 3. All exercises via TrainerExercises for the trainer
-        let teJoins = context.fetchOrEmpty(
+        let teJoins = context.fetchOrDie(
             FetchDescriptor<TrainerExercises>(
                 predicate: #Predicate {
                     $0.trainerId == trainerId
@@ -398,7 +398,7 @@ struct SyncPayloadBuilder {
             )
         )
         let exerciseIds = teJoins.map(\.exerciseId)
-        let exercises = context.fetchOrEmpty(
+        let exercises = context.fetchOrDie(
             FetchDescriptor<ExerciseEntity>(
                 predicate: #Predicate {
                     exerciseIds.contains($0.id)
@@ -416,7 +416,7 @@ struct SyncPayloadBuilder {
 
         // 5. Trainee's workouts
         //    (all aliases -- completed, active, templates)
-        let iwJoinsTrainee = context.fetchOrEmpty(
+        let iwJoinsTrainee = context.fetchOrDie(
             FetchDescriptor<IdentityWorkouts>(
                 predicate: #Predicate {
                     traineeAliasIds.contains($0.identityId)
@@ -425,7 +425,7 @@ struct SyncPayloadBuilder {
         )
 
         // 6. Trainer's templates
-        let iwJoinsTrainer = context.fetchOrEmpty(
+        let iwJoinsTrainer = context.fetchOrDie(
             FetchDescriptor<IdentityWorkouts>(
                 predicate: #Predicate {
                     $0.identityId == trainerId
@@ -439,7 +439,7 @@ struct SyncPayloadBuilder {
 
         // Fetch all trainer workouts to filter templates
         let trainerWIds = Array(trainerWorkoutIds)
-        let trainerWorkouts = context.fetchOrEmpty(
+        let trainerWorkouts = context.fetchOrDie(
             FetchDescriptor<WorkoutEntity>(
                 predicate: #Predicate {
                     trainerWIds.contains($0.id)
@@ -451,7 +451,7 @@ struct SyncPayloadBuilder {
 
         // Fetch all workouts
         let allWIds = Array(allWorkoutIds)
-        let workouts = context.fetchOrEmpty(
+        let workouts = context.fetchOrDie(
             FetchDescriptor<WorkoutEntity>(
                 predicate: #Predicate {
                     allWIds.contains($0.id)
@@ -468,7 +468,7 @@ struct SyncPayloadBuilder {
         )
 
         // 7. WorkoutTemplates for template workouts
-        let wtRows = context.fetchOrEmpty(
+        let wtRows = context.fetchOrDie(
             FetchDescriptor<WorkoutTemplate>(
                 predicate: #Predicate {
                     allWIds.contains(
@@ -479,7 +479,7 @@ struct SyncPayloadBuilder {
         )
 
         // 7b. WorkoutNotes for workouts in scope
-        let wnRows = context.fetchOrEmpty(
+        let wnRows = context.fetchOrDie(
             FetchDescriptor<WorkoutNotes>(
                 predicate: #Predicate {
                     allWIds.contains(
@@ -491,7 +491,7 @@ struct SyncPayloadBuilder {
 
         // 8. TemplateInstances for workouts in scope
         let allWIdsForTI = Array(allWorkoutIds)
-        let tiJoins = context.fetchOrEmpty(
+        let tiJoins = context.fetchOrDie(
             FetchDescriptor<TemplateInstances>(
                 predicate: #Predicate {
                     allWIdsForTI.contains($0.workoutId)
@@ -504,7 +504,7 @@ struct SyncPayloadBuilder {
 
         // 9. Batch fetch groups, sets, exercise links
         //    O(5) queries instead of O(w*g*s)
-        let wgJoins = context.fetchOrEmpty(
+        let wgJoins = context.fetchOrDie(
             FetchDescriptor<WorkoutGroups>(
                 predicate: #Predicate {
                     allWIds.contains($0.workoutId)
@@ -512,7 +512,7 @@ struct SyncPayloadBuilder {
             )
         )
         let groupIds = wgJoins.map(\.groupId)
-        let allGroups = context.fetchOrEmpty(
+        let allGroups = context.fetchOrDie(
             FetchDescriptor<WorkoutGroupEntity>(
                 predicate: #Predicate {
                     groupIds.contains($0.id)
@@ -520,7 +520,7 @@ struct SyncPayloadBuilder {
             )
         )
 
-        let gsJoins = context.fetchOrEmpty(
+        let gsJoins = context.fetchOrDie(
             FetchDescriptor<GroupSets>(
                 predicate: #Predicate {
                     groupIds.contains($0.groupId)
@@ -528,7 +528,7 @@ struct SyncPayloadBuilder {
             )
         )
         let setIds = gsJoins.map(\.setId)
-        let allSets = context.fetchOrEmpty(
+        let allSets = context.fetchOrDie(
             FetchDescriptor<SetEntity>(
                 predicate: #Predicate {
                     setIds.contains($0.id)
@@ -536,7 +536,7 @@ struct SyncPayloadBuilder {
             )
         )
 
-        let esJoins = context.fetchOrEmpty(
+        let esJoins = context.fetchOrDie(
             FetchDescriptor<ExerciseSets>(
                 predicate: #Predicate {
                     setIds.contains($0.setId)
@@ -546,7 +546,7 @@ struct SyncPayloadBuilder {
 
         // 10. IdentityAliases for identities in scope
         let allIdentityIds = Array(traineeAliasGroup.union([trainerId]))
-        let aliasRows = context.fetchOrEmpty(
+        let aliasRows = context.fetchOrDie(
             FetchDescriptor<IdentityAliases>(
                 predicate: #Predicate {
                     allIdentityIds.contains(
@@ -560,7 +560,7 @@ struct SyncPayloadBuilder {
         )
 
         // 11. SetCompletions for sets in scope
-        let scRows = context.fetchOrEmpty(
+        let scRows = context.fetchOrDie(
             FetchDescriptor<SetCompletions>(
                 predicate: #Predicate {
                     setIds.contains($0.setId)
@@ -570,7 +570,7 @@ struct SyncPayloadBuilder {
 
         // 12. WorkoutCompletions for workouts
         //     in scope
-        let wcRows = context.fetchOrEmpty(
+        let wcRows = context.fetchOrDie(
             FetchDescriptor<WorkoutCompletions>(
                 predicate: #Predicate {
                     allWIds.contains(
@@ -582,7 +582,7 @@ struct SyncPayloadBuilder {
 
         // 13. DeviceSyncEvents for identities
         //     in scope
-        let dseRows = context.fetchOrEmpty(
+        let dseRows = context.fetchOrDie(
             FetchDescriptor<DeviceSyncEvents>(
                 predicate: #Predicate {
                     allIdentityIds.contains(

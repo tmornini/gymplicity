@@ -8,7 +8,7 @@ extension IdentityEntity {
         in context: ModelContext
     ) -> [IdentityEntity] {
         let id = self.id
-        let joins = context.fetchOrEmpty(
+        let joins = context.fetchOrDie(
             FetchDescriptor<TrainerTrainees>(
                 predicate: #Predicate {
                     $0.trainerId == id
@@ -16,7 +16,7 @@ extension IdentityEntity {
             )
         )
         let ids = joins.map(\.traineeId)
-        return context.fetchOrEmpty(
+        return context.fetchOrDie(
             FetchDescriptor<IdentityEntity>(
                 predicate: #Predicate {
                     ids.contains($0.id)
@@ -50,7 +50,7 @@ extension IdentityEntity {
         in context: ModelContext
     ) -> [ExerciseEntity] {
         let id = self.id
-        let joins = context.fetchOrEmpty(
+        let joins = context.fetchOrDie(
             FetchDescriptor<TrainerExercises>(
                 predicate: #Predicate {
                     $0.trainerId == id
@@ -58,7 +58,7 @@ extension IdentityEntity {
             )
         )
         let ids = joins.map(\.exerciseId)
-        return context.fetchOrEmpty(
+        return context.fetchOrDie(
             FetchDescriptor<ExerciseEntity>(
                 predicate: #Predicate {
                     ids.contains($0.id)
@@ -92,7 +92,7 @@ extension IdentityEntity {
                 in: context
             )
         )
-        let joins = context.fetchOrEmpty(
+        let joins = context.fetchOrDie(
             FetchDescriptor<IdentityWorkouts>(
                 predicate: #Predicate {
                     aliasIds.contains($0.identityId)
@@ -100,7 +100,7 @@ extension IdentityEntity {
             )
         )
         let ids = joins.map(\.workoutId)
-        return context.fetchOrEmpty(
+        return context.fetchOrDie(
             FetchDescriptor<WorkoutEntity>(
                 predicate: #Predicate {
                     ids.contains($0.id)
@@ -292,7 +292,7 @@ extension WorkoutEntity {
         in context: ModelContext
     ) -> [WorkoutGroupEntity] {
         let id = self.id
-        let joins = context.fetchOrEmpty(
+        let joins = context.fetchOrDie(
             FetchDescriptor<WorkoutGroups>(
                 predicate: #Predicate {
                     $0.workoutId == id
@@ -300,7 +300,7 @@ extension WorkoutEntity {
             )
         )
         let ids = joins.map(\.groupId)
-        return context.fetchOrEmpty(
+        return context.fetchOrDie(
             FetchDescriptor<WorkoutGroupEntity>(
                 predicate: #Predicate {
                     ids.contains($0.id)
@@ -513,7 +513,7 @@ extension WorkoutGroupEntity {
         in context: ModelContext
     ) -> [SetEntity] {
         let id = self.id
-        let joins = context.fetchOrEmpty(
+        let joins = context.fetchOrDie(
             FetchDescriptor<GroupSets>(
                 predicate: #Predicate {
                     $0.groupId == id
@@ -521,7 +521,7 @@ extension WorkoutGroupEntity {
             )
         )
         let ids = joins.map(\.setId)
-        return context.fetchOrEmpty(
+        return context.fetchOrDie(
             FetchDescriptor<SetEntity>(
                 predicate: #Predicate {
                     ids.contains($0.id)

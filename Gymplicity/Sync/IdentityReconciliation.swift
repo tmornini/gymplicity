@@ -43,7 +43,7 @@ struct IdentityReconciliation {
         in context: ModelContext
     ) -> Set<UUID> {
         // Fetch ALL alias rows in one query (table is tiny)
-        let allRows = context.fetchOrEmpty(
+        let allRows = context.fetchOrDie(
             FetchDescriptor<IdentityAliases>()
         )
 

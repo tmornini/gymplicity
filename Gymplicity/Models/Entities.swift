@@ -61,6 +61,10 @@ final class WorkoutGroupEntity {
     var isSuperset: Bool
 
     init(order: Int, isSuperset: Bool) {
+        precondition(
+            order >= 0,
+            "WorkoutGroupEntity order must be non-negative"
+        )
         self.id = UUID()
         self.order = order
         self.isSuperset = isSuperset
@@ -75,6 +79,18 @@ final class SetEntity {
     var reps: Int
 
     init(order: Int, weight: Double, reps: Int) {
+        precondition(
+            order >= 0,
+            "SetEntity order must be non-negative"
+        )
+        precondition(
+            weight >= 0,
+            "SetEntity weight must be non-negative"
+        )
+        precondition(
+            reps >= 0,
+            "SetEntity reps must be non-negative"
+        )
         self.id = UUID()
         self.order = order
         self.weight = weight

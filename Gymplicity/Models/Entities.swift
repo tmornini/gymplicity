@@ -26,15 +26,10 @@ final class IdentityEntity {
 final class ExerciseEntity {
     var id: UUID
     var name: String
-    var catalogId: String?
 
-    init(
-        name: String,
-        catalogId: String?
-    ) {
+    init(name: String) {
         self.id = UUID()
         self.name = name
-        self.catalogId = catalogId
     }
 }
 

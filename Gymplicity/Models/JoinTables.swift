@@ -127,6 +127,17 @@ final class WorkoutNotes {
     }
 }
 
+@Model
+final class CatalogExercises {
+    var exerciseId: UUID
+    var catalogId: String
+
+    init(exerciseId: UUID, catalogId: String) {
+        self.exerciseId = exerciseId
+        self.catalogId = catalogId
+    }
+}
+
 // MARK: - Event Tables
 
 @Model

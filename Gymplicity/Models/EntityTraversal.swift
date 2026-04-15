@@ -213,10 +213,7 @@ extension IdentityEntity {
         }) {
             return existing
         }
-        let exercise = ExerciseEntity(
-            name: name,
-            catalogId: nil
-        )
+        let exercise = ExerciseEntity(name: name)
         context.insert(exercise)
         let join = TrainerExercises(
             trainerId: self.id,
@@ -224,6 +221,24 @@ extension IdentityEntity {
         )
         context.insert(join)
         return exercise
+    }
+}
+
+// MARK: - ExerciseEntity Traversal
+
+extension ExerciseEntity {
+    @MainActor func catalogId(
+        in context: ModelContext
+    ) -> String? {
+        let id = self.id
+        let row = context.fetchFirst(
+            FetchDescriptor<CatalogExercises>(
+                predicate: #Predicate {
+                    $0.exerciseId == id
+                }
+            )
+        )
+        return row?.catalogId
     }
 }
 

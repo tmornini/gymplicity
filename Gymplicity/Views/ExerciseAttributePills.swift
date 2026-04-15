@@ -1,25 +1,29 @@
 import SwiftUI
+import SwiftData
 
 struct ExerciseAttributePills: View {
     @Environment(\.exerciseSearchEngine) private var searchEngine
+    @Environment(\.modelContext) private var modelContext
     let catalogExercise: CatalogExercise?
-    let entityCatalogId: String?
+    let exerciseEntity: ExerciseEntity?
 
     init(exercise: CatalogExercise) {
         self.catalogExercise = exercise
-        self.entityCatalogId = nil
+        self.exerciseEntity = nil
     }
 
     init(exercise: ExerciseEntity?) {
         self.catalogExercise = nil
-        self.entityCatalogId = exercise?.catalogId
+        self.exerciseEntity = exercise
     }
 
     private var resolvedExercise: CatalogExercise? {
         if let catalogExercise { return catalogExercise }
-        guard let entityCatalogId else { return nil }
+        guard let entity = exerciseEntity,
+              let catalogId = entity.catalogId(in: modelContext)
+        else { return nil }
         return searchEngine.catalogExercise(
-            forCatalogId: entityCatalogId
+            forCatalogId: catalogId
         )
     }
 

@@ -189,8 +189,13 @@ struct AddExerciseView: View {
             named: catalogExercise.name,
             in: modelContext
         )
-        if exercise.catalogId == nil {
-            exercise.catalogId = catalogExercise.id
+        if exercise.catalogId(in: modelContext) == nil {
+            modelContext.insert(
+                CatalogExercises(
+                    exerciseId: exercise.id,
+                    catalogId: catalogExercise.id
+                )
+            )
         }
         createSet(for: exercise)
         SyncTrigger.structureChanged()

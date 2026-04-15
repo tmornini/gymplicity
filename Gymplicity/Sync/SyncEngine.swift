@@ -25,6 +25,7 @@ struct MergeResult: Sendable {
     var setCompletionsInserted: Int
     var workoutCompletionsInserted: Int
     var deviceSyncEventsInserted: Int
+    var catalogExercisesInserted: Int
 
     var totalInserted: Int {
         identitiesInserted
@@ -43,6 +44,7 @@ struct MergeResult: Sendable {
             + setCompletionsInserted
             + workoutCompletionsInserted
             + deviceSyncEventsInserted
+            + catalogExercisesInserted
     }
 
     var totalUpdated: Int {
@@ -120,7 +122,8 @@ struct SyncEngine {
             identityAliasesInserted: 0,
             setCompletionsInserted: 0,
             workoutCompletionsInserted: 0,
-            deviceSyncEventsInserted: 0
+            deviceSyncEventsInserted: 0,
+            catalogExercisesInserted: 0
         )
 
         // Determine sender role from payload identities
@@ -176,14 +179,10 @@ struct SyncEngine {
             if let existing {
                 if senderIsTrainer {
                     existing.name = dto.name
-                    existing.catalogId = dto.catalogId
                     result.exercisesUpdated += 1
                 }
             } else {
-                let entity = ExerciseEntity(
-                    name: dto.name,
-                    catalogId: dto.catalogId
-                )
+                let entity = ExerciseEntity(name: dto.name)
                 entity.id = dto.id
                 context.insert(entity)
                 result.exercisesInserted += 1
@@ -268,6 +267,30 @@ struct SyncEngine {
                     )
                 )
                 result.workoutsInserted += 1
+            }
+        }
+
+        // 4c. CatalogExercises — trainer has authority
+        //     PUT semantics: insert once, never mutate
+        if senderIsTrainer {
+            for dto in payload.catalogExercises {
+                let eId = dto.exerciseId
+                let existing = context.fetchFirst(
+                    FetchDescriptor<CatalogExercises>(
+                        predicate: #Predicate {
+                            $0.exerciseId == eId
+                        }
+                    )
+                )
+                if existing == nil {
+                    context.insert(
+                        CatalogExercises(
+                            exerciseId: dto.exerciseId,
+                            catalogId: dto.catalogId
+                        )
+                    )
+                    result.catalogExercisesInserted += 1
+                }
             }
         }
 

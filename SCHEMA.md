@@ -24,13 +24,14 @@ On first launch the user picks their role.
 ### ExerciseEntity
 
 A named exercise in the trainer's catalog (e.g. "Bench Press"). Identity
-is UUID-based so renaming propagates everywhere.
+is UUID-based so renaming propagates everywhere. An exercise's link to
+the built-in catalog (if any) lives in the `CatalogExercises` attribute
+table &mdash; absence of a row means a user-created exercise.
 
 | Column | Type | Description |
 |--------|------|-------------|
 | id | UUID | Primary key |
 | name | String | Human-readable name |
-| catalogId | String? | Slug from built-in exercise catalog (nil for custom exercises) |
 
 ### WorkoutEntity
 
@@ -158,6 +159,17 @@ federated identity without destructive UUID rewriting.
 |--------|------|
 | identityId1 | UUID |
 | identityId2 | UUID |
+
+### CatalogExercises
+
+Links an exercise to its built-in catalog slug. Presence of a row means
+the exercise came from (or is linked to) the built-in catalog; absence
+means a user-created custom exercise.
+
+| Column | Type |
+|--------|------|
+| exerciseId | UUID |
+| catalogId | String |
 
 ### PairedDevices
 

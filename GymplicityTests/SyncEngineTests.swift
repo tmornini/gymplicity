@@ -25,6 +25,7 @@ import SwiftData
             sets: [],
             workoutTemplates: [],
             workoutNotes: [],
+            catalogExercises: [],
             trainerTrainees: [],
             trainerExercises: [],
             identityWorkouts: [],
@@ -69,6 +70,7 @@ import SwiftData
             sets: [],
             workoutTemplates: [],
             workoutNotes: [],
+            catalogExercises: [],
             trainerTrainees: [],
             trainerExercises: [],
             identityWorkouts: [],
@@ -113,6 +115,7 @@ import SwiftData
             sets: [],
             workoutTemplates: [],
             workoutNotes: [],
+            catalogExercises: [],
             trainerTrainees: [],
             trainerExercises: [],
             identityWorkouts: [],
@@ -153,8 +156,7 @@ import SwiftData
             exercises: [
                 ExerciseDTO(
                     id: bench.id,
-                    name: "Bench",
-                    catalogId: nil
+                    name: "Bench"
                 )
             ],
             workouts: [],
@@ -162,6 +164,7 @@ import SwiftData
             sets: [],
             workoutTemplates: [],
             workoutNotes: [],
+            catalogExercises: [],
             trainerTrainees: [],
             trainerExercises: [],
             identityWorkouts: [],
@@ -201,8 +204,7 @@ import SwiftData
             exercises: [
                 ExerciseDTO(
                     id: bench.id,
-                    name: "Renamed",
-                    catalogId: nil
+                    name: "Renamed"
                 )
             ],
             workouts: [],
@@ -210,6 +212,7 @@ import SwiftData
             sets: [],
             workoutTemplates: [],
             workoutNotes: [],
+            catalogExercises: [],
             trainerTrainees: [],
             trainerExercises: [],
             identityWorkouts: [],
@@ -249,8 +252,7 @@ import SwiftData
             exercises: [
                 ExerciseDTO(
                     id: newId,
-                    name: "New Exercise",
-                    catalogId: nil
+                    name: "New Exercise"
                 )
             ],
             workouts: [],
@@ -258,6 +260,7 @@ import SwiftData
             sets: [],
             workoutTemplates: [],
             workoutNotes: [],
+            catalogExercises: [],
             trainerTrainees: [],
             trainerExercises: [],
             identityWorkouts: [],
@@ -321,6 +324,7 @@ import SwiftData
                     notes: "Great session"
                 )
             ],
+            catalogExercises: [],
             trainerTrainees: [],
             trainerExercises: [],
             identityWorkouts: [],
@@ -373,6 +377,7 @@ import SwiftData
                 )
             ],
             workoutNotes: [],
+            catalogExercises: [],
             trainerTrainees: [],
             trainerExercises: [],
             identityWorkouts: [],
@@ -426,6 +431,7 @@ import SwiftData
                 )
             ],
             workoutNotes: [],
+            catalogExercises: [],
             trainerTrainees: [],
             trainerExercises: [],
             identityWorkouts: [],
@@ -482,6 +488,7 @@ import SwiftData
                     notes: "New workout"
                 )
             ],
+            catalogExercises: [],
             trainerTrainees: [],
             trainerExercises: [],
             identityWorkouts: [],
@@ -551,6 +558,7 @@ import SwiftData
             sets: [],
             workoutTemplates: [],
             workoutNotes: [],
+            catalogExercises: [],
             trainerTrainees: [],
             trainerExercises: [],
             identityWorkouts: [],
@@ -609,6 +617,7 @@ import SwiftData
             sets: [],
             workoutTemplates: [],
             workoutNotes: [],
+            catalogExercises: [],
             trainerTrainees: [],
             trainerExercises: [],
             identityWorkouts: [],
@@ -685,6 +694,7 @@ import SwiftData
             ],
             workoutTemplates: [],
             workoutNotes: [],
+            catalogExercises: [],
             trainerTrainees: [],
             trainerExercises: [],
             identityWorkouts: [],
@@ -736,6 +746,7 @@ import SwiftData
             sets: [],
             workoutTemplates: [],
             workoutNotes: [],
+            catalogExercises: [],
             trainerTrainees: [],
             trainerExercises: [],
             identityWorkouts: [
@@ -782,6 +793,7 @@ import SwiftData
             sets: [],
             workoutTemplates: [],
             workoutNotes: [],
+            catalogExercises: [],
             trainerTrainees: [
                 TrainerTraineesDTO(
                     trainerId: trainer.id,
@@ -825,6 +837,7 @@ import SwiftData
             sets: [],
             workoutTemplates: [],
             workoutNotes: [],
+            catalogExercises: [],
             trainerTrainees: [],
             trainerExercises: [],
             identityWorkouts: [],
@@ -880,7 +893,8 @@ import SwiftData
             identityAliasesInserted: 0,
             setCompletionsInserted: 0,
             workoutCompletionsInserted: 0,
-            deviceSyncEventsInserted: 0
+            deviceSyncEventsInserted: 0,
+            catalogExercisesInserted: 0
         )
 
         XCTAssertEqual(result.summary, "Already up to date")
@@ -911,6 +925,7 @@ import SwiftData
             sets: [],
             workoutTemplates: [],
             workoutNotes: [],
+            catalogExercises: [],
             trainerTrainees: [],
             trainerExercises: [],
             identityWorkouts: [],
@@ -961,6 +976,7 @@ import SwiftData
             sets: [],
             workoutTemplates: [],
             workoutNotes: [],
+            catalogExercises: [],
             trainerTrainees: [],
             trainerExercises: [],
             identityWorkouts: [],
@@ -1008,6 +1024,7 @@ import SwiftData
             sets: [],
             workoutTemplates: [],
             workoutNotes: [],
+            catalogExercises: [],
             trainerTrainees: [],
             trainerExercises: [],
             identityWorkouts: [],
@@ -1055,14 +1072,12 @@ import SwiftData
                 // update
                 ExerciseDTO(
                     id: bench.id,
-                    name: "Bench",
-                    catalogId: nil
+                    name: "Bench"
                 ),
                 // insert
                 ExerciseDTO(
                     id: newExerciseId,
-                    name: "Squat",
-                    catalogId: nil
+                    name: "Squat"
                 )
             ],
             workouts: [],
@@ -1070,6 +1085,7 @@ import SwiftData
             sets: [],
             workoutTemplates: [],
             workoutNotes: [],
+            catalogExercises: [],
             trainerTrainees: [],
             trainerExercises: [],
             identityWorkouts: [],

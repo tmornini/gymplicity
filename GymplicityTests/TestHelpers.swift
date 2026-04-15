@@ -45,10 +45,7 @@ extension ModelContext {
         name: String,
         trainer: IdentityEntity
     ) -> ExerciseEntity {
-        let exercise = ExerciseEntity(
-            name: name,
-            catalogId: nil
-        )
+        let exercise = ExerciseEntity(name: name)
         insert(exercise)
         insert(TrainerExercises(
             trainerId: trainer.id,
@@ -151,6 +148,7 @@ extension ModelContext {
     sets: [SetDTO],
     workoutTemplates: [WorkoutTemplateDTO],
     workoutNotes: [WorkoutNotesDTO],
+    catalogExercises: [CatalogExercisesDTO],
     trainerTrainees: [TrainerTraineesDTO],
     trainerExercises: [TrainerExercisesDTO],
     identityWorkouts: [IdentityWorkoutsDTO],
@@ -173,6 +171,7 @@ extension ModelContext {
         sets: sets,
         workoutTemplates: workoutTemplates,
         workoutNotes: workoutNotes,
+        catalogExercises: catalogExercises,
         trainerTrainees: trainerTrainees,
         trainerExercises: trainerExercises,
         identityWorkouts: identityWorkouts,

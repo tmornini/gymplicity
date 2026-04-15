@@ -12,7 +12,11 @@ struct IdentityDTO: Codable, Sendable {
 struct ExerciseDTO: Codable, Sendable {
     let id: UUID
     let name: String
-    let catalogId: String?
+}
+
+struct CatalogExercisesDTO: Codable, Sendable {
+    let exerciseId: UUID
+    let catalogId: String
 }
 
 struct WorkoutDTO: Codable, Sendable {
@@ -121,6 +125,7 @@ struct SyncPayload: Codable, Sendable {
     // Relationship tables
     let workoutTemplates: [WorkoutTemplateDTO]
     let workoutNotes: [WorkoutNotesDTO]
+    let catalogExercises: [CatalogExercisesDTO]
 
     // Join tables
     let trainerTrainees: [TrainerTraineesDTO]
@@ -167,6 +172,7 @@ struct SyncPayload: Codable, Sendable {
             sets: sets,
             workoutTemplates: [],
             workoutNotes: [],
+            catalogExercises: [],
             trainerTrainees: [],
             trainerExercises: [],
             identityWorkouts: [],
@@ -214,7 +220,16 @@ extension IdentityEntity {
 
 extension ExerciseEntity {
     @MainActor func toDTO() -> ExerciseDTO {
-        ExerciseDTO(id: id, name: name, catalogId: catalogId)
+        ExerciseDTO(id: id, name: name)
+    }
+}
+
+extension CatalogExercises {
+    @MainActor func toDTO() -> CatalogExercisesDTO {
+        CatalogExercisesDTO(
+            exerciseId: exerciseId,
+            catalogId: catalogId
+        )
     }
 }
 
@@ -402,6 +417,15 @@ struct SyncPayloadBuilder {
             FetchDescriptor<ExerciseEntity>(
                 predicate: #Predicate {
                     exerciseIds.contains($0.id)
+                }
+            )
+        )
+
+        // 3b. CatalogExercises rows for exercises in scope
+        let catalogRows = context.fetchOrDie(
+            FetchDescriptor<CatalogExercises>(
+                predicate: #Predicate {
+                    exerciseIds.contains($0.exerciseId)
                 }
             )
         )
@@ -609,6 +633,8 @@ struct SyncPayloadBuilder {
                 wtRows.map { $0.toDTO() },
             workoutNotes:
                 wnRows.map { $0.toDTO() },
+            catalogExercises:
+                catalogRows.map { $0.toDTO() },
             trainerTrainees:
                 ttJoins.map { $0.toDTO() },
             trainerExercises:

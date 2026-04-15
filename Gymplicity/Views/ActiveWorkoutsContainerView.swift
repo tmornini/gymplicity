@@ -6,10 +6,9 @@ struct ActiveWorkoutsContainerView: View {
     @Environment(\.dismiss) private var dismiss
     let trainer: IdentityEntity
     let initialWorkoutId: UUID
-    @State private var currentIndex: Int = 0
+    @State private var currentIndex: Int?
     @State private var viewModes: [UUID: ViewMode] = [:]
     @State private var guidedSetIndices: [UUID: Int] = [:]
-    @State private var hasInitialized = false
 
     enum ViewMode { case list, guided }
 
@@ -63,10 +62,11 @@ struct ActiveWorkoutsContainerView: View {
             identity: IdentityEntity,
             workout: WorkoutEntity
         )? = {
-            guard currentIndex >= 0,
-                currentIndex < pairs.count
+            guard let index = currentIndex,
+                index >= 0,
+                index < pairs.count
             else { return nil }
-            return pairs[currentIndex]
+            return pairs[index]
         }()
 
         Group {
@@ -144,15 +144,12 @@ struct ActiveWorkoutsContainerView: View {
             }
         }
         .onAppear {
-            guard !hasInitialized else { return }
-            hasInitialized = true
-            if let index = pairs.firstIndex(
+            guard currentIndex == nil else { return }
+            currentIndex = pairs.firstIndex(
                 where: {
                     $0.workout.id == initialWorkoutId
                 }
-            ) {
-                currentIndex = index
-            }
+            )
         }
         .onChange(of: pairs.map(\.workout.id)) { oldIds, newIds in
             guard oldIds != newIds else { return }
@@ -165,8 +162,8 @@ struct ActiveWorkoutsContainerView: View {
                 viewModes.removeValue(forKey: id)
                 guidedSetIndices.removeValue(forKey: id)
             }
-            if currentIndex >= newIds.count {
-                currentIndex = max(0, newIds.count - 1)
+            if let index = currentIndex, index >= newIds.count {
+                currentIndex = newIds.count - 1
             }
         }
     }
@@ -176,7 +173,7 @@ struct ActiveWorkoutsContainerView: View {
     private func pageDots(count: Int) -> some View {
         HStack(spacing: GymMetrics.space6) {
             ForEach(0..<count, id: \.self) { index in
-                if index == currentIndex {
+                if let current = currentIndex, index == current {
                     Capsule()
                         .fill(GymColors.energy)
                         .frame(
@@ -252,16 +249,16 @@ struct ActiveWorkoutsContainerView: View {
     // MARK: - Navigation
 
     private func goToPrevious(count: Int) {
-        guard count > 1 else { return }
+        guard count > 1, let index = currentIndex else { return }
         withAnimation(.easeInOut(duration: GymMetrics.animationQuick)) {
-            currentIndex = (currentIndex - 1 + count) % count
+            currentIndex = (index - 1 + count) % count
         }
     }
 
     private func goToNext(count: Int) {
-        guard count > 1 else { return }
+        guard count > 1, let index = currentIndex else { return }
         withAnimation(.easeInOut(duration: GymMetrics.animationQuick)) {
-            currentIndex = (currentIndex + 1) % count
+            currentIndex = (index + 1) % count
         }
     }
 }

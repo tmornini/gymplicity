@@ -27,8 +27,11 @@ data between trainer and trainee devices.
 
 ## Data Model
 
-Entities hold only their own attributes — no foreign keys. All
-relationships live in dedicated join tables storing pairs of UUIDs.
+Entities hold only their own attributes — no foreign keys, no
+nullable columns. All relationships live in dedicated join tables
+storing pairs of UUIDs. Temporal facts (completion, notes) live
+in event and attribute tables — absence of a row IS the absence
+of the fact.
 
 ### Entities
 
@@ -45,10 +48,7 @@ ExerciseEntity
 WorkoutEntity
 ├── id: UUID
 ├── date: Date
-├── notes: String?
-├── isCompleted: Bool
-├── isTemplate: Bool
-└── templateName: String?
+└── isTemplate: Bool
 
 WorkoutGroupEntity
 ├── id: UUID
@@ -59,9 +59,7 @@ SetEntity
 ├── id: UUID
 ├── order: Int
 ├── weight: Double
-├── reps: Int
-├── isCompleted: Bool
-└── completedAt: Date?
+└── reps: Int
 ```
 
 ### Join Tables
@@ -73,7 +71,24 @@ IdentityWorkouts      (identityId, workoutId)
 WorkoutGroups         (workoutId, groupId)
 GroupSets             (groupId, setId)
 ExerciseSets          (exerciseId, setId)
-PairedDevices         (localIdentityId, remoteIdentityId, remoteName, lastSyncDate?)
+TemplateInstances     (templateId, workoutId)
+IdentityAliases       (identityId1, identityId2)
+PairedDevices         (localIdentityId, remoteIdentityId)
+```
+
+### Attribute Tables (1:1 optional)
+
+```
+WorkoutTemplate       (workoutId, name)
+WorkoutNotes          (workoutId, notes)
+```
+
+### Event Tables (temporal facts)
+
+```
+SetCompletions        (setId, completedAt)
+WorkoutCompletions    (workoutId, completedAt)
+DeviceSyncEvents      (localIdentityId, remoteIdentityId, syncedAt)
 ```
 
 ### Derived Values (computed, not stored)

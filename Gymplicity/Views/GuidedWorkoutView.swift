@@ -8,7 +8,7 @@ struct GuidedWorkoutView: View {
     let onSwitchToList: (() -> Void)?
     let initialSetIndex: Int?
     let onSetIndexChange: ((Int) -> Void)?
-    @State private var currentIndex: Int = 0
+    @State private var currentIndex: Int?
     @State private var weightText: String = ""
     @State private var repsText: String = ""
     @State private var showingEndConfirmation = false
@@ -34,10 +34,11 @@ struct GuidedWorkoutView: View {
         )
 
         let currentPair: (group: WorkoutGroupEntity, set: SetEntity)? = {
-            guard currentIndex >= 0,
-                  currentIndex < flatSets.count
+            guard let index = currentIndex,
+                  index >= 0,
+                  index < flatSets.count
             else { return nil }
-            return flatSets[currentIndex]
+            return flatSets[index]
         }()
 
         Group {
@@ -113,9 +114,9 @@ struct GuidedWorkoutView: View {
         .onAppear {
             if let saved = initialSetIndex {
                 currentIndex = saved
-            } else if let first = workout
-                .firstIncompleteSetIndex(in: modelContext) {
-                currentIndex = first
+            } else {
+                currentIndex = workout
+                    .firstIncompleteSetIndex(in: modelContext)
             }
             loadCurrentSet()
         }
@@ -341,10 +342,11 @@ struct GuidedWorkoutView: View {
                 || parsedWeight != nil,
             repsText.isEmpty
                 || parsedReps != nil,
-            currentIndex >= 0,
-            currentIndex < flatSets.count
+            let index = currentIndex,
+            index >= 0,
+            index < flatSets.count
         else { return }
-        let pair = flatSets[currentIndex]
+        let pair = flatSets[index]
 
         pair.set.weight = parsedWeight ?? 0
         pair.set.reps = parsedReps ?? 0
@@ -360,7 +362,7 @@ struct GuidedWorkoutView: View {
         )
 
         if let next = workout.nextIncompleteSetIndex(
-            after: currentIndex,
+            after: index,
             in: modelContext
         ) {
             // Visual breathing room between exercises
@@ -384,7 +386,7 @@ struct GuidedWorkoutView: View {
                     return
                 }
                 currentIndex = next
-                onSetIndexChange?(currentIndex)
+                onSetIndexChange?(next)
                 loadCurrentSet()
                 withAnimation(
                     .easeInOut(
@@ -396,20 +398,25 @@ struct GuidedWorkoutView: View {
                 }
             }
         } else {
-            currentIndex = flatSets.count
-            onSetIndexChange?(currentIndex)
+            let done = flatSets.count
+            currentIndex = done
+            onSetIndexChange?(done)
         }
     }
 
     private func loadCurrentSet() {
         let flatSets = workout.allSetsFlattened(in: modelContext)
-        guard currentIndex >= 0, currentIndex < flatSets.count else { return }
-        let pair = flatSets[currentIndex]
+        guard
+            let index = currentIndex,
+            index >= 0,
+            index < flatSets.count
+        else { return }
+        let pair = flatSets[index]
         weightText = pair.set.weight > 0
             ? Weight.rawValue(pair.set.weight)
             : ""
         repsText = pair.set.reps > 0 ? "\(pair.set.reps)" : ""
         focusedField = .weight
-        onSetIndexChange?(currentIndex)
+        onSetIndexChange?(index)
     }
 }

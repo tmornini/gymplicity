@@ -325,31 +325,24 @@ struct GuidedWorkoutView: View {
     }
 
     private var isInputValid: Bool {
-        (weightText.isEmpty
-            || Double(weightText) != nil)
-            && (repsText.isEmpty
-                || Int(repsText) != nil)
+        Double(weightText) != nil && Int(repsText) != nil
     }
 
     private func completeCurrentSet() {
         let flatSets = workout.allSetsFlattened(
             in: modelContext
         )
-        let parsedWeight = Double(weightText)
-        let parsedReps = Int(repsText)
         guard
-            weightText.isEmpty
-                || parsedWeight != nil,
-            repsText.isEmpty
-                || parsedReps != nil,
+            let parsedWeight = Double(weightText),
+            let parsedReps = Int(repsText),
             let index = currentIndex,
             index >= 0,
             index < flatSets.count
         else { return }
         let pair = flatSets[index]
 
-        pair.set.weight = parsedWeight ?? 0
-        pair.set.reps = parsedReps ?? 0
+        pair.set.weight = parsedWeight
+        pair.set.reps = parsedReps
         modelContext.insert(
             SetCompletions(
                 setId: pair.set.id,

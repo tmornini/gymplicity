@@ -22,7 +22,7 @@ build/device YOUR_TEAM_ID    # pass Apple Team ID as argument
 
 ## Architecture
 
-- See CHURCH-OF-CODE.md and follow the strictures
+- Follow the Church of Code plugin (see README.md for installation)
 - See VISION.md for vision and screen architecture
 - See SCHEMA.md for full data model documentation
 

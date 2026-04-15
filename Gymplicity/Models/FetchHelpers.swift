@@ -4,24 +4,24 @@ import SwiftData
 extension ModelContext {
     @MainActor func fetchOrDie<T: PersistentModel>(
         _ descriptor: FetchDescriptor<T>,
-        file: String = #file,
-        line: Int = #line
+        file: StaticString = #file,
+        line: UInt = #line
     ) -> [T] {
         do {
             return try fetch(descriptor)
         } catch {
-            assertionFailure(
-                "[FetchError] \(error)"
-                    + " at \(file):\(line)"
+            fatalError(
+                "fetch failed: \(error)",
+                file: file,
+                line: line
             )
-            return []
         }
     }
 
     @MainActor func fetchFirst<T: PersistentModel>(
         _ descriptor: FetchDescriptor<T>,
-        file: String = #file,
-        line: Int = #line
+        file: StaticString = #file,
+        line: UInt = #line
     ) -> T? {
         fetchOrDie(
             descriptor,

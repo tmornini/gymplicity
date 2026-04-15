@@ -30,10 +30,20 @@ build/device YOUR_TEAM_ID    # pass Apple Team ID as argument
 
 IdentityEntity, ExerciseEntity, WorkoutEntity, WorkoutGroupEntity, SetEntity
 
-### Join Tables (8)
+### Join Tables (9)
 
 TrainerTrainees, TrainerExercises, IdentityWorkouts, WorkoutGroups,
-GroupSets, ExerciseSets, TemplateInstances, PairedDevices
+GroupSets, ExerciseSets, TemplateInstances, IdentityAliases, PairedDevices
+
+### Attribute Tables (2)
+
+WorkoutTemplate (workoutId → name), WorkoutNotes (workoutId → notes)
+
+### Event Tables (3)
+
+SetCompletions (setId → completedAt),
+WorkoutCompletions (workoutId → completedAt),
+DeviceSyncEvents (localIdentityId + remoteIdentityId → syncedAt)
 
 ### Views (13)
 
@@ -62,7 +72,10 @@ SyncPayload, SyncEngine, SyncSessionManager, SyncTrigger, IdentityReconciliation
 ## Conventions
 
 - `is` prefix for Bool properties (isTrainer, isCompleted, isTemplate, isSuperset)
-- Entity postfix on all @Model classes (IdentityEntity, not Identity)
+- `Entity` postfix for core domain entities (IdentityEntity, not Identity)
+- Join tables: plural noun pair (TrainerTrainees, GroupSets)
+- Event tables: `*Completions` / `*Events` suffix (SetCompletions, DeviceSyncEvents)
+- Attribute tables: descriptive noun (WorkoutTemplate, WorkoutNotes)
 - Relationship traversal via extension methods on entities, not stored properties
 - Cascade deletes down ownership chain; nullify for ExerciseSets
 - Computed properties (volume, exerciseCount) derived from traversal, never stored

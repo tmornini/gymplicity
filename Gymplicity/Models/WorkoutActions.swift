@@ -138,6 +138,23 @@ extension ModelContext {
         fetchOrDie(FetchDescriptor<IdentityWorkouts>(
             predicate: #Predicate { $0.identityId == id }
         )).forEach { delete($0) }
+        fetchOrDie(FetchDescriptor<IdentityAliases>(
+            predicate: #Predicate {
+                $0.identityId1 == id || $0.identityId2 == id
+            }
+        )).forEach { delete($0) }
+        fetchOrDie(FetchDescriptor<PairedDevices>(
+            predicate: #Predicate {
+                $0.localIdentityId == id
+                    || $0.remoteIdentityId == id
+            }
+        )).forEach { delete($0) }
+        fetchOrDie(FetchDescriptor<DeviceSyncEvents>(
+            predicate: #Predicate {
+                $0.localIdentityId == id
+                    || $0.remoteIdentityId == id
+            }
+        )).forEach { delete($0) }
         delete(identity)
     }
 
@@ -148,6 +165,9 @@ extension ModelContext {
             predicate: #Predicate { $0.exerciseId == id }
         )).forEach { delete($0) }
         fetchOrDie(FetchDescriptor<TrainerExercises>(
+            predicate: #Predicate { $0.exerciseId == id }
+        )).forEach { delete($0) }
+        fetchOrDie(FetchDescriptor<CatalogExercises>(
             predicate: #Predicate { $0.exerciseId == id }
         )).forEach { delete($0) }
         delete(exercise)
@@ -170,6 +190,12 @@ extension ModelContext {
             }
         )).forEach { delete($0) }
         fetchOrDie(FetchDescriptor<WorkoutNotes>(
+            predicate: #Predicate { $0.workoutId == id }
+        )).forEach { delete($0) }
+        fetchOrDie(FetchDescriptor<WorkoutTemplate>(
+            predicate: #Predicate { $0.workoutId == id }
+        )).forEach { delete($0) }
+        fetchOrDie(FetchDescriptor<WorkoutCompletions>(
             predicate: #Predicate { $0.workoutId == id }
         )).forEach { delete($0) }
         delete(workout)
@@ -195,6 +221,9 @@ extension ModelContext {
             predicate: #Predicate { $0.setId == id }
         )).forEach { delete($0) }
         fetchOrDie(FetchDescriptor<ExerciseSets>(
+            predicate: #Predicate { $0.setId == id }
+        )).forEach { delete($0) }
+        fetchOrDie(FetchDescriptor<SetCompletions>(
             predicate: #Predicate { $0.setId == id }
         )).forEach { delete($0) }
         delete(set)

@@ -31,10 +31,15 @@ import SwiftData
             order: 0,
             weight: 135,
             reps: 10,
-            isCompleted: false,
-            completedAt: nil
+            isCompleted: true,
+            completedAt: .now
         )
         let setId = set.id
+
+        // Completion event exists before the delete
+        XCTAssertFalse(try ctx.fetch(FetchDescriptor<SetCompletions>(
+            predicate: #Predicate { $0.setId == setId }
+        )).isEmpty)
 
         ctx.deleteSet(set)
 
@@ -54,6 +59,11 @@ import SwiftData
             predicate: #Predicate { $0.setId == setId }
         ))
         XCTAssert(exerciseSets.isEmpty)
+
+        // Completion event cleaned up
+        XCTAssert(try ctx.fetch(FetchDescriptor<SetCompletions>(
+            predicate: #Predicate { $0.setId == setId }
+        )).isEmpty)
 
         // Group and exercise still exist
         XCTAssertEqual(group.sets(in: ctx).count, 0)
@@ -165,6 +175,14 @@ import SwiftData
         )
         let workoutId = workout.id
 
+        // Attribute and completion rows exist before the delete
+        ctx.insert(WorkoutTemplate(workoutId: workoutId, name: "T"))
+        ctx.insert(WorkoutNotes(workoutId: workoutId, notes: "N"))
+        ctx.insert(WorkoutCompletions(
+            workoutId: workoutId,
+            completedAt: .now
+        ))
+
         ctx.deleteWorkout(workout)
 
         let workouts = try ctx.fetch(FetchDescriptor<WorkoutEntity>(
@@ -177,6 +195,17 @@ import SwiftData
             ).isEmpty
         )
         XCTAssert(try ctx.fetch(FetchDescriptor<SetEntity>()).isEmpty)
+
+        // Attribute and completion rows cleaned up
+        XCTAssert(try ctx.fetch(FetchDescriptor<WorkoutTemplate>(
+            predicate: #Predicate { $0.workoutId == workoutId }
+        )).isEmpty)
+        XCTAssert(try ctx.fetch(FetchDescriptor<WorkoutNotes>(
+            predicate: #Predicate { $0.workoutId == workoutId }
+        )).isEmpty)
+        XCTAssert(try ctx.fetch(FetchDescriptor<WorkoutCompletions>(
+            predicate: #Predicate { $0.workoutId == workoutId }
+        )).isEmpty)
 
         // Identity and exercise survive
         XCTAssert(trainee.workouts(in: ctx).isEmpty)
@@ -223,6 +252,14 @@ import SwiftData
             completedAt: nil
         )
 
+        ctx.insert(CatalogExercises(
+            exerciseId: bench.id,
+            catalogId: "bench"
+        ))
+        XCTAssertFalse(
+            try ctx.fetch(FetchDescriptor<CatalogExercises>()).isEmpty
+        )
+
         ctx.deleteExercise(bench)
 
         // Exercise is gone
@@ -232,6 +269,11 @@ import SwiftData
 
         // ExerciseSets joins are gone
         XCTAssert(try ctx.fetch(FetchDescriptor<ExerciseSets>()).isEmpty)
+
+        // Catalog attribute row cleaned up
+        XCTAssert(
+            try ctx.fetch(FetchDescriptor<CatalogExercises>()).isEmpty
+        )
 
         // But the sets survive (nullify, not cascade)
         XCTAssertEqual(group.sets(in: ctx).count, 2)
@@ -270,6 +312,21 @@ import SwiftData
             completedAt: nil
         )
 
+        let remoteId = UUID()
+        ctx.insert(IdentityAliases(
+            identityId1: trainer.id,
+            identityId2: remoteId
+        ))
+        ctx.insert(PairedDevices(
+            localIdentityId: trainer.id,
+            remoteIdentityId: remoteId
+        ))
+        ctx.insert(DeviceSyncEvents(
+            localIdentityId: trainer.id,
+            remoteIdentityId: remoteId,
+            syncedAt: .now
+        ))
+
         ctx.deleteIdentity(trainer)
 
         // Everything is gone
@@ -288,5 +345,10 @@ import SwiftData
         XCTAssert(try ctx.fetch(FetchDescriptor<WorkoutGroups>()).isEmpty)
         XCTAssert(try ctx.fetch(FetchDescriptor<GroupSets>()).isEmpty)
         XCTAssert(try ctx.fetch(FetchDescriptor<ExerciseSets>()).isEmpty)
+        XCTAssert(try ctx.fetch(FetchDescriptor<IdentityAliases>()).isEmpty)
+        XCTAssert(try ctx.fetch(FetchDescriptor<PairedDevices>()).isEmpty)
+        XCTAssert(
+            try ctx.fetch(FetchDescriptor<DeviceSyncEvents>()).isEmpty
+        )
     }
 }

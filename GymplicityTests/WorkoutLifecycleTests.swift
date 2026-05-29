@@ -175,6 +175,42 @@ import SwiftData
         XCTAssertNil(set.completedAt(in: ctx))
     }
 
+    func testCompletedAtReturnsMostRecentCompletion() throws {
+        let ctx = try makeTestContext()
+        let trainer = ctx.makeTrainer(name: "Trainer")
+        let bench = ctx.makeExercise(name: "Bench", trainer: trainer)
+        let trainee = ctx.makeTrainee(
+            name: "Trainee",
+            trainer: trainer
+        )
+        let workout = ctx.makeWorkout(
+            for: trainee,
+            date: .now,
+            isCompleted: false
+        )
+        let group = ctx.makeGroup(
+            in: workout,
+            order: 0,
+            isSuperset: false
+        )
+        let earlier = Date(timeIntervalSince1970: 1_000)
+        let later = Date(timeIntervalSince1970: 2_000)
+        let set = ctx.makeSet(
+            in: group,
+            exercise: bench,
+            order: 0,
+            weight: 135,
+            reps: 10,
+            isCompleted: true,
+            completedAt: earlier
+        )
+
+        // A second completion event makes this an append-log
+        ctx.insert(SetCompletions(setId: set.id, completedAt: later))
+
+        XCTAssertEqual(set.completedAt(in: ctx), later)
+    }
+
     func testEndWorkout() throws {
         let ctx = try makeTestContext()
         let trainer = ctx.makeTrainer(name: "Trainer")

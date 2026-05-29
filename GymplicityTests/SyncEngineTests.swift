@@ -44,6 +44,103 @@ import SwiftData
         XCTAssertEqual(result.identitiesUpdated, 1)
     }
 
+    // MARK: - Completion Events (append-log)
+
+    func testDistinctSetCompletionsBothInserted() throws {
+        let ctx = try makeTestContext()
+        let trainer = ctx.makeTrainer(name: "Trainer")
+        let setId = UUID()
+        let first = Date(timeIntervalSince1970: 1_000)
+        let second = Date(timeIntervalSince1970: 2_000)
+
+        let payload = makePayload(
+            senderIdentityId: trainer.id,
+            identities: [
+                IdentityDTO(
+                    id: trainer.id,
+                    name: "Trainer",
+                    isTrainer: true
+                )
+            ],
+            exercises: [],
+            workouts: [],
+            workoutGroups: [],
+            sets: [],
+            workoutTemplates: [],
+            workoutNotes: [],
+            catalogExercises: [],
+            trainerTrainees: [],
+            trainerExercises: [],
+            identityWorkouts: [],
+            workoutGroupJoins: [],
+            groupSetJoins: [],
+            exerciseSetJoins: [],
+            templateInstanceJoins: [],
+            identityAliases: [],
+            setCompletions: [
+                SetCompletionDTO(setId: setId, completedAt: first),
+                SetCompletionDTO(setId: setId, completedAt: second)
+            ],
+            workoutCompletions: [],
+            deviceSyncEvents: []
+        )
+
+        let result = SyncEngine.merge(payload, into: ctx)
+
+        XCTAssertEqual(result.setCompletionsInserted, 2)
+        let rows = try ctx.fetch(FetchDescriptor<SetCompletions>(
+            predicate: #Predicate { $0.setId == setId }
+        ))
+        XCTAssertEqual(rows.count, 2)
+    }
+
+    func testReplayingSetCompletionIsIdempotent() throws {
+        let ctx = try makeTestContext()
+        let trainer = ctx.makeTrainer(name: "Trainer")
+        let setId = UUID()
+        let when = Date(timeIntervalSince1970: 1_000)
+
+        let payload = makePayload(
+            senderIdentityId: trainer.id,
+            identities: [
+                IdentityDTO(
+                    id: trainer.id,
+                    name: "Trainer",
+                    isTrainer: true
+                )
+            ],
+            exercises: [],
+            workouts: [],
+            workoutGroups: [],
+            sets: [],
+            workoutTemplates: [],
+            workoutNotes: [],
+            catalogExercises: [],
+            trainerTrainees: [],
+            trainerExercises: [],
+            identityWorkouts: [],
+            workoutGroupJoins: [],
+            groupSetJoins: [],
+            exerciseSetJoins: [],
+            templateInstanceJoins: [],
+            identityAliases: [],
+            setCompletions: [
+                SetCompletionDTO(setId: setId, completedAt: when)
+            ],
+            workoutCompletions: [],
+            deviceSyncEvents: []
+        )
+
+        _ = SyncEngine.merge(payload, into: ctx)
+        let second = SyncEngine.merge(payload, into: ctx)
+
+        XCTAssertEqual(second.setCompletionsInserted, 0)
+        let rows = try ctx.fetch(FetchDescriptor<SetCompletions>(
+            predicate: #Predicate { $0.setId == setId }
+        ))
+        XCTAssertEqual(rows.count, 1)
+    }
+
     func testSenderCannotUpdateOtherIdentityName() throws {
         let ctx = try makeTestContext()
         let trainer = ctx.makeTrainer(name: "Trainer")

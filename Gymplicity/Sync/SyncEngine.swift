@@ -526,10 +526,12 @@ struct SyncEngine {
         // SetCompletions
         for dto in payload.setCompletions {
             let setId = dto.setId
+            let completedAt = dto.completedAt
             let existing = context.fetchFirst(
                 FetchDescriptor<SetCompletions>(
                     predicate: #Predicate {
                         $0.setId == setId
+                            && $0.completedAt == completedAt
                     }
                 )
             )
@@ -546,12 +548,14 @@ struct SyncEngine {
         // WorkoutCompletions
         for dto in payload.workoutCompletions {
             let workoutId = dto.workoutId
+            let completedAt = dto.completedAt
             let existing = context.fetchFirst(
                 FetchDescriptor<
                     WorkoutCompletions
                 >(
                     predicate: #Predicate {
                         $0.workoutId == workoutId
+                            && $0.completedAt == completedAt
                     }
                 )
             )

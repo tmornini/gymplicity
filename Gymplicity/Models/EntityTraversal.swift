@@ -599,13 +599,13 @@ extension SetEntity {
         in context: ModelContext
     ) -> Date? {
         let id = self.id
-        return context.fetchFirst(
+        return context.fetchOrDie(
             FetchDescriptor<SetCompletions>(
                 predicate: #Predicate {
                     $0.setId == id
                 }
             )
-        )?.completedAt
+        ).map(\.completedAt).max()
     }
 
     @MainActor func exercise(

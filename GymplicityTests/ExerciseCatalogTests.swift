@@ -225,4 +225,19 @@ import SwiftData
         let ids = BatchTraversal.exerciseIdsUsed(for: trainer, in: ctx)
         XCTAssert(ids.isEmpty)
     }
+
+    func testCatalogExercisePersistsAndReadsBack() throws {
+        let ctx = try makeTestContext()
+        let trainer = ctx.makeTrainer(name: "Trainer")
+        let bench = ctx.makeExercise(name: "Bench Press", trainer: trainer)
+
+        XCTAssertNil(bench.catalogId(in: ctx))
+
+        ctx.insert(CatalogExercises(
+            exerciseId: bench.id,
+            catalogId: "bench-press"
+        ))
+
+        XCTAssertEqual(bench.catalogId(in: ctx), "bench-press")
+    }
 }

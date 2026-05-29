@@ -11,7 +11,7 @@ import XCTest
         TrainerExercises.self, IdentityWorkouts.self, WorkoutGroups.self,
         GroupSets.self, ExerciseSets.self, TemplateInstances.self,
         IdentityAliases.self, WorkoutTemplate.self, WorkoutNotes.self,
-        PairedDevices.self,
+        CatalogExercises.self, PairedDevices.self,
         SetCompletions.self, WorkoutCompletions.self,
         DeviceSyncEvents.self,
         configurations: config

@@ -28,6 +28,12 @@ final class ExerciseEntity {
     var name: String
 
     init(name: String) {
+        precondition(
+            !name.trimmingCharacters(
+                in: .whitespaces
+            ).isEmpty,
+            "ExerciseEntity name must not be empty"
+        )
         self.id = UUID()
         self.name = name
     }

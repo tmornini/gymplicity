@@ -111,6 +111,12 @@ final class WorkoutTemplate {
     var name: String
 
     init(workoutId: UUID, name: String) {
+        precondition(
+            !name.trimmingCharacters(
+                in: .whitespaces
+            ).isEmpty,
+            "WorkoutTemplate name must not be empty"
+        )
         self.workoutId = workoutId
         self.name = name
     }
@@ -122,6 +128,12 @@ final class WorkoutNotes {
     var notes: String
 
     init(workoutId: UUID, notes: String) {
+        precondition(
+            !notes.trimmingCharacters(
+                in: .whitespaces
+            ).isEmpty,
+            "WorkoutNotes notes must not be empty"
+        )
         self.workoutId = workoutId
         self.notes = notes
     }
@@ -133,6 +145,12 @@ final class CatalogExercises {
     var catalogId: String
 
     init(exerciseId: UUID, catalogId: String) {
+        precondition(
+            !catalogId.trimmingCharacters(
+                in: .whitespaces
+            ).isEmpty,
+            "CatalogExercises catalogId must not be empty"
+        )
         self.exerciseId = exerciseId
         self.catalogId = catalogId
     }

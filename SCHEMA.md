@@ -35,19 +35,18 @@ table &mdash; absence of a row means a user-created exercise.
 
 ### WorkoutEntity
 
-A single training session or a reusable template. Created on "Start",
-closed on "End Workout" (sets `isCompleted = true`). Templates have
-`isTemplate = true` and are never completed &mdash; they serve as
-blueprints that are cloned into active workouts.
+A single training session or a reusable template. Created on "Start";
+completion is recorded as a row in the `WorkoutCompletions` event table
+(no row means still active). Templates have `isTemplate = true` and are
+never completed &mdash; they serve as blueprints cloned into active
+workouts. A template's name lives in the `WorkoutTemplate` attribute
+table; free-form notes live in `WorkoutNotes`.
 
 | Column | Type | Description |
 |--------|------|-------------|
 | id | UUID | Primary key |
 | date | Date | Timestamp when the workout was created |
-| notes | String? | Optional free-form notes |
-| isCompleted | Bool | False while active, true once ended |
 | isTemplate | Bool | True for reusable workout templates |
-| templateName | String? | Human-readable name (templates only, e.g. "Push Day") |
 
 ### WorkoutGroupEntity
 
@@ -64,8 +63,8 @@ When `isSuperset` is true, the group is a deliberate multi-exercise superset
 
 ### SetEntity
 
-A single set: one exercise at a weight for reps, individually timestamped
-on completion.
+A single set: one exercise at a weight for reps. Completion is recorded
+as a row in the `SetCompletions` event table (no row means pending).
 
 | Column | Type | Description |
 |--------|------|-------------|
@@ -73,8 +72,6 @@ on completion.
 | order | Int | Position within the group (0-based) |
 | weight | Double | Weight lifted, in the user's preferred unit |
 | reps | Int | Number of repetitions |
-| isCompleted | Bool | Whether this set has been marked done |
-| completedAt | Date? | Timestamp when marked complete; nil if pending |
 
 **Computed:**
 
@@ -160,6 +157,41 @@ federated identity without destructive UUID rewriting.
 | identityId1 | UUID |
 | identityId2 | UUID |
 
+### PairedDevices
+
+Tracks which devices have been paired via Multipeer Connectivity sync.
+Used to distinguish "Paired" vs "New" peers in the sync UI and to find
+the correct remote identity for payload building.
+
+| Column | Type | Description |
+|--------|------|-------------|
+| localIdentityId | UUID | The local user's identity |
+| remoteIdentityId | UUID | The paired remote user's identity |
+
+## Attribute Tables
+
+Single-attribute tables keyed by an entity UUID. Presence of a row carries
+the attribute; absence means it is unset &mdash; no nullable columns, no
+defaults. Each value is required non-empty at instantiation.
+
+### WorkoutTemplate
+
+The display name of a workout template.
+
+| Column | Type |
+|--------|------|
+| workoutId | UUID |
+| name | String |
+
+### WorkoutNotes
+
+Free-form notes attached to a workout. No row means no notes.
+
+| Column | Type |
+|--------|------|
+| workoutId | UUID |
+| notes | String |
+
 ### CatalogExercises
 
 Links an exercise to its built-in catalog slug. Presence of a row means
@@ -171,18 +203,40 @@ means a user-created custom exercise.
 | exerciseId | UUID |
 | catalogId | String |
 
-### PairedDevices
+## Event Tables
 
-Tracks which devices have been paired via Multipeer Connectivity sync.
-Used to distinguish "Paired" vs "New" peers in the sync UI and to find
-the correct remote identity for payload building.
+Append-only logs of timestamped events. A row records that an event
+happened at a moment; multiple rows per subject are allowed. "Did it
+happen?" is the presence of any row; "when?" is the most recent row.
 
-| Column | Type | Description |
-|--------|------|-------------|
-| localIdentityId | UUID | The local user's identity |
-| remoteIdentityId | UUID | The paired remote user's identity |
-| remoteName | String | Display name of the remote device/user |
-| lastSyncDate | Date? | Timestamp of most recent successful sync |
+### SetCompletions
+
+Records that a set was marked complete. Append-log: a set may be completed
+more than once; the latest row wins for "when."
+
+| Column | Type |
+|--------|------|
+| setId | UUID |
+| completedAt | Date |
+
+### WorkoutCompletions
+
+Records that a workout was ended.
+
+| Column | Type |
+|--------|------|
+| workoutId | UUID |
+| completedAt | Date |
+
+### DeviceSyncEvents
+
+Records each successful sync between two identities.
+
+| Column | Type |
+|--------|------|
+| localIdentityId | UUID |
+| remoteIdentityId | UUID |
+| syncedAt | Date |
 
 ## Relationship Semantics
 
@@ -195,8 +249,8 @@ the correct remote identity for payload building.
 | GroupSets | Group contains these sets | Cascade: delete group &rarr; delete sets |
 | ExerciseSets | Sets reference this exercise | Nullify: delete exercise &rarr; remove join rows, sets remain |
 | TemplateInstances | Workout instantiated from this template | Cascade: delete either side &rarr; remove join row |
-| IdentityAliases | Two UUIDs represent the same person | Manual: alias data independent of entity lifecycle |
-| PairedDevices | Local identity paired with remote identity | Manual: pairing data independent of entity lifecycle |
+| IdentityAliases | Two UUIDs represent the same person | Cascade: delete identity &rarr; remove alias rows referencing it |
+| PairedDevices | Local identity paired with remote identity | Cascade: delete identity &rarr; remove pairing rows referencing it |
 
 ## Computed Properties (not stored)
 
@@ -227,3 +281,7 @@ the correct remote identity for payload building.
 - **Nullify** is used for ExerciseSets so that removing an exercise from
   the catalog does not destroy historical workout data. The set remains;
   only the join row is removed.
+- **Attribute and event rows** (WorkoutTemplate, WorkoutNotes,
+  CatalogExercises; SetCompletions, WorkoutCompletions, DeviceSyncEvents)
+  are cascade-deleted with the entity they describe, so no orphaned
+  attribute or event row outlives its subject.

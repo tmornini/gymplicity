@@ -35,9 +35,10 @@ IdentityEntity, ExerciseEntity, WorkoutEntity, WorkoutGroupEntity, SetEntity
 TrainerTrainees, TrainerExercises, IdentityWorkouts, WorkoutGroups,
 GroupSets, ExerciseSets, TemplateInstances, IdentityAliases, PairedDevices
 
-### Attribute Tables (2)
+### Attribute Tables (3)
 
-WorkoutTemplate (workoutId → name), WorkoutNotes (workoutId → notes)
+WorkoutTemplate (workoutId → name), WorkoutNotes (workoutId → notes),
+CatalogExercises (exerciseId → catalogId)
 
 ### Event Tables (3)
 
@@ -45,18 +46,21 @@ SetCompletions (setId → completedAt),
 WorkoutCompletions (workoutId → completedAt),
 DeviceSyncEvents (localIdentityId + remoteIdentityId → syncedAt)
 
-### Views (13)
+### Views (13 screens + 5 supporting)
 
 HomeView, ActiveWorkoutView, SetEntryView, AddExerciseView, ProfileView,
 ProgressChartsView, AddTraineeView, WorkoutHistoryView, TemplateListView,
 TemplateEditorView, StartFromTemplateView, GuidedWorkoutView, SyncView
+
+Supporting: RootView, ActiveWorkoutsContainerView, ExerciseAttributePills,
+LastSetReference, WeightRepsField
 
 ### Theme Module (8 files in Gymplicity/Theme/)
 
 GymColors, GymFont, GymMetrics, GymModifiers, MascotView,
 AnimatedMascotView, GymProgressBar, Weight
 
-- **Mascot "Lifty":** Bathroom-sign stick figure (Path strokes, round caps). 10 poses, 6 animations. 27 appearances across the app.
+- **Mascot "Lifty":** Bathroom-sign stick figure (SF Symbols `figure.*` glyphs). 9 poses, 6 animations, used throughout the app.
 - **Palette:** iron/steel/chalk/rubber + energy orange, power green, focus blue
 - **Typography:** SF Pro Rounded throughout, monospaced digits for numbers
 
@@ -92,3 +96,4 @@ This app uses HTTP verb semantics (PUT/GET/DELETE), not CRUD:
 - Gymplicity target uses PBXFileSystemSynchronizedRootGroup — new files in Gymplicity/ auto-compile, no project file edits needed
 - All relationship queries take a ModelContext parameter
 - Keep join tables as plain @Model classes with UUID pairs only
+- The SwiftData model list is declared in both GymplicityApp.swift and GymplicityTests/TestHelpers.swift — register every new @Model in both (single source of truth still TODO)
